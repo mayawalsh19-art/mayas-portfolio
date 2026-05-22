@@ -104,8 +104,9 @@ export default function FeaturedWork() {
         <Card title="Wild Fire" bg="bg-white" link={false}
           onClick={() => setShowWildFire(true)}
           desc="Wild Fire explores editorial and publication design through the translation of a long-form NYT Magazine article.">
-          <div className="self-stretch w-full overflow-hidden">
-            <img src="/wildfire/title.png" alt="Wild Fire" className="w-full h-full object-cover object-top" />
+          <div className="flex flex-col items-center leading-none select-none" style={{ gap: '0.05em' }}>
+            <span style={{ fontFamily: "'Libre Caslon Display', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#111', lineHeight: 1 }}>WILD</span>
+            <span style={{ fontFamily: "'Libre Caslon Display', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#cc0000', lineHeight: 1 }}>FIRE</span>
           </div>
         </Card>
 
@@ -113,9 +114,9 @@ export default function FeaturedWork() {
         <Card title="Hellgrim" bg="bg-black" link={false}
           onClick={() => setShowHellgrim(true)}
           desc="Hellgrim explores modular typography through the design of a rule-based typeface.">
-          <div className="self-stretch w-full overflow-hidden">
-            <img src="/hellgrim/title.png" alt="Hellgrim" className="w-full h-full object-cover" />
-          </div>
+          <span className="font-lexend font-black text-white leading-none select-none" style={{ fontSize: 'clamp(36px, 6vw, 80px)' }}>
+            hellgrim
+          </span>
         </Card>
 
         {/* Fan Formation — full width on desktop */}
