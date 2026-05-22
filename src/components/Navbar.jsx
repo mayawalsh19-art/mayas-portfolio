@@ -3,8 +3,8 @@ export default function Navbar() {
     <nav className="sticky top-0 z-10 bg-white flex items-center justify-between px-6 h-[68px] shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
       {/* Logo */}
       <div className="flex items-center gap-3">
-        <div className="shrink-0 h-9 w-9 rounded-full bg-white border-2 border-[#334e6f] flex items-center justify-center">
-          <span className="font-lexend font-black text-[#334e6f] text-xs leading-none">mw</span>
+        <div className="shrink-0 h-10 w-10 rounded-full bg-white overflow-hidden flex items-center justify-center">
+          <img src="/mw_logo_clean.png" alt="MW" className="w-full h-full object-contain p-1" />
         </div>
         <span className="font-lexend font-bold text-[#334e6f] text-xl hidden md:block">Maya Walsh</span>
       </div>
