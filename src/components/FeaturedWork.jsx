@@ -86,8 +86,8 @@ export default function FeaturedWork() {
         <Card title="Dutch Bros App Redesign" bg="bg-white" link={false}
           onClick={() => setShowDutchBros(true)}
           desc="Redesigned app to make it more user-friendly for loyal customers.">
-          <span className="font-lexend font-black text-center px-6 leading-tight" style={{ color: '#00629c', fontSize: 'clamp(22px, 3.5vw, 44px)' }}>
-            Dutch Bros App Redesign
+          <span className="font-lexend font-black text-center leading-tight" style={{ color: '#00629c', fontSize: 'clamp(28px, 4vw, 52px)' }}>
+            Dutch Bros<br />App Redesign
           </span>
         </Card>
 
