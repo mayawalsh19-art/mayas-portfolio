@@ -105,8 +105,8 @@ export default function FeaturedWork() {
           onClick={() => setShowWildFire(true)}
           desc="Wild Fire explores editorial and publication design through the translation of a long-form NYT Magazine article.">
           <div className="flex flex-col items-center leading-none select-none" style={{ gap: '0.05em' }}>
-            <span style={{ fontFamily: "'Libre Caslon Display', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#111', lineHeight: 1 }}>WILD</span>
-            <span style={{ fontFamily: "'Libre Caslon Display', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#cc0000', lineHeight: 1 }}>FIRE</span>
+            <span style={{ fontFamily: "'Ultra', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#111', lineHeight: 1 }}>WILD</span>
+            <span style={{ fontFamily: "'Ultra', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#cc0000', lineHeight: 1 }}>FIRE</span>
           </div>
         </Card>
 
