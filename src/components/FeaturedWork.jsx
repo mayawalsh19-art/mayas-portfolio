@@ -7,11 +7,6 @@ import WildFireModal from './WildFireModal'
 import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
 
-const imgCredifyIcon  = "/credify/icon.png"
-const imgDutchBros    = "/dutchbros/redesign_hq.png"
-const imgSelfPortrait = "/selfportrait/portrait.png"
-const imgWildFire     = "/wildfire/spread1.png"
-const imgHellgrim     = "/hellgrim/hero.png"
 
 function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick, children }) {
   return (
@@ -72,10 +67,7 @@ export default function FeaturedWork() {
         <Card title="Credify" bg="bg-[#ff6900]" link={false}
           onClick={() => setShowCredify(true)}
           desc="A credit app that helps young professionals build credit and reach their personal financial goals.">
-          <div className="flex flex-col items-center gap-3">
-            <img src={imgCredifyIcon} alt="" className="w-14 md:w-20 h-auto shrink-0 block" />
-            <span className="font-lexend font-black text-white text-[32px] md:text-[48px] leading-none">Credify</span>
-          </div>
+          <span className="font-lexend font-black text-white text-[32px] md:text-[48px] leading-none">Credify</span>
         </Card>
 
         {/* Cora */}
@@ -94,15 +86,17 @@ export default function FeaturedWork() {
         <Card title="Dutch Bros App Redesign" bg="bg-white" link={false}
           onClick={() => setShowDutchBros(true)}
           desc="Redesigned app to make it more user-friendly for loyal customers.">
-          <img src={imgDutchBros} alt="Dutch Bros" className="h-32 md:h-44 w-auto shrink-0 block" />
+          <span className="font-lexend font-black text-center px-6 leading-tight" style={{ color: '#00629c', fontSize: 'clamp(22px, 3.5vw, 44px)' }}>
+            Dutch Bros App Redesign
+          </span>
         </Card>
 
         {/* Self Portrait */}
         <Card title="Self Portrait" bg="bg-[#fad1e3]" link={false}
           onClick={() => setShowSelfPortrait(true)}
           desc="A self portrait icon showing vectorized skills and personality.">
-          <div className="h-36 md:h-52 rounded-xl overflow-hidden shrink-0">
-            <img src={imgSelfPortrait} alt="Self Portrait" className="h-full w-auto block" />
+          <div className="self-stretch w-full overflow-hidden">
+            <img src="/selfportrait/icon_single.png" alt="Self Portrait" className="w-full h-full object-cover" />
           </div>
         </Card>
 
@@ -110,14 +104,18 @@ export default function FeaturedWork() {
         <Card title="Wild Fire" bg="bg-white" link={false}
           onClick={() => setShowWildFire(true)}
           desc="Wild Fire explores editorial and publication design through the translation of a long-form NYT Magazine article.">
-          <img src={imgWildFire} alt="Wild Fire" className="h-32 md:h-44 w-auto shrink-0 block" />
+          <div className="self-stretch w-full overflow-hidden">
+            <img src="/wildfire/title.png" alt="Wild Fire" className="w-full h-full object-cover object-top" />
+          </div>
         </Card>
 
         {/* Hellgrim */}
         <Card title="Hellgrim" bg="bg-black" link={false}
           onClick={() => setShowHellgrim(true)}
           desc="Hellgrim explores modular typography through the design of a rule-based typeface.">
-          <img src={imgHellgrim} alt="Hellgrim" className="h-16 md:h-20 w-auto shrink-0 block" />
+          <div className="self-stretch w-full overflow-hidden">
+            <img src="/hellgrim/title.png" alt="Hellgrim" className="w-full h-full object-cover" />
+          </div>
         </Card>
 
         {/* Fan Formation — full width on desktop */}
