@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 
-const imgCredifyLogo = "/credify/icon.png"
-
 const RESEARCH_CARDS = [
   {
     icon: '📋',
@@ -109,8 +107,7 @@ export default function CredifyModal({ onClose }) {
 
       {/* Hero */}
       <div className="bg-[#ff6900] flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center">
-        <img src={imgCredifyLogo} alt="Credify" className="w-20 md:w-28 h-auto mb-8 block" />
-        <h1 className="font-lexend font-black text-white text-[36px] md:text-[64px] leading-none mb-6">
+<h1 className="font-lexend font-black text-white text-[36px] md:text-[64px] leading-none mb-6">
           Credify
         </h1>
         <p className="font-lexend text-white/90 text-base md:text-xl max-w-xl leading-relaxed">
