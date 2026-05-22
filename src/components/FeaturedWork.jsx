@@ -7,11 +7,11 @@ import WildFireModal from './WildFireModal'
 import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
 
-const imgCredifyIcon  = "https://www.figma.com/api/mcp/asset/1eb13b72-9af5-4450-877c-74f7ef7fc3df"
-const imgDutchBros    = "https://www.figma.com/api/mcp/asset/e757a7f6-6a27-4e42-8174-237e030154df"
-const imgSelfPortrait = "https://www.figma.com/api/mcp/asset/d005406a-44df-4c11-97ad-cf18ae20aab1"
-const imgWildFire     = "https://www.figma.com/api/mcp/asset/f59a4198-9661-4094-a94c-004b72b5391d"
-const imgHellgrim     = "https://www.figma.com/api/mcp/asset/86065aec-e9b5-4f68-9ac6-5afbaa6f295a"
+const imgCredifyIcon  = "/credify/icon.png"
+const imgDutchBros    = "/dutchbros/redesign_hq.png"
+const imgSelfPortrait = "/selfportrait/portrait.png"
+const imgWildFire     = "/wildfire/spread1.png"
+const imgHellgrim     = "/hellgrim/hero.png"
 
 function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick, children }) {
   return (

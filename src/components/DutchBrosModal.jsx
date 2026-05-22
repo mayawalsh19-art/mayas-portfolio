@@ -5,9 +5,9 @@ const CARD_BG   = '#e8f3fb'
 const YELLOW    = '#e8a000'
 const YELLOW_BG = '#fef9ee'
 
-const imgHome     = "https://www.figma.com/api/mcp/asset/d73105ed-a912-4f5f-a942-476ce58bbdf1"
-const imgMenu     = "https://www.figma.com/api/mcp/asset/455f8f37-f428-4edb-b57e-1c2b6e092d8f"
-const imgIced     = "https://www.figma.com/api/mcp/asset/03bea0fc-620a-4104-ae52-30a455014b38"
+const imgHome     = "/dutchbros/home.png"
+const imgMenu     = "/dutchbros/menu.png"
+const imgIced     = "/dutchbros/iced.png"
 const imgRedesign = "/dutchbros/redesign_hq.png"
 
 const PROBLEMS = [

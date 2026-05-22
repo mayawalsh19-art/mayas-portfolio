@@ -1,4 +1,4 @@
-const logoIcon = "https://www.figma.com/api/mcp/asset/97d48bdb-721b-466c-8496-3852a4c9353a"
+const logoIcon = "/mw_hero_logo.png"
 
 export default function Navbar() {
   return (

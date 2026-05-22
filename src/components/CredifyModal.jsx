@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const imgCredifyLogo = "https://www.figma.com/api/mcp/asset/7635d521-2f77-49d6-9531-3d4945cfaa16"
+const imgCredifyLogo = "/credify/icon.png"
 
 const RESEARCH_CARDS = [
   {

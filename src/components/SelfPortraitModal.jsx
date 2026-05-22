@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 const GREEN = '#6DC96A'
 
-const imgPortrait = "https://www.figma.com/api/mcp/asset/d005406a-44df-4c11-97ad-cf18ae20aab1"
+const imgPortrait = "/selfportrait/portrait.png"
 
 export default function SelfPortraitModal({ onClose }) {
   useEffect(() => {
