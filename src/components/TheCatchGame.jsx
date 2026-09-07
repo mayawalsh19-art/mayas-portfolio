@@ -1,5 +1,5 @@
 import { useReducer, useState, useEffect } from 'react'
-import { generateProfiles, TRAIT_POOL, THE_ONE_PROFILE, PLAYER_AVATARS, profileScore, getPersonality } from '../data/catchProfiles'
+import { generateProfiles, TRAIT_POOL, PLAYER_TYPES, THE_ONE_PROFILE, PLAYER_AVATARS, profileScore, getPersonality } from '../data/catchProfiles'
 import { Doll, DOLL_BG } from './DollCharacters'
 
 // ─── Option B · After Hours design tokens ─────────────────────────────────────
@@ -46,8 +46,13 @@ function shuffle(arr) {
   return a
 }
 
-function makePlayer(id, name, avatar) {
-  return { id, name, avatar, hearts: 3, stalkTokens: 3, ghosts: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false }
+function makePlayer(id, name, avatar, playerType = null) {
+  return { id, name, avatar, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false }
+}
+
+function profileScoreForPlayer(profile, player) {
+  if (!player?.playerType?.adjust) return profileScore(profile)
+  return profile.traits.reduce((s, t) => s + player.playerType.adjust(t.value), 0)
 }
 
 function calcDate(player, score, bonusApplies) {
@@ -79,10 +84,10 @@ function makeTBProfile() {
 
 // ─── scoring helpers ──────────────────────────────────────────────────────────
 function applyRound(state) {
-  const profile = state.profiles[state.currentRound]
-  const score   = profileScore(profile)
-  const daters  = state.players.filter(p => state.roundDecisions[p.id]?.action === 'date')
-  const isChemistry = state.mode === 'multi' && score >= 7 && daters.length === 1
+  const profile     = state.profiles[state.currentRound]
+  const sharedScore = profileScore(profile)
+  const daters      = state.players.filter(p => state.roundDecisions[p.id]?.action === 'date')
+  const isChemistry = state.mode === 'multi' && sharedScore >= 7 && daters.length === 1
   const results = {}
   const newPlayers = state.players.map(p => {
     const action = state.roundDecisions[p.id]?.action ?? 'ghost'
@@ -90,23 +95,24 @@ function applyRound(state) {
       results[p.id] = { action: 'ghost', pts: 0, heartsLost: 0, isRedFlag: false }
       return { ...p, ghostsUsed: p.ghostsUsed + 1 }
     }
-    const bonusApplies = (state.mode === 'single' && score >= 7) || (isChemistry && p.id === daters[0].id)
-    const { pts, heartsLost, isRedFlag } = calcDate(p, score, bonusApplies)
+    const pScore = profileScoreForPlayer(profile, p)
+    const bonusApplies = (state.mode === 'single' && pScore >= 7) || (isChemistry && p.id === daters[0].id)
+    const { pts, heartsLost, isRedFlag } = calcDate(p, pScore, bonusApplies)
     const newHearts = Math.max(0, p.hearts - heartsLost)
-    results[p.id] = { action: 'date', pts, heartsLost, isRedFlag, score }
+    results[p.id] = { action: 'date', pts, heartsLost, isRedFlag, score: pScore }
     return { ...p, loveScore: p.loveScore + pts, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0, datesCount: p.datesCount + 1, redFlagsCount: p.redFlagsCount + (isRedFlag ? 1 : 0) }
   })
   return { ...state, players: newPlayers, roundResults: results, roundPhase: 'scored' }
 }
 
 function applyTheOne(state) {
-  const score = profileScore(THE_ONE_PROFILE)
   const results = {}
   const newPlayers = state.players.map(p => {
     if (!state.qualifiedIds.includes(p.id)) return p
     const action = state.theOneDecisions[p.id]?.action ?? 'walk_away'
     if (action === 'walk_away') { results[p.id] = { action: 'walk_away', pts: 0, heartsLost: 0, foundTheOne: false }; return p }
-    if (score >= 7) { results[p.id] = { action: 'take_chance', pts: 10, heartsLost: 0, foundTheOne: true }; return { ...p, loveScore: p.loveScore + 10, foundTheOne: true } }
+    const pScore = profileScoreForPlayer(THE_ONE_PROFILE, p)
+    if (pScore >= 7) { results[p.id] = { action: 'take_chance', pts: 10, heartsLost: 0, foundTheOne: true }; return { ...p, loveScore: p.loveScore + 10, foundTheOne: true } }
     const newHearts = Math.max(0, p.hearts - 1)
     results[p.id] = { action: 'take_chance', pts: -10, heartsLost: 1, foundTheOne: false }
     return { ...p, loveScore: p.loveScore - 10, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0 }
@@ -282,8 +288,9 @@ function Hud({ players, currentRound, mode, currentPlayer }) {
         <span style={{ fontFamily: WS, fontWeight: 500, color: '#555', fontSize: 12 }}>◌×{p.ghosts}</span>
         <span style={{ fontFamily: WS, fontWeight: 700, color: p.loveScore >= 0 ? C.teal : C.accent, fontSize: 13 }}>{p.loveScore >= 0 ? '+' : ''}{p.loveScore}</span>
       </div>
-      <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 12, letterSpacing: '0.12em' }}>
-        MATCH {String(currentRound + 1).padStart(2, '0')} / 07
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+        <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 12, letterSpacing: '0.12em' }}>MATCH {String(currentRound + 1).padStart(2, '0')} / 07</div>
+        {p.playerType && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.teal, letterSpacing: '0.12em' }}>{p.playerType.emoji} {p.playerType.label}</div>}
       </div>
     </div>
   )
@@ -359,12 +366,12 @@ function PlayerSetupScreen({ state, dispatch }) {
   // Single player: one slot, multi: multiple slots
   const [slots, setSlots] = useState(
     state.mode === 'single'
-      ? [{ name: '', avatar: '😊' }]
-      : [{ name: '', avatar: '😊' }, { name: '', avatar: '😎' }]
+      ? [{ name: '', avatar: '😊', playerType: PLAYER_TYPES[0] }]
+      : [{ name: '', avatar: '😊', playerType: PLAYER_TYPES[0] }, { name: '', avatar: '😎', playerType: PLAYER_TYPES[0] }]
   )
   const update   = (i, key, val) => setSlots(s => s.map((sl, idx) => idx === i ? { ...sl, [key]: val } : sl))
   const canStart = slots.every(s => s.name.trim().length > 0) && (state.mode === 'single' || slots.length >= 2)
-  const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.avatar)) })
+  const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.avatar, sl.playerType)) })
 
   if (state.mode === 'single') {
     const sl = slots[0]
@@ -397,6 +404,28 @@ function PlayerSetupScreen({ state, dispatch }) {
             maxLength={16}
             autoFocus
           />
+
+          {/* Player type picker */}
+          <div style={{ marginTop: 16, marginBottom: 4 }}>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.2em', marginBottom: 8 }}>YOUR TYPE</div>
+            <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4 }}>
+              {PLAYER_TYPES.map(pt => {
+                const selected = slots[0].playerType?.id === pt.id
+                return (
+                  <button key={pt.id} onClick={() => update(0, 'playerType', pt)}
+                    style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 10px', background: selected ? `${C.teal}18` : C.card, border: `1px solid ${selected ? C.teal : '#2a2525'}`, borderRadius: 4, cursor: 'pointer', minWidth: 82 }}>
+                    <span style={{ fontSize: 22 }}>{pt.emoji}</span>
+                    <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, letterSpacing: '0.12em', color: selected ? C.teal : '#555', textAlign: 'center', lineHeight: 1.2 }}>{pt.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+            {slots[0].playerType && (
+              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#666', marginTop: 6, paddingLeft: 2 }}>
+                {slots[0].playerType.desc}
+              </div>
+            )}
+          </div>
 
           {/* Stats preview */}
           <div style={{ display: 'flex', gap: 20, padding: '12px 0' }}>
@@ -454,6 +483,23 @@ function PlayerSetupScreen({ state, dispatch }) {
                 onChange={e => update(i, 'name', e.target.value)}
                 maxLength={16}
               />
+              {/* Type picker — compact */}
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.18em', marginBottom: 6 }}>THEIR TYPE</div>
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                  {PLAYER_TYPES.map(pt => {
+                    const sel = sl.playerType?.id === pt.id
+                    return (
+                      <button key={pt.id} onClick={() => update(i, 'playerType', pt)}
+                        title={pt.label + ' — ' + pt.desc}
+                        style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 8px', background: sel ? `${C.teal}18` : 'transparent', border: `1px solid ${sel ? C.teal : '#333'}`, borderRadius: 2, cursor: 'pointer' }}>
+                        <span style={{ fontSize: 14 }}>{pt.emoji}</span>
+                        <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: sel ? C.teal : '#555', letterSpacing: '0.1em' }}>{pt.label.replace('THE ', '')}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
           ))}
           {slots.length < 4 && (
@@ -727,7 +773,10 @@ function RoundScreen({ state, dispatch }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontFamily: ANTON, fontSize: 12, color: '#444', minWidth: 16 }}>#{rank + 1}</span>
                     <span style={{ fontSize: 16 }}>{pl.avatar}</span>
-                    <span style={{ fontFamily: WS, fontWeight: isMe ? 700 : 400, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe && state.mode === 'single' ? 'YOU' : pl.name}</span>
+                    <div>
+                      <div style={{ fontFamily: WS, fontWeight: isMe ? 700 : 400, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe && state.mode === 'single' ? 'YOU' : pl.name}</div>
+                      {pl.playerType && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.teal, letterSpacing: '0.1em', marginTop: 1 }}>{pl.playerType.emoji} {pl.playerType.label}</div>}
+                    </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     {r && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: r.action === 'date' || r.action === 'take_chance' ? C.accent : '#555', letterSpacing: '0.08em' }}>{r.action === 'date' ? '♥' : '◌'}</span>}

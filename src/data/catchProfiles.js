@@ -102,6 +102,52 @@ const ARCHETYPE_POOL = [
   { archetype: 'THE MAIN CHARACTER',  tags: ['STORYLINE', 'ERA', 'UNBOTHERED'],                    bio: 'Every moment is their moment. Including yours.' },
 ]
 
+// ─── Player types — each changes how trait values score for that player ────────
+export const PLAYER_TYPES = [
+  {
+    id: 'romantic',
+    label: 'THE ROMANTIC',
+    emoji: '💘',
+    desc: 'You fall fast. Green flags hit different.',
+    adjust: v => v > 0 ? v + 1 : v,
+  },
+  {
+    id: 'selective',
+    label: 'THE SELECTIVE',
+    emoji: '🎯',
+    desc: 'High standards. Red flags cost double.',
+    adjust: v => v < 0 ? v - 1 : v,
+  },
+  {
+    id: 'chaotic',
+    label: 'THE CHAOTIC ONE',
+    emoji: '🔥',
+    desc: 'Red flags? Spicy. Boring is the dealbreaker.',
+    adjust: v => v < 0 ? Math.min(v + 2, 0) : v,
+  },
+  {
+    id: 'overthinker',
+    label: 'THE OVERTHINKER',
+    emoji: '🌀',
+    desc: 'Yellow flags are red flags. Patterns everywhere.',
+    adjust: v => v === -1 ? -3 : v === 0 ? -1 : v,
+  },
+  {
+    id: 'avoidant',
+    label: 'THE AVOIDANT',
+    emoji: '🚪',
+    desc: 'Too much too soon. Space is your love language.',
+    adjust: v => v >= 3 ? v - 1 : v <= -2 ? v - 1 : v,
+  },
+  {
+    id: 'gold_digger',
+    label: 'THE GOLD DIGGER',
+    emoji: '💰',
+    desc: 'Stability and potential. The math maths.',
+    adjust: v => v < -1 ? v - 1 : v >= 2 ? v + 1 : v,
+  },
+]
+
 // ─── Name pool ────────────────────────────────────────────────────────────────
 const NAME_POOL = [
   'Kai', 'Nova', 'Rex', 'Sam', 'Ash', 'Echo', 'Max', 'Blair', 'Ollie', 'Zoe',
