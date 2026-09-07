@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import CredifyModal from './CredifyModal'
 import CoraModal from './CoraModal'
 import DutchBrosModal from './DutchBrosModal'
@@ -6,6 +6,7 @@ import SelfPortraitModal from './SelfPortraitModal'
 import WildFireModal from './WildFireModal'
 import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
+import TheCatchModal from './TheCatchModal'
 
 
 function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick, children }) {
@@ -38,6 +39,162 @@ function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick
   )
 }
 
+function TheCatchCard({ onClick }) {
+  const [hov, setHov] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold: 0.25 }
+    )
+    if (ref.current) obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [])
+
+  const INK = '#131011'
+  const SMOKE = '#1E1A1B'
+  const CREAM = '#EFE6DC'
+  const NEON = '#FF4D6D'
+  const ANTON = "'Anton', sans-serif"
+  const WS = "'Work Sans', sans-serif"
+
+  return (
+    <div
+      ref={ref}
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      className="rounded-2xl overflow-hidden cursor-pointer flex flex-col"
+      style={{
+        background: '#fff',
+        boxShadow: hov
+          ? `0 0 0 1px rgba(255,77,109,0.45), 0 20px 60px rgba(255,77,109,0.18), 0 4px 12px rgba(0,0,0,0.5)`
+          : '0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)',
+        transition: 'box-shadow 0.5s ease, transform 0.2s ease',
+        transform: hov ? 'scale(1.02)' : 'scale(1)',
+      }}
+    >
+      {/* ── Preview area ── */}
+      <div style={{ position: 'relative', height: '16rem', overflow: 'hidden', background: INK }}>
+
+        {/* Dot-grid texture */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: `radial-gradient(circle, rgba(239,230,220,0.07) 1px, transparent 1px)`,
+          backgroundSize: '18px 18px',
+        }} />
+
+        {/* Scanline sweep */}
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+          <div style={{
+            position: 'absolute', left: 0, right: 0, height: '28%',
+            background: `linear-gradient(to bottom, transparent, rgba(255,77,109,0.05), transparent)`,
+            animation: 'catch-scan 5s linear infinite',
+          }} />
+        </div>
+
+        {/* Horizontal accent line — left edge, slides in */}
+        <div style={{
+          position: 'absolute', top: '50%', left: 0,
+          height: '1px', width: hov ? '32px' : '0px',
+          background: NEON,
+          opacity: 0.5,
+          transition: 'width 0.4s cubic-bezier(0.22,1,0.36,1)',
+          marginTop: '-1px',
+        }} />
+        <div style={{
+          position: 'absolute', top: '50%', right: 0,
+          height: '1px', width: hov ? '32px' : '0px',
+          background: NEON,
+          opacity: 0.5,
+          transition: 'width 0.4s cubic-bezier(0.22,1,0.36,1)',
+          marginTop: '-1px',
+        }} />
+
+        {/* Center text — parent handles hover Y shift */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'center', alignItems: 'center',
+          transform: hov ? 'translateY(-10px)' : 'translateY(0)',
+          transition: 'transform 0.45s cubic-bezier(0.22,1,0.36,1)',
+        }}>
+          {/* THE — slides in from left */}
+          <div style={{
+            fontFamily: ANTON,
+            fontSize: 'clamp(62px, 10.5vw, 116px)',
+            color: NEON,
+            lineHeight: 0.88,
+            animation: visible ? 'catch-pulse 3.5s ease-in-out infinite' : 'none',
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateX(0)' : 'translateX(-48px)',
+            transition: 'opacity 0.55s ease 0.05s, transform 0.6s cubic-bezier(0.22,1,0.36,1) 0.05s',
+          }}>THE</div>
+
+          {/* CATCH — slides in from right */}
+          <div style={{
+            fontFamily: ANTON,
+            fontSize: 'clamp(62px, 10.5vw, 116px)',
+            color: CREAM,
+            lineHeight: 0.88,
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateX(0)' : 'translateX(48px)',
+            transition: 'opacity 0.55s ease 0.2s, transform 0.6s cubic-bezier(0.22,1,0.36,1) 0.2s',
+          }}>CATCH</div>
+        </div>
+
+        {/* Tagline — slides up from bottom on hover */}
+        <div style={{
+          position: 'absolute', bottom: 18, left: 0, right: 0,
+          textAlign: 'center',
+          fontFamily: WS,
+          fontWeight: 300,
+          fontSize: 10,
+          letterSpacing: '0.18em',
+          color: `rgba(239,230,220,0.45)`,
+          opacity: hov ? 1 : 0,
+          transform: hov ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'opacity 0.38s ease 0.08s, transform 0.42s cubic-bezier(0.22,1,0.36,1) 0.08s',
+        }}>SAME RULES. LOUDER CONSEQUENCES.</div>
+
+        {/* Bottom neon bar */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: '2px',
+          background: NEON,
+          animation: 'catch-bar-glow 3s ease-in-out infinite',
+          transition: 'opacity 0.4s ease',
+        }} />
+
+        {/* PLAY chip — appears on hover, top-right */}
+        <div style={{
+          position: 'absolute', top: 14, right: 14,
+          padding: '4px 10px',
+          background: `rgba(255,77,109,0.12)`,
+          border: `1px solid rgba(255,77,109,0.35)`,
+          borderRadius: 2,
+          fontFamily: WS,
+          fontWeight: 700,
+          fontSize: 9,
+          letterSpacing: '0.14em',
+          color: NEON,
+          opacity: hov ? 1 : 0,
+          transform: hov ? 'translateY(0)' : 'translateY(-6px)',
+          transition: 'opacity 0.3s ease 0.1s, transform 0.35s cubic-bezier(0.22,1,0.36,1) 0.1s',
+        }}>▶ PLAY</div>
+      </div>
+
+      {/* ── Label area — matches standard Card style ── */}
+      <div className="bg-white p-5 md:p-6 flex flex-col gap-2">
+        <h3 className="font-lexend font-bold text-[#334e6f] text-xl md:text-2xl leading-tight">The Catch</h3>
+        <p className="font-lexend text-sm md:text-base leading-relaxed text-[rgba(51,78,111,0.7)]">A game design project with a bold, high-contrast visual identity.</p>
+      </div>
+    </div>
+  )
+}
+
 export default function FeaturedWork() {
   const [showCredify, setShowCredify] = useState(false)
   const [showCora, setShowCora] = useState(false)
@@ -46,6 +203,7 @@ export default function FeaturedWork() {
   const [showWildFire, setShowWildFire] = useState(false)
   const [showHellgrim, setShowHellgrim] = useState(false)
   const [showFanFormation, setShowFanFormation] = useState(false)
+  const [showTheCatch, setShowTheCatch] = useState(false)
 
   return (
     <>
@@ -56,6 +214,7 @@ export default function FeaturedWork() {
     {showWildFire && <WildFireModal onClose={() => setShowWildFire(false)} />}
     {showHellgrim && <HellgrimModal onClose={() => setShowHellgrim(false)} />}
     {showFanFormation && <FanFormationModal onClose={() => setShowFanFormation(false)} />}
+    {showTheCatch && <TheCatchModal onClose={() => setShowTheCatch(false)} />}
     <section id="work" className="bg-[#f2e9da] w-full py-12 md:py-24 px-6 md:px-[74.5px]">
       <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
         Featured Work
@@ -120,13 +279,16 @@ export default function FeaturedWork() {
         </Card>
 
         {/* Fan Formation — full width on desktop */}
-        <Card title="Fan Formation" bg="bg-white" full link={false}
+        <Card title="Fan Formation" bg="bg-white" link={false}
           onClick={() => setShowFanFormation(true)}
           desc="Fan Formation is a wearable system that synchronizes crowd energy into a coordinated and inclusive stadium experience.">
           <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 'clamp(32px, 6vw, 72px)', color: '#334e6f', letterSpacing: '-0.02em' }}>
             Fan Formation
           </span>
         </Card>
+
+        {/* The Catch */}
+        <TheCatchCard onClick={() => setShowTheCatch(true)} />
 
       </div>
     </section>
