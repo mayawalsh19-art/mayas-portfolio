@@ -1,5 +1,5 @@
 import { useReducer, useState, useEffect } from 'react'
-import { generateProfiles, THE_ONE_PROFILE, PLAYER_AVATARS, profileScore, getPersonality } from '../data/catchProfiles'
+import { generateProfiles, TRAIT_POOL, THE_ONE_PROFILE, PLAYER_AVATARS, profileScore, getPersonality } from '../data/catchProfiles'
 import { Doll, DOLL_BG } from './DollCharacters'
 
 // ─── Option B · After Hours design tokens ─────────────────────────────────────
@@ -152,6 +152,10 @@ function reducer(state, { type, ...p }) {
 
     case 'REMOVE_CUSTOM_TRAIT': {
       return { ...state, customTraits: state.customTraits.filter((_, i) => i !== p.idx) }
+    }
+
+    case 'RANDOMIZE_TRAITS': {
+      return { ...state, customTraits: p.traits }
     }
 
     case 'START_GAME': {
@@ -513,6 +517,23 @@ function CustomTraitsScreen({ state, dispatch }) {
           <button onClick={addTrait} disabled={!text.trim()}
             style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', padding: '12px 0', background: text.trim() ? C.cardAlt : 'transparent', border: text.trim() ? hairline : `1px dashed ${C.slate}`, color: text.trim() ? C.cream : '#444', borderRadius: 2, cursor: text.trim() ? 'pointer' : 'not-allowed' }}>
             + ADD TRAIT
+          </button>
+
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0' }}>
+            <div style={{ flex: 1, height: '1px', background: '#2a2525' }} />
+            <span style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#444', letterSpacing: '0.14em' }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: '#2a2525' }} />
+          </div>
+
+          {/* Randomize button */}
+          <button
+            onClick={() => {
+              const picked = shuffle([...TRAIT_POOL]).slice(0, 5)
+              dispatch({ type: 'RANDOMIZE_TRAITS', traits: picked })
+            }}
+            style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', padding: '12px 0', background: 'transparent', border: `1px solid ${C.gold}`, color: C.gold, borderRadius: 2, cursor: 'pointer' }}>
+            🎲 RANDOMIZE FOR ME
           </button>
         </div>
 

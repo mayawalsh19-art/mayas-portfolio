@@ -10,7 +10,7 @@ function shuffle(arr) {
 }
 
 // ─── Large trait pool — all real dating behaviors ─────────────────────────────
-const TRAIT_POOL = [
+export const TRAIT_POOL = [
   // Green flags
   { text: 'Actually listens without waiting for their turn to talk',         value:  3 },
   { text: 'Texts back within a reasonable amount of time',                   value:  1 },
