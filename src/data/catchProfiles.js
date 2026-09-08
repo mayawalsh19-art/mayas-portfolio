@@ -1,5 +1,19 @@
 export const PLAYER_AVATARS = ['😊','😎','🌸','🦋','🌻','💫','🦊','🐱','🌈','⚡','🍀','🎭']
 
+export const ACHIEVEMENTS = [
+  { id: 'catfish_dodger',  emoji: '🎣', title: 'CATFISH DODGER',   desc: 'You felt something was off and you were right.' },
+  { id: 'got_catfished',   emoji: '🪝', title: 'GOT CATFISHED',    desc: 'They were too perfect. Should have trusted your gut.' },
+  { id: 'ghost_master',    emoji: '👻', title: 'GHOST MASTER',     desc: 'Used all three ghosts. No mess, no drama.' },
+  { id: 'chaos_enjoyer',   emoji: '🔥', title: 'CHAOS ENJOYER',    desc: 'Dated every red flag and came back for more.' },
+  { id: 'red_flag_radar',  emoji: '🚩', title: 'RED FLAG RADAR',   desc: 'You spotted the pattern before it spotted you.' },
+  { id: 'therapized',      emoji: '🛋️', title: 'THERAPIZED',       desc: 'You took a step back and it paid off.' },
+  { id: 'smooth_criminal', emoji: '⚡', title: 'SMOOTH CRIMINAL',  desc: 'You took their points and they didn\'t even see it coming.' },
+  { id: 'double_dater',    emoji: '♥♥', title: 'DOUBLE DATER',    desc: 'Shared the risk and split the reward.' },
+  { id: 'found_the_one',   emoji: '💘', title: 'FOUND THE ONE',    desc: 'Against 1% odds, you caught the legendary drop.' },
+  { id: 'unmatched',       emoji: '💔', title: 'UNMATCHED',        desc: 'Went all in on The One and lost it all.' },
+  { id: 'no_survivors',    emoji: '☠️', title: 'NO SURVIVORS',     desc: 'Every date was a red flag. You survived anyway.' },
+]
+
 function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -161,9 +175,14 @@ const DOLLS   = ['rell', 'bibi', 'ada', 'dax', 'kip', 'suki']
 const AGES    = [22, 23, 24, 25, 26, 27, 28, 29, 30]
 
 // ─── Profile generator — called fresh every game ──────────────────────────────
-export function generateProfiles(count = 7, customTraits = []) {
+export function generateProfiles(count = 7, customTraits = [], customProfiles = []) {
   const names      = shuffle([...NAME_POOL])
   const archetypes = shuffle([...ARCHETYPE_POOL])
+
+  // Positive and negative trait pools for catfish injection
+  const posPool = TRAIT_POOL.filter(t => t.value > 0)
+  const negPool = TRAIT_POOL.filter(t => t.value <= -3)
+
   const fullPool   = shuffle([
     ...TRAIT_POOL,
     ...customTraits.map(ct => ({ text: ct.text, value: ct.value })),
@@ -178,7 +197,6 @@ export function generateProfiles(count = 7, customTraits = []) {
     while (picked.length < 6) {
       if (traitCursor >= fullPool.length) {
         traitCursor = 0
-        // reshuffle so repeats feel less obvious
         fullPool.splice(0, fullPool.length, ...shuffle([...fullPool]))
       }
       picked.push(fullPool[traitCursor++])
@@ -198,6 +216,37 @@ export function generateProfiles(count = 7, customTraits = []) {
       tags:      archetypes[i % archetypes.length].tags,
       bio:       archetypes[i % archetypes.length].bio,
       traits,
+    })
+  }
+
+  // Inject one catfish at a random position between index 1–5
+  const catfishPos  = 1 + Math.floor(Math.random() * Math.min(4, count - 1))
+  const posTraits   = shuffle([...posPool]).slice(0, 2)
+  const negTraits   = shuffle([...negPool]).slice(0, 4)
+  const catfishTraits = [
+    ...posTraits.map(t => ({ ...t, startVisible: true })),
+    ...negTraits.map(t => ({ ...t, value: -3, startVisible: false })),
+  ]
+  profiles.splice(catfishPos, 0, {
+    id:        'catfish',
+    name:      names[count % names.length] || 'Alex',
+    age:       AGES[Math.floor(Math.random() * AGES.length)],
+    emoji:     '🪝',
+    doll:      DOLLS[Math.floor(Math.random() * DOLLS.length)],
+    archetype: 'THE CATFISH',
+    tags:      ['TOO PERFECT', 'GUT FEELING', 'TRUST THE SIGNS'],
+    bio:       'Everything checks out. So why does something feel off?',
+    traits:    catfishTraits,
+    isCatfish: true,
+  })
+  // Keep total count at `count` by removing the last profile we added beyond it
+  if (profiles.length > count) profiles.pop()
+
+  // Replace last N profiles with custom ones
+  if (customProfiles.length > 0) {
+    const start = Math.max(0, profiles.length - customProfiles.length)
+    customProfiles.forEach((cp, i) => {
+      profiles[start + i] = cp
     })
   }
 

@@ -1,5 +1,5 @@
-import { useReducer, useState, useEffect } from 'react'
-import { generateProfiles, TRAIT_POOL, PLAYER_TYPES, THE_ONE_PROFILE, PLAYER_AVATARS, profileScore, getPersonality } from '../data/catchProfiles'
+import { useReducer, useState, useEffect, useRef } from 'react'
+import { generateProfiles, TRAIT_POOL, PLAYER_TYPES, THE_ONE_PROFILE, PLAYER_AVATARS, ACHIEVEMENTS, profileScore, getPersonality } from '../data/catchProfiles'
 import { Doll, DOLL_BG } from './DollCharacters'
 
 // ─── Option B · After Hours design tokens ─────────────────────────────────────
@@ -47,7 +47,11 @@ function shuffle(arr) {
 }
 
 function makePlayer(id, name, avatar, playerType = null) {
-  return { id, name, avatar, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false }
+  return { id, name, avatar, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false, therapyTokens: 1, therapyActive: false, therapyBonus: 0, stealTokens: 1, achievements: [], ghostedRedFlags: 0 }
+}
+
+function grantAchievement(achievements, id) {
+  return achievements.includes(id) ? achievements : [...achievements, id]
 }
 
 function profileScoreForPlayer(profile, player) {
@@ -84,23 +88,85 @@ function makeTBProfile() {
 
 // ─── scoring helpers ──────────────────────────────────────────────────────────
 function applyRound(state) {
-  const profile     = state.profiles[state.currentRound]
-  const sharedScore = profileScore(profile)
-  const daters      = state.players.filter(p => state.roundDecisions[p.id]?.action === 'date')
-  const isChemistry = state.mode === 'multi' && sharedScore >= 7 && daters.length === 1
+  const profile      = state.profiles[state.currentRound]
+  const isCatfish    = profile.isCatfish === true
+  const sharedScore  = profileScore(profile)
+  const daters       = state.players.filter(p => state.roundDecisions[p.id]?.action === 'date')
+  const doubleDaters = state.players.filter(p => state.roundDecisions[p.id]?.action === 'double_date')
+  const isChemistry  = state.mode === 'multi' && sharedScore >= 7 && daters.length === 1
+  const isDoubleDateValid = doubleDaters.length >= 2
+
+  // Resolve steal effects first — find the leader, apply deductions
+  const stealers = state.players.filter(p => state.roundDecisions[p.id]?.action === 'steal')
+  const stealVictimPts = {}
+  stealers.forEach(() => {
+    const leader = [...state.players].sort((a, b) => b.loveScore - a.loveScore)[0]
+    if (leader) stealVictimPts[leader.id] = (stealVictimPts[leader.id] ?? 0) + 3
+  })
+
   const results = {}
   const newPlayers = state.players.map(p => {
     const action = state.roundDecisions[p.id]?.action ?? 'ghost'
-    if (action === 'ghost') {
-      results[p.id] = { action: 'ghost', pts: 0, heartsLost: 0, isRedFlag: false }
-      return { ...p, ghostsUsed: p.ghostsUsed + 1 }
+
+    // Steal action
+    if (action === 'steal') {
+      const leader     = [...state.players].sort((a, b) => b.loveScore - a.loveScore)[0]
+      const stolenFrom = leader?.id
+      const newAch     = grantAchievement(p.achievements, 'smooth_criminal')
+      results[p.id]    = { action: 'steal', pts: 3, heartsLost: 0, isRedFlag: false, stolenFrom }
+      return { ...p, loveScore: p.loveScore + 3, stealTokens: p.stealTokens - 1, achievements: newAch }
     }
-    const pScore = profileScoreForPlayer(profile, p)
-    const bonusApplies = (state.mode === 'single' && pScore >= 7) || (isChemistry && p.id === daters[0].id)
-    const { pts, heartsLost, isRedFlag } = calcDate(p, pScore, bonusApplies)
-    const newHearts = Math.max(0, p.hearts - heartsLost)
-    results[p.id] = { action: 'date', pts, heartsLost, isRedFlag, score: pScore }
-    return { ...p, loveScore: p.loveScore + pts, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0, datesCount: p.datesCount + 1, redFlagsCount: p.redFlagsCount + (isRedFlag ? 1 : 0) }
+
+    // Ghost / therapy_ghost action
+    if (action === 'ghost' || action === 'therapy_ghost') {
+      const isRedFlagProfile = sharedScore <= -5
+      const newGhostedRF = isRedFlagProfile ? (p.ghostedRedFlags ?? 0) + 1 : (p.ghostedRedFlags ?? 0)
+      let newAch = p.achievements
+      if (isCatfish) newAch = grantAchievement(newAch, 'catfish_dodger')
+      if (p.ghostsUsed + 1 >= 3) newAch = grantAchievement(newAch, 'ghost_master')
+      const ghostBonus = isCatfish ? 1 : 0
+      results[p.id] = { action, pts: ghostBonus, heartsLost: 0, isRedFlag: false, catfishDodged: isCatfish }
+      return { ...p, ghostsUsed: p.ghostsUsed + 1, loveScore: p.loveScore + ghostBonus, ghostedRedFlags: newGhostedRF, achievements: newAch }
+    }
+
+    // Double date
+    if (action === 'double_date') {
+      const pScore       = profileScoreForPlayer(profile, p)
+      let pts, heartsLost, isRedFlag
+      if (isDoubleDateValid) {
+        // valid double date — split score
+        pts        = Math.floor(pScore / 2)
+        heartsLost = pScore < 0 ? Math.floor(1 / 2) : 0
+        isRedFlag  = false
+      } else {
+        // only 1 person chose it — treat as regular date
+        const bonusApplies = state.mode === 'single' && pScore >= 7
+        ;({ pts, heartsLost, isRedFlag } = calcDate(p, pScore, bonusApplies))
+      }
+      if (isCatfish) { pts -= 4; isRedFlag = true }
+      const stealDeduction = stealVictimPts[p.id] ?? 0
+      pts -= stealDeduction
+      const newHearts = Math.max(0, p.hearts - heartsLost)
+      let newAch = p.achievements
+      if (isCatfish) newAch = grantAchievement(newAch, 'got_catfished')
+      if (isDoubleDateValid) newAch = grantAchievement(newAch, 'double_dater')
+      results[p.id] = { action: 'double_date', pts, heartsLost, isRedFlag, score: pScore, isCatfish, isDoubleDateValid }
+      return { ...p, loveScore: p.loveScore + pts, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0, datesCount: p.datesCount + 1, redFlagsCount: p.redFlagsCount + (isRedFlag ? 1 : 0), achievements: newAch }
+    }
+
+    // Regular date
+    const pScore       = profileScoreForPlayer(profile, p)
+    const bonusApplies = (state.mode === 'single' && pScore >= 7) || (isChemistry && p.id === daters[0]?.id)
+    let { pts, heartsLost, isRedFlag } = calcDate(p, pScore, bonusApplies)
+    if (isCatfish) { pts -= 4; isRedFlag = true; heartsLost = Math.max(heartsLost, 1) }
+    const stealDeduction = stealVictimPts[p.id] ?? 0
+    pts -= stealDeduction
+    const newHearts  = Math.max(0, p.hearts - heartsLost)
+    let newAch = p.achievements
+    if (isCatfish) newAch = grantAchievement(newAch, 'got_catfished')
+    if (p.redFlagsCount + (isRedFlag && !isCatfish ? 1 : 0) >= 2) newAch = grantAchievement(newAch, 'chaos_enjoyer')
+    results[p.id] = { action: 'date', pts, heartsLost, isRedFlag, score: pScore, isCatfish }
+    return { ...p, loveScore: p.loveScore + pts, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0, datesCount: p.datesCount + 1, redFlagsCount: p.redFlagsCount + (isRedFlag ? 1 : 0), achievements: newAch }
   })
   return { ...state, players: newPlayers, roundResults: results, roundPhase: 'scored' }
 }
@@ -112,10 +178,15 @@ function applyTheOne(state) {
     const action = state.theOneDecisions[p.id]?.action ?? 'walk_away'
     if (action === 'walk_away') { results[p.id] = { action: 'walk_away', pts: 0, heartsLost: 0, foundTheOne: false }; return p }
     const pScore = profileScoreForPlayer(THE_ONE_PROFILE, p)
-    if (pScore >= 7) { results[p.id] = { action: 'take_chance', pts: 10, heartsLost: 0, foundTheOne: true }; return { ...p, loveScore: p.loveScore + 10, foundTheOne: true } }
+    if (pScore >= 7) {
+      const newAch = grantAchievement(p.achievements, 'found_the_one')
+      results[p.id] = { action: 'take_chance', pts: 10, heartsLost: 0, foundTheOne: true }
+      return { ...p, loveScore: p.loveScore + 10, foundTheOne: true, achievements: newAch }
+    }
     const newHearts = Math.max(0, p.hearts - 1)
+    const newAch = grantAchievement(p.achievements, 'unmatched')
     results[p.id] = { action: 'take_chance', pts: -10, heartsLost: 1, foundTheOne: false }
-    return { ...p, loveScore: p.loveScore - 10, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0 }
+    return { ...p, loveScore: p.loveScore - 10, hearts: newHearts, heartbreakMode: p.heartbreakMode || newHearts === 0, achievements: newAch }
   })
   return { ...state, players: newPlayers, theOneResults: results, theOnePhase: 'scored' }
 }
@@ -137,11 +208,11 @@ function resolveWinner(state) {
 
 // ─── reducer ──────────────────────────────────────────────────────────────────
 const INIT = {
-  screen: 'mode_select', mode: null, players: [], profiles: [], currentRound: 0,
+  screen: 'player_setup', mode: 'single', players: [], profiles: [], currentRound: 0,
   roundPhase: 'deciding', decidingPlayerIdx: 0, roundDecisions: {}, revealStep: 0, roundResults: null,
   qualifiedIds: [], theOnePhase: 'deciding', theOneDecidingIdx: 0, theOneDecisions: {}, theOneRevealStep: 0, theOneResults: null,
   winnerId: null, tiedIds: [], tbProfile: null, tbDecisions: {}, tbDecidingIdx: 0, tbPhase: 'deciding', tbRevealStep: 0,
-  customTraits: [], pendingPlayers: [],
+  customTraits: [], pendingPlayers: [], customProfiles: [],
 }
 
 function reducer(state, { type, ...p }) {
@@ -149,7 +220,25 @@ function reducer(state, { type, ...p }) {
     case 'SELECT_MODE': return { ...state, mode: p.mode, screen: 'player_setup' }
 
     case 'GO_TO_CUSTOM_TRAITS': {
-      return { ...state, screen: 'custom_traits', pendingPlayers: p.players, customTraits: [] }
+      return { ...state, screen: 'custom_traits', pendingPlayers: p.players, customTraits: [], customProfiles: [] }
+    }
+
+    case 'ADD_CUSTOM_PROFILE': {
+      return { ...state, customProfiles: [...(state.customProfiles ?? []), p.profile] }
+    }
+
+    case 'REMOVE_CUSTOM_PROFILE': {
+      return { ...state, customProfiles: (state.customProfiles ?? []).filter((_, i) => i !== p.idx) }
+    }
+
+    case 'USE_THERAPY': {
+      const bonus   = Math.random() < 0.5 ? 4 : 0
+      const newPlayers = state.players.map(pl =>
+        pl.id === p.playerId
+          ? { ...pl, therapyTokens: 0, therapyActive: true, therapyBonus: bonus, achievements: grantAchievement(pl.achievements, 'therapized') }
+          : pl
+      )
+      return { ...state, players: newPlayers }
     }
 
     case 'ADD_CUSTOM_TRAIT': {
@@ -165,10 +254,11 @@ function reducer(state, { type, ...p }) {
     }
 
     case 'START_GAME': {
-      const players = state.pendingPlayers?.length ? state.pendingPlayers : (p.players ?? [])
-      const npcs    = state.mode === 'single' ? [makeNPC(0), makeNPC(1)] : []
-      const traits  = p.skipCustom ? [] : (state.customTraits ?? [])
-      return { ...INIT, mode: state.mode, players: [...players, ...npcs], profiles: generateProfiles(7, traits), screen: 'round', roundPhase: 'deciding' }
+      const players  = state.pendingPlayers?.length ? state.pendingPlayers : (p.players ?? [])
+      const npcs     = state.mode === 'single' ? [makeNPC(0), makeNPC(1)] : []
+      const traits   = p.skipCustom ? [] : (state.customTraits ?? [])
+      const cProfiles = p.skipCustom ? [] : (state.customProfiles ?? [])
+      return { ...INIT, mode: state.mode, players: [...players, ...npcs], profiles: generateProfiles(7, traits, cProfiles), screen: 'round', roundPhase: 'deciding' }
     }
 
     case 'STALK': {
@@ -195,7 +285,12 @@ function reducer(state, { type, ...p }) {
       const humanPool = allPool.filter(pl => !pl.isNPC)
       const cur      = humanPool[state[idxKey]]
       let updPlayers = state.players
-      if (!isTO && p.action === 'ghost') updPlayers = state.players.map(pl => pl.id === cur.id ? { ...pl, ghosts: pl.ghosts - 1 } : pl)
+      if (!isTO && (p.action === 'ghost' || p.action === 'therapy_ghost')) {
+        updPlayers = state.players.map(pl => pl.id === cur.id ? { ...pl, ghosts: pl.ghosts - 1 } : pl)
+      }
+      if (!isTO && p.action === 'steal') {
+        updPlayers = state.players.map(pl => pl.id === cur.id ? { ...pl, stealTokens: pl.stealTokens - 1 } : pl)
+      }
       let newDec = { ...state[decKey], [cur.id]: { ...(state[decKey][cur.id] ?? {}), action: p.action } }
 
       // Single player: auto-decide NPCs alongside the human
@@ -214,9 +309,16 @@ function reducer(state, { type, ...p }) {
         })
       }
 
+      // In multi: skip next therapy player automatically
+      let nextIdx = state[idxKey] + 1
+      while (!isTO && state.mode === 'multi' && nextIdx < humanPool.length && humanPool[nextIdx]?.therapyActive) {
+        newDec = { ...newDec, [humanPool[nextIdx].id]: { action: 'therapy_ghost', stalkedIdxs: [] } }
+        nextIdx++
+      }
+
       const allDone = allPool.every(pl => newDec[pl.id]?.action != null)
       if (state.mode === 'single' || allDone) return { ...state, players: updPlayers, [decKey]: newDec, [phaseKey]: 'revealing', revealStep: 0, theOneRevealStep: 0 }
-      return { ...state, players: updPlayers, [decKey]: newDec, [phaseKey]: 'pass_device', [idxKey]: state[idxKey] + 1 }
+      return { ...state, players: updPlayers, [decKey]: newDec, [phaseKey]: 'pass_device', [idxKey]: nextIdx }
     }
 
     case 'CONTINUE_NEXT': return { ...state, [state.screen === 'the_one' ? 'theOnePhase' : 'roundPhase']: 'deciding' }
@@ -232,12 +334,19 @@ function reducer(state, { type, ...p }) {
     }
 
     case 'NEXT_ROUND': {
+      // Apply any pending therapy bonuses and reset therapyActive
+      const playersAfterTherapy = state.players.map(pl => {
+        if (pl.therapyActive) {
+          return { ...pl, therapyActive: false, loveScore: pl.loveScore + (pl.therapyBonus ?? 0), therapyBonus: 0 }
+        }
+        return pl
+      })
       if (state.currentRound >= 6) {
-        const qualified = state.players.filter(pl => pl.loveScore >= 10 && pl.hearts >= 1)
-        if (!qualified.length) return { ...state, screen: 'results' }
-        return { ...state, screen: 'the_one', qualifiedIds: qualified.map(pl => pl.id), theOnePhase: 'deciding', theOneDecidingIdx: 0, theOneDecisions: {}, theOneRevealStep: 0, theOneResults: null }
+        const qualified = playersAfterTherapy.filter(pl => pl.loveScore >= 10 && pl.hearts >= 1)
+        if (!qualified.length) return { ...state, players: playersAfterTherapy, screen: 'results' }
+        return { ...state, players: playersAfterTherapy, screen: 'the_one', qualifiedIds: qualified.map(pl => pl.id), theOnePhase: 'deciding', theOneDecidingIdx: 0, theOneDecisions: {}, theOneRevealStep: 0, theOneResults: null }
       }
-      return { ...state, currentRound: state.currentRound + 1, roundPhase: 'deciding', decidingPlayerIdx: 0, roundDecisions: {}, revealStep: 0, roundResults: null }
+      return { ...state, players: playersAfterTherapy, currentRound: state.currentRound + 1, roundPhase: 'deciding', decidingPlayerIdx: 0, roundDecisions: {}, revealStep: 0, roundResults: null }
     }
 
     case 'FINISH_THE_ONE': return resolveWinner(state)
@@ -334,6 +443,41 @@ function PassDevice({ name, avatar, onReady }) {
       <button onClick={onReady} style={{ fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, minHeight: 52, minWidth: 200, border: 'none', borderRadius: 4, letterSpacing: '0.12em', cursor: 'pointer' }}>
         I'M READY
       </button>
+    </div>
+  )
+}
+
+// ─── TIMER BAR ────────────────────────────────────────────────────────────────
+function TimerBar({ seconds, total = 30 }) {
+  const pct = (seconds / total) * 100
+  const color = seconds <= 8 ? C.accent : seconds <= 15 ? C.gold : C.teal
+  return (
+    <div style={{ height: 3, background: C.slate, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${pct}%`, background: color, transition: 'width 1s linear, background 0.3s ease' }} />
+    </div>
+  )
+}
+
+// ─── ACHIEVEMENT TOAST ────────────────────────────────────────────────────────
+function AchievementToast({ achievement, onDone }) {
+  useEffect(() => {
+    const id = setTimeout(onDone, 2600)
+    return () => clearTimeout(id)
+  }, [])
+  return (
+    <div style={{
+      position: 'absolute', top: 64, left: 16, right: 16, zIndex: 99,
+      background: C.velvet, border: `1px solid ${C.gold}66`,
+      padding: '10px 14px', borderRadius: 4,
+      display: 'flex', alignItems: 'center', gap: 10,
+      animation: 'catch-pulse 2.6s ease-out forwards',
+    }}>
+      <span style={{ fontSize: 22 }}>{achievement.emoji}</span>
+      <div>
+        <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.2em' }}>ACHIEVEMENT UNLOCKED</div>
+        <div style={{ fontFamily: ANTON, fontSize: 14, color: C.cream, letterSpacing: '0.06em' }}>{achievement.title}</div>
+        <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#999', marginTop: 1 }}>{achievement.desc}</div>
+      </div>
     </div>
   )
 }
@@ -523,6 +667,13 @@ function CustomTraitsScreen({ state, dispatch }) {
   const [text, setText] = useState('')
   const [isGreen, setIsGreen] = useState(true)
 
+  // Custom profile builder state
+  const [cpName, setCpName] = useState('')
+  const [cpTraitText, setCpTraitText] = useState('')
+  const [cpIsGreen, setCpIsGreen] = useState(true)
+  const [cpTraits, setCpTraits] = useState([])
+  const [showCpBuilder, setShowCpBuilder] = useState(false)
+
   const addTrait = () => {
     const trimmed = text.trim()
     if (!trimmed) return
@@ -530,7 +681,37 @@ function CustomTraitsScreen({ state, dispatch }) {
     setText('')
   }
 
-  const hasTraits = state.customTraits.length > 0
+  const addCpTrait = () => {
+    const trimmed = cpTraitText.trim()
+    if (!trimmed) return
+    setCpTraits(ts => [...ts, { text: trimmed, value: cpIsGreen ? 2 : -2 }])
+    setCpTraitText('')
+  }
+
+  const submitCustomProfile = () => {
+    const name = cpName.trim()
+    if (!name || cpTraits.length < 2) return
+    const sorted = [...cpTraits].sort((a, b) => Math.abs(a.value) - Math.abs(b.value))
+    const traits = sorted.map((t, i) => ({ ...t, startVisible: i < 2 }))
+    const profile = {
+      id:        `custom_${Date.now()}`,
+      name,
+      age:       25,
+      emoji:     '👤',
+      doll:      null,
+      archetype: 'CUSTOM PROFILE',
+      tags:      ['REAL PERSON', 'CUSTOM BUILD'],
+      bio:       `Someone you actually know. Good luck.`,
+      traits,
+      isCustom:  true,
+    }
+    dispatch({ type: 'ADD_CUSTOM_PROFILE', profile })
+    setCpName(''); setCpTraits([]); setCpTraitText(''); setShowCpBuilder(false)
+  }
+
+  const hasTraits    = state.customTraits.length > 0
+  const hasProfiles  = (state.customProfiles ?? []).length > 0
+  const hasAnything  = hasTraits || hasProfiles
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '28px 20px', boxSizing: 'border-box' }}>
@@ -581,10 +762,74 @@ function CustomTraitsScreen({ state, dispatch }) {
             style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', padding: '12px 0', background: 'transparent', border: `1px solid ${C.gold}`, color: C.gold, borderRadius: 2, cursor: 'pointer' }}>
             🎲 RANDOMIZE FOR ME
           </button>
+
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0' }}>
+            <div style={{ flex: 1, height: '1px', background: '#2a2525' }} />
+            <span style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#444', letterSpacing: '0.14em' }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: '#2a2525' }} />
+          </div>
+
+          {/* Custom profile builder toggle */}
+          <button onClick={() => setShowCpBuilder(s => !s)}
+            style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', padding: '12px 0', background: showCpBuilder ? `${C.teal}18` : 'transparent', border: `1px solid ${showCpBuilder ? C.teal : '#333'}`, color: showCpBuilder ? C.teal : '#555', borderRadius: 2, cursor: 'pointer' }}>
+            👤 BUILD A REAL PERSON
+          </button>
         </div>
 
+        {/* Custom profile builder */}
+        {showCpBuilder && (
+          <div style={{ padding: 14, background: C.card, border: `1px solid ${C.teal}44`, marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.teal, letterSpacing: '0.2em', marginBottom: 4 }}>CUSTOM PROFILE BUILDER</div>
+            <input
+              style={{ width: '100%', fontFamily: ANTON, fontSize: 22, letterSpacing: '0.04em', background: C.cardAlt, color: C.cream, border: cpName ? `1px solid rgba(239,230,220,0.2)` : hairline, padding: '10px 12px', outline: 'none', boxSizing: 'border-box', caretColor: C.accent }}
+              placeholder="THEIR NAME"
+              value={cpName}
+              onChange={e => setCpName(e.target.value)}
+              maxLength={16}
+            />
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.16em', marginTop: 4 }}>ADD THEIR TRAITS (min 2)</div>
+            <input
+              style={{ width: '100%', fontFamily: WS, fontWeight: 400, background: C.cardAlt, color: C.cream, fontSize: 13, border: cpTraitText ? `1px solid rgba(239,230,220,0.2)` : hairline, padding: '10px 12px', outline: 'none', boxSizing: 'border-box', caretColor: C.accent }}
+              placeholder="A trait you've actually seen from them..."
+              value={cpTraitText}
+              onChange={e => setCpTraitText(e.target.value)}
+              maxLength={80}
+              onKeyDown={e => { if (e.key === 'Enter') addCpTrait() }}
+            />
+            <div style={{ display: 'flex', gap: 6 }}>
+              <button onClick={() => setCpIsGreen(true)}
+                style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 10, padding: '8px 0', background: cpIsGreen ? `${C.teal}22` : 'transparent', border: `1px solid ${cpIsGreen ? C.teal : '#333'}`, color: cpIsGreen ? C.teal : '#444', borderRadius: 2, cursor: 'pointer' }}>
+                🟢 GREEN
+              </button>
+              <button onClick={() => setCpIsGreen(false)}
+                style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 10, padding: '8px 0', background: !cpIsGreen ? `${C.accent}22` : 'transparent', border: `1px solid ${!cpIsGreen ? C.accent : '#333'}`, color: !cpIsGreen ? C.accent : '#444', borderRadius: 2, cursor: 'pointer' }}>
+                🚩 RED
+              </button>
+              <button onClick={addCpTrait} disabled={!cpTraitText.trim()}
+                style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 10, padding: '8px 0', background: cpTraitText.trim() ? C.cardAlt : 'transparent', border: cpTraitText.trim() ? hairline : `1px dashed ${C.slate}`, color: cpTraitText.trim() ? C.cream : '#444', borderRadius: 2, cursor: cpTraitText.trim() ? 'pointer' : 'not-allowed' }}>
+                + ADD
+              </button>
+            </div>
+            {cpTraits.length > 0 && (
+              <div>
+                {cpTraits.map((t, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '7px 10px', background: C.cardAlt, borderLeft: `3px solid ${t.value > 0 ? C.teal : C.accent}`, marginBottom: 3 }}>
+                    <span style={{ fontFamily: WS, fontSize: 12, color: C.cream, flex: 1 }}>{t.text}</span>
+                    <button onClick={() => setCpTraits(ts => ts.filter((_, j) => j !== i))} style={{ background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', fontSize: 11 }}>✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button onClick={submitCustomProfile} disabled={!cpName.trim() || cpTraits.length < 2}
+              style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', padding: '11px 0', background: cpName.trim() && cpTraits.length >= 2 ? `${C.teal}22` : 'transparent', border: `1px solid ${cpName.trim() && cpTraits.length >= 2 ? C.teal : '#333'}`, color: cpName.trim() && cpTraits.length >= 2 ? C.teal : '#444', borderRadius: 2, cursor: cpName.trim() && cpTraits.length >= 2 ? 'pointer' : 'not-allowed' }}>
+              ✓ ADD {cpName.trim() ? cpName.trim().toUpperCase() : 'PROFILE'} TO GAME
+            </button>
+          </div>
+        )}
+
         {hasTraits && (
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 16 }}>
             <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#444', letterSpacing: '0.2em', marginBottom: 8 }}>YOUR TRAITS ({state.customTraits.length})</div>
             {state.customTraits.map((t, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: C.card, border: hairline, marginBottom: 4, borderLeft: `3px solid ${t.value > 0 ? C.teal : C.accent}` }}>
@@ -598,15 +843,33 @@ function CustomTraitsScreen({ state, dispatch }) {
           </div>
         )}
 
+        {hasProfiles && (
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#444', letterSpacing: '0.2em', marginBottom: 8 }}>CUSTOM PROFILES ({state.customProfiles.length})</div>
+            {state.customProfiles.map((cp, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: C.card, border: `1px solid ${C.teal}44`, marginBottom: 4, borderLeft: `3px solid ${C.teal}` }}>
+                <div>
+                  <div style={{ fontFamily: ANTON, fontSize: 14, color: C.cream, letterSpacing: '0.06em' }}>{cp.name.toUpperCase()}</div>
+                  <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 1 }}>{cp.traits.length} traits</div>
+                </div>
+                <button onClick={() => dispatch({ type: 'REMOVE_CUSTOM_PROFILE', idx: i })}
+                  style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: '#666', background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 6px' }}>
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
           <button onClick={() => dispatch({ type: 'START_GAME' })}
             style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-            {hasTraits ? `START WITH ${state.customTraits.length} CUSTOM TRAIT${state.customTraits.length > 1 ? 'S' : ''} →` : 'START THE GAME →'}
+            {hasAnything ? `START WITH CUSTOM SETUP →` : 'START THE GAME →'}
           </button>
-          {hasTraits && (
+          {hasAnything && (
             <button onClick={() => dispatch({ type: 'START_GAME', skipCustom: true })}
               style={{ width: '100%', fontFamily: WS, fontWeight: 500, background: 'transparent', border: `1px solid #333`, color: '#555', fontSize: 13, letterSpacing: '0.1em', minHeight: 44, borderRadius: 4, cursor: 'pointer' }}>
-              SKIP — PLAY WITHOUT CUSTOM TRAITS
+              SKIP — PLAY WITHOUT CUSTOM
             </button>
           )}
         </div>
@@ -677,13 +940,46 @@ function RoundScreen({ state, dispatch }) {
   }
 
   const [showScorePopup, setShowScorePopup] = useState(false)
+  const [toastAch, setToastAch] = useState(null)
+  const prevAchRef = useRef([])
+
   useEffect(() => {
     if (state.roundPhase === 'scored') {
       setShowScorePopup(true)
       const id = setTimeout(() => setShowScorePopup(false), 1800)
+      // Check for new achievements on the real player
+      const realPlayer = state.players.find(pl => !pl.isNPC)
+      if (realPlayer) {
+        const prev = prevAchRef.current
+        const newOnes = realPlayer.achievements.filter(id => !prev.includes(id))
+        if (newOnes.length > 0) {
+          const achDef = ACHIEVEMENTS.find(a => a.id === newOnes[0])
+          if (achDef) setToastAch(achDef)
+        }
+        prevAchRef.current = realPlayer.achievements
+      }
       return () => clearTimeout(id)
     }
   }, [state.roundPhase, state.currentRound])
+
+  // Timer for multiplayer deciding phase
+  const [timer, setTimer] = useState(30)
+  const timerRef = useRef(null)
+  useEffect(() => {
+    if (state.mode !== 'multi' || state.roundPhase !== 'deciding') { setTimer(30); return }
+    setTimer(30)
+    timerRef.current = setInterval(() => {
+      setTimer(t => {
+        if (t <= 1) {
+          clearInterval(timerRef.current)
+          dispatch({ type: 'DECIDE', action: 'ghost' })
+          return 0
+        }
+        return t - 1
+      })
+    }, 1000)
+    return () => clearInterval(timerRef.current)
+  }, [state.decidingPlayerIdx, state.currentRound, state.roundPhase, state.mode])
 
   if (state.roundPhase === 'pass_device') {
     const humanPlayers = state.players.filter(pl => !pl.isNPC)
@@ -692,41 +988,59 @@ function RoundScreen({ state, dispatch }) {
   }
 
   if (state.roundPhase === 'scored') {
-    const results   = state.roundResults
-    const score     = profileScore(profile)
-    const anyRedFlag = state.players.some(pl => results[pl.id]?.isRedFlag)
+    const results    = state.roundResults
+    const score      = profileScore(profile)
+    const isCatfish  = profile.isCatfish === true
+    const anyRedFlag = !isCatfish && state.players.some(pl => results[pl.id]?.isRedFlag)
     const realPlayer = state.players.find(pl => !pl.isNPC)
     const myResult   = results[realPlayer?.id]
     const sorted     = [...state.players].sort((a, b) => b.loveScore - a.loveScore)
+    const realTherapyTokens = realPlayer?.therapyTokens ?? 0
+    const realTherapyActive = realPlayer?.therapyActive ?? false
 
     if (showScorePopup && myResult) {
-      const pts        = myResult.pts
-      const isGhost    = myResult.action === 'ghost'
-      const ptColor    = pts > 0 ? C.teal : pts < 0 ? C.accent : C.slate
-      const ptGlow     = pts > 0
+      const pts     = myResult.pts
+      const isGhost = myResult.action === 'ghost' || myResult.action === 'therapy_ghost'
+      const isDodge = myResult.catfishDodged
+      const ptColor = isDodge ? C.teal : pts > 0 ? C.teal : pts < 0 ? C.accent : C.slate
+      const ptGlow  = pts > 0 || isDodge
         ? `0 0 32px rgba(124,224,168,0.7), 0 0 72px rgba(124,224,168,0.35)`
         : pts < 0
         ? `0 0 32px rgba(255,77,109,0.7), 0 0 72px rgba(255,77,109,0.35)`
         : 'none'
       return (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.bg, gap: 6, userSelect: 'none' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.bg, gap: 6, userSelect: 'none', position: 'relative' }}>
+          {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
+          {isDodge && (
+            <div style={{ fontFamily: ANTON, fontSize: 16, letterSpacing: '0.14em', color: C.teal }}>🎣 CATFISH DODGED</div>
+          )}
           <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.22em', color: '#555' }}>
-            {isGhost ? '◌ GHOSTED' : '♥ DATED'}
+            {isGhost ? '◌ GHOSTED' : myResult.action === 'steal' ? '⚡ STOLEN' : myResult.action === 'double_date' ? '♥♥ DOUBLE DATE' : '♥ DATED'}
           </div>
           <div style={{ fontFamily: ANTON, fontSize: 'clamp(100px,26vw,148px)', color: ptColor, lineHeight: 1, textShadow: ptGlow }}>
             {pts > 0 ? `+${pts}` : pts === 0 ? '±0' : pts}
           </div>
           <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, letterSpacing: '0.18em', color: '#555' }}>LOVE POINTS</div>
-          {pts > 0 && score >= 7 && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.teal, letterSpacing: '0.14em', marginTop: 4 }}>▲ STANDARDS: WORKING</div>}
-          {pts < 0 && myResult.isRedFlag && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.14em', marginTop: 4 }}>🚩 RED FLAG PENALTY</div>}
-          {isGhost && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#555', letterSpacing: '0.14em', marginTop: 4 }}>SAFE PLAY.</div>}
+          {isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' && (
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.14em', marginTop: 4 }}>🪝 CATFISHED. −4 PENALTY.</div>
+          )}
+          {pts > 0 && score >= 7 && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.teal, letterSpacing: '0.14em', marginTop: 4 }}>▲ STANDARDS: WORKING</div>}
+          {pts < 0 && myResult.isRedFlag && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.14em', marginTop: 4 }}>🚩 RED FLAG PENALTY</div>}
+          {isGhost && !isDodge && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#555', letterSpacing: '0.14em', marginTop: 4 }}>SAFE PLAY.</div>}
         </div>
       )
     }
 
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
-        {anyRedFlag && (
+      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, position: 'relative' }}>
+        {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
+        {isCatfish && (
+          <div style={{ padding: '12px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
+            <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 20, letterSpacing: '0.1em' }}>🎣 THAT WAS A CATFISH</div>
+            <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#5aaa6a', marginTop: 3 }}>The good traits were real. The hidden ones were a lie. −4 to anyone who dated.</div>
+          </div>
+        )}
+        {!isCatfish && anyRedFlag && (
           <div style={{ padding: '12px 20px', textAlign: 'center', background: '#1a0008', borderBottom: `1px solid ${C.accent}44` }}>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 20, letterSpacing: '0.1em' }}>🚩 ABSOLUTELY NOT</div>
             <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#cc4466', marginTop: 3 }}>Dating a −5 or worse costs you 2 extra points.</div>
@@ -739,7 +1053,7 @@ function RoundScreen({ state, dispatch }) {
             </div>
             <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.2em' }}>COMPATIBILITY SCORE</div>
             {score >= 7  && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.teal,   marginTop: 4 }}>▲ STANDARDS: WORKING</div>}
-            {score <= -5 && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.accent, marginTop: 4 }}>WE SAW THE SIGNS</div>}
+            {score <= -5 && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.accent, marginTop: 4 }}>WE SAW THE SIGNS</div>}
           </div>
 
           {/* All traits revealed */}
@@ -749,15 +1063,38 @@ function RoundScreen({ state, dispatch }) {
 
           {/* Your result */}
           {myResult && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: myResult.action === 'date' && myResult.pts > 0 ? `${C.teal}12` : myResult.action === 'date' && myResult.pts < 0 ? `${C.accent}12` : C.card, border: hairline, marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: hairline, marginBottom: 8 }}>
               <div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
-                  {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name} — {myResult.action === 'date' ? '♥ DATED' : '◌ GHOSTED'}{myResult.isRedFlag ? ' 🚩' : ''}
+                  {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name} — {
+                    myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌ GHOSTED'
+                    : myResult.action === 'steal' ? '⚡ STOLE'
+                    : myResult.action === 'double_date' ? '♥♥ DOUBLE DATE'
+                    : '♥ DATED'
+                  }{myResult.isRedFlag && !myResult.isCatfish ? ' 🚩' : ''}{myResult.isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' ? ' 🪝' : ''}
                 </div>
-                {myResult.action === 'date' && myResult.pts > 0 && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 2 }}>STANDARDS: WORKING</div>}
+                {myResult.action === 'date' && myResult.pts > 0 && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 2 }}>STANDARDS: WORKING</div>}
+                {myResult.catfishDodged && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: C.teal, marginTop: 2 }}>+1 for dodging the catfish</div>}
               </div>
               <div style={{ fontFamily: ANTON, fontSize: 24, color: myResult.pts > 0 ? C.teal : myResult.pts < 0 ? C.accent : '#555' }}>
                 {myResult.pts > 0 ? `+${myResult.pts}` : myResult.pts === 0 ? '±0' : myResult.pts}
+              </div>
+            </div>
+          )}
+
+          {/* Therapy button (scored phase, before next round) */}
+          {realTherapyTokens > 0 && !realTherapyActive && (
+            <div style={{ marginBottom: 10 }}>
+              <button onClick={() => dispatch({ type: 'USE_THERAPY', playerId: realPlayer?.id })}
+                style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', padding: '10px 0', background: `${C.velvet}`, border: `1px solid ${C.gold}66`, color: C.gold, borderRadius: 2, cursor: 'pointer' }}>
+                🛋️ GO TO THERAPY — SKIP NEXT ROUND · 50% CHANCE +4
+              </button>
+            </div>
+          )}
+          {realTherapyActive && (
+            <div style={{ marginBottom: 10, padding: '10px 14px', background: `${C.velvet}`, border: `1px solid ${C.gold}44`, borderRadius: 2, textAlign: 'center' }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: '0.14em' }}>
+                🛋️ THERAPY ACTIVE — NEXT ROUND AUTO-SKIP · {realPlayer?.therapyBonus > 0 ? `+${realPlayer.therapyBonus} COMING` : 'ROLLING FOR BONUS'}
               </div>
             </div>
           )}
@@ -779,7 +1116,9 @@ function RoundScreen({ state, dispatch }) {
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {r && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: r.action === 'date' || r.action === 'take_chance' ? C.accent : '#555', letterSpacing: '0.08em' }}>{r.action === 'date' ? '♥' : '◌'}</span>}
+                    {r && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: r.action === 'date' || r.action === 'double_date' ? C.accent : r.action === 'steal' ? C.gold : '#555', letterSpacing: '0.08em' }}>
+                      {r.action === 'date' || r.action === 'double_date' ? '♥' : r.action === 'steal' ? '⚡' : '◌'}
+                    </span>}
                     <span style={{ fontFamily: ANTON, fontSize: 18, color: pl.loveScore >= 0 ? C.teal : C.accent }}>{pl.loveScore >= 0 ? '+' : ''}{pl.loveScore}</span>
                   </div>
                 </div>
@@ -820,16 +1159,20 @@ function RoundScreen({ state, dispatch }) {
     )
   }
 
-  // deciding phase — strict flex column: no scrolling, buttons always visible
-  const canStalk = curPlayer?.stalkTokens > 0 && (dec.stalkedIdxs ?? []).length < profile.traits.filter(t => !t.startVisible).length
-  const canGhost = (curPlayer?.ghosts ?? 0) > 0
+  // deciding phase
+  const canStalk  = curPlayer?.stalkTokens > 0 && (dec.stalkedIdxs ?? []).length < profile.traits.filter(t => !t.startVisible).length
+  const canGhost  = (curPlayer?.ghosts ?? 0) > 0
+  const canSteal  = (curPlayer?.stealTokens ?? 0) > 0 && state.players.some(pl => pl.id !== curPlayer?.id && pl.loveScore > 0)
+  const canDouble = state.mode === 'multi'
 
   return (
     <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
       <Hud players={state.players} currentRound={state.currentRound} mode={state.mode} currentPlayer={curPlayer} />
+      {state.mode === 'multi' && <TimerBar seconds={timer} />}
       {state.mode === 'multi' && (
-        <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
-          {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+        <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '6px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>{curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN</span>
+          <span style={{ color: timer <= 8 ? C.accent : '#555', fontFamily: ANTON, fontSize: 14 }}>{timer}s</span>
         </div>
       )}
 
@@ -838,7 +1181,7 @@ function RoundScreen({ state, dispatch }) {
         <ProfileCard profile={profile} goldTheme={false} />
       </div>
 
-      {/* Traits — grow to fill remaining space, each row stretches equally */}
+      {/* Traits — grow to fill remaining space */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: C.card, borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
         {profile.traits.map((t, i) => (
           <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
@@ -848,17 +1191,34 @@ function RoundScreen({ state, dispatch }) {
       </div>
 
       {/* Action buttons — always pinned at bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 16px 14px', background: C.bg }}>
-        <button onClick={() => dispatch({ type: 'DECIDE', action: 'date' })}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-          ♥ DATE
-        </button>
-        <button onClick={() => dispatch({ type: 'DECIDE', action: 'ghost' })} disabled={!canGhost}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${canGhost ? '#484848' : C.slate}`, color: canGhost ? '#aaa' : '#444', fontSize: 14, letterSpacing: '0.12em', height: 46, borderRadius: 4, cursor: canGhost ? 'pointer' : 'not-allowed' }}>
-          {canGhost ? '◌ GHOST' : 'NO GHOSTS LEFT. COMMIT.'}
-        </button>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 16px 12px', background: C.bg }}>
+        {/* Main date / ghost row */}
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button onClick={() => dispatch({ type: 'DECIDE', action: 'date' })}
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+            ♥ DATE
+          </button>
+          <button onClick={() => dispatch({ type: 'DECIDE', action: 'ghost' })} disabled={!canGhost}
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${canGhost ? '#484848' : C.slate}`, color: canGhost ? '#aaa' : '#444', fontSize: 13, letterSpacing: '0.1em', height: 46, borderRadius: 4, cursor: canGhost ? 'pointer' : 'not-allowed' }}>
+            {canGhost ? '◌ GHOST' : 'NO GHOSTS'}
+          </button>
+        </div>
+        {/* Multiplayer extras: double date + steal */}
+        {state.mode === 'multi' && (
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button onClick={() => dispatch({ type: 'DECIDE', action: 'double_date' })}
+              style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 38, background: `${C.accent}18`, border: `1px solid ${C.accent}55`, color: C.accent, borderRadius: 2, cursor: 'pointer' }}>
+              ♥♥ DOUBLE DATE
+            </button>
+            <button onClick={() => dispatch({ type: 'DECIDE', action: 'steal' })} disabled={!canSteal}
+              style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 38, background: canSteal ? `${C.gold}18` : 'transparent', border: `1px solid ${canSteal ? C.gold : '#333'}`, color: canSteal ? C.gold : '#444', borderRadius: 2, cursor: canSteal ? 'pointer' : 'not-allowed' }}>
+              ⚡ STEAL {canSteal ? `· ${curPlayer?.stealTokens ?? 0} LEFT` : '(USED)'}
+            </button>
+          </div>
+        )}
+        {/* Stalk */}
         <button onClick={() => dispatch({ type: 'STALK' })} disabled={!canStalk}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 500, color: canStalk ? C.gold : '#3a3535', fontSize: 12, letterSpacing: '0.12em', background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, borderRadius: 4, height: 38, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 500, color: canStalk ? C.gold : '#3a3535', fontSize: 12, letterSpacing: '0.12em', background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, borderRadius: 4, height: 36, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
           🔍 STALK · {curPlayer?.stalkTokens ?? 0} LEFT
         </button>
       </div>
@@ -1120,19 +1480,33 @@ function ResultsScreen({ state, dispatch, onClose }) {
             const isMe   = !p.isNPC
             const persona = getPersonality(p)
             return (
-              <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: isMe ? `${C.accent}12` : C.card, border: (state.mode === 'multi' && p.id === winner?.id) ? `1px solid ${C.gold}55` : isMe ? `1px solid ${C.accent}30` : hairline, marginBottom: 6 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontFamily: ANTON, fontSize: 13, color: '#444', minWidth: 18 }}>#{rank + 1}</span>
-                  <span style={{ fontSize: 20 }}>{p.avatar}</span>
-                  <div>
-                    <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe ? 'YOU' : p.name}</div>
-                    <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 10, color: '#555', letterSpacing: '0.08em' }}>{persona.title}</div>
+              <div key={p.id} style={{ marginBottom: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: isMe ? `${C.accent}12` : C.card, border: (state.mode === 'multi' && p.id === winner?.id) ? `1px solid ${C.gold}55` : isMe ? `1px solid ${C.accent}30` : hairline }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontFamily: ANTON, fontSize: 13, color: '#444', minWidth: 18 }}>#{rank + 1}</span>
+                    <span style={{ fontSize: 20 }}>{p.avatar}</span>
+                    <div>
+                      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe ? 'YOU' : p.name}</div>
+                      <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 10, color: '#555', letterSpacing: '0.08em' }}>{persona.title}</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontFamily: ANTON, fontSize: 20, color: p.loveScore >= 0 ? C.teal : C.accent }}>{p.loveScore >= 0 ? '+' : ''}{p.loveScore}</div>
+                    <div style={{ fontSize: 10 }}>{[0,1,2].map(i => <span key={i} style={{ color: C.accent, opacity: i < p.hearts ? 1 : 0.18 }}>♥</span>)}</div>
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontFamily: ANTON, fontSize: 20, color: p.loveScore >= 0 ? C.teal : C.accent }}>{p.loveScore >= 0 ? '+' : ''}{p.loveScore}</div>
-                  <div style={{ fontSize: 10 }}>{[0,1,2].map(i => <span key={i} style={{ color: C.accent, opacity: i < p.hearts ? 1 : 0.18 }}>♥</span>)}</div>
-                </div>
+                {isMe && p.achievements?.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, padding: '6px 10px', background: `${C.velvet}88`, border: `1px solid ${C.gold}22`, borderTop: 'none' }}>
+                    {p.achievements.map(achId => {
+                      const ach = ACHIEVEMENTS.find(a => a.id === achId)
+                      return ach ? (
+                        <span key={achId} title={ach.desc} style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, background: `${C.gold}18`, border: `1px solid ${C.gold}44`, padding: '2px 6px', borderRadius: 2, letterSpacing: '0.08em' }}>
+                          {ach.emoji} {ach.title}
+                        </span>
+                      ) : null
+                    })}
+                  </div>
+                )}
               </div>
             )
           })}
@@ -1189,7 +1563,7 @@ export default function TheCatchGame({ onClose }) {
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
-        {state.screen === 'mode_select'   && <ModeSelectScreen dispatch={dispatch} />}
+        {state.screen === 'mode_select'   && <PlayerSetupScreen state={state} dispatch={dispatch} />}
         {state.screen === 'player_setup'  && <PlayerSetupScreen state={state} dispatch={dispatch} />}
         {state.screen === 'custom_traits' && <CustomTraitsScreen state={state} dispatch={dispatch} />}
         {state.screen === 'round'         && <RoundScreen state={state} dispatch={dispatch} />}

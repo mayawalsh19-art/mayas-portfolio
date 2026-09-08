@@ -1,0 +1,404 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="2200" viewBox="0 0 1400 2200">
+
+  <!-- Background -->
+  <rect id="Background" width="1400" height="2200" fill="#131011"/>
+  <defs>
+    <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="rgba(239,230,220,0.045)"/>
+    </pattern>
+  </defs>
+  <rect width="1400" height="2200" fill="url(#dots)"/>
+
+  <!-- ─── TITLE AREA ─── -->
+  <g id="TitleArea">
+    <text x="80" y="72" font-family="'Anton', Impact, sans-serif" font-size="36" fill="#FF4D6D" letter-spacing="6">THE CATCH</text>
+    <text x="80" y="100" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="700" fill="#333" letter-spacing="4">DESIGN SYSTEM — VISUAL LANGUAGE · COMPONENT STATES · TYPOGRAPHY · COLOR</text>
+    <line x1="80" y1="118" x2="1320" y2="118" stroke="rgba(239,230,220,0.07)" stroke-width="1"/>
+    <text x="1320" y="100" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#2a2525" text-anchor="end">MAYA WALSH · 2025</text>
+  </g>
+
+  <!-- ─── SECTION 01: COLOR TOKENS ─── -->
+  <g id="Section-Color" transform="translate(80,148)">
+    <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#FF4D6D" letter-spacing="4">01 — COLOR TOKENS</text>
+    <line x1="0" y1="12" x2="1240" y2="12" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+
+    <!-- MIDNIGHT -->
+    <g id="Swatch-Midnight" transform="translate(0,28)">
+      <rect width="155" height="80" fill="#131011" stroke="rgba(239,230,220,0.12)" stroke-width="1"/>
+      <text x="10" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">MIDNIGHT</text>
+      <text x="10" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#131011</text>
+      <text x="10" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Background</text>
+    </g>
+    <!-- SMOKE -->
+    <g id="Swatch-Smoke" transform="translate(175,28)">
+      <rect width="155" height="80" fill="#1E1A1B"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">SMOKE</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#1E1A1B</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Card surface</text>
+    </g>
+    <!-- CINDER -->
+    <g id="Swatch-Cinder" transform="translate(350,28)">
+      <rect width="155" height="80" fill="#2C2729"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">CINDER</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#2C2729</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Alt card surface</text>
+    </g>
+    <!-- NEON RED -->
+    <g id="Swatch-NeonRed" transform="translate(525,28)">
+      <rect width="155" height="80" fill="#FF4D6D"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">NEON RED</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#FF4D6D</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Accent · Date · Danger</text>
+    </g>
+    <!-- MINT -->
+    <g id="Swatch-Mint" transform="translate(700,28)">
+      <rect width="155" height="80" fill="#7CE0A8"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">MINT</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#7CE0A8</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Safe · Positive · Score</text>
+    </g>
+    <!-- GOLD -->
+    <g id="Swatch-Gold" transform="translate(875,28)">
+      <rect width="155" height="80" fill="#E4C46A"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">GOLD</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#E4C46A</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">The One · Premium</text>
+    </g>
+    <!-- CREAM -->
+    <g id="Swatch-Cream" transform="translate(1050,28)">
+      <rect width="155" height="80" fill="#EFE6DC"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">CREAM</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#EFE6DC</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Primary text</text>
+    </g>
+    <!-- VELVET -->
+    <g id="Swatch-Velvet" transform="translate(1050,168)">
+      <rect width="155" height="80" fill="#3B2E4A"/>
+      <text x="0" y="104" font-family="'Anton', Impact, sans-serif" font-size="12" fill="#EFE6DC" letter-spacing="1">VELVET</text>
+      <text x="0" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">#3B2E4A</text>
+      <text x="0" y="134" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">The One screen bg</text>
+    </g>
+  </g>
+
+  <!-- ─── SECTION 02: TYPOGRAPHY ─── -->
+  <g id="Section-Typography" transform="translate(80,460)">
+    <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#FF4D6D" letter-spacing="4">02 — TYPOGRAPHY</text>
+    <line x1="0" y1="12" x2="1240" y2="12" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+
+    <!-- ANTON -->
+    <g id="Type-Anton" transform="translate(0,30)">
+      <rect width="600" height="180" fill="#1E1A1B" stroke="rgba(239,230,220,0.07)" stroke-width="1"/>
+      <text x="24" y="80" font-family="'Anton', Impact, sans-serif" font-size="72" fill="#EFE6DC" letter-spacing="2">THE CATCH</text>
+      <line x1="24" y1="100" x2="575" y2="100" stroke="rgba(239,230,220,0.08)" stroke-width="1"/>
+      <text x="24" y="120" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#555" letter-spacing="3">ANTON — DISPLAY TYPEFACE</text>
+      <text x="24" y="138" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Use: Headlines · Game titles · Scores · Action labels</text>
+      <text x="24" y="154" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Sizes: 10px (chip labels) · 12-14px (section heads) · 56-140px (hero)</text>
+      <text x="24" y="170" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Always uppercase · Letter-spacing 0.08em–0.22em · Line-height 0.88–0.92</text>
+    </g>
+
+    <!-- WORK SANS -->
+    <g id="Type-WorkSans" transform="translate(640,30)">
+      <rect width="600" height="180" fill="#1E1A1B" stroke="rgba(239,230,220,0.07)" stroke-width="1"/>
+      <text x="24" y="68" font-family="'Work Sans', Arial, sans-serif" font-size="28" font-weight="700" fill="#EFE6DC" letter-spacing="-0.01em">THE SELECTIVE</text>
+      <text x="24" y="94" font-family="'Work Sans', Arial, sans-serif" font-size="14" font-weight="300" fill="rgba(239,230,220,0.6)">Texts back within a reasonable amount of time.</text>
+      <line x1="24" y1="106" x2="575" y2="106" stroke="rgba(239,230,220,0.08)" stroke-width="1"/>
+      <text x="24" y="126" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#555" letter-spacing="3">WORK SANS — BODY / UI</text>
+      <text x="24" y="144" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Use: All body copy · UI labels · Tags · Button text · Descriptions</text>
+      <text x="24" y="160" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Weights: 300 (body) · 500 (nav) · 700 (labels, buttons)</text>
+      <text x="24" y="176" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">Sizes: 9-10px (micro/tags) · 12-14px (body) · 22-28px (subheads)</text>
+    </g>
+
+    <!-- TYPE SCALE TABLE -->
+    <g id="TypeScale" transform="translate(0,226)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#333" letter-spacing="3">TYPE SCALE</text>
+      <rect x="0" y="12" width="1240" height="1" fill="rgba(239,230,220,0.05)"/>
+      <!-- Rows -->
+      <g transform="translate(0,26)">
+        <text x="0" y="14" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="2">ROLE</text>
+        <text x="200" y="14" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="2">FONT</text>
+        <text x="400" y="14" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="2">SIZE</text>
+        <text x="550" y="14" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="2">WEIGHT</text>
+        <text x="700" y="14" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="2">COLOR</text>
+        <text x="900" y="14" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="2">USAGE</text>
+        <rect x="0" y="20" width="1240" height="1" fill="rgba(239,230,220,0.04)"/>
+      </g>
+      <!-- Table rows -->
+      <g font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555">
+        <g transform="translate(0,56)">
+          <text x="0" y="0">Hero Display</text><text x="200" y="0">Anton</text><text x="400" y="0">76–140px</text><text x="550" y="0">Regular (400)</text><text x="700" y="0">#EFE6DC / #FF4D6D</text><text x="900" y="0">THE / CATCH hero text</text>
+          <rect x="0" y="8" width="1240" height="1" fill="rgba(239,230,220,0.03)"/>
+        </g>
+        <g transform="translate(0,76)">
+          <text x="0" y="0">Section Heading</text><text x="200" y="0">Anton</text><text x="400" y="0">32–56px</text><text x="550" y="0">Regular (400)</text><text x="700" y="0">#EFE6DC</text><text x="900" y="0">Case study headings</text>
+          <rect x="0" y="8" width="1240" height="1" fill="rgba(239,230,220,0.03)"/>
+        </g>
+        <g transform="translate(0,96)">
+          <text x="0" y="0">Game Label</text><text x="200" y="0">Anton</text><text x="400" y="0">10–16px</text><text x="550" y="0">Regular (400)</text><text x="700" y="0">#EFE6DC / accent</text><text x="900" y="0">Mechanic names, chips</text>
+          <rect x="0" y="8" width="1240" height="1" fill="rgba(239,230,220,0.03)"/>
+        </g>
+        <g transform="translate(0,116)">
+          <text x="0" y="0">Body</text><text x="200" y="0">Work Sans</text><text x="400" y="0">13–17px</text><text x="550" y="0">Light (300)</text><text x="700" y="0">rgba(239,230,220,0.65)</text><text x="900" y="0">Paragraphs, trait text</text>
+          <rect x="0" y="8" width="1240" height="1" fill="rgba(239,230,220,0.03)"/>
+        </g>
+        <g transform="translate(0,136)">
+          <text x="0" y="0">Button / Tag</text><text x="200" y="0">Work Sans</text><text x="400" y="0">9–13px</text><text x="550" y="0">Bold (700)</text><text x="700" y="0">#fff / #EFE6DC / accent</text><text x="900" y="0">CTAs, action labels</text>
+          <rect x="0" y="8" width="1240" height="1" fill="rgba(239,230,220,0.03)"/>
+        </g>
+        <g transform="translate(0,156)">
+          <text x="0" y="0">Micro / Meta</text><text x="200" y="0">Work Sans</text><text x="400" y="0">8–10px</text><text x="550" y="0">Bold (700)</text><text x="700" y="0">#444–#555</text><text x="900" y="0">Section labels, caps tags</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- ─── SECTION 03: COMPONENT STATES ─── -->
+  <g id="Section-ComponentStates" transform="translate(80,1000)">
+    <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#FF4D6D" letter-spacing="4">03 — COMPONENT STATES</text>
+    <line x1="0" y1="12" x2="1240" y2="12" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+
+    <!-- PRIMARY BUTTON STATES -->
+    <g id="PrimaryButton" transform="translate(0,36)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">PRIMARY CTA — ▶ PLAY</text>
+
+      <!-- DEFAULT -->
+      <g id="Btn-Primary-Default" transform="translate(0,18)">
+        <rect width="140" height="48" rx="0" fill="#FF4D6D"/>
+        <text x="70" y="30" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">▶ PLAY</text>
+        <text x="70" y="80" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DEFAULT</text>
+      </g>
+      <!-- HOVER -->
+      <g id="Btn-Primary-Hover" transform="translate(170,18)">
+        <rect width="140" height="48" fill="#FF4D6D" filter="url(#glow-red)"/>
+        <!-- Glow simulated with extra opacity rect -->
+        <rect x="-8" y="-8" width="156" height="64" rx="0" fill="none" stroke="#FF4D6D" stroke-width="2" stroke-opacity="0.3"/>
+        <text x="70" y="30" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">▶ PLAY</text>
+        <text x="70" y="80" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">HOVER</text>
+        <text x="70" y="92" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">scale 1.03 · red glow</text>
+      </g>
+      <!-- ACTIVE -->
+      <g id="Btn-Primary-Active" transform="translate(340,20)">
+        <rect width="136" height="45" fill="#CC3D56"/>
+        <text x="68" y="28" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="700" fill="rgba(255,255,255,0.8)" text-anchor="middle" letter-spacing="2">▶ PLAY</text>
+        <text x="68" y="78" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">ACTIVE</text>
+        <text x="68" y="90" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">scale 0.96 · darker bg</text>
+      </g>
+      <!-- DISABLED -->
+      <g id="Btn-Primary-Disabled" transform="translate(510,18)">
+        <rect width="140" height="48" fill="#252020"/>
+        <text x="70" y="30" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">▶ PLAY</text>
+        <text x="70" y="80" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DISABLED</text>
+        <text x="70" y="92" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">muted bg · no glow</text>
+      </g>
+    </g>
+
+    <!-- DATE BUTTON STATES -->
+    <g id="DateButton" transform="translate(0,180)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">GAME ACTION — ♥ DATE</text>
+
+      <g id="Btn-Date-Default" transform="translate(0,18)">
+        <rect width="120" height="42" fill="transparent" stroke="#FF4D6D" stroke-opacity="0.4" stroke-width="1"/>
+        <text x="60" y="27" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#EFE6DC" text-anchor="middle" letter-spacing="1.5">♥ DATE</text>
+        <text x="60" y="70" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DEFAULT</text>
+      </g>
+      <g id="Btn-Date-Hover" transform="translate(150,18)">
+        <rect width="120" height="42" fill="rgba(255,77,109,0.1)" stroke="#FF4D6D" stroke-opacity="0.7" stroke-width="1"/>
+        <text x="60" y="27" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#EFE6DC" text-anchor="middle" letter-spacing="1.5">♥ DATE</text>
+        <text x="60" y="70" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">HOVER</text>
+      </g>
+      <g id="Btn-Date-Active" transform="translate(300,20)">
+        <rect width="116" height="39" fill="#FF4D6D" stroke="#FF4D6D" stroke-width="1"/>
+        <text x="58" y="25" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="1.5">♥ DATE</text>
+        <text x="58" y="68" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">ACTIVE</text>
+      </g>
+      <g id="Btn-Date-Disabled" transform="translate(450,18)">
+        <rect width="120" height="42" fill="transparent" stroke="#1e1a1b" stroke-width="1"/>
+        <text x="60" y="27" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#2a2525" text-anchor="middle" letter-spacing="1.5">♥ DATE</text>
+        <text x="60" y="70" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DISABLED</text>
+        <text x="60" y="82" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">no hearts left</text>
+      </g>
+    </g>
+
+    <!-- GHOST BUTTON STATES -->
+    <g id="GhostButton" transform="translate(700,180)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">GAME ACTION — ◌ GHOST</text>
+
+      <g id="Btn-Ghost-Default" transform="translate(0,18)">
+        <rect width="120" height="42" fill="transparent" stroke="#3a3535" stroke-width="1"/>
+        <text x="60" y="27" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.5">◌ GHOST</text>
+        <text x="60" y="70" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DEFAULT</text>
+      </g>
+      <g id="Btn-Ghost-Hover" transform="translate(150,18)">
+        <rect width="120" height="42" fill="#1a1818" stroke="#555" stroke-width="1"/>
+        <text x="60" y="27" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#999" text-anchor="middle" letter-spacing="1.5">◌ GHOST</text>
+        <text x="60" y="70" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">HOVER</text>
+      </g>
+      <g id="Btn-Ghost-Active" transform="translate(300,20)">
+        <rect width="116" height="39" fill="#222" stroke="#666" stroke-width="1"/>
+        <text x="58" y="25" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#ccc" text-anchor="middle" letter-spacing="1.5">◌ GHOST</text>
+        <text x="58" y="68" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">ACTIVE</text>
+      </g>
+      <g id="Btn-Ghost-Disabled" transform="translate(450,18)">
+        <rect width="120" height="42" fill="transparent" stroke="#1e1a1b" stroke-width="1"/>
+        <text x="60" y="27" font-family="'Work Sans', Arial, sans-serif" font-size="12" font-weight="700" fill="#2a2525" text-anchor="middle" letter-spacing="1.5">◌ GHOST</text>
+        <text x="60" y="70" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DISABLED</text>
+        <text x="60" y="82" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">0 ghosts left</text>
+      </g>
+    </g>
+
+    <!-- TOKEN CHIPS: STALK -->
+    <g id="StalkTokens" transform="translate(0,340)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">TOKEN CHIP — 🔍 STALK (3 PER GAME)</text>
+
+      <!-- 3/3 -->
+      <g id="StalkFull" transform="translate(0,18)">
+        <rect x="0" y="0" width="40" height="30" fill="rgba(228,196,106,0.1)" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="20" y="20" font-size="12" text-anchor="middle">🔍</text>
+        <rect x="46" y="0" width="40" height="30" fill="rgba(228,196,106,0.1)" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="66" y="20" font-size="12" text-anchor="middle">🔍</text>
+        <rect x="92" y="0" width="40" height="30" fill="rgba(228,196,106,0.1)" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="112" y="20" font-size="12" text-anchor="middle">🔍</text>
+        <text x="66" y="54" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">FULL (3/3)</text>
+      </g>
+      <!-- 1/3 -->
+      <g id="StalkPartial" transform="translate(180,18)">
+        <rect x="0" y="0" width="40" height="30" fill="rgba(228,196,106,0.1)" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="20" y="20" font-size="12" text-anchor="middle">🔍</text>
+        <rect x="46" y="0" width="40" height="30" fill="transparent" stroke="#2a2525" stroke-width="1"/>
+        <text x="66" y="20" font-family="'Work Sans', Arial, sans-serif" font-size="14" font-weight="300" fill="#2a2525" text-anchor="middle">◇</text>
+        <rect x="92" y="0" width="40" height="30" fill="transparent" stroke="#2a2525" stroke-width="1"/>
+        <text x="112" y="20" font-family="'Work Sans', Arial, sans-serif" font-size="14" font-weight="300" fill="#2a2525" text-anchor="middle">◇</text>
+        <text x="66" y="54" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">PARTIAL (1/3)</text>
+      </g>
+      <!-- 0/3 -->
+      <g id="StalkDepleted" transform="translate(360,18)">
+        <rect x="0" y="0" width="40" height="30" fill="transparent" stroke="#1e1a1b" stroke-width="1"/>
+        <text x="20" y="20" font-family="'Work Sans', Arial, sans-serif" font-size="14" font-weight="300" fill="#2a2525" text-anchor="middle">◇</text>
+        <rect x="46" y="0" width="40" height="30" fill="transparent" stroke="#1e1a1b" stroke-width="1"/>
+        <text x="66" y="20" font-family="'Work Sans', Arial, sans-serif" font-size="14" font-weight="300" fill="#2a2525" text-anchor="middle">◇</text>
+        <rect x="92" y="0" width="40" height="30" fill="transparent" stroke="#1e1a1b" stroke-width="1"/>
+        <text x="112" y="20" font-family="'Work Sans', Arial, sans-serif" font-size="14" font-weight="300" fill="#2a2525" text-anchor="middle">◇</text>
+        <text x="66" y="54" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DEPLETED (0/3)</text>
+      </g>
+    </g>
+
+    <!-- ONE-USE TOKENS -->
+    <g id="OneUseTokens" transform="translate(700,340)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">ONE-USE TOKEN — ⚡ STEAL / 🛋️ THERAPY</text>
+
+      <g id="Token-Available" transform="translate(0,18)">
+        <rect width="120" height="38" fill="rgba(228,196,106,0.1)" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
+        <text x="60" y="25" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.5">⚡ STEAL</text>
+        <text x="60" y="68" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">AVAILABLE</text>
+      </g>
+      <g id="Token-Hover" transform="translate(150,18)">
+        <rect width="120" height="38" fill="rgba(228,196,106,0.18)" stroke="#E4C46A" stroke-opacity="0.75" stroke-width="1"/>
+        <rect x="-4" y="-4" width="128" height="46" fill="none" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.2"/>
+        <text x="60" y="25" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.5">⚡ STEAL</text>
+        <text x="60" y="68" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">HOVER</text>
+      </g>
+      <g id="Token-Used" transform="translate(300,18)">
+        <rect width="120" height="38" fill="transparent" stroke="#1e1a1b" stroke-width="1"/>
+        <text x="60" y="25" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#2a2525" text-anchor="middle" letter-spacing="1.5">⚡ STEAL</text>
+        <text x="60" y="68" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">USED</text>
+      </g>
+    </g>
+
+    <!-- NAV BUTTON STATES -->
+    <g id="NavButton" transform="translate(0,470)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">NAV / TEXT BUTTON — ← BACK</text>
+
+      <g id="NavBtn-Default" transform="translate(0,20)">
+        <text x="0" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="500" fill="rgba(239,230,220,0.38)" letter-spacing="0.04em">← Back to Work</text>
+        <text x="70" y="46" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">DEFAULT</text>
+        <text x="70" y="58" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">opacity 38%</text>
+      </g>
+      <g id="NavBtn-Hover" transform="translate(250,20)">
+        <text x="0" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="13" font-weight="500" fill="rgba(239,230,220,0.85)" letter-spacing="0.04em">← Back to Work</text>
+        <text x="70" y="46" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#3a3535" text-anchor="middle" letter-spacing="2">HOVER</text>
+        <text x="70" y="58" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">opacity 85%</text>
+      </g>
+    </g>
+
+    <!-- TRAIT ROW STATES -->
+    <g id="TraitRow" transform="translate(700,470)">
+      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" letter-spacing="3">TRAIT ROW — VISIBLE VS HIDDEN</text>
+
+      <!-- Positive visible -->
+      <g id="Trait-Green" transform="translate(0,20)">
+        <rect x="0" y="0" width="220" height="28" fill="transparent"/>
+        <rect x="0" y="0" width="3" height="28" fill="#7CE0A8"/>
+        <text x="12" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="11" fill="rgba(239,230,220,0.8)">Texts back quickly</text>
+        <text x="210" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#7CE0A8" text-anchor="end">+1</text>
+      </g>
+      <!-- Negative visible -->
+      <g id="Trait-Red" transform="translate(0,54)">
+        <rect x="0" y="0" width="220" height="28" fill="transparent"/>
+        <rect x="0" y="0" width="3" height="28" fill="#FF4D6D"/>
+        <text x="12" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="11" fill="rgba(239,230,220,0.8)">Gets jealous easily</text>
+        <text x="210" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#FF4D6D" text-anchor="end">−2</text>
+      </g>
+      <!-- Hidden trait -->
+      <g id="Trait-Hidden" transform="translate(0,88)">
+        <rect x="0" y="0" width="220" height="28" fill="transparent"/>
+        <rect x="0" y="0" width="3" height="28" fill="#2a2525"/>
+        <text x="12" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="11" fill="#2a2525">?????</text>
+        <text x="210" y="18" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#2a2525" text-anchor="end">?</text>
+      </g>
+      <text x="0" y="138" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444">Border-left = flag color · val color = flag color</text>
+    </g>
+  </g>
+
+  <!-- ─── SECTION 04: SPACING & LAYOUT ─── -->
+  <g id="Section-Spacing" transform="translate(80,1700)">
+    <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#FF4D6D" letter-spacing="4">04 — SPACING &amp; LAYOUT</text>
+    <line x1="0" y1="12" x2="1240" y2="12" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+
+    <g transform="translate(0,36)" font-family="'Work Sans', Arial, sans-serif">
+      <text x="0" y="0" font-size="9" font-weight="700" fill="#444" letter-spacing="3">GAME VIEWPORT</text>
+      <rect x="0" y="14" width="240" height="420" fill="none" stroke="#FF4D6D" stroke-opacity="0.3" stroke-width="1"/>
+      <text x="120" y="200" font-size="10" font-weight="300" fill="#444" text-anchor="middle">max-width: 390px</text>
+      <text x="120" y="216" font-size="10" font-weight="300" fill="#444" text-anchor="middle">height: 100dvh</text>
+      <text x="120" y="232" font-size="10" font-weight="300" fill="#444" text-anchor="middle">Pass-the-phone format</text>
+      <!-- Label -->
+      <rect x="72" y="5" width="96" height="16" fill="#131011"/>
+      <text x="120" y="16" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="2">PHONE FRAME</text>
+
+      <!-- Spacing scale -->
+      <g transform="translate(300,0)">
+        <text x="0" y="0" font-size="9" font-weight="700" fill="#444" letter-spacing="3">SPACING SCALE</text>
+        <g fill="#EFE6DC" font-size="10" font-weight="300">
+          <text x="0" y="28">4px  — micro gap (icons, inline items)</text>
+          <text x="0" y="48">8px  — tight gap (chip rows, trait rows)</text>
+          <text x="0" y="68">12px — component internal padding</text>
+          <text x="0" y="88">16px — card padding (mobile)</text>
+          <text x="0" y="108">20px — section gap</text>
+          <text x="0" y="128">24px — page horizontal padding</text>
+          <text x="0" y="148">40px — section top spacing</text>
+          <text x="0" y="168">72px — divider vertical margin</text>
+          <text x="0" y="188">80px — page top/bottom padding</text>
+        </g>
+      </g>
+
+      <!-- Border radius -->
+      <g transform="translate(700,0)">
+        <text x="0" y="0" font-size="9" font-weight="700" fill="#444" letter-spacing="3">BORDER RADIUS</text>
+        <text x="0" y="28" font-size="10" font-weight="300" fill="#EFE6DC">0px — all game UI elements (sharp/angular)</text>
+        <text x="0" y="48" font-size="10" font-weight="300" fill="#EFE6DC">2px — small chips only</text>
+        <text x="0" y="68" font-size="10" font-weight="300" fill="#EFE6DC">16px — portfolio card containers</text>
+        <text x="0" y="88" font-size="9" font-weight="300" fill="#555">Note: The game uses 0px radius throughout.</text>
+        <text x="0" y="104" font-size="9" font-weight="300" fill="#555">Angular geometry reinforces tension + brutalism.</text>
+
+        <text x="0" y="140" font-size="9" font-weight="700" fill="#444" letter-spacing="3">BORDER STYLE</text>
+        <text x="0" y="158" font-size="10" font-weight="300" fill="#EFE6DC">Default: 1px solid rgba(239,230,220,0.08)</text>
+        <text x="0" y="174" font-size="10" font-weight="300" fill="#EFE6DC">Accent: 1px solid #FF4D6D55 (40% opacity)</text>
+        <text x="0" y="190" font-size="10" font-weight="300" fill="#EFE6DC">Optional/dim: 1px dashed #444, opacity 25%</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <line x1="80" y1="2140" x2="1320" y2="2140" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+  <text x="700" y="2164" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#2a2525" text-anchor="middle" letter-spacing="4">THE CATCH — DESIGN SYSTEM · MAYA WALSH</text>
+  <text x="700" y="2182" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#2a2525" text-anchor="middle">Import into Figma as SVG · All shapes are editable vectors · Rename layers as needed · 2025</text>
+
+</svg>

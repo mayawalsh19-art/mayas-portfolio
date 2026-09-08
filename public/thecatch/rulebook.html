@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Catch — Official Rulebook</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
+  body {
+    background: #131011;
+    color: #EFE6DC;
+    font-family: 'Work Sans', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.65;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Page layout ── */
+  .page {
+    width: 8.5in;
+    height: 11in;
+    padding: 0.65in 0.7in;
+    position: relative;
+    page-break-after: always;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .page:last-child { page-break-after: avoid; }
+
+  /* ── Dot grid ── */
+  .dot-grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(239,230,220,0.055) 1px, transparent 1px);
+    background-size: 18px 18px;
+    pointer-events: none;
+  }
+
+  /* ── Accent bar ── */
+  .accent-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: #FF4D6D;
+  }
+
+  /* ── Typography ── */
+  .display {
+    font-family: Impact, 'Anton', sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 0.88;
+    text-transform: uppercase;
+  }
+  .micro {
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #444;
+  }
+
+  /* ── Cover ── */
+  .cover-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 9.7in;
+  }
+  .cover-hero { margin-top: 1.2in; }
+  .cover-hero .the  { font-size: 120pt; color: #FF4D6D; display: block; }
+  .cover-hero .catch{ font-size: 120pt; color: #EFE6DC; display: block; }
+  .tagline {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: rgba(239,230,220,0.38);
+    margin-top: 18pt;
+    text-transform: uppercase;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 28pt;
+    margin-top: 40pt;
+    flex-wrap: wrap;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 3pt; }
+  .meta-label { font-size: 7pt; font-weight: 700; letter-spacing: 0.2em; color: #444; text-transform: uppercase; }
+  .meta-val   { font-size: 9pt; font-weight: 700; color: #EFE6DC; letter-spacing: 0.06em; }
+
+  .cover-bottom {
+    border-top: 1px solid rgba(239,230,220,0.07);
+    padding-top: 14pt;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .cover-desc {
+    font-size: 11pt;
+    font-weight: 300;
+    color: rgba(239,230,220,0.5);
+    max-width: 4.5in;
+    line-height: 1.7;
+  }
+  .version { font-size: 8pt; color: #333; text-align: right; font-weight: 300; }
+
+  /* ── Section pages ── */
+  .section-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: #FF4D6D;
+    text-transform: uppercase;
+    margin-bottom: 10pt;
+  }
+  .section-title {
+    font-size: 42pt;
+    color: #EFE6DC;
+    margin-bottom: 24pt;
+    line-height: 0.9;
+  }
+  .rule-divider {
+    height: 1px;
+    background: rgba(239,230,220,0.06);
+    margin: 20pt 0;
+  }
+
+  /* ── Step block ── */
+  .step-block {
+    display: flex;
+    gap: 16pt;
+    margin-bottom: 16pt;
+    align-items: flex-start;
+  }
+  .step-num {
+    font-family: Impact, sans-serif;
+    font-size: 24pt;
+    color: #FF4D6D;
+    line-height: 1;
+    min-width: 28pt;
+    flex-shrink: 0;
+    margin-top: 2pt;
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-weight: 700;
+    font-size: 11pt;
+    color: #EFE6DC;
+    letter-spacing: 0.04em;
+    margin-bottom: 4pt;
+  }
+  .step-body {
+    font-weight: 300;
+    font-size: 10pt;
+    color: rgba(239,230,220,0.65);
+    line-height: 1.7;
+  }
+  .step-sub {
+    margin-top: 6pt;
+    padding-left: 12pt;
+    border-left: 2px solid rgba(255,77,109,0.35);
+  }
+  .step-sub li {
+    font-size: 9.5pt;
+    font-weight: 300;
+    color: rgba(239,230,220,0.55);
+    margin-bottom: 3pt;
+    list-style: none;
+    padding-left: 4pt;
+  }
+  .step-sub li::before { content: "— "; color: #333; }
+
+  /* ── Mechanic card ── */
+  .mechanic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10pt;
+    margin-top: 10pt;
+  }
+  .mechanic-card {
+    background: #1E1A1B;
+    border: 1px solid rgba(239,230,220,0.07);
+    padding: 12pt 14pt;
+  }
+  .mechanic-header {
+    display: flex;
+    align-items: center;
+    gap: 8pt;
+    margin-bottom: 6pt;
+  }
+  .mechanic-icon { font-size: 16pt; }
+  .mechanic-name {
+    font-family: Impact, sans-serif;
+    font-size: 12pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .mechanic-tag {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #444;
+    border: 1px solid #2a2525;
+    padding: 2pt 6pt;
+    margin-left: auto;
+    text-transform: uppercase;
+  }
+  .mechanic-desc {
+    font-size: 9.5pt;
+    font-weight: 300;
+    color: rgba(239,230,220,0.6);
+    line-height: 1.6;
+  }
+
+  /* ── Pill / badge ── */
+  .pill {
+    display: inline-block;
+    padding: 3pt 9pt;
+    border: 1px solid rgba(239,230,220,0.1);
+    background: #1E1A1B;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #EFE6DC;
+    letter-spacing: 0.08em;
+    margin: 2pt;
+    text-transform: uppercase;
+  }
+  .pill.accent { border-color: rgba(255,77,109,0.4); color: #FF4D6D; background: rgba(255,77,109,0.08); }
+  .pill.teal   { border-color: rgba(124,224,168,0.4); color: #7CE0A8; background: rgba(124,224,168,0.08); }
+  .pill.gold   { border-color: rgba(228,196,106,0.4); color: #E4C46A; background: rgba(228,196,106,0.08); }
+
+  /* ── Callout box ── */
+  .callout {
+    background: #1E1A1B;
+    border-left: 3px solid #FF4D6D;
+    padding: 12pt 16pt;
+    margin: 14pt 0;
+  }
+  .callout.teal  { border-color: #7CE0A8; }
+  .callout.gold  { border-color: #E4C46A; }
+  .callout.velvet{ border-left: 3px solid #3B2E4A; background: #1A1219; }
+  .callout-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    margin-bottom: 6pt;
+    text-transform: uppercase;
+  }
+  .callout-body {
+    font-size: 10pt;
+    font-weight: 300;
+    color: rgba(239,230,220,0.65);
+    line-height: 1.65;
+  }
+
+  /* ── Trait row ── */
+  .trait-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7pt 10pt;
+    border-left: 3px solid;
+    background: #1E1A1B;
+    margin-bottom: 3pt;
+  }
+  .trait-text { font-size: 9.5pt; font-weight: 400; color: rgba(239,230,220,0.8); }
+  .trait-val  { font-size: 9.5pt; font-weight: 700; }
+
+  /* ── Player type table ── */
+  .type-table { width: 100%; border-collapse: collapse; margin-top: 10pt; }
+  .type-table th {
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: #444;
+    text-align: left;
+    padding: 6pt 10pt;
+    border-bottom: 1px solid rgba(239,230,220,0.06);
+    text-transform: uppercase;
+  }
+  .type-table td {
+    font-size: 9.5pt;
+    font-weight: 300;
+    color: rgba(239,230,220,0.65);
+    padding: 8pt 10pt;
+    border-bottom: 1px solid rgba(239,230,220,0.04);
+    vertical-align: top;
+  }
+  .type-table tr:last-child td { border-bottom: none; }
+  .type-emoji { font-size: 13pt; }
+
+  /* ── Achievement grid ── */
+  .ach-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8pt;
+    margin-top: 10pt;
+  }
+  .ach-item {
+    background: #1E1A1B;
+    border: 1px solid rgba(239,230,220,0.06);
+    padding: 7pt 9pt;
+    display: flex;
+    gap: 6pt;
+    align-items: flex-start;
+  }
+  .ach-emoji { font-size: 11pt; flex-shrink: 0; }
+  .ach-name {
+    font-family: Impact, sans-serif;
+    font-size: 8pt;
+    color: #E4C46A;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 2pt;
+  }
+  .ach-desc {
+    font-size: 7.5pt;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.35;
+  }
+
+  /* ── Page header (non-cover) ── */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(239,230,220,0.06);
+    padding-bottom: 10pt;
+    margin-bottom: 28pt;
+  }
+  .page-header-title {
+    font-family: Impact, sans-serif;
+    font-size: 10pt;
+    color: #FF4D6D;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .page-footer {
+    position: absolute;
+    bottom: 0.4in;
+    left: 0.7in;
+    right: 0.7in;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-num {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #2a2525;
+    letter-spacing: 0.12em;
+  }
+
+  /* ── Score table ── */
+  .score-table { width: 100%; border-collapse: collapse; margin: 10pt 0; }
+  .score-table th {
+    font-size: 7.5pt; font-weight: 700; letter-spacing: 0.18em;
+    color: #444; text-align: left; padding: 6pt 10pt;
+    border-bottom: 1px solid rgba(239,230,220,0.07);
+    text-transform: uppercase;
+  }
+  .score-table td {
+    font-size: 9.5pt; font-weight: 300;
+    color: rgba(239,230,220,0.65); padding: 7pt 10pt;
+    border-bottom: 1px solid rgba(239,230,220,0.03);
+    vertical-align: middle;
+  }
+  .score-val {
+    font-family: Impact, sans-serif;
+    font-size: 14pt;
+    text-align: right;
+  }
+
+  /* Quick reference panel */
+  .qr-panel {
+    background: #1E1A1B;
+    border: 1px solid rgba(239,230,220,0.07);
+    padding: 10pt 12pt;
+    margin-bottom: 8pt;
+  }
+  .qr-label { font-size: 7pt; font-weight: 700; letter-spacing: 0.2em; color: #FF4D6D; margin-bottom: 6pt; text-transform: uppercase; }
+  .qr-row { display: flex; gap: 6pt; margin-bottom: 3pt; align-items: baseline; }
+  .qr-key { font-weight: 700; font-size: 8.5pt; color: #EFE6DC; min-width: 90pt; }
+  .qr-val { font-weight: 300; font-size: 8.5pt; color: rgba(239,230,220,0.55); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ COVER PAGE ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="cover-inner">
+
+    <div class="cover-hero">
+      <span class="display the">THE</span>
+      <span class="display catch">CATCH</span>
+      <div class="tagline">Official Rulebook — How to Play</div>
+      <div class="cover-meta">
+        <div class="meta-item"><div class="meta-label">Players</div><div class="meta-val">1 – 6</div></div>
+        <div class="meta-item"><div class="meta-label">Rounds</div><div class="meta-val">7 per game</div></div>
+        <div class="meta-item"><div class="meta-label">Time</div><div class="meta-val">10 – 30 min</div></div>
+        <div class="meta-item"><div class="meta-label">Platform</div><div class="meta-val">Web / Mobile</div></div>
+        <div class="meta-item"><div class="meta-label">Mode</div><div class="meta-val">Solo + Online</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="rule-divider"></div>
+      <p class="cover-desc">
+        The Catch is a dating sim with real consequences. Every profile has visible green flags and hidden red ones. Your job is to decide who to date, who to ghost, and who to trust — before the hidden traits are revealed. Same rules. Louder consequences.
+      </p>
+      <div style="margin-top: 28pt;">
+        <span class="pill accent">♥ DATE</span>
+        <span class="pill" style="color:#888; border-color:#3a3535;">◌ GHOST</span>
+        <span class="pill teal">🔍 STALK</span>
+        <span class="pill gold">⚡ STEAL</span>
+        <span class="pill gold">♥♥ DOUBLE DATE</span>
+        <span class="pill" style="color:#8B7EA8; border-color:#3B2E4A22; background:#1A1219;">🛋️ THERAPY</span>
+      </div>
+      <div class="rule-divider" style="margin-top: 24pt;"></div>
+      <div class="cover-bottom">
+        <div class="version">Maya Walsh — bymayawalsh.design</div>
+        <div class="version">Version 1.0 · 2025</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ PAGE 2: SETUP ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="page-header">
+    <div class="page-header-title">The Catch — Rulebook</div>
+    <div class="micro">Setup &amp; Getting Started</div>
+  </div>
+
+  <div class="section-label">Section 01</div>
+  <div class="section-title display" style="font-size: 34pt; margin-bottom: 16pt;">SETUP &amp;<br>HOW TO START</div>
+
+  <div class="step-block" style="margin-bottom: 11pt;">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Open the Game</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.6;">Visit <strong>bymayawalsh.design</strong>, tap the <strong>The Catch</strong> card, then press <strong>▶ PLAY THE GAME</strong>. Runs entirely in-browser — no app, no login required.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 11pt;">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Choose a Mode</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.6;"><strong>PLAY SOLO</strong> — you vs. AI opponents on one device. <strong>PLAY ONLINE</strong> — everyone joins from their own phone using a 4-letter room code (like Jackbox). Host creates the room, others join.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 11pt;">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Enter Your Name</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.6;">Pick a name and an avatar emoji. Your name appears on the leaderboard and in score callouts. In online mode, everyone sets this up on their own device before the host starts.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 11pt;">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">Pick a Player Type</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.6; margin-bottom: 7pt;">Each type changes how trait values score for you. Same profile, completely different results. Locked in for the whole game.</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4pt 10pt;">
+        <div style="font-size: 8.5pt; font-weight: 300; color: rgba(239,230,220,0.65); padding: 4pt 0; border-top: 1px solid rgba(239,230,220,0.06);"><strong style="color: #EFE6DC;">💘 The Romantic</strong> — positives +1</div>
+        <div style="font-size: 8.5pt; font-weight: 300; color: rgba(239,230,220,0.65); padding: 4pt 0; border-top: 1px solid rgba(239,230,220,0.06);"><strong style="color: #EFE6DC;">🎯 The Selective</strong> — negatives −1 more</div>
+        <div style="font-size: 8.5pt; font-weight: 300; color: rgba(239,230,220,0.65); padding: 4pt 0; border-top: 1px solid rgba(239,230,220,0.06);"><strong style="color: #EFE6DC;">🔥 The Chaotic One</strong> — negatives +2</div>
+        <div style="font-size: 8.5pt; font-weight: 300; color: rgba(239,230,220,0.65); padding: 4pt 0; border-top: 1px solid rgba(239,230,220,0.06);"><strong style="color: #EFE6DC;">🌀 The Overthinker</strong> — −1 traits → −3</div>
+        <div style="font-size: 8.5pt; font-weight: 300; color: rgba(239,230,220,0.65); padding: 4pt 0; border-top: 1px solid rgba(239,230,220,0.06);"><strong style="color: #EFE6DC;">🚪 The Avoidant</strong> — extremes drop −1</div>
+        <div style="font-size: 8.5pt; font-weight: 300; color: rgba(239,230,220,0.65); padding: 4pt 0; border-top: 1px solid rgba(239,230,220,0.06);"><strong style="color: #EFE6DC;">💰 The Gold Digger</strong> — strong positives +1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 11pt;">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <div class="step-title">Add Custom Traits or People (Optional)</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.6;">Before starting, add real-life traits you've seen (toggle green or red) or build a full custom person with a name and their actual traits. Both get mixed into the profiles everyone will date.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 0;">
+    <div class="step-num">6</div>
+    <div class="step-content">
+      <div class="step-title">Press START</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.6;">The game generates 7 unique profiles — including a randomly placed <strong>Catfish</strong>. No two games play the same. Every round a new profile is revealed and the decision phase begins.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="micro" style="color: #2a2525;">The Catch — Official Rulebook</div>
+    <div class="page-num">02</div>
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ PAGE 3: ROUND ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="page-header">
+    <div class="page-header-title">The Catch — Rulebook</div>
+    <div class="micro">How a Round Works</div>
+  </div>
+
+  <div class="section-label">Section 02</div>
+  <div class="section-title display">HOW A ROUND<br>WORKS</div>
+
+  <p style="font-size: 10pt; font-weight: 300; color: rgba(239,230,220,0.55); max-width: 5in; margin-bottom: 14pt; line-height: 1.6;">
+    Each round introduces one profile. You see some traits immediately — others are hidden. You decide whether to date them before the full picture is revealed. 7 rounds, then a final boss.
+  </p>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Read the Profile</div>
+      <div class="step-body">Each profile shows their name and <strong>2 visible traits</strong> — usually the more moderate flags. Four additional traits are hidden behind question marks and revealed after everyone decides.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Choose Your Action</div>
+      <div class="step-body">Before the hidden traits are revealed, every player locks in one of the following actions. In online multiplayer, everyone decides simultaneously on their own device.</div>
+    </div>
+  </div>
+
+  <div class="mechanic-grid" style="gap: 7pt; margin-top: 8pt;">
+    <div class="mechanic-card" style="padding: 9pt 11pt;">
+      <div class="mechanic-header" style="margin-bottom: 4pt;">
+        <span class="mechanic-icon" style="font-size: 13pt;">♥</span>
+        <span class="mechanic-name" style="color: #FF4D6D; font-size: 11pt;">DATE</span>
+        <span class="mechanic-tag">Core</span>
+      </div>
+      <div class="mechanic-desc" style="font-size: 9pt;">Score all of the profile's traits. Positive total = points. Negative total = lose a heart. Your player type adjusts all values.</div>
+    </div>
+    <div class="mechanic-card" style="padding: 9pt 11pt;">
+      <div class="mechanic-header" style="margin-bottom: 4pt;">
+        <span class="mechanic-icon" style="font-size: 13pt;">◌</span>
+        <span class="mechanic-name" style="color: #888; font-size: 11pt;">GHOST</span>
+        <span class="mechanic-tag">Core</span>
+      </div>
+      <div class="mechanic-desc" style="font-size: 9pt;">Skip the round. No points gained or lost. You have 3 ghosts per game — once gone, you must date or use another action.</div>
+    </div>
+    <div class="mechanic-card" style="padding: 9pt 11pt;">
+      <div class="mechanic-header" style="margin-bottom: 4pt;">
+        <span class="mechanic-icon" style="font-size: 13pt;">🔍</span>
+        <span class="mechanic-name" style="color: #E4C46A; font-size: 11pt;">STALK</span>
+        <span class="mechanic-tag">Intel</span>
+      </div>
+      <div class="mechanic-desc" style="font-size: 9pt;">Reveal one hidden trait before deciding. Costs one stalk token (3 per game). Then choose DATE or GHOST with better info.</div>
+    </div>
+    <div class="mechanic-card" style="padding: 9pt 11pt;">
+      <div class="mechanic-header" style="margin-bottom: 4pt;">
+        <span class="mechanic-icon" style="font-size: 13pt;">⚡</span>
+        <span class="mechanic-name" style="color: #E4C46A; font-size: 11pt;">STEAL</span>
+        <span class="mechanic-tag">Online</span>
+      </div>
+      <div class="mechanic-desc" style="font-size: 9pt;">Take 3 points from the current score leader. One use per game. If you're the leader, steal from second place.</div>
+    </div>
+    <div class="mechanic-card" style="padding: 9pt 11pt;">
+      <div class="mechanic-header" style="margin-bottom: 4pt;">
+        <span class="mechanic-icon" style="font-size: 13pt;">♥♥</span>
+        <span class="mechanic-name" style="color: #FF4D6D; font-size: 11pt;">DOUBLE DATE</span>
+        <span class="mechanic-tag">Online</span>
+      </div>
+      <div class="mechanic-desc" style="font-size: 9pt;">Both players date together and split the score. Lower risk, lower reward. Only activates if 2+ players both choose it.</div>
+    </div>
+    <div class="mechanic-card" style="padding: 9pt 11pt;">
+      <div class="mechanic-header" style="margin-bottom: 4pt;">
+        <span class="mechanic-icon" style="font-size: 13pt;">🛋️</span>
+        <span class="mechanic-name" style="color: #8B7EA8; font-size: 11pt;">THERAPY</span>
+        <span class="mechanic-tag">Recovery</span>
+      </div>
+      <div class="mechanic-desc" style="font-size: 9pt;">Auto-skips your next round, then rolls 50/50 for +4 or +0. One use per player. Best used after a string of bad dates.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="micro" style="color: #2a2525;">The Catch — Official Rulebook</div>
+    <div class="page-num">03</div>
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ PAGE 4: SCORING ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="page-header">
+    <div class="page-header-title">The Catch — Rulebook</div>
+    <div class="micro">Scoring &amp; Traits</div>
+  </div>
+
+  <div class="section-label">Section 03</div>
+  <div class="section-title display" style="font-size: 28pt; margin-bottom: 14pt;">SCORING &amp;<br>TRAIT SYSTEM</div>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Traits Reveal One by One</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">After everyone locks in their decision, all hidden traits reveal automatically — one per second. Each trait flashes its value as it appears.</div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 12pt;">
+    <div class="micro" style="margin-bottom: 7pt;">Trait Value Scale</div>
+    <table class="score-table">
+      <tr>
+        <th>Flag Type</th>
+        <th>Base Value</th>
+        <th style="text-align:right;">Color</th>
+      </tr>
+      <tr>
+        <td><strong style="color: #7CE0A8;">Green Flag</strong> <span style="font-size:8pt;color:#555;">— positive traits, good vibes</span></td>
+        <td><span class="score-val" style="color: #7CE0A8; font-size: 12pt;">+1 to +3</span></td>
+        <td style="text-align:right;"><span style="color:#7CE0A8;">●</span> Mint</td>
+      </tr>
+      <tr>
+        <td><strong style="color: #E4C46A;">Yellow Flag</strong> <span style="font-size:8pt;color:#555;">— neutral, mildly concerning</span></td>
+        <td><span class="score-val" style="color: #E4C46A; font-size: 12pt;">0 to −1</span></td>
+        <td style="text-align:right;"><span style="color:#E4C46A;">●</span> Gold</td>
+      </tr>
+      <tr>
+        <td><strong style="color: #FF4D6D;">Red Flag</strong> <span style="font-size:8pt;color:#555;">— negative traits, actual problems</span></td>
+        <td><span class="score-val" style="color: #FF4D6D; font-size: 12pt;">−2 to −3</span></td>
+        <td style="text-align:right;"><span style="color:#FF4D6D;">●</span> Neon Red</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">Your Player Type Adjusts Every Score</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">All trait values are modified by your player type before totaling. The Romantic adds +1 to every positive. The Selective deducts 1 from every negative. Same profile, completely different results — this is the whole game.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <div class="step-title">Score Is Announced</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">After all traits reveal, a score popup shows your round result. Positive scores glow mint, negative glow red. Your running total updates on the leaderboard.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 14pt;">
+    <div class="step-num">6</div>
+    <div class="step-content">
+      <div class="step-title">Hearts Track Your Risky Dates</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">Start with 3 hearts. Every time you DATE and your round total is negative, you lose one heart. Losing all 3 doesn't eliminate you — but makes you <strong>ineligible for The One</strong>. Hearts are only lost on a negative DATE, never for ghosting, stalking, stealing, or therapy.</div>
+    </div>
+  </div>
+
+  <div class="callout gold" style="padding: 10pt 14pt;">
+    <div class="callout-label" style="color: #E4C46A; margin-bottom: 4pt;">🪝 The Catfish — Special Rule</div>
+    <div class="callout-body" style="font-size: 9pt; line-height: 1.55;">One profile every game is a Catfish. Visible traits look perfect, but all hidden traits are −3. DATE them: take a −4 penalty on top. GHOST them: earn +1 and "Catfish Dodger." No label tells you who it is — trust your gut.</div>
+  </div>
+
+  <div class="page-footer">
+    <div class="micro" style="color: #2a2525;">The Catch — Official Rulebook</div>
+    <div class="page-num">04</div>
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ PAGE 5: THE ONE + END ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="page-header">
+    <div class="page-header-title">The Catch — Rulebook</div>
+    <div class="micro">The One, Endgame &amp; Results</div>
+  </div>
+
+  <div class="section-label">Section 04</div>
+  <div class="section-title display" style="font-size: 28pt; margin-bottom: 14pt;">THE ONE &amp;<br>ENDGAME</div>
+
+  <div class="callout velvet" style="padding: 10pt 14pt; margin: 0 0 12pt 0;">
+    <div class="callout-label" style="color: #E4C46A; margin-bottom: 4pt;">💘 What Is "The One"?</div>
+    <div class="callout-body" style="font-size: 9pt; line-height: 1.55;">After 7 rounds, players with ≥ 10 points <em>and</em> at least 1 heart face a final legendary profile — <strong>The One</strong>. Their one hidden trait is worth +5 and can flip the entire leaderboard. If you score negative, you lose your final heart and the points.</div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">7</div>
+    <div class="step-content">
+      <div class="step-title">Face The One (if qualified)</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">10+ points and 1+ heart → you enter The One screen. One choice: <strong>DATE</strong> (risk it for +5) or <strong>GHOST</strong> (safe exit, no change). Score negative and you lose your last heart plus the points.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 10pt;">
+    <div class="step-num">8</div>
+    <div class="step-content">
+      <div class="step-title">Tiebreaker (if needed)</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">If two or more players end with the same score, a Tiebreaker activates — one final profile, all tied players decide simultaneously. Fastest to resolve wins.</div>
+    </div>
+  </div>
+
+  <div class="step-block" style="margin-bottom: 14pt;">
+    <div class="step-num">9</div>
+    <div class="step-content">
+      <div class="step-title">Results &amp; Achievements</div>
+      <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">Final leaderboard shows all players ranked by points. Achievements earned appear as emoji badges below each score — the story of how you played, not just the number.</div>
+    </div>
+  </div>
+
+  <div class="rule-divider" style="margin: 10pt 0;"></div>
+
+  <div class="micro" style="margin-bottom: 8pt;">Quick Reference — Endgame Qualification</div>
+  <div class="qr-panel">
+    <div class="qr-label">The One Requirements</div>
+    <div class="qr-row"><div class="qr-key">Score threshold</div><div class="qr-val">≥ 10 points after 7 rounds</div></div>
+    <div class="qr-row"><div class="qr-key">Hearts remaining</div><div class="qr-val">At least 1 heart (not fully broken)</div></div>
+    <div class="qr-row"><div class="qr-key">The One bonus</div><div class="qr-val">Hidden trait worth +5</div></div>
+    <div class="qr-row"><div class="qr-key">If you fail both</div><div class="qr-val">Skip directly to Results</div></div>
+  </div>
+
+  <div class="qr-panel">
+    <div class="qr-label">Winning</div>
+    <div class="qr-row"><div class="qr-key">Highest score wins</div><div class="qr-val">After all rounds including The One and Tiebreaker</div></div>
+    <div class="qr-row"><div class="qr-key">Tie resolution</div><div class="qr-val">Tiebreaker speed round</div></div>
+    <div class="qr-row"><div class="qr-key">Bragging rights</div><div class="qr-val">Achievements count as a second score layer</div></div>
+  </div>
+
+  <div class="page-footer">
+    <div class="micro" style="color: #2a2525;">The Catch — Official Rulebook</div>
+    <div class="page-num">05</div>
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+
+<!-- ═════════════════════════════════════════ PAGE 6: ACHIEVEMENTS ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="page-header">
+    <div class="page-header-title">The Catch — Rulebook</div>
+    <div class="micro">Achievements &amp; Quick Reference</div>
+  </div>
+
+  <div class="section-label">Section 05</div>
+  <div class="section-title display" style="font-size: 34pt; margin-bottom: 14pt;">ACHIEVEMENTS</div>
+
+  <p style="font-size: 9.5pt; font-weight: 300; color: rgba(239,230,220,0.55); max-width: 5in; margin-bottom: 12pt; line-height: 1.55;">
+    11 achievements track the story of your run — not just your score. They toast on screen when earned and appear on the final Results page.
+  </p>
+
+  <div class="ach-grid" style="gap: 5pt; margin-top: 6pt;">
+    <div class="ach-item">
+      <span class="ach-emoji">🎣</span>
+      <div>
+        <div class="ach-name">Catfish Dodger</div>
+        <div class="ach-desc">Ghosted the catfish. You felt something was off — and you were right.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">🪝</span>
+      <div>
+        <div class="ach-name">Got Catfished</div>
+        <div class="ach-desc">Dated the catfish. They were too perfect. Should have trusted your gut.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">👻</span>
+      <div>
+        <div class="ach-name">Ghost Master</div>
+        <div class="ach-desc">Used all three ghosts in a single game. No mess, no drama.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">🔥</span>
+      <div>
+        <div class="ach-name">Chaos Enjoyer</div>
+        <div class="ach-desc">Dated every red flag and came back for more.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">🚩</span>
+      <div>
+        <div class="ach-name">Red Flag Radar</div>
+        <div class="ach-desc">Spotted the pattern before it spotted you.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">🛋️</span>
+      <div>
+        <div class="ach-name">Therapized</div>
+        <div class="ach-desc">Used the therapy action. You took a step back — and it paid off.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">⚡</span>
+      <div>
+        <div class="ach-name">Smooth Criminal</div>
+        <div class="ach-desc">Successfully stole points from the leader. They didn't see it coming.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">♥♥</span>
+      <div>
+        <div class="ach-name">Double Dater</div>
+        <div class="ach-desc">Both you and another player chose Double Date on the same round.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">💘</span>
+      <div>
+        <div class="ach-name">Found The One</div>
+        <div class="ach-desc">Dated The One and scored positive. Against all odds — you won.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">💔</span>
+      <div>
+        <div class="ach-name">Unmatched</div>
+        <div class="ach-desc">Dated The One and scored negative. So close — and then it was gone.</div>
+      </div>
+    </div>
+    <div class="ach-item">
+      <span class="ach-emoji">☠️</span>
+      <div>
+        <div class="ach-name">No Survivors</div>
+        <div class="ach-desc">Every single date was a red flag. You survived anyway.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-divider" style="margin-top: 12pt; margin-bottom: 10pt;"></div>
+
+  <div class="section-label" style="margin-top: 0; margin-bottom: 6pt;">Quick Reference</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; margin-top: 0;">
+    <div class="qr-panel">
+      <div class="qr-label">Limits Per Game</div>
+      <div class="qr-row"><div class="qr-key">Ghosts</div><div class="qr-val">3 per player</div></div>
+      <div class="qr-row"><div class="qr-key">Stalk tokens</div><div class="qr-val">3 per player</div></div>
+      <div class="qr-row"><div class="qr-key">Steal</div><div class="qr-val">1 use per player</div></div>
+      <div class="qr-row"><div class="qr-key">Therapy</div><div class="qr-val">1 use per player</div></div>
+      <div class="qr-row"><div class="qr-key">Hearts</div><div class="qr-val">3 per player</div></div>
+      <div class="qr-row"><div class="qr-key">Catfish</div><div class="qr-val">1 per game (rounds 1–5)</div></div>
+    </div>
+    <div class="qr-panel">
+      <div class="qr-label">Multiplayer Timer</div>
+      <div class="qr-row"><div class="qr-key">Time to decide</div><div class="qr-val">30 seconds per player</div></div>
+      <div class="qr-row"><div class="qr-key">If timer runs out</div><div class="qr-val">Auto-ghost (uses one ghost)</div></div>
+      <div class="qr-row"><div class="qr-key">Timer bar color</div><div class="qr-val">Mint → Gold → Red (urgency)</div></div>
+      <div class="qr-row"><div class="qr-key">Steal / Double Date</div><div class="qr-val">Multiplayer only (2+ players)</div></div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="micro" style="color: #2a2525;">The Catch — Official Rulebook</div>
+    <div class="page-num">06</div>
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+
+<!-- ════════════════════════════════════════ PAGE 7: STRATEGY + TIPS ═══ -->
+<div class="page">
+  <div class="dot-grid"></div>
+  <div class="page-header">
+    <div class="page-header-title">The Catch — Rulebook</div>
+    <div class="micro">Strategy &amp; Tips</div>
+  </div>
+
+  <div class="section-label">Section 06</div>
+  <div class="section-title display">STRATEGY<br>&amp; TIPS</div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 20pt; margin-top: 4pt;">
+    <div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Save ghosts for the worst profiles</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">You only get 3. Don't waste them early on profiles that might be fine — ghost the ones where the visible traits are already suspicious and you have no stalk tokens left.</div>
+        </div>
+      </div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Stalk before committing to a date</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">Revealing even one hidden trait can change the math dramatically. If the visible traits look middling, spend a stalk token before deciding. +3 and −3 traits feel completely different when revealed.</div>
+        </div>
+      </div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Catfish detection</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">The Catfish always looks perfect on the surface. If every visible trait is a green flag with no yellows or reds, that's suspicious. Stalk one hidden trait — if it's deeply negative, ghost immediately.</div>
+        </div>
+      </div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Use Steal at the right moment</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">Stealing 3 points is most effective in round 5 or 6. Too early and the leader changes. Too late and the gap may be too large. Use it when you're within striking distance.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Therapy is an investment</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">The 50/50 on +4 or +0 is only worth it when you need points and can afford to skip a round. Don't use it round 1 — use it after brutal red flag dates in rounds 4–6.</div>
+        </div>
+      </div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Protect your hearts for The One</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">Hearts are your ticket to the final round. If you're above 10 points but lost all 3 hearts, you can't face The One. Ghost aggressively in the final 2 rounds if you're sitting on 1 heart.</div>
+        </div>
+      </div>
+      <div class="step-block" style="margin-bottom: 10pt;">
+        <div class="step-num" style="color: #7CE0A8; font-size: 18pt;">▲</div>
+        <div class="step-content">
+          <div class="step-title">Coordinate Double Dates</div>
+          <div class="step-body" style="font-size: 9.5pt; line-height: 1.55;">Double Date only works if 2+ players choose it simultaneously — without communicating. If you suspect someone will date the same profile, choosing Double Date cuts your risk. If they ghost, you date normally.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-divider" style="margin: 8pt 0;"></div>
+
+  <div class="callout teal" style="padding: 10pt 14pt; margin: 0;">
+    <div class="callout-label" style="color: #7CE0A8; margin-bottom: 4pt;">The Golden Rule</div>
+    <div class="callout-body" style="font-size: 9.5pt; line-height: 1.55;">Every profile has 6 traits. You only see 2 before deciding. Everything else is a bet. The game isn't about being right — it's about making better bets than everyone else.</div>
+  </div>
+
+  <div style="margin-top: 6pt; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+      <div class="micro" style="margin-bottom: 8pt;">Play the game</div>
+      <div style="font-size: 11pt; font-weight: 300; color: rgba(239,230,220,0.45);">bymayawalsh.design</div>
+    </div>
+    <div style="text-align: right;">
+      <div class="display" style="font-size: 18pt; color: #FF4D6D;">THE CATCH</div>
+      <div class="micro" style="margin-top: 4pt;">Same rules. Louder consequences.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="micro" style="color: #2a2525;">The Catch — Official Rulebook</div>
+    <div class="page-num">07</div>
+  </div>
+  <div class="accent-bar"></div>
+</div>
+
+</body>
+</html>
