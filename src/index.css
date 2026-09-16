@@ -17,6 +17,21 @@
   100% { transform: translateY(600%); opacity: 0; }
 }
 
+@keyframes catch-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes catch-slide-down {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes catch-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @keyframes catch-bar-glow {
   0%, 100% { box-shadow: 0 0 8px 1px rgba(255,77,109,0.35), 0 0 24px 2px rgba(255,77,109,0.12); }
   50%       { box-shadow: 0 0 14px 2px rgba(255,77,109,0.7), 0 0 40px 4px rgba(255,77,109,0.28); }

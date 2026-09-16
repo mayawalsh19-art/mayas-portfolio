@@ -2,6 +2,19 @@ import { useReducer, useState, useEffect, useRef } from 'react'
 import { generateProfiles, TRAIT_POOL, PLAYER_TYPES, THE_ONE_PROFILE, PLAYER_AVATARS, ACHIEVEMENTS, profileScore, getPersonality } from '../data/catchProfiles'
 import { Doll, DOLL_BG } from './DollCharacters'
 
+// ─── Stock photo map (one per doll character) ────────────────────────────────
+const DOLL_PHOTO = {
+  bibi:  '/catch-photos/bibi.jpg',
+  kip:   '/catch-photos/kip.jpg',
+  ada:   '/catch-photos/ada.jpg',
+  dax:   '/catch-photos/dax.jpg',
+  suki:  '/catch-photos/suki.jpg',
+  rell:  '/catch-photos/rell.jpg',
+  milo:  '/catch-photos/milo.jpg',
+  petra: '/catch-photos/petra.jpg',
+  cass:  '/catch-photos/cass.jpg',
+}
+
 // ─── Option B · After Hours design tokens ─────────────────────────────────────
 const C = {
   bg:      '#131011',
@@ -47,7 +60,7 @@ function shuffle(arr) {
 }
 
 function makePlayer(id, name, avatar, playerType = null) {
-  return { id, name, avatar, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false, therapyTokens: 1, therapyActive: false, therapyBonus: 0, stealTokens: 1, achievements: [], ghostedRedFlags: 0 }
+  return { id, name, avatar, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, looks: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false, therapyTokens: 1, therapyActive: false, therapyBonus: 0, stealTokens: 1, achievements: [], ghostedRedFlags: 0 }
 }
 
 function grantAchievement(achievements, id) {
@@ -378,6 +391,15 @@ function reducer(state, { type, ...p }) {
       return { ...state, tbRevealStep: next }
     }
 
+    case 'USE_LOOK': {
+      const pool = state.players.filter(pl => !pl.isNPC)
+      const cur  = pool[state.decidingPlayerIdx]
+      if (!cur || cur.looks <= 0) return state
+      const newPlayers = state.players.map(pl => pl.id === cur.id ? { ...pl, looks: pl.looks - 1 } : pl)
+      const newDec = { ...state.roundDecisions, [cur.id]: { ...(state.roundDecisions[cur.id] ?? {}), lookUsed: true } }
+      return { ...state, players: newPlayers, roundDecisions: newDec }
+    }
+
     default: return state
   }
 }
@@ -387,19 +409,21 @@ function Hud({ players, currentRound, mode, currentPlayer }) {
   const p = mode === 'single' ? players.find(pl => !pl.isNPC) : currentPlayer
   if (!p) return null
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', background: C.bg, borderBottom: hairline }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 16px', background: C.bg, borderBottom: hairline }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {[0,1,2].map(i => <span key={i} style={{ fontSize: 13, color: C.accent, opacity: i < p.hearts ? 1 : 0.18 }}>♥</span>)}
-          {p.heartbreakMode && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.accent, marginLeft: 4, letterSpacing: '0.12em' }}>HALF CREDIT</span>}
         </div>
-        <span style={{ fontFamily: WS, fontWeight: 500, color: '#555', fontSize: 12 }}>🔎×{p.stalkTokens}</span>
-        <span style={{ fontFamily: WS, fontWeight: 500, color: '#555', fontSize: 12 }}>◌×{p.ghosts}</span>
+        <div style={{ display: 'flex', gap: 6, color: '#555', fontSize: 11, fontFamily: WS }}>
+          <span>🔎{p.stalkTokens}</span>
+          <span>👁{p.looks ?? 3}</span>
+          <span>◌{p.ghosts}</span>
+        </div>
         <span style={{ fontFamily: WS, fontWeight: 700, color: p.loveScore >= 0 ? C.teal : C.accent, fontSize: 13 }}>{p.loveScore >= 0 ? '+' : ''}{p.loveScore}</span>
+        {p.heartbreakMode && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.accent, letterSpacing: '0.1em' }}>½</span>}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-        <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 12, letterSpacing: '0.12em' }}>MATCH {String(currentRound + 1).padStart(2, '0')} / 07</div>
-        {p.playerType && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.teal, letterSpacing: '0.12em' }}>{p.playerType.emoji} {p.playerType.label}</div>}
+      <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 12, letterSpacing: '0.12em' }}>
+        {String(currentRound + 1).padStart(2, '0')} / 07
       </div>
     </div>
   )
@@ -571,23 +595,10 @@ function PlayerSetupScreen({ state, dispatch }) {
             )}
           </div>
 
-          {/* Stats preview */}
-          <div style={{ display: 'flex', gap: 20, padding: '12px 0' }}>
-            <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: '#555', letterSpacing: '0.1em' }}>♥ × 3</span>
-            <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: '#555', letterSpacing: '0.1em' }}>🔍 × 3</span>
-            <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: '#555', letterSpacing: '0.1em' }}>◌ × 3</span>
-          </div>
-
           {/* NPC rival notice */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: C.card, border: hairline, marginBottom: 20 }}>
-            <div style={{ display: 'flex', gap: -4 }}>
-              <span style={{ fontSize: 18 }}>🌙</span>
-              <span style={{ fontSize: 18, marginLeft: -4 }}>🔥</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: '0.15em' }}>2 RIVALS IN THE ROOM</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#666', marginTop: 2 }}>They're already reading profiles.</div>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: C.card, border: hairline, marginBottom: 20 }}>
+            <span style={{ fontSize: 16 }}>🌙🔥</span>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold, letterSpacing: '0.15em' }}>2 RIVALS IN THE ROOM</div>
           </div>
 
           <button onClick={start} disabled={!canStart}
@@ -672,7 +683,36 @@ function CustomTraitsScreen({ state, dispatch }) {
   const [cpTraitText, setCpTraitText] = useState('')
   const [cpIsGreen, setCpIsGreen] = useState(true)
   const [cpTraits, setCpTraits] = useState([])
+  const [cpPhoto, setCpPhoto] = useState(null)
   const [showCpBuilder, setShowCpBuilder] = useState(false)
+  const photoInputRef = useRef(null)
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setCpPhoto(ev.target.result)
+    reader.readAsDataURL(file)
+  }
+
+  // Saved profiles library (persisted in localStorage)
+  const [savedProfiles, setSavedProfiles] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('catch_saved_profiles') ?? '[]') } catch { return [] }
+  })
+  const [showLibrary, setShowLibrary] = useState(false)
+
+  const saveToLibrary = (profile) => {
+    const entry = { ...profile, id: `custom_${Date.now()}`, savedAt: Date.now() }
+    const updated = [entry, ...savedProfiles.filter(p => p.name !== profile.name)]
+    setSavedProfiles(updated)
+    localStorage.setItem('catch_saved_profiles', JSON.stringify(updated))
+  }
+
+  const deleteFromLibrary = (name) => {
+    const updated = savedProfiles.filter(p => p.name !== name)
+    setSavedProfiles(updated)
+    localStorage.setItem('catch_saved_profiles', JSON.stringify(updated))
+  }
 
   const addTrait = () => {
     const trimmed = text.trim()
@@ -699,6 +739,7 @@ function CustomTraitsScreen({ state, dispatch }) {
       age:       25,
       emoji:     '👤',
       doll:      null,
+      photo:     cpPhoto ?? null,
       archetype: 'CUSTOM PROFILE',
       tags:      ['REAL PERSON', 'CUSTOM BUILD'],
       bio:       `Someone you actually know. Good luck.`,
@@ -706,7 +747,7 @@ function CustomTraitsScreen({ state, dispatch }) {
       isCustom:  true,
     }
     dispatch({ type: 'ADD_CUSTOM_PROFILE', profile })
-    setCpName(''); setCpTraits([]); setCpTraitText(''); setShowCpBuilder(false)
+    setCpName(''); setCpTraits([]); setCpTraitText(''); setCpPhoto(null); setShowCpBuilder(false)
   }
 
   const hasTraits    = state.customTraits.length > 0
@@ -775,12 +816,69 @@ function CustomTraitsScreen({ state, dispatch }) {
             style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', padding: '12px 0', background: showCpBuilder ? `${C.teal}18` : 'transparent', border: `1px solid ${showCpBuilder ? C.teal : '#333'}`, color: showCpBuilder ? C.teal : '#555', borderRadius: 2, cursor: 'pointer' }}>
             👤 BUILD A REAL PERSON
           </button>
+          {savedProfiles.length > 0 && (
+            <button onClick={() => setShowLibrary(s => !s)}
+              style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', padding: '12px 0', background: showLibrary ? `${C.gold}18` : 'transparent', border: `1px solid ${showLibrary ? C.gold : '#333'}`, color: showLibrary ? C.gold : '#555', borderRadius: 2, cursor: 'pointer' }}>
+              📋 MY SAVED PROFILES ({savedProfiles.length})
+            </button>
+          )}
         </div>
+
+        {/* Saved profiles library */}
+        {showLibrary && savedProfiles.length > 0 && (
+          <div style={{ padding: 14, background: C.card, border: `1px solid ${C.gold}44`, marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold, letterSpacing: '0.2em', marginBottom: 4 }}>SAVED PROFILES</div>
+            {savedProfiles.map((sp) => (
+              <div key={sp.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: C.cardAlt, borderLeft: `3px solid ${C.gold}` }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontFamily: ANTON, fontSize: 14, color: C.cream, letterSpacing: '0.06em' }}>{sp.name.toUpperCase()}</div>
+                  <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 1 }}>{sp.traits.length} traits</div>
+                </div>
+                <button
+                  onClick={() => {
+                    dispatch({ type: 'ADD_CUSTOM_PROFILE', profile: { ...sp, id: `custom_${Date.now()}` } })
+                    setShowLibrary(false)
+                  }}
+                  style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.1em', padding: '6px 10px', background: `${C.teal}22`, border: `1px solid ${C.teal}`, color: C.teal, borderRadius: 2, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  + USE
+                </button>
+                <button
+                  onClick={() => deleteFromLibrary(sp.name)}
+                  style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: '#555', background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 6px' }}>
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Custom profile builder */}
         {showCpBuilder && (
           <div style={{ padding: 14, background: C.card, border: `1px solid ${C.teal}44`, marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.teal, letterSpacing: '0.2em', marginBottom: 4 }}>CUSTOM PROFILE BUILDER</div>
+
+            {/* Photo upload */}
+            <div
+              onClick={() => photoInputRef.current?.click()}
+              style={{ width: '100%', height: 130, background: cpPhoto ? 'transparent' : C.cardAlt, border: cpPhoto ? 'none' : `1px dashed #333`, borderRadius: 4, cursor: 'pointer', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
+            >
+              {cpPhoto
+                ? <img src={cpPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                : <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 28 }}>📸</div>
+                    <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.14em', marginTop: 4 }}>ADD PHOTO</div>
+                    <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#444', marginTop: 2 }}>optional · tap to upload</div>
+                  </div>
+              }
+              {cpPhoto && (
+                <button onClick={e => { e.stopPropagation(); setCpPhoto(null) }}
+                  style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.65)', border: 'none', color: '#fff', width: 24, height: 24, borderRadius: '50%', cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  ✕
+                </button>
+              )}
+            </div>
+            <input ref={photoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoUpload} />
+
             <input
               style={{ width: '100%', fontFamily: ANTON, fontSize: 22, letterSpacing: '0.04em', background: C.cardAlt, color: C.cream, border: cpName ? `1px solid rgba(239,230,220,0.2)` : hairline, padding: '10px 12px', outline: 'none', boxSizing: 'border-box', caretColor: C.accent }}
               placeholder="THEIR NAME"
@@ -821,10 +919,26 @@ function CustomTraitsScreen({ state, dispatch }) {
                 ))}
               </div>
             )}
-            <button onClick={submitCustomProfile} disabled={!cpName.trim() || cpTraits.length < 2}
-              style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', padding: '11px 0', background: cpName.trim() && cpTraits.length >= 2 ? `${C.teal}22` : 'transparent', border: `1px solid ${cpName.trim() && cpTraits.length >= 2 ? C.teal : '#333'}`, color: cpName.trim() && cpTraits.length >= 2 ? C.teal : '#444', borderRadius: 2, cursor: cpName.trim() && cpTraits.length >= 2 ? 'pointer' : 'not-allowed' }}>
-              ✓ ADD {cpName.trim() ? cpName.trim().toUpperCase() : 'PROFILE'} TO GAME
-            </button>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <button onClick={submitCustomProfile} disabled={!cpName.trim() || cpTraits.length < 2}
+                style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', padding: '11px 0', background: cpName.trim() && cpTraits.length >= 2 ? `${C.teal}22` : 'transparent', border: `1px solid ${cpName.trim() && cpTraits.length >= 2 ? C.teal : '#333'}`, color: cpName.trim() && cpTraits.length >= 2 ? C.teal : '#444', borderRadius: 2, cursor: cpName.trim() && cpTraits.length >= 2 ? 'pointer' : 'not-allowed' }}>
+                ✓ ADD TO GAME
+              </button>
+              <button
+                disabled={!cpName.trim() || cpTraits.length < 2}
+                onClick={() => {
+                  if (!cpName.trim() || cpTraits.length < 2) return
+                  const sorted = [...cpTraits].sort((a, b) => Math.abs(a.value) - Math.abs(b.value))
+                  const traits = sorted.map((t, i) => ({ ...t, startVisible: i < 2 }))
+                  saveToLibrary({ name: cpName.trim(), age: 25, emoji: '👤', doll: null, photo: cpPhoto ?? null, archetype: 'CUSTOM PROFILE', tags: ['REAL PERSON', 'CUSTOM BUILD'], bio: 'Someone you actually know. Good luck.', traits, isCustom: true })
+                }}
+                style={{ flexShrink: 0, fontFamily: WS, fontWeight: 700, fontSize: 20, padding: '8px 14px', background: 'transparent', border: `1px solid ${cpName.trim() && cpTraits.length >= 2 ? C.gold : '#333'}`, color: cpName.trim() && cpTraits.length >= 2 ? C.gold : '#444', borderRadius: 2, cursor: cpName.trim() && cpTraits.length >= 2 ? 'pointer' : 'not-allowed', lineHeight: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}
+                title="Save to library for future games"
+              >
+                <span>💾</span>
+                <span style={{ fontSize: 8, letterSpacing: '0.12em' }}>SAVE</span>
+              </button>
+            </div>
           </div>
         )}
 
@@ -879,26 +993,86 @@ function CustomTraitsScreen({ state, dispatch }) {
 }
 
 // ─── PROFILE CARD (photo + tags, no traits) ───────────────────────────────────
-function ProfileCard({ profile, goldTheme }) {
+function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
+  const photo    = profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null)
+  const hasPhoto = !!photo
+  const maxLook  = (lookUnlocked && hasPhoto) ? 2 : 0
+  const [lookIdx, setLookIdx] = useState(0)
+  const touchStartX = useRef(null)
+
+  useEffect(() => {
+    if (lookUnlocked && hasPhoto) setLookIdx(1)
+  }, [lookUnlocked])
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX }
+  const onTouchEnd   = (e) => {
+    if (touchStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(dx) > 20) setLookIdx(i => dx < 0 ? Math.min(i + 1, maxLook) : Math.max(i - 1, 0))
+    touchStartX.current = null
+  }
+
+  const gradOverlay = goldTheme
+    ? 'linear-gradient(to top,rgba(8,6,0,0.97),transparent)'
+    : 'linear-gradient(to top,rgba(0,0,0,0.96),transparent)'
+
   return (
     <div style={{ background: C.card, border: hairline, overflow: 'hidden' }}>
-      <div style={{ position: 'relative', width: '100%', height: 'clamp(200px, 28dvh, 260px)', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', background: profile.doll ? DOLL_BG[profile.doll] : (goldTheme ? '#12100a' : '#111') }}>
-        {profile.doll
-          ? <div style={{ transform: 'scale(1.5)', transformOrigin: 'top center', marginTop: -10 }}><Doll name={profile.doll} /></div>
-          : <span style={{ fontSize: 72, lineHeight: 1, display: 'flex', alignItems: 'center', height: '100%' }}>{profile.emoji}</span>
-        }
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '40px 12px 9px', background: goldTheme ? 'linear-gradient(to top,rgba(8,6,0,0.97),transparent)' : 'linear-gradient(to top,rgba(0,0,0,0.96),transparent)' }}>
+      <div
+        onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+        style={{ position: 'relative', width: '100%', height: 'clamp(220px, 32dvh, 280px)', overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : (goldTheme ? '#12100a' : '#111'), userSelect: 'none' }}
+      >
+        {/* Look 0: doll / emoji — always mounted, fades in/out */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', opacity: lookIdx === 0 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }}>
+          {profile.doll
+            ? <div style={{ transform: 'scale(1.5)', transformOrigin: 'top center', marginTop: -10 }}><Doll name={profile.doll} /></div>
+            : <span style={{ fontSize: 72, lineHeight: 1, display: 'flex', alignItems: 'center', height: '100%' }}>{profile.emoji}</span>
+          }
+        </div>
+
+        {/* Look 1: B&W photo — always mounted when photo exists, fades in/out */}
+        {hasPhoto && (
+          <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', filter: 'grayscale(1) contrast(1.1) brightness(0.9)', display: 'block', opacity: lookIdx === 1 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }} />
+        )}
+
+        {/* Look 2: color photo — always mounted when photo exists, fades in/out */}
+        {hasPhoto && (
+          <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', display: 'block', opacity: lookIdx === 2 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }} />
+        )}
+
+        {/* Left tap zone — go back one look */}
+        {lookUnlocked && hasPhoto && (
+          <div onClick={() => setLookIdx(i => Math.max(i - 1, 0))}
+            style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '35%', zIndex: 4, cursor: lookIdx > 0 ? 'pointer' : 'default' }} />
+        )}
+        {/* Right tap zone — go forward one look */}
+        {lookUnlocked && hasPhoto && (
+          <div onClick={() => setLookIdx(i => Math.min(i + 1, maxLook))}
+            style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '35%', zIndex: 4, cursor: lookIdx < maxLook ? 'pointer' : 'default' }} />
+        )}
+
+        {/* Dot indicators at top */}
+        {lookUnlocked && hasPhoto && (
+          <div style={{ position: 'absolute', top: 8, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 5, zIndex: 5, pointerEvents: 'none' }}>
+            {[0,1,2].map(i => (
+              <div key={i} style={{ width: i === lookIdx ? 18 : 6, height: 6, borderRadius: 3, background: i === lookIdx ? '#fff' : 'rgba(255,255,255,0.35)', transition: 'width 0.2s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.5)' }} />
+            ))}
+          </div>
+        )}
+
+        {/* Look label */}
+        {lookUnlocked && hasPhoto && lookIdx > 0 && (
+          <div style={{ position: 'absolute', top: 8, right: 10, zIndex: 6, fontFamily: WS, fontWeight: 700, fontSize: 8, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.14em', background: 'rgba(0,0,0,0.45)', padding: '2px 7px', borderRadius: 2 }}>
+            {lookIdx === 1 ? 'B&W' : 'COLOR'}
+          </div>
+        )}
+
+        {/* Name gradient overlay */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '40px 12px 9px', background: gradOverlay, zIndex: 3, pointerEvents: 'none' }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 19, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
           {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 9, letterSpacing: '0.2em', marginTop: 2 }}>{profile.archetype}</div>}
         </div>
       </div>
-      {profile.tags?.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, padding: '7px 12px', borderBottom: hairline }}>
-          {profile.tags.map((tag, i) => (
-            <span key={i} style={{ fontFamily: WS, fontWeight: 700, background: C.cardAlt, color: '#666', fontSize: 8, letterSpacing: '0.12em', padding: '2px 6px', borderRadius: 2 }}>{tag}</span>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
@@ -940,13 +1114,16 @@ function RoundScreen({ state, dispatch }) {
   }
 
   const [showScorePopup, setShowScorePopup] = useState(false)
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [toastAch, setToastAch] = useState(null)
   const prevAchRef = useRef([])
 
   useEffect(() => {
     if (state.roundPhase === 'scored') {
       setShowScorePopup(true)
-      const id = setTimeout(() => setShowScorePopup(false), 1800)
+      setShowLeaderboard(false)
+      const id1 = setTimeout(() => { setShowScorePopup(false); setShowLeaderboard(true) }, 1800)
+      const id2 = setTimeout(() => setShowLeaderboard(false), 1800 + 7000)
       // Check for new achievements on the real player
       const realPlayer = state.players.find(pl => !pl.isNPC)
       if (realPlayer) {
@@ -958,7 +1135,7 @@ function RoundScreen({ state, dispatch }) {
         }
         prevAchRef.current = realPlayer.achievements
       }
-      return () => clearTimeout(id)
+      return () => { clearTimeout(id1); clearTimeout(id2) }
     }
   }, [state.roundPhase, state.currentRound])
 
@@ -1009,24 +1186,17 @@ function RoundScreen({ state, dispatch }) {
         ? `0 0 32px rgba(255,77,109,0.7), 0 0 72px rgba(255,77,109,0.35)`
         : 'none'
       return (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.bg, gap: 6, userSelect: 'none', position: 'relative' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.bg, gap: 4, userSelect: 'none', position: 'relative' }}>
           {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
-          {isDodge && (
-            <div style={{ fontFamily: ANTON, fontSize: 16, letterSpacing: '0.14em', color: C.teal }}>🎣 CATFISH DODGED</div>
-          )}
-          <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.22em', color: '#555' }}>
-            {isGhost ? '◌ GHOSTED' : myResult.action === 'steal' ? '⚡ STOLEN' : myResult.action === 'double_date' ? '♥♥ DOUBLE DATE' : '♥ DATED'}
+          <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.22em', color: '#444' }}>
+            {isDodge ? '🎣 DODGED' : isGhost ? '◌' : myResult.action === 'steal' ? '⚡' : myResult.action === 'double_date' ? '♥♥' : '♥'}
           </div>
           <div style={{ fontFamily: ANTON, fontSize: 'clamp(100px,26vw,148px)', color: ptColor, lineHeight: 1, textShadow: ptGlow }}>
             {pts > 0 ? `+${pts}` : pts === 0 ? '±0' : pts}
           </div>
-          <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, letterSpacing: '0.18em', color: '#555' }}>LOVE POINTS</div>
           {isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' && (
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.14em', marginTop: 4 }}>🪝 CATFISHED. −4 PENALTY.</div>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.12em' }}>🪝 −4</div>
           )}
-          {pts > 0 && score >= 7 && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.teal, letterSpacing: '0.14em', marginTop: 4 }}>▲ STANDARDS: WORKING</div>}
-          {pts < 0 && myResult.isRedFlag && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.14em', marginTop: 4 }}>🚩 RED FLAG PENALTY</div>}
-          {isGhost && !isDodge && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#555', letterSpacing: '0.14em', marginTop: 4 }}>SAFE PLAY.</div>}
         </div>
       )
     }
@@ -1034,47 +1204,85 @@ function RoundScreen({ state, dispatch }) {
     return (
       <div style={{ flex: 1, overflowY: 'auto', background: C.bg, position: 'relative' }}>
         {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
+
+        {/* Leaderboard overlay — centered, auto-dismisses after 7s */}
+        {showLeaderboard && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 50,
+          background: 'rgba(0,0,0,0.65)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          animation: 'catch-fade-in 0.3s ease',
+          padding: 24,
+        }} onClick={e => { if (e.target === e.currentTarget) setShowLeaderboard(false) }}>
+          <div style={{
+            background: C.card, border: `1px solid ${C.accent}44`, borderRadius: 12,
+            padding: '20px 20px 24px', maxWidth: 400, width: '100%',
+            animation: 'catch-fade-in 0.3s ease',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.2em' }}>LEADERBOARD</div>
+              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#444', letterSpacing: '0.12em' }}>MATCH {state.currentRound + 1} / 07</div>
+            </div>
+            {sorted.map((pl, rank) => {
+              const r = results[pl.id]
+              const isMe = !pl.isNPC
+              return (
+                <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: isMe ? `${C.accent}12` : 'transparent', border: isMe ? `1px solid ${C.accent}30` : hairline, marginBottom: 4 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontFamily: ANTON, fontSize: 12, color: '#444', minWidth: 16 }}>#{rank + 1}</span>
+                    <span style={{ fontSize: 16 }}>{pl.avatar}</span>
+                    <div style={{ fontFamily: WS, fontWeight: isMe ? 700 : 400, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe && state.mode === 'single' ? 'YOU' : pl.name}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {r && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: r.action === 'date' || r.action === 'double_date' ? C.accent : r.action === 'steal' ? C.gold : '#555', letterSpacing: '0.08em' }}>
+                      {r.action === 'date' || r.action === 'double_date' ? '♥' : r.action === 'steal' ? '⚡' : '◌'}
+                    </span>}
+                    <span style={{ fontFamily: ANTON, fontSize: 20, color: pl.loveScore >= 0 ? C.teal : C.accent }}>{pl.loveScore >= 0 ? '+' : ''}{pl.loveScore}</span>
+                  </div>
+                </div>
+              )
+            })}
+            <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer', marginTop: 12 }}>
+              {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
+            </button>
+          </div>
+        </div>
+        )}
+
         {isCatfish && (
-          <div style={{ padding: '12px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
-            <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 20, letterSpacing: '0.1em' }}>🎣 THAT WAS A CATFISH</div>
-            <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#5aaa6a', marginTop: 3 }}>The good traits were real. The hidden ones were a lie. −4 to anyone who dated.</div>
+          <div style={{ padding: '10px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
+            <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 18, letterSpacing: '0.1em' }}>🎣 CATFISH</div>
           </div>
         )}
         {!isCatfish && anyRedFlag && (
-          <div style={{ padding: '12px 20px', textAlign: 'center', background: '#1a0008', borderBottom: `1px solid ${C.accent}44` }}>
-            <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 20, letterSpacing: '0.1em' }}>🚩 ABSOLUTELY NOT</div>
-            <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#cc4466', marginTop: 3 }}>Dating a −5 or worse costs you 2 extra points.</div>
+          <div style={{ padding: '10px 20px', textAlign: 'center', background: '#1a0008', borderBottom: `1px solid ${C.accent}44` }}>
+            <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 18, letterSpacing: '0.1em' }}>🚩 RED FLAG</div>
           </div>
         )}
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '20px 16px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 16 }}>
+        <div style={{ maxWidth: 400, margin: '0 auto', padding: '16px 16px' }}>
+          <div style={{ textAlign: 'center', marginBottom: 14 }}>
             <div style={{ fontFamily: ANTON, fontSize: 48, color: score >= 7 ? C.teal : score <= -5 ? C.accent : score > 0 ? C.cream : '#555', lineHeight: 1 }}>
               {score > 0 ? `+${score}` : score}
             </div>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.2em' }}>COMPATIBILITY SCORE</div>
-            {score >= 7  && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.teal,   marginTop: 4 }}>▲ STANDARDS: WORKING</div>}
-            {score <= -5 && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.accent, marginTop: 4 }}>WE SAW THE SIGNS</div>}
           </div>
 
           {/* All traits revealed */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 16, background: C.card, border: hairline }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 12, background: C.card, border: hairline }}>
             {profile.traits.map((t, i) => <TraitRow key={i} trait={t} revealed={true} stalked={false} />)}
           </div>
 
           {/* Your result */}
           {myResult && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: hairline, marginBottom: 8 }}>
-              <div>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
-                  {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name} — {
-                    myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌ GHOSTED'
-                    : myResult.action === 'steal' ? '⚡ STOLE'
-                    : myResult.action === 'double_date' ? '♥♥ DOUBLE DATE'
-                    : '♥ DATED'
-                  }{myResult.isRedFlag && !myResult.isCatfish ? ' 🚩' : ''}{myResult.isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' ? ' 🪝' : ''}
-                </div>
-                {myResult.action === 'date' && myResult.pts > 0 && !isCatfish && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 2 }}>STANDARDS: WORKING</div>}
-                {myResult.catfishDodged && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: C.teal, marginTop: 2 }}>+1 for dodging the catfish</div>}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: hairline, marginBottom: 8 }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
+                {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name}
+                <span style={{ fontWeight: 400, color: '#555' }}> — {
+                  myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌'
+                  : myResult.action === 'steal' ? '⚡'
+                  : myResult.action === 'double_date' ? '♥♥'
+                  : '♥'
+                }{myResult.isRedFlag && !myResult.isCatfish ? ' 🚩' : ''}{myResult.isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' ? ' 🪝' : ''}</span>
               </div>
               <div style={{ fontFamily: ANTON, fontSize: 24, color: myResult.pts > 0 ? C.teal : myResult.pts < 0 ? C.accent : '#555' }}>
                 {myResult.pts > 0 ? `+${myResult.pts}` : myResult.pts === 0 ? '±0' : myResult.pts}
@@ -1082,54 +1290,31 @@ function RoundScreen({ state, dispatch }) {
             </div>
           )}
 
-          {/* Therapy button (scored phase, before next round) */}
+          {/* Therapy */}
           {realTherapyTokens > 0 && !realTherapyActive && (
-            <div style={{ marginBottom: 10 }}>
+            <div style={{ marginBottom: 8 }}>
               <button onClick={() => dispatch({ type: 'USE_THERAPY', playerId: realPlayer?.id })}
-                style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', padding: '10px 0', background: `${C.velvet}`, border: `1px solid ${C.gold}66`, color: C.gold, borderRadius: 2, cursor: 'pointer' }}>
-                🛋️ GO TO THERAPY — SKIP NEXT ROUND · 50% CHANCE +4
+                style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '10px 0', background: C.velvet, border: `1px solid ${C.gold}66`, color: C.gold, borderRadius: 2, cursor: 'pointer' }}>
+                🛋️ THERAPY — SKIP ROUND · 50% +4
               </button>
             </div>
           )}
           {realTherapyActive && (
-            <div style={{ marginBottom: 10, padding: '10px 14px', background: `${C.velvet}`, border: `1px solid ${C.gold}44`, borderRadius: 2, textAlign: 'center' }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: '0.14em' }}>
-                🛋️ THERAPY ACTIVE — NEXT ROUND AUTO-SKIP · {realPlayer?.therapyBonus > 0 ? `+${realPlayer.therapyBonus} COMING` : 'ROLLING FOR BONUS'}
+            <div style={{ marginBottom: 8, padding: '9px 14px', background: C.velvet, border: `1px solid ${C.gold}44`, borderRadius: 2, textAlign: 'center' }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: '0.12em' }}>
+                🛋️ THERAPY ACTIVE{realPlayer?.therapyBonus > 0 ? ` · +${realPlayer.therapyBonus} COMING` : ''}
               </div>
             </div>
           )}
 
-          {/* Leaderboard */}
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#444', letterSpacing: '0.2em', marginBottom: 6 }}>LEADERBOARD</div>
-            {sorted.map((pl, rank) => {
-              const r = results[pl.id]
-              const isMe = !pl.isNPC
-              return (
-                <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: isMe ? `${C.accent}12` : 'transparent', border: isMe ? `1px solid ${C.accent}30` : hairline, marginBottom: 4 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontFamily: ANTON, fontSize: 12, color: '#444', minWidth: 16 }}>#{rank + 1}</span>
-                    <span style={{ fontSize: 16 }}>{pl.avatar}</span>
-                    <div>
-                      <div style={{ fontFamily: WS, fontWeight: isMe ? 700 : 400, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe && state.mode === 'single' ? 'YOU' : pl.name}</div>
-                      {pl.playerType && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.teal, letterSpacing: '0.1em', marginTop: 1 }}>{pl.playerType.emoji} {pl.playerType.label}</div>}
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {r && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: r.action === 'date' || r.action === 'double_date' ? C.accent : r.action === 'steal' ? C.gold : '#555', letterSpacing: '0.08em' }}>
-                      {r.action === 'date' || r.action === 'double_date' ? '♥' : r.action === 'steal' ? '⚡' : '◌'}
-                    </span>}
-                    <span style={{ fontFamily: ANTON, fontSize: 18, color: pl.loveScore >= 0 ? C.teal : C.accent }}>{pl.loveScore >= 0 ? '+' : ''}{pl.loveScore}</span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          {/* Fallback next button — appears after leaderboard auto-dismisses */}
+          {!showLeaderboard && (
+            <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer', marginTop: 8 }}>
+              {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
+            </button>
+          )}
 
-          <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
-            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-            {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
-          </button>
         </div>
       </div>
     )
@@ -1164,6 +1349,8 @@ function RoundScreen({ state, dispatch }) {
   const canGhost  = (curPlayer?.ghosts ?? 0) > 0
   const canSteal  = (curPlayer?.stealTokens ?? 0) > 0 && state.players.some(pl => pl.id !== curPlayer?.id && pl.loveScore > 0)
   const canDouble = state.mode === 'multi'
+  const profilePhoto = profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null)
+  const canLook   = (curPlayer?.looks ?? 0) > 0 && !!profilePhoto && !(dec.lookUsed ?? false)
 
   return (
     <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
@@ -1178,7 +1365,7 @@ function RoundScreen({ state, dispatch }) {
 
       {/* Profile card — fixed height, no grow */}
       <div style={{ flex: '0 0 auto' }}>
-        <ProfileCard profile={profile} goldTheme={false} />
+        <ProfileCard profile={profile} goldTheme={false} lookUnlocked={dec.lookUsed ?? false} />
       </div>
 
       {/* Traits — grow to fill remaining space */}
@@ -1200,7 +1387,7 @@ function RoundScreen({ state, dispatch }) {
           </button>
           <button onClick={() => dispatch({ type: 'DECIDE', action: 'ghost' })} disabled={!canGhost}
             style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${canGhost ? '#484848' : C.slate}`, color: canGhost ? '#aaa' : '#444', fontSize: 13, letterSpacing: '0.1em', height: 46, borderRadius: 4, cursor: canGhost ? 'pointer' : 'not-allowed' }}>
-            {canGhost ? '◌ GHOST' : 'NO GHOSTS'}
+            ◌ GHOST
           </button>
         </div>
         {/* Multiplayer extras: double date + steal */}
@@ -1208,19 +1395,25 @@ function RoundScreen({ state, dispatch }) {
           <div style={{ display: 'flex', gap: 6 }}>
             <button onClick={() => dispatch({ type: 'DECIDE', action: 'double_date' })}
               style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 38, background: `${C.accent}18`, border: `1px solid ${C.accent}55`, color: C.accent, borderRadius: 2, cursor: 'pointer' }}>
-              ♥♥ DOUBLE DATE
+              ♥♥ DOUBLE
             </button>
             <button onClick={() => dispatch({ type: 'DECIDE', action: 'steal' })} disabled={!canSteal}
               style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 38, background: canSteal ? `${C.gold}18` : 'transparent', border: `1px solid ${canSteal ? C.gold : '#333'}`, color: canSteal ? C.gold : '#444', borderRadius: 2, cursor: canSteal ? 'pointer' : 'not-allowed' }}>
-              ⚡ STEAL {canSteal ? `· ${curPlayer?.stealTokens ?? 0} LEFT` : '(USED)'}
+              ⚡ STEAL
             </button>
           </div>
         )}
-        {/* Stalk */}
-        <button onClick={() => dispatch({ type: 'STALK' })} disabled={!canStalk}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 500, color: canStalk ? C.gold : '#3a3535', fontSize: 12, letterSpacing: '0.12em', background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, borderRadius: 4, height: 36, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
-          🔍 STALK · {curPlayer?.stalkTokens ?? 0} LEFT
-        </button>
+        {/* Look + Stalk row */}
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button onClick={() => dispatch({ type: 'USE_LOOK' })} disabled={!canLook}
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 36, background: canLook ? `${C.teal}10` : 'transparent', border: `1px dashed ${canLook ? C.teal : C.slate}`, color: canLook ? C.teal : '#3a3535', borderRadius: 4, cursor: canLook ? 'pointer' : 'not-allowed' }}>
+            👁 LOOK {canLook ? curPlayer?.looks ?? 0 : ''}
+          </button>
+          <button onClick={() => dispatch({ type: 'STALK' })} disabled={!canStalk}
+            style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 11, letterSpacing: '0.12em', height: 36, background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, color: canStalk ? C.gold : '#3a3535', borderRadius: 4, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
+            🔍 STALK {canStalk ? curPlayer?.stalkTokens ?? 0 : ''}
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -1346,7 +1539,7 @@ function TheOneScreen({ state, dispatch }) {
         </button>
         <button onClick={() => dispatch({ type: 'STALK' })} disabled={!canStalk}
           style={{ width: '100%', fontFamily: WS, fontWeight: 500, color: canStalk ? C.gold : '#3a3535', fontSize: 12, letterSpacing: '0.12em', background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, borderRadius: 4, height: 38, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
-          🔍 STALK · {curPlayer?.stalkTokens ?? 0} LEFT
+          🔍 STALK {canStalk ? curPlayer?.stalkTokens ?? 0 : ''}
         </button>
       </div>
     </div>
