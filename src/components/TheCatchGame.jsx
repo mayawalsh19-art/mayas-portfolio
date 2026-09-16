@@ -518,7 +518,7 @@ function AchievementToast({ achievement, onDone }) {
 // ─── MODE SELECT ──────────────────────────────────────────────────────────────
 function ModeSelectScreen({ dispatch }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: DVH, padding: '0 24px', background: C.bg }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: DVH, padding: '0 24px', background: '#0e0b12' }}>
       <div style={{ marginBottom: 48, textAlign: 'center', userSelect: 'none' }}>
         <div style={{ fontFamily: ANTON, fontSize: 'clamp(60px,16vw,108px)', color: C.accent, lineHeight: 0.88 }}>THE</div>
         <div style={{ fontFamily: ANTON, fontSize: 'clamp(60px,16vw,108px)', color: C.cream, lineHeight: 0.88 }}>CATCH</div>
@@ -526,11 +526,11 @@ function ModeSelectScreen({ dispatch }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 340 }}>
         <button onClick={() => dispatch({ type: 'SELECT_MODE', mode: 'single' })}
-          style={{ fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+          style={{ fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
           SINGLE PLAYER
         </button>
         <button onClick={() => dispatch({ type: 'SELECT_MODE', mode: 'multi' })}
-          style={{ fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${C.accent}`, color: C.accent, fontSize: 15, letterSpacing: '0.12em', minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>
+          style={{ fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${C.accent}`, color: C.accent, fontSize: 15, letterSpacing: '0.12em', minHeight: 52, borderRadius: 6, cursor: 'pointer' }}>
           MULTIPLAYER — 2–4
         </button>
       </div>
@@ -553,10 +553,10 @@ function PlayerSetupScreen({ state, dispatch }) {
   if (state.mode === 'single') {
     const sl = slots[0]
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', padding: '32px 28px', boxSizing: 'border-box' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column', padding: '0 28px 32px', boxSizing: 'border-box' }}>
         <div style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}>
           {/* Header */}
-          <div style={{ marginBottom: 28 }}>
+          <div style={{ padding: '24px 0 18px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)', marginBottom: 20, marginLeft: -28, marginRight: -28, paddingLeft: 28, paddingRight: 28 }}>
             <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(38px,11vw,56px)', lineHeight: 0.88 }}>WHO'S</div>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 'clamp(38px,11vw,56px)', lineHeight: 0.88 }}>PLAYING?</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: '#555', marginTop: 10 }}>Pick your look. Your rep follows you all game.</p>
@@ -566,7 +566,7 @@ function PlayerSetupScreen({ state, dispatch }) {
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
             {PLAYER_AVATARS.map(av => (
               <button key={av} onClick={() => update(0, 'avatar', av)}
-                style={{ width: 46, height: 46, fontSize: 22, background: sl.avatar === av ? C.accent : C.card, border: sl.avatar === av ? `1px solid ${C.accent}` : hairline, borderRadius: 2, cursor: 'pointer' }}>
+                style={{ width: 46, height: 46, fontSize: 22, background: sl.avatar === av ? C.accent : 'rgba(255,255,255,0.05)', border: sl.avatar === av ? `1px solid ${C.accent}` : hairline, borderRadius: 2, cursor: 'pointer' }}>
                 {av}
               </button>
             ))}
@@ -574,7 +574,7 @@ function PlayerSetupScreen({ state, dispatch }) {
 
           {/* Name input */}
           <input
-            style={{ width: '100%', fontFamily: ANTON, fontSize: 28, letterSpacing: '0.04em', background: C.card, color: C.cream, border: sl.name ? `1px solid rgba(239,230,220,0.2)` : hairline, padding: '14px 16px', outline: 'none', boxSizing: 'border-box', caretColor: C.accent }}
+            style={{ width: '100%', fontFamily: ANTON, fontSize: 28, letterSpacing: '0.04em', background: 'rgba(255,255,255,0.05)', color: C.cream, border: sl.name ? `1px solid rgba(239,230,220,0.2)` : hairline, padding: '14px 16px', outline: 'none', boxSizing: 'border-box', caretColor: C.accent }}
             placeholder="YOUR NAME"
             value={sl.name}
             onChange={e => update(0, 'name', e.target.value)}
@@ -590,7 +590,7 @@ function PlayerSetupScreen({ state, dispatch }) {
                 const selected = slots[0].playerType?.id === pt.id
                 return (
                   <button key={pt.id} onClick={() => update(0, 'playerType', pt)}
-                    style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 10px', background: selected ? `${C.teal}18` : C.card, border: `1px solid ${selected ? C.teal : '#2a2525'}`, borderRadius: 4, cursor: 'pointer', minWidth: 82 }}>
+                    style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 10px', background: selected ? `${C.teal}18` : C.card, border: `1px solid ${selected ? C.teal : '#2a2525'}`, borderRadius: 6, cursor: 'pointer', minWidth: 82 }}>
                     <span style={{ fontSize: 22 }}>{pt.emoji}</span>
                     <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, letterSpacing: '0.12em', color: selected ? C.teal : '#555', textAlign: 'center', lineHeight: 1.2 }}>{pt.label}</span>
                   </button>
@@ -611,7 +611,7 @@ function PlayerSetupScreen({ state, dispatch }) {
           </div>
 
           <button onClick={start} disabled={!canStart}
-            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: canStart ? C.accent : C.slate, color: canStart ? '#fff' : '#555', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: canStart ? 'pointer' : 'not-allowed' }}>
+            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: canStart ? C.accent : C.slate, color: canStart ? '#fff' : '#555', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: canStart ? 'pointer' : 'not-allowed', boxShadow: canStart ? '0 0 20px rgba(255,77,109,0.35)' : 'none' }}>
             NEXT →
           </button>
         </div>
@@ -621,9 +621,9 @@ function PlayerSetupScreen({ state, dispatch }) {
 
   // Multiplayer setup
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '32px 28px', boxSizing: 'border-box' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', padding: '0 28px 32px', boxSizing: 'border-box' }}>
       <div style={{ maxWidth: 400, margin: '0 auto' }}>
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ padding: '24px 0 18px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)', marginBottom: 24, marginLeft: -28, marginRight: -28, paddingLeft: 28, paddingRight: 28 }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(36px,10vw,52px)', lineHeight: 0.88 }}>BUILD YOUR</div>
           <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 'clamp(36px,10vw,52px)', lineHeight: 0.88 }}>SQUAD.</div>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: '#555', marginTop: 10 }}>Pass the phone around. Everyone decides.</p>
@@ -674,7 +674,7 @@ function PlayerSetupScreen({ state, dispatch }) {
           )}
         </div>
         <button onClick={start} disabled={!canStart}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: canStart ? C.accent : C.slate, color: canStart ? '#fff' : '#555', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: canStart ? 'pointer' : 'not-allowed', marginTop: 20 }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: canStart ? C.accent : C.slate, color: canStart ? '#fff' : '#555', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: canStart ? 'pointer' : 'not-allowed', marginTop: 20, boxShadow: canStart ? '0 0 20px rgba(255,77,109,0.35)' : 'none' }}>
           NEXT →
         </button>
       </div>
@@ -764,9 +764,9 @@ function CustomTraitsScreen({ state, dispatch }) {
   const hasAnything  = hasTraits || hasProfiles
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '28px 28px', boxSizing: 'border-box' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', padding: '0 28px 28px', boxSizing: 'border-box' }}>
       <div style={{ maxWidth: 400, margin: '0 auto' }}>
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ padding: '24px 0 18px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)', marginBottom: 24, marginLeft: -28, marginRight: -28, paddingLeft: 28, paddingRight: 28 }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(32px,9vw,48px)', lineHeight: 0.88 }}>MAKE IT</div>
           <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 'clamp(32px,9vw,48px)', lineHeight: 0.88 }}>PERSONAL.</div>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: '#555', marginTop: 10 }}>Add real behaviors you've seen. They'll show up mixed into the profiles.</p>
@@ -986,12 +986,12 @@ function CustomTraitsScreen({ state, dispatch }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
           <button onClick={() => dispatch({ type: 'START_GAME' })}
-            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
             {hasAnything ? `START WITH CUSTOM SETUP →` : 'START THE GAME →'}
           </button>
           {hasAnything && (
             <button onClick={() => dispatch({ type: 'START_GAME', skipCustom: true })}
-              style={{ width: '100%', fontFamily: WS, fontWeight: 500, background: 'transparent', border: `1px solid #333`, color: '#555', fontSize: 13, letterSpacing: '0.1em', minHeight: 44, borderRadius: 4, cursor: 'pointer' }}>
+              style={{ width: '100%', fontFamily: WS, fontWeight: 500, background: 'transparent', border: `1px solid rgba(255,255,255,0.1)`, color: '#888', fontSize: 13, letterSpacing: '0.1em', minHeight: 44, borderRadius: 6, cursor: 'pointer' }}>
               SKIP — PLAY WITHOUT CUSTOM
             </button>
           )}
@@ -1192,7 +1192,7 @@ function RoundScreen({ state, dispatch }) {
         ? `0 0 32px rgba(255,77,109,0.7), 0 0 72px rgba(255,77,109,0.35)`
         : 'none'
       return (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.bg, gap: 4, userSelect: 'none', position: 'relative' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0e0b12', gap: 4, userSelect: 'none', position: 'relative' }}>
           {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
           <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.22em', color: '#444' }}>
             {isDodge ? '🎣 DODGED' : isGhost ? '◌' : myResult.action === 'steal' ? '⚡' : myResult.action === 'double_date' ? '♥♥' : '♥'}
@@ -1208,7 +1208,7 @@ function RoundScreen({ state, dispatch }) {
     }
 
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, position: 'relative' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', position: 'relative' }}>
         {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
 
         {/* Leaderboard overlay — centered, auto-dismisses after 7s */}
@@ -1249,7 +1249,7 @@ function RoundScreen({ state, dispatch }) {
               )
             })}
             <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
-              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer', marginTop: 12 }}>
+              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', marginTop: 12, boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
               {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
             </button>
           </div>
@@ -1279,13 +1279,22 @@ function RoundScreen({ state, dispatch }) {
           </div>
 
           {/* All traits revealed */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 12, background: C.card, border: hairline }}>
-            {profile.traits.map((t, i) => <TraitRow key={i} trait={t} revealed={true} stalked={false} />)}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+            {profile.traits.map((t, i) => {
+              const isPos = t.value > 0
+              const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)', border: `1px solid ${isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`, borderRadius: 6 }}>
+                  <div style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.cream, lineHeight: 1.35 }}>{t.text}</div>
+                  <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)', fontFamily: ANTON, fontSize: 14, color: isPos ? C.teal : C.accent }}>{scoreStr}</div>
+                </div>
+              )
+            })}
           </div>
 
           {/* Your result */}
           {myResult && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: hairline, marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: `1px solid ${myResult.pts > 0 ? 'rgba(124,224,168,0.2)' : myResult.pts < 0 ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 8 }}>
               <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
                 {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name}
                 <span style={{ fontWeight: 400, color: '#555' }}> — {
@@ -1305,7 +1314,7 @@ function RoundScreen({ state, dispatch }) {
           {realTherapyTokens > 0 && !realTherapyActive && (
             <div style={{ marginBottom: 8 }}>
               <button onClick={() => dispatch({ type: 'USE_THERAPY', playerId: realPlayer?.id })}
-                style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '10px 0', background: C.velvet, border: `1px solid ${C.gold}66`, color: C.gold, borderRadius: 2, cursor: 'pointer' }}>
+                style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '10px 0', background: C.velvet, border: `1px solid ${C.gold}66`, color: C.gold, borderRadius: 6, cursor: 'pointer' }}>
                 🛋️ THERAPY — SKIP ROUND · 50% +4
               </button>
             </div>
@@ -1321,7 +1330,7 @@ function RoundScreen({ state, dispatch }) {
           {/* Fallback next button — appears after leaderboard auto-dismisses */}
           {!showLeaderboard && (
             <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
-              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer', marginTop: 8 }}>
+              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', marginTop: 8, boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
               {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
             </button>
           )}
@@ -1425,7 +1434,7 @@ function RoundScreen({ state, dispatch }) {
   const canLook   = (curPlayer?.looks ?? 0) > 0 && !!profilePhoto && !(dec.lookUsed ?? false)
 
   return (
-    <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
+    <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
       <Hud players={state.players} currentRound={state.currentRound} mode={state.mode} currentPlayer={curPlayer} />
       {state.mode === 'multi' && <TimerBar seconds={timer} />}
       {state.mode === 'multi' && (
@@ -1441,7 +1450,7 @@ function RoundScreen({ state, dispatch }) {
       </div>
 
       {/* Traits — grow to fill remaining space */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: C.card, borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.03)', borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
         {profile.traits.map((t, i) => (
           <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
             <TraitRow trait={t} revealed={traitVisible(i)} stalked={(dec.stalkedIdxs ?? []).includes(i) && !t.startVisible} grow />
@@ -1450,15 +1459,15 @@ function RoundScreen({ state, dispatch }) {
       </div>
 
       {/* Action buttons — always pinned at bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 24px 12px', background: C.bg }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 24px 12px', background: '#0e0b12' }}>
         {/* Main date / ghost row */}
         <div style={{ display: 'flex', gap: 6 }}>
           <button onClick={() => dispatch({ type: 'DECIDE', action: 'date' })}
-            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
             ♥ DATE
           </button>
           <button onClick={() => dispatch({ type: 'DECIDE', action: 'ghost' })} disabled={!canGhost}
-            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${canGhost ? '#484848' : C.slate}`, color: canGhost ? '#aaa' : '#444', fontSize: 13, letterSpacing: '0.1em', height: 46, borderRadius: 4, cursor: canGhost ? 'pointer' : 'not-allowed' }}>
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'transparent', border: `1px solid ${canGhost ? 'rgba(255,255,255,0.1)' : C.slate}`, color: canGhost ? '#888' : '#444', fontSize: 13, letterSpacing: '0.1em', height: 46, borderRadius: 6, cursor: canGhost ? 'pointer' : 'not-allowed' }}>
             ◌ GHOST
           </button>
         </div>
@@ -1478,11 +1487,11 @@ function RoundScreen({ state, dispatch }) {
         {/* Look + Stalk row */}
         <div style={{ display: 'flex', gap: 6 }}>
           <button onClick={() => dispatch({ type: 'USE_LOOK' })} disabled={!canLook}
-            style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 36, background: canLook ? `${C.teal}10` : 'transparent', border: `1px dashed ${canLook ? C.teal : C.slate}`, color: canLook ? C.teal : '#3a3535', borderRadius: 4, cursor: canLook ? 'pointer' : 'not-allowed' }}>
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', height: 36, background: canLook ? `${C.teal}10` : 'transparent', border: `1px dashed ${canLook ? C.teal : C.slate}`, color: canLook ? C.teal : '#3a3535', borderRadius: 6, cursor: canLook ? 'pointer' : 'not-allowed' }}>
             👁 LOOK {canLook ? curPlayer?.looks ?? 0 : ''}
           </button>
           <button onClick={() => dispatch({ type: 'STALK' })} disabled={!canStalk}
-            style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 11, letterSpacing: '0.12em', height: 36, background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, color: canStalk ? C.gold : '#3a3535', borderRadius: 4, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
+            style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 11, letterSpacing: '0.12em', height: 36, background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, color: canStalk ? C.gold : '#3a3535', borderRadius: 6, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
             🔍 STALK {canStalk ? curPlayer?.stalkTokens ?? 0 : ''}
           </button>
         </div>
@@ -1516,22 +1525,31 @@ function TheOneScreen({ state, dispatch }) {
   if (state.theOnePhase === 'scored') {
     const results = state.theOneResults
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12' }}>
         <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px', textAlign: 'center' }}>
           <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.2em' }}>THE ONE</div>
           <div style={{ fontFamily: ANTON, fontSize: 52, color: score >= 7 ? C.teal : C.accent, lineHeight: 1 }}>
             {score > 0 ? `+${score}` : score}
           </div>
           <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#555', letterSpacing: '0.2em', marginBottom: 20 }}>COMPATIBILITY SCORE</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left', marginBottom: 20, background: C.card, border: hairline }}>
-            {profile.traits.map((t, i) => <TraitRow key={i} trait={t} revealed={true} stalked={false} />)}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'left', marginBottom: 20 }}>
+            {profile.traits.map((t, i) => {
+              const isPos = t.value > 0
+              const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)', border: `1px solid ${isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`, borderRadius: 6 }}>
+                  <div style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.cream, lineHeight: 1.35 }}>{t.text}</div>
+                  <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)', fontFamily: ANTON, fontSize: 14, color: isPos ? C.teal : C.accent }}>{scoreStr}</div>
+                </div>
+              )
+            })}
           </div>
           {qualPlayers.map(pl => {
             const r = results[pl.id]
             if (!r) return null
             const isMe = !pl.isNPC
             return (
-              <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: isMe ? `${C.accent}12` : C.card, border: isMe ? `1px solid ${C.accent}30` : hairline, marginBottom: 6, textAlign: 'left' }}>
+              <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: isMe ? `${C.accent}12` : 'rgba(255,255,255,0.04)', border: `1px solid ${isMe ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 6, textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ fontSize: 18 }}>{pl.avatar}</span>
                   <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe ? 'YOU' : pl.name}</span>
@@ -1543,7 +1561,7 @@ function TheOneScreen({ state, dispatch }) {
             )
           })}
           <button onClick={() => dispatch({ type: 'FINISH_THE_ONE' })}
-            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 4, cursor: 'pointer', marginTop: 10 }}>
+            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', marginTop: 10, boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
             FINAL RESULTS →
           </button>
         </div>
@@ -1555,16 +1573,48 @@ function TheOneScreen({ state, dispatch }) {
     const hidden   = profile.traits.filter(t => !t.startVisible).length
     const allShown = state.theOneRevealStep >= hidden
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.velvet }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 14, fontFamily: ANTON, color: C.gold, fontSize: 18, letterSpacing: '0.2em' }}>THE ONE</div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
+        {/* Hero strip */}
+        <div style={{ flexShrink: 0, padding: '18px 24px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
           <RivalBar players={qualPlayers} decisions={state.theOneDecisions} mode={state.mode} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 16, background: C.card, border: hairline }}>
-            {profile.traits.map((t, i) => <TraitRow key={i} trait={t} revealed={t.startVisible || traitInReveal(i)} stalked={false} />)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
+            <span style={{ fontSize: 38 }}>{profile.emoji}</span>
+            <div>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.22em', marginBottom: 4 }}>THE ONE</div>
+              <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 30, lineHeight: 1 }}>
+                {profile.name.toUpperCase()}<span style={{ color: '#555', fontFamily: WS, fontWeight: 300, fontSize: 18 }}>, {profile.age}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Trait cards */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {profile.traits.map((t, i) => {
+              const show = t.startVisible || traitInReveal(i)
+              const isPos = t.value > 0
+              const accentCol = !show ? 'transparent' : isPos ? C.teal : C.accent
+              const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: !show ? 'rgba(255,255,255,0.03)' : isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)', border: `1px solid ${!show ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`, borderRadius: 6, transition: 'all 0.2s ease' }}>
+                  <div style={{ flex: 1, fontFamily: WS, fontWeight: show ? 500 : 300, fontSize: 13, color: show ? C.cream : '#3a3535', lineHeight: 1.35 }}>{show ? t.text : '?????'}</div>
+                  <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)', fontFamily: ANTON, fontSize: 14, color: accentCol }}>{show ? scoreStr : '?'}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        {/* Progress + button */}
+        <div style={{ flexShrink: 0, padding: '10px 20px 16px', background: '#0e0b12', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 10 }}>
+            {profile.traits.map((_, i) => {
+              const filled = profile.traits[i].startVisible || traitInReveal(i)
+              return <div key={i} style={{ width: filled ? 16 : 6, height: 4, borderRadius: 2, background: filled ? C.gold : 'rgba(255,255,255,0.12)', transition: 'width 0.25s ease' }} />
+            })}
           </div>
           {!allShown
-            ? <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.cardAlt, color: C.cream, fontSize: 15, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>TAP TO SKIP ▼</button>
-            : <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 15, letterSpacing: '0.1em', border: 'none', minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>SEE THE RESULT →</button>
+            ? <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', color: '#555', fontSize: 13, letterSpacing: '0.15em', border: '1px solid rgba(255,255,255,0.1)', minHeight: 46, borderRadius: 6, cursor: 'pointer' }}>TAP TO REVEAL ▼</button>
+            : <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 15, letterSpacing: '0.12em', border: 'none', minHeight: 52, borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(228,196,106,0.3)' }}>SEE THE RESULT →</button>
           }
         </div>
       </div>
@@ -1573,9 +1623,9 @@ function TheOneScreen({ state, dispatch }) {
 
   const canStalk = curPlayer?.stalkTokens > 0 && (dec.stalkedIdxs ?? []).length < profile.traits.filter(t => !t.startVisible).length
   return (
-    <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.velvet, overflow: 'hidden' }}>
+    <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
       {/* Header strip */}
-      <div style={{ flex: '0 0 auto', padding: '10px 24px 8px', textAlign: 'center', borderBottom: hairline }}>
+      <div style={{ flex: '0 0 auto', padding: '10px 24px 8px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
         <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.2em' }}>THE ONE</div>
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#999', margin: '2px 0 0' }}>One final decision. Choose wisely.</p>
       </div>
@@ -1591,7 +1641,7 @@ function TheOneScreen({ state, dispatch }) {
       </div>
 
       {/* Traits — grow */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: C.card, borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.03)', borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
         {profile.traits.map((t, i) => (
           <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
             <TraitRow trait={t} revealed={traitVisible(i)} stalked={(dec.stalkedIdxs ?? []).includes(i) && !t.startVisible} grow />
@@ -1600,17 +1650,17 @@ function TheOneScreen({ state, dispatch }) {
       </div>
 
       {/* Buttons — pinned bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 24px 14px', background: C.velvet }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 24px 14px', background: '#0e0b12' }}>
         <button onClick={() => dispatch({ type: 'DECIDE', action: 'take_chance' })}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(228,196,106,0.3)' }}>
           ♛ TAKE A CHANCE
         </button>
         <button onClick={() => dispatch({ type: 'DECIDE', action: 'walk_away' })}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', border: '1px solid #484848', color: '#aaa', fontSize: 14, letterSpacing: '0.12em', height: 46, borderRadius: 4, cursor: 'pointer' }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontSize: 14, letterSpacing: '0.12em', height: 46, borderRadius: 6, cursor: 'pointer' }}>
           ◌ WALK AWAY
         </button>
         <button onClick={() => dispatch({ type: 'STALK' })} disabled={!canStalk}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 500, color: canStalk ? C.gold : '#3a3535', fontSize: 12, letterSpacing: '0.12em', background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, borderRadius: 4, height: 38, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 500, color: canStalk ? C.gold : '#3a3535', fontSize: 12, letterSpacing: '0.12em', background: 'transparent', border: `1px dashed ${canStalk ? C.gold : C.slate}`, borderRadius: 6, height: 38, cursor: canStalk ? 'pointer' : 'not-allowed' }}>
           🔍 STALK {canStalk ? curPlayer?.stalkTokens ?? 0 : ''}
         </button>
       </div>
@@ -1640,19 +1690,49 @@ function TiebreakerScreen({ state, dispatch }) {
     const hidden   = profile.traits.filter(t => !t.startVisible).length
     const allShown = (state.tbRevealStep ?? 0) >= hidden
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.velvet }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 18 }}>
-            <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 20, letterSpacing: '0.12em' }}>⚡ SPEED DATING</div>
-            <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#999', marginTop: 4 }}>Tiebreaker. Whoever made the better call wins.</p>
-          </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
+        {/* Hero strip */}
+        <div style={{ flexShrink: 0, padding: '18px 24px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
           <RivalBar players={tied} decisions={state.tbDecisions} mode={state.mode} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 16, background: C.card, border: hairline }}>
-            {profile.traits.map((t, i) => <TraitRow key={i} trait={t} revealed={t.startVisible || traitInReveal(i)} stalked={false} />)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
+            <span style={{ fontSize: 38 }}>{profile.emoji}</span>
+            <div>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.22em', marginBottom: 4 }}>⚡ SPEED DATING</div>
+              <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 30, lineHeight: 1 }}>
+                {profile.name.toUpperCase()}<span style={{ color: '#555', fontFamily: WS, fontWeight: 300, fontSize: 18 }}>, {profile.age}</span>
+              </div>
+              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 3 }}>Tiebreaker. Whoever made the better call wins.</div>
+            </div>
+          </div>
+        </div>
+        {/* Trait cards */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {profile.traits.map((t, i) => {
+              const show = t.startVisible || traitInReveal(i)
+              const isPos = t.value > 0
+              const accentCol = !show ? 'transparent' : isPos ? C.teal : C.accent
+              const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: !show ? 'rgba(255,255,255,0.03)' : isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)', border: `1px solid ${!show ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`, borderRadius: 6, transition: 'all 0.2s ease' }}>
+                  <div style={{ flex: 1, fontFamily: WS, fontWeight: show ? 500 : 300, fontSize: 13, color: show ? C.cream : '#3a3535', lineHeight: 1.35 }}>{show ? t.text : '?????'}</div>
+                  <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)', fontFamily: ANTON, fontSize: 14, color: accentCol }}>{show ? scoreStr : '?'}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        {/* Progress + button */}
+        <div style={{ flexShrink: 0, padding: '10px 20px 16px', background: '#0e0b12', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 10 }}>
+            {profile.traits.map((_, i) => {
+              const filled = profile.traits[i].startVisible || traitInReveal(i)
+              return <div key={i} style={{ width: filled ? 16 : 6, height: 4, borderRadius: 2, background: filled ? C.gold : 'rgba(255,255,255,0.12)', transition: 'width 0.25s ease' }} />
+            })}
           </div>
           {!allShown
-            ? <button onClick={() => dispatch({ type: 'TB_ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.cardAlt, color: C.cream, fontSize: 15, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>TAP TO SKIP ▼</button>
-            : <button onClick={() => dispatch({ type: 'TB_ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 15, letterSpacing: '0.12em', border: 'none', minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>♛ CROWN THE CATCH →</button>
+            ? <button onClick={() => dispatch({ type: 'TB_ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', color: '#555', fontSize: 13, letterSpacing: '0.15em', border: '1px solid rgba(255,255,255,0.1)', minHeight: 46, borderRadius: 6, cursor: 'pointer' }}>TAP TO REVEAL ▼</button>
+            : <button onClick={() => dispatch({ type: 'TB_ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 15, letterSpacing: '0.12em', border: 'none', minHeight: 52, borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(228,196,106,0.3)' }}>♛ CROWN THE CATCH →</button>
           }
         </div>
       </div>
@@ -1660,9 +1740,9 @@ function TiebreakerScreen({ state, dispatch }) {
   }
 
   return (
-    <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
+    <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
       {/* Header */}
-      <div style={{ flex: '0 0 auto', padding: '10px 24px 8px', textAlign: 'center', borderBottom: hairline }}>
+      <div style={{ flex: '0 0 auto', padding: '10px 24px 8px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
         <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.1em' }}>⚡ SPEED DATING</div>
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', margin: '2px 0 0' }}>It's a tie. One profile. No STALK Tokens.</p>
       </div>
@@ -1684,7 +1764,7 @@ function TiebreakerScreen({ state, dispatch }) {
       </div>
 
       {/* Traits — grow */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: C.card, borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.03)', borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
         {profile.traits.map((t, i) => (
           <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
             <TraitRow trait={t} revealed={t.startVisible} stalked={false} grow />
@@ -1693,13 +1773,13 @@ function TiebreakerScreen({ state, dispatch }) {
       </div>
 
       {/* Buttons — pinned bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 24px 14px', background: C.bg }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 24px 14px', background: '#0e0b12' }}>
         <button onClick={() => dispatch({ type: 'TB_DECIDE', action: 'date' })}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
           ♥ DATE
         </button>
         <button onClick={() => dispatch({ type: 'TB_DECIDE', action: 'ghost' })}
-          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', border: '1px solid #484848', color: '#aaa', fontSize: 14, letterSpacing: '0.12em', height: 46, borderRadius: 4, cursor: 'pointer' }}>
+          style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontSize: 14, letterSpacing: '0.12em', height: 46, borderRadius: 6, cursor: 'pointer' }}>
           ◌ GHOST
         </button>
       </div>
@@ -1716,11 +1796,11 @@ function ResultsScreen({ state, dispatch, onClose }) {
   const myRank     = allPlayers.findIndex(p => !p.isNPC) + 1
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12' }}>
       <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
         {/* Winner/your result card */}
         {winner && (
-          <div style={{ textAlign: 'center', marginBottom: 24, padding: 22, background: C.velvet, border: `1px solid ${C.gold}44` }}>
+          <div style={{ textAlign: 'center', marginBottom: 24, padding: 22, background: 'rgba(228,196,106,0.08)', border: `1px solid ${C.gold}88`, borderRadius: 12 }}>
             <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.2em' }}>
               {state.mode === 'single' ? `YOU FINISHED #${myRank}` : '♛ THE CATCH'}
             </div>
@@ -1746,7 +1826,7 @@ function ResultsScreen({ state, dispatch, onClose }) {
             const persona = getPersonality(p)
             return (
               <div key={p.id} style={{ marginBottom: 6 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: isMe ? `${C.accent}12` : C.card, border: (state.mode === 'multi' && p.id === winner?.id) ? `1px solid ${C.gold}55` : isMe ? `1px solid ${C.accent}30` : hairline }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: isMe ? `${C.accent}12` : 'rgba(255,255,255,0.04)', border: (state.mode === 'multi' && p.id === winner?.id) ? `1px solid ${C.gold}55` : isMe ? `1px solid ${C.accent}30` : hairline, borderRadius: 6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ fontFamily: ANTON, fontSize: 13, color: '#444', minWidth: 18 }}>#{rank + 1}</span>
                     <span style={{ fontSize: 20 }}>{p.avatar}</span>
@@ -1779,11 +1859,11 @@ function ResultsScreen({ state, dispatch, onClose }) {
 
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => dispatch({ type: 'SELECT_MODE', mode: state.mode })}
-            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: C.cardAlt, color: C.cream, fontSize: 14, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 14, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 6, cursor: 'pointer' }}>
             PLAY AGAIN
           </button>
           <button onClick={onClose}
-            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.1em', border: 'none', minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>
+            style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.1em', border: 'none', minHeight: 52, borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
             EXIT
           </button>
         </div>
