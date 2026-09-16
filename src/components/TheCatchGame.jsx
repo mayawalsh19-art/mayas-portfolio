@@ -544,7 +544,7 @@ function PlayerSetupScreen({ state, dispatch }) {
   if (state.mode === 'single') {
     const sl = slots[0]
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '32px 20px', boxSizing: 'border-box' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', padding: '32px 20px', boxSizing: 'border-box' }}>
         <div style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}>
           {/* Header */}
           <div style={{ marginBottom: 28 }}>
@@ -996,7 +996,7 @@ function CustomTraitsScreen({ state, dispatch }) {
 function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
   const photo    = profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null)
   const hasPhoto = !!photo
-  const maxLook  = (lookUnlocked && hasPhoto) ? 2 : 0
+  const maxLook  = (lookUnlocked && hasPhoto) ? 1 : 0
   const [lookIdx, setLookIdx] = useState(0)
   const touchStartX = useRef(null)
 
@@ -1032,12 +1032,7 @@ function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
 
         {/* Look 1: B&W photo — always mounted when photo exists, fades in/out */}
         {hasPhoto && (
-          <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', filter: 'grayscale(1) contrast(1.1) brightness(0.9)', display: 'block', opacity: lookIdx === 1 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }} />
-        )}
-
-        {/* Look 2: color photo — always mounted when photo exists, fades in/out */}
-        {hasPhoto && (
-          <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', display: 'block', opacity: lookIdx === 2 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }} />
+          <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 35%', filter: 'grayscale(1) contrast(1.1) brightness(0.9)', display: 'block', opacity: lookIdx === 1 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }} />
         )}
 
         {/* Left tap zone — go back one look */}
@@ -1054,23 +1049,23 @@ function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
         {/* Dot indicators at top */}
         {lookUnlocked && hasPhoto && (
           <div style={{ position: 'absolute', top: 8, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 5, zIndex: 5, pointerEvents: 'none' }}>
-            {[0,1,2].map(i => (
+            {[0,1].map(i => (
               <div key={i} style={{ width: i === lookIdx ? 18 : 6, height: 6, borderRadius: 3, background: i === lookIdx ? '#fff' : 'rgba(255,255,255,0.35)', transition: 'width 0.2s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.5)' }} />
             ))}
           </div>
         )}
 
-        {/* Look label */}
-        {lookUnlocked && hasPhoto && lookIdx > 0 && (
+        {/* B&W label */}
+        {lookUnlocked && hasPhoto && lookIdx === 1 && (
           <div style={{ position: 'absolute', top: 8, right: 10, zIndex: 6, fontFamily: WS, fontWeight: 700, fontSize: 8, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.14em', background: 'rgba(0,0,0,0.45)', padding: '2px 7px', borderRadius: 2 }}>
-            {lookIdx === 1 ? 'B&W' : 'COLOR'}
+            B&W
           </div>
         )}
 
         {/* Name gradient overlay */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '40px 12px 9px', background: gradOverlay, zIndex: 3, pointerEvents: 'none' }}>
-          <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 19, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
-          {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 9, letterSpacing: '0.2em', marginTop: 2 }}>{profile.archetype}</div>}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '52px 14px 12px', background: gradOverlay, zIndex: 3, pointerEvents: 'none' }}>
+          <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 28, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
+          {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 11, letterSpacing: '0.22em', marginTop: 4 }}>{profile.archetype.toUpperCase()}</div>}
         </div>
       </div>
     </div>
