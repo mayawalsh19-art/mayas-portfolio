@@ -352,21 +352,23 @@ function ComponentStates() {
               <div style={{ fontFamily: ANTON, fontSize: 7, color: C.accent, letterSpacing: '0.1em' }}>ROUND 3</div>
               <div style={{ fontFamily: WS, fontSize: 8, color: '#666' }}>♥ ♥ ♥</div>
             </div>
-            <div style={{ margin: '7px 7px 0', background: C.card, padding: '7px 8px' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.cream, marginBottom: 4 }}>ALEX M.</div>
-              <div style={{ height: 1, background: 'rgba(239,230,220,0.07)', marginBottom: 5 }} />
-              {[{t:'Texts back quickly',v:'+1',c:C.teal},{t:'Ugly laughs freely',v:'+2',c:C.teal}].map((r,i)=>(
-                <div key={i} style={{ display:'flex', justifyContent:'space-between', marginBottom:3, paddingLeft:3, borderLeft:`2px solid ${r.c}` }}>
-                  <span style={{ fontFamily:WS, fontSize:6.5, color:'rgba(239,230,220,0.55)' }}>{r.t}</span>
-                  <span style={{ fontFamily:WS, fontWeight:700, fontSize:6.5, color:r.c }}>{r.v}</span>
-                </div>
-              ))}
-              {[1,2,3,4].map(i=>(
-                <div key={i} style={{ display:'flex', justifyContent:'space-between', marginBottom:3, paddingLeft:3, borderLeft:`2px solid #2a2525` }}>
-                  <span style={{ fontFamily:WS, fontSize:6.5, color:'#2a2525' }}>?????</span>
-                  <span style={{ fontFamily:WS, fontWeight:700, fontSize:6.5, color:'#2a2525' }}>?</span>
-                </div>
-              ))}
+            <div style={{ margin: '6px 6px 0' }}>
+              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.cream, marginBottom: 4, paddingLeft: 1 }}>ALEX M.</div>
+              <div style={{ height: 1, background: 'rgba(239,230,220,0.07)', marginBottom: 4 }} />
+              <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+                {[{t:'Texts back quickly',v:'+1',c:C.teal},{t:'Ugly laughs freely',v:'+2',c:C.teal}].map((r,i)=>(
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:`${r.c}11`, border:`1px solid ${r.c}33`, borderRadius:3 }}>
+                    <span style={{ fontFamily:WS, fontSize:6, color:'rgba(239,230,220,0.7)', flex:1, lineHeight:1.3 }}>{r.t}</span>
+                    <div style={{ width:13, height:13, borderRadius:'50%', background:`${r.c}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:r.c }}>{r.v}</div>
+                  </div>
+                ))}
+                {[1,2,3,4].map(i=>(
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:'rgba(255,255,255,0.02)', border:`1px solid rgba(255,255,255,0.05)`, borderRadius:3 }}>
+                    <span style={{ fontFamily:WS, fontSize:6, color:'#3a3535', flex:1 }}>?????</span>
+                    <div style={{ width:13, height:13, borderRadius:'50%', background:'rgba(255,255,255,0.03)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:'#3a3535' }}>?</div>
+                  </div>
+                ))}
+              </div>
             </div>
             <div style={{ padding:'5px 7px 7px', display:'flex', gap:4 }}>
               <div style={{ flex:1, padding:'4px 0', border:`1px solid ${C.accent}55`, textAlign:'center', fontFamily:WS, fontWeight:700, fontSize:6.5, color:C.cream }}>♥ DATE</div>
@@ -384,11 +386,11 @@ function ComponentStates() {
               <div style={{ fontFamily: ANTON, fontSize: 26, color: C.teal, lineHeight: 1 }}>+3</div>
               <div style={{ fontFamily: WS, fontSize: 6.5, color: 'rgba(239,230,220,0.45)', marginTop: 3, letterSpacing: '0.1em' }}>TOTAL: 9 PTS</div>
             </div>
-            <div style={{ margin: '5px 7px 7px', background: C.card, padding: '6px 7px' }}>
+            <div style={{ margin: '5px 6px 6px', display:'flex', flexDirection:'column', gap:3 }}>
               {[{t:'Texts back quickly',v:'+1',c:C.teal},{t:'Gets jealous easily',v:'−2',c:C.accent},{t:'Ugly laughs freely',v:'+2',c:C.teal},{t:'Cancels plans often',v:'−1',c:C.gold}].map((r,i)=>(
-                <div key={i} style={{ display:'flex', justifyContent:'space-between', marginBottom:3, paddingLeft:3, borderLeft:`2px solid ${r.c}` }}>
-                  <span style={{ fontFamily:WS, fontSize:6.5, color:'rgba(239,230,220,0.55)' }}>{r.t}</span>
-                  <span style={{ fontFamily:WS, fontWeight:700, fontSize:6.5, color:r.c }}>{r.v}</span>
+                <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:`${r.c}11`, border:`1px solid ${r.c}33`, borderRadius:3 }}>
+                  <span style={{ fontFamily:WS, fontSize:6, color:'rgba(239,230,220,0.7)', flex:1, lineHeight:1.3 }}>{r.t}</span>
+                  <div style={{ width:13, height:13, borderRadius:'50%', background:`${r.c}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:r.c }}>{r.v}</div>
                 </div>
               ))}
             </div>
@@ -401,14 +403,16 @@ function ComponentStates() {
               <div style={{ fontFamily: WS, fontSize: 6.5, color: 'rgba(239,230,220,0.45)', letterSpacing: '0.1em' }}>LEGENDARY PROFILE</div>
             </div>
             <div style={{ height: 1, background: `${C.gold}33` }} />
-            <div style={{ margin: '7px 7px 0', background: 'rgba(0,0,0,0.3)', padding: '7px 8px' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.gold, marginBottom: 5 }}>JORDAN ★</div>
-              {[{t:'Makes you feel seen',v:'+3',c:C.teal},{t:'Remembers everything',v:'+2',c:C.teal},{t:'?????',v:'?',c:'#3a3535'}].map((r,i)=>(
-                <div key={i} style={{ display:'flex', justifyContent:'space-between', marginBottom:3, paddingLeft:3, borderLeft:`2px solid ${r.c}` }}>
-                  <span style={{ fontFamily:WS, fontSize:6.5, color:'rgba(239,230,220,0.55)' }}>{r.t}</span>
-                  <span style={{ fontFamily:WS, fontWeight:700, fontSize:6.5, color:r.c }}>{r.v}</span>
-                </div>
-              ))}
+            <div style={{ margin: '6px 6px 0' }}>
+              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.gold, marginBottom: 4, paddingLeft: 1 }}>JORDAN ★</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+                {[{t:'Makes you feel seen',v:'+3',c:C.teal},{t:'Remembers everything',v:'+2',c:C.teal},{t:'?????',v:'?',c:'#3a3535'}].map((r,i)=>(
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:r.c==='#3a3535'?'rgba(255,255,255,0.02)':`${r.c}11`, border:`1px solid ${r.c==='#3a3535'?'rgba(255,255,255,0.05)':r.c+'33'}`, borderRadius:3 }}>
+                    <span style={{ fontFamily:WS, fontSize:6, color:r.c==='#3a3535'?r.c:'rgba(239,230,220,0.7)', flex:1, lineHeight:1.3 }}>{r.t}</span>
+                    <div style={{ width:13, height:13, borderRadius:'50%', background:r.c==='#3a3535'?'rgba(255,255,255,0.03)':`${r.c}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:r.c }}>{r.v}</div>
+                  </div>
+                ))}
+              </div>
             </div>
             <div style={{ margin: '5px 7px 7px', padding: '5px', background: C.gold, textAlign: 'center', fontFamily: ANTON, fontSize: 7.5, color: '#131011', letterSpacing: '0.1em' }}>♥ DATE THE ONE</div>
           </MiniScreen>
@@ -837,7 +841,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
           {/* Trait example */}
           <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555', marginBottom: 12 }}>TRAIT EXAMPLE — VISIBLE VS HIDDEN</div>
-          <div style={{ background: C.card, border: hair, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[
               { text: 'Texts back within a reasonable amount of time', value: 1, visible: true },
               { text: 'Will ugly laugh with you and not care how they look', value: 2, visible: true },
@@ -846,13 +850,18 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               { text: '?????', value: null, visible: false },
               { text: '?????', value: null, visible: false },
             ].map((t, i) => {
-              const color = !t.visible ? '#2a2525' : t.value > 0 ? C.teal : C.accent
+              const isPos = t.visible && t.value > 0
+              const isNeg = t.visible && t.value < 0
+              const accentCol = !t.visible ? '#3a3535' : isPos ? C.teal : isNeg ? C.accent : C.gold
+              const bg = !t.visible ? 'rgba(255,255,255,0.03)' : isPos ? 'rgba(124,224,168,0.07)' : isNeg ? 'rgba(255,77,109,0.07)' : 'rgba(255,255,255,0.04)'
+              const borderCol = !t.visible ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : isNeg ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.1)'
+              const scoreStr = t.visible ? (t.value > 0 ? `+${t.value}` : `${t.value}`) : '?'
               return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderLeft: `3px solid ${color}`, borderBottom: i < 5 ? hair : 'none' }}>
-                  <span style={{ fontFamily: WS, fontWeight: t.visible ? 400 : 300, fontSize: 13, color: t.visible ? C.cream : '#3a3535', flex: 1, lineHeight: 1.3 }}>{t.text}</span>
-                  <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: t.visible ? color : '#3a3535', minWidth: 28, textAlign: 'right' }}>
-                    {t.visible ? (t.value > 0 ? `+${t.value}` : t.value) : '?'}
-                  </span>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: bg, border: `1px solid ${borderCol}`, borderRadius: 6 }}>
+                  <span style={{ fontFamily: WS, fontWeight: t.visible ? 500 : 300, fontSize: 13, color: t.visible ? C.cream : '#3a3535', flex: 1, lineHeight: 1.35 }}>{t.text}</span>
+                  <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: !t.visible ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : isNeg ? 'rgba(255,77,109,0.15)' : 'rgba(255,255,255,0.08)', fontFamily: ANTON, fontSize: 14, color: accentCol }}>
+                    {scoreStr}
+                  </div>
                 </div>
               )
             })}
@@ -966,6 +975,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               {
                 q: 'Why phone-width on desktop?',
                 a: "The game is built to feel like a phone app. Keeping the viewport at 390px max enforces the social context — it always feels like something on your phone, not something filling a monitor. In online multiplayer, everyone is literally on their own device.",
+              },
+              {
+                q: 'Why switch from left-border rows to rounded trait cards?',
+                a: "The original left-border row pattern read like a data table — clean, but cold. Rounded cards with tinted backgrounds and circular score bubbles give each trait its own visual weight. The color tinting communicates sentiment at a glance before the score even registers, and the card format reinforces that you're making a judgment call about a person, not parsing a spreadsheet.",
               },
             ].map(({ q, a }) => (
               <div key={q} style={{ padding: '22px 24px', background: C.card, border: hair, display: 'flex', flexDirection: 'column', gap: 10 }}>
