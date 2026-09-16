@@ -553,7 +553,7 @@ function PlayerSetupScreen({ state, dispatch }) {
   if (state.mode === 'single') {
     const sl = slots[0]
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', padding: '32px 20px', boxSizing: 'border-box' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: C.bg, display: 'flex', flexDirection: 'column', padding: '32px 28px', boxSizing: 'border-box' }}>
         <div style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}>
           {/* Header */}
           <div style={{ marginBottom: 28 }}>
@@ -621,7 +621,7 @@ function PlayerSetupScreen({ state, dispatch }) {
 
   // Multiplayer setup
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '32px 20px', boxSizing: 'border-box' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '32px 28px', boxSizing: 'border-box' }}>
       <div style={{ maxWidth: 400, margin: '0 auto' }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(36px,10vw,52px)', lineHeight: 0.88 }}>BUILD YOUR</div>
@@ -764,7 +764,7 @@ function CustomTraitsScreen({ state, dispatch }) {
   const hasAnything  = hasTraits || hasProfiles
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '28px 20px', boxSizing: 'border-box' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '28px 28px', boxSizing: 'border-box' }}>
       <div style={{ maxWidth: 400, margin: '0 auto' }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(32px,9vw,48px)', lineHeight: 0.88 }}>MAKE IT</div>
@@ -1271,7 +1271,7 @@ function RoundScreen({ state, dispatch }) {
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 18, letterSpacing: '0.1em' }}>🚩 RED FLAG</div>
           </div>
         )}
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '16px 16px' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto', padding: '16px 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 14 }}>
             <div style={{ fontFamily: ANTON, fontSize: 48, color: score >= 7 ? C.teal : score <= -5 ? C.accent : score > 0 ? C.cream : '#555', lineHeight: 1 }}>
               {score > 0 ? `+${score}` : score}
@@ -1337,7 +1337,7 @@ function RoundScreen({ state, dispatch }) {
     return (
       <div style={{ flex: 1, overflowY: 'auto', background: C.velvet }}>
         <Hud players={state.players} currentRound={state.currentRound} mode={state.mode} currentPlayer={curPlayer} />
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '20px 16px' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto', padding: '20px 24px' }}>
           <RivalBar players={state.players} decisions={state.roundDecisions} mode={state.mode} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
             <span style={{ fontSize: 28 }}>{profile.emoji}</span>
@@ -1391,7 +1391,7 @@ function RoundScreen({ state, dispatch }) {
       </div>
 
       {/* Action buttons — always pinned at bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 16px 12px', background: C.bg }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 24px 12px', background: C.bg }}>
         {/* Main date / ghost row */}
         <div style={{ display: 'flex', gap: 6 }}>
           <button onClick={() => dispatch({ type: 'DECIDE', action: 'date' })}
@@ -1458,7 +1458,7 @@ function TheOneScreen({ state, dispatch }) {
     const results = state.theOneResults
     return (
       <div style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 16px', textAlign: 'center' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px', textAlign: 'center' }}>
           <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.2em' }}>THE ONE</div>
           <div style={{ fontFamily: ANTON, fontSize: 52, color: score >= 7 ? C.teal : C.accent, lineHeight: 1 }}>
             {score > 0 ? `+${score}` : score}
@@ -1497,7 +1497,7 @@ function TheOneScreen({ state, dispatch }) {
     const allShown = state.theOneRevealStep >= hidden
     return (
       <div style={{ flex: 1, overflowY: 'auto', background: C.velvet }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 16px' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 14, fontFamily: ANTON, color: C.gold, fontSize: 18, letterSpacing: '0.2em' }}>THE ONE</div>
           <RivalBar players={qualPlayers} decisions={state.theOneDecisions} mode={state.mode} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 16, background: C.card, border: hairline }}>
@@ -1516,7 +1516,7 @@ function TheOneScreen({ state, dispatch }) {
   return (
     <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.velvet, overflow: 'hidden' }}>
       {/* Header strip */}
-      <div style={{ flex: '0 0 auto', padding: '10px 16px 8px', textAlign: 'center', borderBottom: hairline }}>
+      <div style={{ flex: '0 0 auto', padding: '10px 24px 8px', textAlign: 'center', borderBottom: hairline }}>
         <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.2em' }}>THE ONE</div>
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#999', margin: '2px 0 0' }}>One final decision. Choose wisely.</p>
       </div>
@@ -1541,7 +1541,7 @@ function TheOneScreen({ state, dispatch }) {
       </div>
 
       {/* Buttons — pinned bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 16px 14px', background: C.velvet }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 24px 14px', background: C.velvet }}>
         <button onClick={() => dispatch({ type: 'DECIDE', action: 'take_chance' })}
           style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.gold, color: '#131011', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
           ♛ TAKE A CHANCE
@@ -1582,7 +1582,7 @@ function TiebreakerScreen({ state, dispatch }) {
     const allShown = (state.tbRevealStep ?? 0) >= hidden
     return (
       <div style={{ flex: 1, overflowY: 'auto', background: C.velvet }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 16px' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 18 }}>
             <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 20, letterSpacing: '0.12em' }}>⚡ SPEED DATING</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#999', marginTop: 4 }}>Tiebreaker. Whoever made the better call wins.</p>
@@ -1603,7 +1603,7 @@ function TiebreakerScreen({ state, dispatch }) {
   return (
     <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
       {/* Header */}
-      <div style={{ flex: '0 0 auto', padding: '10px 16px 8px', textAlign: 'center', borderBottom: hairline }}>
+      <div style={{ flex: '0 0 auto', padding: '10px 24px 8px', textAlign: 'center', borderBottom: hairline }}>
         <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.1em' }}>⚡ SPEED DATING</div>
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', margin: '2px 0 0' }}>It's a tie. One profile. No STALK Tokens.</p>
       </div>
@@ -1634,7 +1634,7 @@ function TiebreakerScreen({ state, dispatch }) {
       </div>
 
       {/* Buttons — pinned bottom */}
-      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 16px 14px', background: C.bg }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 24px 14px', background: C.bg }}>
         <button onClick={() => dispatch({ type: 'TB_DECIDE', action: 'date' })}
           style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 14, letterSpacing: '0.12em', height: 46, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
           ♥ DATE
@@ -1658,7 +1658,7 @@ function ResultsScreen({ state, dispatch, onClose }) {
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
-      <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 16px' }}>
+      <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
         {/* Winner/your result card */}
         {winner && (
           <div style={{ textAlign: 'center', marginBottom: 24, padding: 22, background: C.velvet, border: `1px solid ${C.gold}44` }}>
