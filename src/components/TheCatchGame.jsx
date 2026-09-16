@@ -14,6 +14,15 @@ const DOLL_PHOTO = {
   petra: '/catch-photos/petra.jpg',
   cass:  '/catch-photos/cass.jpg',
 }
+// Catfish always shows an older photo regardless of which doll they have
+const DOLL_GENDER = {
+  bibi: 'f', ada: 'f', suki: 'f', petra: 'f', cass: 'f',
+  rell: 'm', kip: 'm', dax: 'm', milo: 'm',
+}
+const CATFISH_PHOTO = {
+  f: '/catch-photos/catfish-f.jpg',
+  m: '/catch-photos/catfish-m.jpg',
+}
 
 // ─── Option B · After Hours design tokens ─────────────────────────────────────
 const C = {
@@ -994,7 +1003,9 @@ function CustomTraitsScreen({ state, dispatch }) {
 
 // ─── PROFILE CARD (photo + tags, no traits) ───────────────────────────────────
 function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
-  const photo    = profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null)
+  const photo    = profile.isCatfish && profile.doll
+    ? (CATFISH_PHOTO[DOLL_GENDER[profile.doll]] ?? DOLL_PHOTO[profile.doll])
+    : (profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null))
   const hasPhoto = !!photo
   const maxLook  = (lookUnlocked && hasPhoto) ? 1 : 0
   const [lookIdx, setLookIdx] = useState(0)
@@ -1344,7 +1355,9 @@ function RoundScreen({ state, dispatch }) {
   const canGhost  = (curPlayer?.ghosts ?? 0) > 0
   const canSteal  = (curPlayer?.stealTokens ?? 0) > 0 && state.players.some(pl => pl.id !== curPlayer?.id && pl.loveScore > 0)
   const canDouble = state.mode === 'multi'
-  const profilePhoto = profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null)
+  const profilePhoto = profile.isCatfish && profile.doll
+    ? (CATFISH_PHOTO[DOLL_GENDER[profile.doll]] ?? DOLL_PHOTO[profile.doll])
+    : (profile.doll ? DOLL_PHOTO[profile.doll] : (profile.photo ?? null))
   const canLook   = (curPlayer?.looks ?? 0) > 0 && !!profilePhoto && !(dec.lookUsed ?? false)
 
   return (
