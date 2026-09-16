@@ -554,7 +554,7 @@ function PlayerSetupScreen({ state, dispatch }) {
     const sl = slots[0]
     return (
       <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column', padding: '0 28px 32px', boxSizing: 'border-box' }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}>
+        <div style={{ maxWidth: 400, margin: 'auto', width: '100%' }}>
           {/* Header */}
           <div style={{ padding: '24px 0 18px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)', marginBottom: 20, marginLeft: -28, marginRight: -28, paddingLeft: 28, paddingRight: 28 }}>
             <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(38px,11vw,56px)', lineHeight: 0.88 }}>WHO'S</div>
@@ -621,8 +621,8 @@ function PlayerSetupScreen({ state, dispatch }) {
 
   // Multiplayer setup
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', padding: '0 28px 32px', boxSizing: 'border-box' }}>
-      <div style={{ maxWidth: 400, margin: '0 auto' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column', padding: '0 28px 32px', boxSizing: 'border-box' }}>
+      <div style={{ maxWidth: 400, margin: 'auto', width: '100%' }}>
         <div style={{ padding: '24px 0 18px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)', marginBottom: 24, marginLeft: -28, marginRight: -28, paddingLeft: 28, paddingRight: 28 }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(36px,10vw,52px)', lineHeight: 0.88 }}>BUILD YOUR</div>
           <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 'clamp(36px,10vw,52px)', lineHeight: 0.88 }}>SQUAD.</div>
@@ -764,8 +764,8 @@ function CustomTraitsScreen({ state, dispatch }) {
   const hasAnything  = hasTraits || hasProfiles
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', padding: '0 28px 28px', boxSizing: 'border-box' }}>
-      <div style={{ maxWidth: 400, margin: '0 auto' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column', padding: '0 28px 28px', boxSizing: 'border-box' }}>
+      <div style={{ maxWidth: 400, margin: 'auto', width: '100%' }}>
         <div style={{ padding: '24px 0 18px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)', marginBottom: 24, marginLeft: -28, marginRight: -28, paddingLeft: 28, paddingRight: 28 }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(32px,9vw,48px)', lineHeight: 0.88 }}>MAKE IT</div>
           <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 'clamp(32px,9vw,48px)', lineHeight: 0.88 }}>PERSONAL.</div>
@@ -1028,10 +1028,10 @@ function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
     : 'linear-gradient(to top,rgba(0,0,0,0.96),transparent)'
 
   return (
-    <div style={{ background: C.card, border: hairline, overflow: 'hidden' }}>
+    <div style={{ overflow: 'hidden' }}>
       <div
         onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
-        style={{ position: 'relative', width: '100%', height: 'clamp(220px, 32dvh, 280px)', overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : (goldTheme ? '#12100a' : '#111'), userSelect: 'none' }}
+        style={{ position: 'relative', width: '100%', height: 'clamp(200px, 28dvh, 260px)', overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : (goldTheme ? '#12100a' : '#111'), userSelect: 'none' }}
       >
         {/* Look 0: doll / emoji — always mounted, fades in/out */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', opacity: lookIdx === 0 ? 1 : 0, transition: 'opacity 0.2s ease', pointerEvents: 'none' }}>
@@ -1208,7 +1208,7 @@ function RoundScreen({ state, dispatch }) {
     }
 
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', position: 'relative' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
         {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
 
         {/* Leaderboard overlay — centered, auto-dismisses after 7s */}
@@ -1256,85 +1256,88 @@ function RoundScreen({ state, dispatch }) {
         </div>
         )}
 
-        {/* Profile photo — auto-revealed when player dated */}
+        {/* Profile photo — fixed at top, outside scroll */}
         {myResult && (myResult.action === 'date' || myResult.action === 'double_date') && (
-          <ProfileCard profile={profile} goldTheme={false} lookUnlocked={true} />
+          <div style={{ flexShrink: 0 }}>
+            <ProfileCard profile={profile} goldTheme={false} lookUnlocked={true} />
+          </div>
         )}
 
         {isCatfish && (
-          <div style={{ padding: '10px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
+          <div style={{ flexShrink: 0, padding: '10px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
             <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 18, letterSpacing: '0.1em' }}>🎣 CATFISH</div>
           </div>
         )}
         {!isCatfish && anyRedFlag && (
-          <div style={{ padding: '10px 20px', textAlign: 'center', background: '#1a0008', borderBottom: `1px solid ${C.accent}44` }}>
+          <div style={{ flexShrink: 0, padding: '10px 20px', textAlign: 'center', background: '#1a0008', borderBottom: `1px solid ${C.accent}44` }}>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 18, letterSpacing: '0.1em' }}>🚩 RED FLAG</div>
           </div>
         )}
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '16px 24px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 14 }}>
-            <div style={{ fontFamily: ANTON, fontSize: 48, color: score >= 7 ? C.teal : score <= -5 ? C.accent : score > 0 ? C.cream : '#555', lineHeight: 1 }}>
-              {score > 0 ? `+${score}` : score}
-            </div>
-          </div>
 
-          {/* All traits revealed */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
-            {profile.traits.map((t, i) => {
-              const isPos = t.value > 0
-              const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)', border: `1px solid ${isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`, borderRadius: 6 }}>
-                  <div style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.cream, lineHeight: 1.35 }}>{t.text}</div>
-                  <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)', fontFamily: ANTON, fontSize: 14, color: isPos ? C.teal : C.accent }}>{scoreStr}</div>
+        {/* Scrollable content */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div style={{ maxWidth: 400, margin: '0 auto', padding: '16px 24px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 14 }}>
+              <div style={{ fontFamily: ANTON, fontSize: 48, color: score >= 7 ? C.teal : score <= -5 ? C.accent : score > 0 ? C.cream : '#555', lineHeight: 1 }}>
+                {score > 0 ? `+${score}` : score}
+              </div>
+            </div>
+
+            {/* All traits revealed */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+              {profile.traits.map((t, i) => {
+                const isPos = t.value > 0
+                const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)', border: `1px solid ${isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`, borderRadius: 6 }}>
+                    <div style={{ flex: 1, fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.cream, lineHeight: 1.35 }}>{t.text}</div>
+                    <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)', fontFamily: ANTON, fontSize: 14, color: isPos ? C.teal : C.accent }}>{scoreStr}</div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Your result */}
+            {myResult && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: `1px solid ${myResult.pts > 0 ? 'rgba(124,224,168,0.2)' : myResult.pts < 0 ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 8 }}>
+                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
+                  {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name}
+                  <span style={{ fontWeight: 400, color: '#555' }}> — {
+                    myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌'
+                    : myResult.action === 'steal' ? '⚡'
+                    : myResult.action === 'double_date' ? '♥♥'
+                    : '♥'
+                  }{myResult.isRedFlag && !myResult.isCatfish ? ' 🚩' : ''}{myResult.isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' ? ' 🪝' : ''}</span>
                 </div>
-              )
-            })}
-          </div>
-
-          {/* Your result */}
-          {myResult && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: `1px solid ${myResult.pts > 0 ? 'rgba(124,224,168,0.2)' : myResult.pts < 0 ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 8 }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
-                {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name}
-                <span style={{ fontWeight: 400, color: '#555' }}> — {
-                  myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌'
-                  : myResult.action === 'steal' ? '⚡'
-                  : myResult.action === 'double_date' ? '♥♥'
-                  : '♥'
-                }{myResult.isRedFlag && !myResult.isCatfish ? ' 🚩' : ''}{myResult.isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' ? ' 🪝' : ''}</span>
+                <div style={{ fontFamily: ANTON, fontSize: 24, color: myResult.pts > 0 ? C.teal : myResult.pts < 0 ? C.accent : '#555' }}>
+                  {myResult.pts > 0 ? `+${myResult.pts}` : myResult.pts === 0 ? '±0' : myResult.pts}
+                </div>
               </div>
-              <div style={{ fontFamily: ANTON, fontSize: 24, color: myResult.pts > 0 ? C.teal : myResult.pts < 0 ? C.accent : '#555' }}>
-                {myResult.pts > 0 ? `+${myResult.pts}` : myResult.pts === 0 ? '±0' : myResult.pts}
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Therapy */}
-          {realTherapyTokens > 0 && !realTherapyActive && (
-            <div style={{ marginBottom: 8 }}>
+            {/* Therapy */}
+            {realTherapyTokens > 0 && !realTherapyActive && (
               <button onClick={() => dispatch({ type: 'USE_THERAPY', playerId: realPlayer?.id })}
                 style={{ width: '100%', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '10px 0', background: C.velvet, border: `1px solid ${C.gold}66`, color: C.gold, borderRadius: 6, cursor: 'pointer' }}>
                 🛋️ THERAPY — SKIP ROUND · 50% +4
               </button>
-            </div>
-          )}
-          {realTherapyActive && (
-            <div style={{ marginBottom: 8, padding: '9px 14px', background: C.velvet, border: `1px solid ${C.gold}44`, borderRadius: 2, textAlign: 'center' }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: '0.12em' }}>
-                🛋️ THERAPY ACTIVE{realPlayer?.therapyBonus > 0 ? ` · +${realPlayer.therapyBonus} COMING` : ''}
+            )}
+            {realTherapyActive && (
+              <div style={{ padding: '9px 14px', background: C.velvet, border: `1px solid ${C.gold}44`, borderRadius: 2, textAlign: 'center' }}>
+                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: '0.12em' }}>
+                  🛋️ THERAPY ACTIVE{realPlayer?.therapyBonus > 0 ? ` · +${realPlayer.therapyBonus} COMING` : ''}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
 
-          {/* Fallback next button — appears after leaderboard auto-dismisses */}
-          {!showLeaderboard && (
-            <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
-              style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', marginTop: 8, boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
-              {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
-            </button>
-          )}
-
+        {/* NEXT button — always pinned at bottom */}
+        <div style={{ flexShrink: 0, padding: '8px 24px 14px', background: '#0e0b12', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+            style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', minHeight: 52, border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 20px rgba(255,77,109,0.35)' }}>
+            {state.currentRound >= 6 ? 'SEE FINAL RESULTS →' : 'NEXT MATCH →'}
+          </button>
         </div>
       </div>
     )
@@ -1449,13 +1452,34 @@ function RoundScreen({ state, dispatch }) {
         <ProfileCard profile={profile} goldTheme={false} lookUnlocked={dec.lookUsed ?? false} />
       </div>
 
-      {/* Traits — grow to fill remaining space */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.03)', borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
-        {profile.traits.map((t, i) => (
-          <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
-            <TraitRow trait={t} revealed={traitVisible(i)} stalked={(dec.stalkedIdxs ?? []).includes(i) && !t.startVisible} grow />
-          </div>
-        ))}
+      {/* Traits — scrollable rounded cards */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {profile.traits.map((t, i) => {
+            const show = traitVisible(i)
+            const isPos = t.value > 0
+            const isNeg = t.value < 0
+            const accentCol = !show ? 'transparent' : isPos ? C.teal : isNeg ? C.accent : C.gold
+            const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+            const stalked = (dec.stalkedIdxs ?? []).includes(i) && !t.startVisible
+            return (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px',
+                background: !show ? 'rgba(255,255,255,0.03)' : isPos ? 'rgba(124,224,168,0.07)' : isNeg ? 'rgba(255,77,109,0.07)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${!show ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : isNeg ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: 6, transition: 'all 0.2s ease',
+              }}>
+                <div style={{ flex: 1, fontFamily: WS, fontWeight: show ? 500 : 300, fontSize: 13, color: show ? C.cream : '#3a3535', lineHeight: 1.35 }}>
+                  {show ? t.text : '?????'}
+                  {stalked && <span style={{ marginLeft: 5, fontSize: 9, color: C.gold }}>🔎</span>}
+                </div>
+                <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : isNeg ? 'rgba(255,77,109,0.15)' : 'rgba(255,255,255,0.08)', fontFamily: ANTON, fontSize: 14, color: !show ? '#3a3535' : accentCol }}>
+                  {show ? scoreStr : '?'}
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {/* Action buttons — always pinned at bottom */}
@@ -1525,8 +1549,8 @@ function TheOneScreen({ state, dispatch }) {
   if (state.theOnePhase === 'scored') {
     const results = state.theOneResults
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12' }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px', textAlign: 'center' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ maxWidth: 400, margin: 'auto', width: '100%', padding: '28px 24px', textAlign: 'center' }}>
           <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.2em' }}>THE ONE</div>
           <div style={{ fontFamily: ANTON, fontSize: 52, color: score >= 7 ? C.teal : C.accent, lineHeight: 1 }}>
             {score > 0 ? `+${score}` : score}
@@ -1640,13 +1664,34 @@ function TheOneScreen({ state, dispatch }) {
         <ProfileCard profile={profile} goldTheme={true} />
       </div>
 
-      {/* Traits — grow */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.03)', borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
-        {profile.traits.map((t, i) => (
-          <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
-            <TraitRow trait={t} revealed={traitVisible(i)} stalked={(dec.stalkedIdxs ?? []).includes(i) && !t.startVisible} grow />
-          </div>
-        ))}
+      {/* Traits — scrollable rounded cards */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {profile.traits.map((t, i) => {
+            const show = traitVisible(i)
+            const isPos = t.value > 0
+            const isNeg = t.value < 0
+            const accentCol = !show ? 'transparent' : isPos ? C.teal : isNeg ? C.accent : C.gold
+            const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+            const stalked = (dec.stalkedIdxs ?? []).includes(i) && !t.startVisible
+            return (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px',
+                background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.07)' : isNeg ? 'rgba(255,77,109,0.07)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${!show ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : isNeg ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: 6, transition: 'all 0.2s ease',
+              }}>
+                <div style={{ flex: 1, fontFamily: WS, fontWeight: show ? 500 : 300, fontSize: 13, color: show ? C.cream : '#3a3535', lineHeight: 1.35 }}>
+                  {show ? t.text : '?????'}
+                  {stalked && <span style={{ marginLeft: 5, fontSize: 9, color: C.gold }}>🔎</span>}
+                </div>
+                <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : isNeg ? 'rgba(255,77,109,0.15)' : 'rgba(255,255,255,0.08)', fontFamily: ANTON, fontSize: 14, color: !show ? '#3a3535' : accentCol }}>
+                  {show ? scoreStr : '?'}
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {/* Buttons — pinned bottom */}
@@ -1763,13 +1808,32 @@ function TiebreakerScreen({ state, dispatch }) {
         </div>
       </div>
 
-      {/* Traits — grow */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.03)', borderLeft: hairline, borderRight: hairline, minHeight: 0 }}>
-        {profile.traits.map((t, i) => (
-          <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'stretch', borderBottom: i < profile.traits.length - 1 ? `1px solid ${C.slate}` : 'none' }}>
-            <TraitRow trait={t} revealed={t.startVisible} stalked={false} grow />
-          </div>
-        ))}
+      {/* Traits — scrollable rounded cards */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {profile.traits.map((t, i) => {
+            const show = t.startVisible
+            const isPos = t.value > 0
+            const isNeg = t.value < 0
+            const accentCol = !show ? 'transparent' : isPos ? C.teal : isNeg ? C.accent : C.gold
+            const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+            return (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px',
+                background: !show ? 'rgba(255,255,255,0.03)' : isPos ? 'rgba(124,224,168,0.07)' : isNeg ? 'rgba(255,77,109,0.07)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${!show ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : isNeg ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: 6, transition: 'all 0.2s ease',
+              }}>
+                <div style={{ flex: 1, fontFamily: WS, fontWeight: show ? 500 : 300, fontSize: 13, color: show ? C.cream : '#3a3535', lineHeight: 1.35 }}>
+                  {show ? t.text : '?????'}
+                </div>
+                <div style={{ flexShrink: 0, minWidth: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : isNeg ? 'rgba(255,77,109,0.15)' : 'rgba(255,255,255,0.08)', fontFamily: ANTON, fontSize: 14, color: !show ? '#3a3535' : accentCol }}>
+                  {show ? scoreStr : '?'}
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {/* Buttons — pinned bottom */}
@@ -1796,8 +1860,8 @@ function ResultsScreen({ state, dispatch, onClose }) {
   const myRank     = allPlayers.findIndex(p => !p.isNPC) + 1
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12' }}>
-      <div style={{ maxWidth: 400, margin: '0 auto', padding: '28px 24px' }}>
+    <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ maxWidth: 400, margin: 'auto', width: '100%', padding: '28px 24px' }}>
         {/* Winner/your result card */}
         {winner && (
           <div style={{ textAlign: 'center', marginBottom: 24, padding: 22, background: 'rgba(228,196,106,0.08)', border: `1px solid ${C.gold}88`, borderRadius: 12 }}>

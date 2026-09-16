@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE CATCH — CLASSIFIED DOSSIER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0e0b12;
+      --surface: #15101e;
+      --s2:      #1c1528;
+      --border:  rgba(255,255,255,0.07);
+      --accent:  #FF4D6D;
+      --teal:    #7CE0A8;
+      --gold:    #E4C46A;
+      --cream:   #EFE6DC;
+      --muted:   #6b5e7e;
+      --dim:     #3a3245;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Work Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .anton { font-family: 'Anton', sans-serif; letter-spacing: 0.02em; }
+
+    /* ── GLOBAL NAV ───────────────────────────────────────────── */
+    .global-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(14,11,18,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .global-nav .nav-title { font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.12em; color: var(--accent); }
+    .global-nav .nav-links { display: flex; gap: 20px; }
+    .global-nav .nav-links a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.15em; font-weight: 600; transition: color 0.2s; }
+    .global-nav .nav-links a:hover { color: var(--cream); }
+
+    /* ── SECTION WRAPPERS ─────────────────────────────────────── */
+    .page { max-width: 860px; margin: 0 auto; padding: 60px 40px; }
+    .section-divider {
+      max-width: 860px; margin: 0 auto;
+      padding: 48px 40px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .section-divider .section-label {
+      font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 0.3em;
+      color: var(--accent); display: flex; align-items: center; gap: 12px;
+    }
+    .section-divider .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .section-divider .section-title {
+      font-family: 'Anton', sans-serif; font-size: 42px; color: var(--cream);
+      margin-top: 8px; line-height: 1;
+    }
+
+    /* ── COVER PAGE ───────────────────────────────────────────── */
+    #cover {
+      min-height: 100svh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden;
+      background: radial-gradient(ellipse at 50% 30%, rgba(255,77,109,0.06) 0%, transparent 70%);
+    }
+    #cover::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+                  repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+      pointer-events: none;
+    }
+    .cover-badge {
+      display: inline-block;
+      border: 1px solid rgba(228,196,106,0.5);
+      color: var(--gold);
+      font-size: 10px; letter-spacing: 0.3em; font-weight: 700;
+      padding: 6px 16px; border-radius: 2px; margin-bottom: 40px;
+    }
+    .cover-game-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(72px, 14vw, 120px);
+      line-height: 0.9; letter-spacing: 0.04em;
+      color: var(--cream);
+      text-shadow: 0 0 80px rgba(255,77,109,0.2);
+    }
+    .cover-dossier-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(24px, 5vw, 40px);
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      margin-top: 16px;
+    }
+    .cover-stamp {
+      margin-top: 48px;
+      border: 2px solid var(--accent);
+      display: inline-block; padding: 10px 28px;
+      font-size: 11px; letter-spacing: 0.4em; font-weight: 700;
+      color: var(--accent); border-radius: 2px;
+      transform: rotate(-1.5deg);
+      box-shadow: 0 0 20px rgba(255,77,109,0.15);
+    }
+    .cover-sub {
+      margin-top: 48px;
+      font-size: 11px; letter-spacing: 0.2em;
+      color: var(--muted); font-weight: 500;
+    }
+    .cover-footer {
+      position: absolute; bottom: 32px; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: center; gap: 32px;
+      font-size: 10px; letter-spacing: 0.2em; color: var(--dim); font-weight: 600;
+    }
+    .cover-footer span { display: flex; align-items: center; gap: 8px; }
+    .cover-footer span::before { content: '·'; color: var(--accent); }
+
+    /* ── INTRO PAGE ───────────────────────────────────────────── */
+    .intro-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px;
+    }
+    .intro-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 24px;
+    }
+    .intro-card .card-label {
+      font-size: 10px; letter-spacing: 0.3em; font-weight: 700;
+      color: var(--accent); margin-bottom: 10px;
+    }
+    .intro-card p { font-size: 13px; color: rgba(239,230,220,0.75); line-height: 1.7; }
+    .warning-box {
+      margin-top: 24px;
+      border: 1px solid rgba(228,196,106,0.3);
+      background: rgba(228,196,106,0.05);
+      border-radius: 6px; padding: 16px 20px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .warning-box .warning-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .warning-box p { font-size: 12px; color: rgba(228,196,106,0.85); line-height: 1.6; }
+
+    /* ── CHARACTER CARDS ─────────────────────────────────────── */
+    .char-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden; margin-top: 40px;
+    }
+    .char-header {
+      background: var(--s2);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .file-id { font-size: 10px; letter-spacing: 0.3em; color: var(--muted); font-weight: 700; }
+    .threat-badge {
+      font-size: 10px; letter-spacing: 0.2em; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .threat-green  { background: rgba(124,224,168,0.12); border: 1px solid rgba(124,224,168,0.35); color: var(--teal); }
+    .threat-yellow { background: rgba(228,196,106,0.12); border: 1px solid rgba(228,196,106,0.35); color: var(--gold); }
+    .threat-red    { background: rgba(255,77,109,0.12);  border: 1px solid rgba(255,77,109,0.35);  color: var(--accent); }
+    .threat-black  { background: rgba(255,77,109,0.2);   border: 1px solid var(--accent);           color: #fff; }
+
+    .char-body { display: grid; grid-template-columns: 200px 1fr; }
+
+    .char-photo {
+      width: 200px; flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+    }
+    .char-photo img {
+      width: 200px; height: 220px; object-fit: cover; object-position: top;
+      display: block;
+    }
+    .char-photo-placeholder {
+      width: 200px; height: 220px;
+      background: var(--s2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 56px;
+    }
+    .char-meta { padding: 16px 18px; flex: 1; border-top: 1px solid var(--border); }
+    .char-name-block { margin-bottom: 14px; }
+    .char-name {
+      font-family: 'Anton', sans-serif; font-size: 28px; line-height: 1;
+      color: var(--cream); letter-spacing: 0.03em;
+    }
+    .char-age { font-size: 13px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+    .char-archetype {
+      font-size: 10px; letter-spacing: 0.22em; font-weight: 700;
+      color: var(--gold); margin-bottom: 10px;
+    }
+    .char-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      padding: 3px 8px; border-radius: 3px;
+      background: rgba(255,255,255,0.05); color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .char-content { padding: 24px 28px; }
+    .char-bio {
+      font-size: 12px; font-style: italic; color: var(--muted);
+      border-left: 2px solid var(--accent); padding-left: 12px; margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    .char-profile {
+      font-size: 13.5px; color: rgba(239,230,220,0.82); line-height: 1.75;
+      margin-bottom: 20px;
+    }
+
+    .behaviors {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;
+    }
+    .behavior-col { }
+    .behavior-label {
+      font-size: 10px; letter-spacing: 0.25em; font-weight: 700; margin-bottom: 8px;
+    }
+    .behavior-label.green { color: var(--teal); }
+    .behavior-label.red   { color: var(--accent); }
+    .behavior-label.yellow{ color: var(--gold); }
+    .behavior-item {
+      display: flex; align-items: flex-start; gap: 7px;
+      font-size: 12px; color: rgba(239,230,220,0.7);
+      line-height: 1.5; margin-bottom: 5px;
+    }
+    .behavior-item .dot { flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%; margin-top: 7px; }
+    .dot-green  { background: var(--teal); }
+    .dot-red    { background: var(--accent); }
+    .dot-yellow { background: var(--gold); }
+
+    .analyst-note {
+      background: rgba(255,255,255,0.03); border-radius: 6px;
+      border: 1px solid var(--border); padding: 14px 18px;
+    }
+    .analyst-label {
+      font-size: 10px; letter-spacing: 0.3em; font-weight: 700; color: var(--muted); margin-bottom: 6px;
+    }
+    .analyst-note p { font-size: 13px; color: rgba(239,230,220,0.65); font-style: italic; line-height: 1.6; }
+
+    /* ── CATFISH FILES ────────────────────────────────────────── */
+    .catfish-card {
+      position: relative; overflow: hidden;
+      background: var(--surface); border: 1px solid rgba(255,77,109,0.25); border-radius: 10px;
+      margin-top: 40px;
+    }
+    .catfish-card::before {
+      content: 'CATFISH';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-20deg);
+      font-family: 'Anton', sans-serif; font-size: 80px; letter-spacing: 0.08em;
+      color: rgba(255,77,109,0.07); pointer-events: none; white-space: nowrap; z-index: 0;
+    }
+    .catfish-card > * { position: relative; z-index: 1; }
+
+    .redacted {
+      display: inline-block;
+      background: rgba(255,77,109,0.2); color: rgba(255,77,109,0.4);
+      border-radius: 2px; padding: 0 4px; font-size: 0.95em; letter-spacing: 0.05em;
+      user-select: none;
+    }
+    .redacted-block {
+      display: inline-block;
+      background: rgba(255,255,255,0.12); color: transparent;
+      border-radius: 2px; height: 1em; vertical-align: middle;
+    }
+
+    .split-ages {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .split-ages .shown { font-size: 13px; color: var(--muted); text-decoration: line-through; opacity: 0.5; }
+    .split-ages .real  { font-size: 13px; color: var(--accent); font-weight: 700; }
+
+    /* ── ARCHETYPES GRID ─────────────────────────────────────── */
+    .archetypes-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 32px;
+    }
+    .archetype-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 18px 20px;
+    }
+    .archetype-name {
+      font-family: 'Anton', sans-serif; font-size: 16px; color: var(--cream);
+      letter-spacing: 0.05em; margin-bottom: 6px;
+    }
+    .archetype-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+    .archetype-bio { font-size: 12px; color: rgba(239,230,220,0.6); font-style: italic; line-height: 1.55; }
+
+    /* ── ACHIEVEMENTS GRID ───────────────────────────────────── */
+    .achievements-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 32px;
+    }
+    .achievement-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 18px 20px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .ach-emoji { font-size: 28px; flex-shrink: 0; line-height: 1; }
+    .ach-title {
+      font-family: 'Anton', sans-serif; font-size: 15px; color: var(--cream);
+      letter-spacing: 0.05em; margin-bottom: 4px;
+    }
+    .ach-desc { font-size: 12px; color: rgba(239,230,220,0.6); line-height: 1.55; font-style: italic; }
+
+    /* ── BACK COVER ───────────────────────────────────────────── */
+    #back {
+      border-top: 1px solid var(--border);
+      text-align: center; padding: 80px 40px;
+    }
+    #back .back-title {
+      font-family: 'Anton', sans-serif; font-size: 48px; color: var(--dim);
+      letter-spacing: 0.08em; line-height: 1;
+    }
+    #back .back-sub {
+      font-size: 11px; letter-spacing: 0.25em; color: var(--dim); margin-top: 12px; font-weight: 600;
+    }
+    #back .back-link { margin-top: 24px; }
+    #back .back-link a {
+      color: var(--muted); font-size: 12px; letter-spacing: 0.2em;
+      text-decoration: none; border-bottom: 1px solid var(--dim); padding-bottom: 2px;
+    }
+
+    /* ── UTILITY ─────────────────────────────────────────────── */
+    .divider-line {
+      border: none; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 32px 0;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      padding: 4px 10px; border-radius: 20px;
+    }
+
+    /* ── PRINT STYLES ────────────────────────────────────────── */
+    @media print {
+      @page { margin: 0.75in 0.75in; size: letter; }
+      body { background: #fff; color: #111; font-size: 11px; }
+      .global-nav { display: none; }
+      #cover { page-break-after: always; min-height: 9in; background: #0e0b12 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .char-card { page-break-inside: avoid; margin-top: 24px; }
+      .catfish-card { page-break-before: always; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-divider { page-break-before: always; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 680px) {
+      .global-nav .nav-links { display: none; }
+      .page { padding: 40px 20px; }
+      .section-divider { padding: 32px 20px 12px; }
+      .char-body { grid-template-columns: 1fr; }
+      .char-photo { width: 100%; }
+      .char-photo img, .char-photo-placeholder { width: 100%; }
+      .intro-grid { grid-template-columns: 1fr; }
+      .behaviors { grid-template-columns: 1fr; }
+      .archetypes-grid { grid-template-columns: 1fr; }
+      .achievements-grid { grid-template-columns: 1fr; }
+      .cover-game-title { font-size: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ NAV -->
+<nav class="global-nav">
+  <span class="nav-title">THE CATCH · CLASSIFIED DOSSIER</span>
+  <div class="nav-links">
+    <a href="#characters">CHARACTERS</a>
+    <a href="#catfish">CATFISH FILES</a>
+    <a href="#archetypes">ARCHETYPES</a>
+    <a href="#achievements">ACHIEVEMENTS</a>
+    <a href="/thecatch/quiz.html">QUIZ</a>
+    <a href="/thecatch/cards.html">CARD DECK</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ COVER -->
+<div id="cover">
+  <div class="page" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:0;padding-bottom:0;">
+    <div class="cover-badge">FOUNDING BACKER EDITION — SEASON ONE</div>
+
+    <div class="cover-game-title anton">THE CATCH</div>
+    <div class="cover-dossier-title">CLASSIFIED DOSSIER</div>
+
+    <div style="margin-top:28px;max-width:480px;">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;">
+        Everything you were not supposed to know about the people you dated.<br>
+        Their real stories. Their actual patterns. Their tells.
+      </p>
+    </div>
+
+    <div class="cover-stamp">EYES ONLY · UNAUTHORIZED DISTRIBUTION PROHIBITED</div>
+
+    <div class="cover-sub">
+      SEASON ONE · 9 SUBJECT FILES · 2 CATFISH DOSSIERS<br>
+      16 ARCHETYPES · 11 ACHIEVEMENT UNLOCKS
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <span>THE CATCH · ORIGINAL GAME</span>
+    <span>BYMAYAWALSH.DESIGN</span>
+    <span>CONFIDENTIAL</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ INTRO -->
+<div class="page">
+  <div class="cover-badge" style="margin-bottom:20px;">BEFORE YOU READ THESE FILES</div>
+  <h2 class="anton" style="font-size:36px;color:var(--cream);line-height:1.1;margin-bottom:20px;">
+    You played the game.<br>Now read the files.
+  </h2>
+  <p style="font-size:14px;color:rgba(239,230,220,0.75);max-width:600px;line-height:1.8;margin-bottom:24px;">
+    In THE CATCH, you have seven rounds to date, ghost, or double-date a series of profiles. Every profile conceals four hidden traits. You score based on what you choose and what you never got to see. This dossier contains everything the game doesn't show you: the backstories, the patterns, the real people behind the profiles.
+  </p>
+
+  <div class="intro-grid">
+    <div class="intro-card">
+      <div class="card-label">WHAT THIS DOSSIER CONTAINS</div>
+      <p>Full character profiles for all nine dolls — their archetypes, behavioral patterns, and the backstory behind their game persona. Read before or after playing. It changes both.</p>
+    </div>
+    <div class="intro-card">
+      <div class="card-label">THE CATFISH FILES</div>
+      <p>Dedicated dossier entries for the game's two catfish profiles. Partially redacted. Reading these after you've been caught is a different experience than reading them first.</p>
+    </div>
+    <div class="intro-card">
+      <div class="card-label">ARCHETYPES DECODED</div>
+      <p>All sixteen archetypes that appear in the game — their tags, their signature lines, and the honest diagnosis behind the label.</p>
+    </div>
+    <div class="intro-card">
+      <div class="card-label">THE ACHIEVEMENT VAULT</div>
+      <p>All eleven hidden achievements, what triggers them, and what they say about how you played the game. Some players never unlock certain ones. That is also data.</p>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <div class="warning-icon">⚠</div>
+    <p><strong style="color:var(--gold);">SPOILER WARNING:</strong> This document contains full trait reveals, catfish identities, and information that changes how you experience the game. Reading this before your first playthrough will spoil the mystery. Reading it after will make your second playthrough different. Both are valid choices.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ CHARACTERS -->
+<div id="characters" class="section-divider">
+  <div class="section-label">SUBJECT FILES 001–009</div>
+  <div class="section-title">THE DOLL FILES</div>
+  <p style="font-size:13px;color:var(--muted);margin-top:12px;">
+    Nine character profiles. Each doll appears in your game rotation with a randomly assigned archetype, name, and trait set. These files canonize who they actually are.
+  </p>
+</div>
+
+<!-- ─── BIBI ──────────────────────────────────────────────────────────── -->
+<div class="page" style="padding-top:0;">
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-001 · SUBJECT: BIBI · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-yellow">THREAT LEVEL: YELLOW</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/bibi.jpg" alt="Bibi" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🌸</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">BIBI</div>
+            <div class="char-age">Age 24 · She/Her</div>
+          </div>
+          <div class="char-archetype">THE SOFT LAUNCH</div>
+          <div class="char-tags">
+            <span class="tag">BACK OF PHOTO</span>
+            <span class="tag">NO CAPTIONS</span>
+            <span class="tag">ALMOST OFFICIAL</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"You have been in six posts. None of them show your face."</div>
+        <p class="char-profile">
+          Bibi's feed is immaculate — golden hour, soft focus, curated chaos. She posts daily. You have been dating for three weeks. You are not in a single photo. You've checked twice. This is not an accident. Bibi operates on a system of soft launches: she brings people into her life in stages, and the stages are controlled by an internal calendar you are not allowed to see.
+          <br><br>
+          The good news is that she is genuinely fun to be around. The bad news is that "around" might mean "adjacent to the actual storyline." If you are patient, if you pass the vibe check that she never tells you exists, and if you can tolerate watching her post three stories without appearing in any of them — you will eventually make it onto the main grid. It is worth something, when it happens.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Actually listens without waiting for her turn</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Sends a thinking-of-you text for no reason</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Has her own thing going on, loves that you do too</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">WATCH FOR</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Gets a little weird about who likes your posts</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Posts everything the moment it happens — except you</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Progress is real but invisible until it isn't</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>If you make it into the main grid, you're in for real. Until then — you're in the highlights, somewhere. The highlight reel is not the story.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ADA ─────────────────────────────────────────────────────── -->
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-002 · SUBJECT: ADA · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-green">THREAT LEVEL: GREEN</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/ada.jpg" alt="Ada" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🌻</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">ADA</div>
+            <div class="char-age">Age 26 · She/Her</div>
+          </div>
+          <div class="char-archetype">THE ROMANTIC</div>
+          <div class="char-tags">
+            <span class="tag">HOPEFUL</span>
+            <span class="tag">SOFT HEART</span>
+            <span class="tag">ALL IN</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Has been waiting her whole life to meet someone like you."</div>
+        <p class="char-profile">
+          Ada is the kind of person who still handwrites birthday cards. She has a playlist for every person who has mattered to her — most of them are long. She falls fast and she knows it and she does it anyway because she has decided that the alternative is worse than the risk. Her exes tend to describe her the same way: a little too much, in the best possible sense.
+          <br><br>
+          Ada will remember the small thing you said in passing three weeks ago. She will remember it because she was listening, and she listens because she cares, and she cares because she has not yet learned how to do anything halfway. She doesn't need you to match her intensity. She just needs you to not be afraid of it.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Remembers small things you mentioned weeks ago</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Celebrates your wins like they are her own</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Apologizes when she's wrong and actually means it</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label yellow">YELLOW FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Falls fast — timeline may feel accelerated</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Gives a lot and quietly expects the same</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Hurt feelings tend to come out late, all at once</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>Lowest risk profile in the pool. The only risk is yours — if you are not ready to be genuinely cared for, Ada is not a soft option. She is a mirror.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SUKI + PETRA ─────────────────────────────────────────────────── -->
+<div class="page" style="padding-top:0;">
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-003 · SUBJECT: SUKI · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-yellow">THREAT LEVEL: YELLOW-RED</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/suki.jpg" alt="Suki" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🎭</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">SUKI</div>
+            <div class="char-age">Age 25 · She/Her</div>
+          </div>
+          <div class="char-archetype">THE MAIN CHARACTER</div>
+          <div class="char-tags">
+            <span class="tag">STORYLINE</span>
+            <span class="tag">ERA</span>
+            <span class="tag">UNBOTHERED</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Every moment is their moment. Including yours."</div>
+        <p class="char-profile">
+          Suki is currently in her "figuring it out era" — which began in approximately 2022 and has no planned end date. Every phase of her life is a chapter. Every relationship is a storyline. Every breakup becomes a caption, eventually. The question is not whether you will matter to her. The question is whether you will matter as a person or as a narrative device. It is not fully conscious. Suki simply experiences the world as something happening to her, and you are part of the world.
+          <br><br>
+          To be fair: being part of her world is electric. She makes ordinary moments feel significant. She is completely present, right until she is not. The chapters end fast when she decides they're over.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Makes everything feel cinematic — she means it</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Genuinely present in the moment she's in</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">RED FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Has a different version of every story</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Can dish it but absolutely cannot take it</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Uses your vulnerability as material for her growth</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>Genuinely electric person to be around. Exhausting if you are not her current chapter. Know which one you are before you get attached.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-004 · SUBJECT: PETRA · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-yellow">THREAT LEVEL: YELLOW</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/petra.jpg" alt="Petra" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🛋️</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">PETRA</div>
+            <div class="char-age">Age 29 · She/Her</div>
+          </div>
+          <div class="char-archetype">THE THERAPY SPEAK</div>
+          <div class="char-tags">
+            <span class="tag">BOUNDARIES</span>
+            <span class="tag">TRIGGERED</span>
+            <span class="tag">DOING THE WORK</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Has the vocabulary. Working on the follow-through."</div>
+        <p class="char-profile">
+          Petra has read every book. She has a therapist and has previously had two backup therapists. She can name your attachment style within twenty minutes and will, with genuine warmth, tell you exactly what your unresolved patterns suggest about your childhood. The thing about Petra is that she is not wrong. She is just also the person occasionally creating the situations she is diagnosing.
+          <br><br>
+          This does not stop her from explaining why she needed to do what she did. The explanation is excellent. Nuanced, self-aware, grounded in somatic theory. She would like you to note that she has done a lot of work to be able to articulate it this clearly, and she has, and that is genuinely real, and it does not change the thing that happened.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Brings things up calmly instead of letting resentment build</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Has a therapist and actually shows up</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Asks before giving advice</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label yellow">WATCH FOR</div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Emotional literacy used to win arguments, not resolve them</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>"I need to honor my limits" = many different things</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Gets defensive the moment any concern is raised</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>Great at the language of connection. Still practicing the behavior. The gap between knowing and doing is Petra's whole arc. She knows that too.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CASS + RELL ───────────────────────────────────────────────────── -->
+<div class="page" style="padding-top:0;">
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-005 · SUBJECT: CASS · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-yellow">THREAT LEVEL: YELLOW</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/cass.jpg" alt="Cass" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🍂</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">CASS</div>
+            <div class="char-age">Age 27 · She/Her</div>
+          </div>
+          <div class="char-archetype">THE FLAKE</div>
+          <div class="char-tags">
+            <span class="tag">MAYBE</span>
+            <span class="tag">LET ME CHECK</span>
+            <span class="tag">SOMETHING CAME UP</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Fully committed to attending. Right up until she is not."</div>
+        <p class="char-profile">
+          Cass will tell you yes with the full sincerity of someone who means it in the moment, and she does mean it — at the time. The issue is not intent. The issue is follow-through. Something always comes up with Cass. Not bad things. Not emergencies. Just — life, as she experiences it, which tends to arrive unexpectedly even when she has had three days to prepare. She does not mean to disappear. She has a very fluid relationship with the commitments she makes when she is excited, and she is excited very easily.
+          <br><br>
+          She is genuinely warm. Her apologies are sincere and specific. She is probably already in the process of rescheduling whatever you are reading this before. She would feel terrible if she knew you noticed. She has not noticed yet.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Great energy — genuinely warm and enthusiastic</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Apologizes meaningfully and specifically</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Never holds grudges, easy to be around</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">RED FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Cancels plans more than she keeps them</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Flakes and acts like nothing happened</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Good intentions that do not survive logistics</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>Loveable. Unreliable. Worth deciding which one matters more before you make plans you care about.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-006 · SUBJECT: RELL · STATUS: ACTIVE · <span style="color:var(--gold);">★ RARE PROFILE</span></span>
+      <span class="threat-badge threat-green">THREAT LEVEL: GREEN</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/rell.jpg" alt="Rell" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>💘</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">RELL</div>
+            <div class="char-age">Age 27 · He/Him</div>
+          </div>
+          <div class="char-archetype">THE ROMANTIC</div>
+          <div class="char-tags">
+            <span class="tag">SHOWS UP</span>
+            <span class="tag">CONSISTENT</span>
+            <span class="tag">IN IT</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Shows up. Every time, without needing to be asked."</div>
+        <p class="char-profile">
+          Rell still has every ticket stub from every show he has been to since he was sixteen. He keeps them in a shoebox, not because he is trying to be sentimental — he just did not want to throw away something that meant something at the time. This is, more or less, how he approaches most things.
+          <br><br>
+          He does not love grand gestures. He loves consistent small ones: showing up when he said he would, remembering the things you mentioned once, asking follow-up questions weeks later. He is not performing being a good person. He is just — being one. And being one, it turns out, is almost indistinguishable from everything you were looking for without knowing you were looking.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Shows up to things that matter to you, even if they're not his thing</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Gives real answers when you ask how he is</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Takes accountability without making it about himself</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Keeps the same energy in public as in private</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label yellow">MILD FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Slow to open up at first — requires patience, worth it</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Quietly carries things he should probably talk about</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>The doll that the legendary profile is built on. There is a reason for that. Rare find. Handle accordingly — he will not tell you he's hurt until it has been a while.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── KIP + DAX + MILO ─────────────────────────────────────────────── -->
+<div class="page" style="padding-top:0;">
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-007 · SUBJECT: KIP · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-yellow">THREAT LEVEL: YELLOW</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/kip.jpg" alt="Kip" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🌀</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">KIP</div>
+            <div class="char-age">Age 25 · He/Him</div>
+          </div>
+          <div class="char-archetype">THE OVERTHINKER</div>
+          <div class="char-tags">
+            <span class="tag">SPIRALING</span>
+            <span class="tag">TRIPLE TEXTED</span>
+            <span class="tag">DRAFTED 11 VERSIONS</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Has typed and deleted this message eleven times."</div>
+        <p class="char-profile">
+          Kip would like to be more spontaneous. He has thought about it extensively. The problem is that everything Kip does gets routed through a fairly rigorous internal process that involves considering outcomes, reconsidering outcomes, and then reconsidering the reconsideration. He sent that first message to you after three drafts and a forty-five minute break. It was a good message. It really was.
+          <br><br>
+          The difficulty with Kip is not that he does not feel things — he feels everything, quite vividly. The difficulty is that the gap between feeling something and saying it out loud can take time. He is working on it. "Working on it" for Kip means he has drafted an approach and is currently reviewing it.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Genuinely thoughtful — nothing said carelessly</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Picks up on your mood without being told</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Checks in after you mentioned something stressful</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label yellow">YELLOW FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Triple texts then goes quiet — the cycle repeats</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Tells you he is fine when he is clearly not</span></div>
+            <div class="behavior-item"><span class="dot dot-yellow"></span><span>Overthinks everything into ambiguity</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>Wants to be all-in. Getting there. The arrival is worth the timeline — if you have the patience for a slow build and do not mistake quiet for distance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-008 · SUBJECT: DAX · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-yellow">THREAT LEVEL: YELLOW</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/dax.jpg" alt="Dax" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>⚡</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">DAX</div>
+            <div class="char-age">Age 26 · He/Him</div>
+          </div>
+          <div class="char-archetype">THE GYM PERSON</div>
+          <div class="char-tags">
+            <span class="tag">5AM WAKEUP</span>
+            <span class="tag">PROTEIN FIRST</span>
+            <span class="tag">NO REST DAYS</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"The body is a temple. Your feelings are a side quest."</div>
+        <p class="char-profile">
+          Dax is up at 4:58 AM. The gym is at 5:05. You are somewhere between protein intake and meal prep — in the calendar, if not in the conversation. This is not personal. Dax has a system and the system works and the system has been running for three years without disruption. He is genuinely interested in you as a person. He also has a scheduled rest day that he ignores.
+          <br><br>
+          His life is full in a way that is genuinely impressive and practically impenetrable. You can add yourself to it. There is probably a slot. You should know the slot comes after accountability partner and before Sunday meal prep, and that flexibility in the schedule is a concept Dax finds intellectually interesting but has not yet implemented.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Always on time — structure is a form of respect</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Makes plans and keeps them (within the schedule)</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">RED FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Phone always face-down, supplements always face-up</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Never asks how you are doing — talks about the workout</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Emotional availability not included in the stack</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>Shows up for everything except the parts that require emotional flexibility. The system is tight. You are a variable. Variables make the system nervous.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="char-card">
+    <div class="char-header">
+      <span class="file-id">FILE-009 · SUBJECT: MILO · STATUS: ACTIVE</span>
+      <span class="threat-badge threat-red">THREAT LEVEL: RED</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/milo.jpg" alt="Milo" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\'>🖤</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name">MILO</div>
+            <div class="char-age">Age 29 · He/Him</div>
+          </div>
+          <div class="char-archetype">THE SITUATIONSHIP</div>
+          <div class="char-tags">
+            <span class="tag">UNDEFINED</span>
+            <span class="tag">NO LABELS</span>
+            <span class="tag">IT IS COMPLICATED</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio">"Not your person. Not not your person."</div>
+        <p class="char-profile">
+          Milo has been "almost ready" since approximately 2023. He is warm, present, deeply fun to spend time with, and has been meaning to have that conversation for three months. He does not think of himself as unavailable. He simply has a complicated relationship with the word "exclusive" and what it implies and what it might require and whether he is really in a place right now to — anyway.
+          <br><br>
+          The thing about Milo is that every moment with him feels like it's about to become something real. That feeling has been consistent for two years. The something real has not materialized. This is not entirely him not wanting it. It is, more accurately, him being terrified of wanting it. Which is a different problem with the same result.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">GREEN FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Warm and genuinely attentive when present</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Great at the moment he is actually in</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">RED FLAGS</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Almost ready to commit — for approximately three years</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Goes cold without explanation, calls it needing space</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Their whole thing is "I don't really do labels"</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Undefined — not a phase, a permanent address</span></div>
+          </div>
+        </div>
+        <div class="analyst-note">
+          <div class="analyst-label">ANALYST'S NOTE</div>
+          <p>The situationship is not a phase. It is Milo's natural state. The feelings are real. The follow-through is somewhere in his drafts folder.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ CATFISH -->
+<div id="catfish" class="section-divider">
+  <div class="section-label">THREAT FILES C-01 · C-02</div>
+  <div class="section-title">THE CATFISH FILES</div>
+  <p style="font-size:13px;color:var(--muted);margin-top:12px;">
+    Every game contains one catfish, injected at a random position. Their profile appears flawless. Two green flag traits are visible. Four severe red flags are hidden. This section is partially redacted. Read after you have been caught.
+  </p>
+</div>
+
+<div class="page" style="padding-top:0;">
+  <!-- CATFISH-F -->
+  <div class="catfish-card">
+    <div class="char-header" style="background:rgba(255,77,109,0.08);">
+      <span class="file-id" style="color:var(--accent);">THREAT FILE C-01 · SUBJECT: <span class="redacted">████████</span> · ALIAS: VARIES · CLASSIFICATION: CATFISH</span>
+      <span class="threat-badge threat-black">⚠ CATFISH</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/catfish-f.jpg" alt="Catfish F" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\' style=\'background:rgba(255,77,109,0.1);\'>🪝</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name" style="color:var(--accent);">UNKNOWN</div>
+            <div class="split-ages">
+              <span class="shown">Age 24 (listed)</span>
+              <span class="real">Age ~46 (actual)</span>
+            </div>
+          </div>
+          <div class="char-archetype" style="color:var(--accent);">THE CATFISH</div>
+          <div class="char-tags">
+            <span class="tag" style="border-color:rgba(255,77,109,0.3);color:rgba(255,77,109,0.7);">TOO PERFECT</span>
+            <span class="tag" style="border-color:rgba(255,77,109,0.3);color:rgba(255,77,109,0.7);">GUT FEELING</span>
+            <span class="tag" style="border-color:rgba(255,77,109,0.3);color:rgba(255,77,109,0.7);">TRUST THE SIGNS</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio" style="border-left-color:var(--accent);">"Everything checks out. So why does something feel off?"</div>
+        <p class="char-profile">
+          The photos are three years old. The city she listed has not been her city since 2019. The job she mentioned is technically accurate if you restrict the tense to the past. The doll in the profile photo belongs to someone she admires and has not spoken to in a while.
+          <br><br>
+          She is not a bad person. She would tell you, if asked, that she just wanted a chance before the algorithm decided she wasn't worth seeing. She would probably be right about the algorithm. None of that makes the gap okay. The warmth in the conversations was real. The curiosity was real. The effort to connect was genuine. The person in the photographs was not her, and that was not a small detail.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">VISIBLE TRAITS (BAIT)</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Actually listens without waiting for her turn</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Gives compliments without an agenda behind them</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">HIDDEN TRAITS (ACTUAL)</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Knows exactly what to say and rarely means any of it</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Says one thing and consistently does another</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Love bombs hard then slowly disappears</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Makes you feel guilty for having a life outside of them</span></div>
+          </div>
+        </div>
+        <div class="analyst-note" style="border-color:rgba(255,77,109,0.2);background:rgba(255,77,109,0.04);">
+          <div class="analyst-label" style="color:var(--accent);">LAST KNOWN ACTIVITY</div>
+          <p>Profile still active under <span class="redacted">████</span> separate aliases. Detection rate: <span class="redacted">██</span>%. Gut instinct is the primary detection mechanism. Players who ghost this profile without explicit catfish suspicion may still be credited with avoidance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATFISH-M -->
+  <div class="catfish-card" style="margin-top:32px;">
+    <div class="char-header" style="background:rgba(255,77,109,0.08);">
+      <span class="file-id" style="color:var(--accent);">THREAT FILE C-02 · SUBJECT: <span class="redacted">████████</span> · ALIAS: VARIES · CLASSIFICATION: CATFISH</span>
+      <span class="threat-badge threat-black">⚠ CATFISH</span>
+    </div>
+    <div class="char-body">
+      <div class="char-photo">
+        <img src="/catch-photos/catfish-m.jpg" alt="Catfish M" onerror="this.parentNode.innerHTML='<div class=\'char-photo-placeholder\' style=\'background:rgba(255,77,109,0.1);\'>🪝</div>'">
+        <div class="char-meta">
+          <div class="char-name-block">
+            <div class="char-name" style="color:var(--accent);">UNKNOWN</div>
+            <div class="split-ages">
+              <span class="shown">Age 26 (listed)</span>
+              <span class="real">Age ~58 (actual)</span>
+            </div>
+          </div>
+          <div class="char-archetype" style="color:var(--accent);">THE CATFISH</div>
+          <div class="char-tags">
+            <span class="tag" style="border-color:rgba(255,77,109,0.3);color:rgba(255,77,109,0.7);">TOO PERFECT</span>
+            <span class="tag" style="border-color:rgba(255,77,109,0.3);color:rgba(255,77,109,0.7);">GUT FEELING</span>
+            <span class="tag" style="border-color:rgba(255,77,109,0.3);color:rgba(255,77,109,0.7);">TRUST THE SIGNS</span>
+          </div>
+        </div>
+      </div>
+      <div class="char-content">
+        <div class="char-bio" style="border-left-color:var(--accent);">"Everything checks out. So why does something feel off?"</div>
+        <p class="char-profile">
+          He has retired from three industries. He is currently in the business of first impressions, which he has discovered he is very good at. The gap between the profile and the person is thirty-two years and a completely different face. The photos were borrowed from somewhere online. The stories are compiled from other people's lives, arranged into a persona that performs young, and warm, and curious, convincingly.
+          <br><br>
+          The interest he shows in the conversation — that part, surprisingly, is genuine. He is not performing caring about you. He actually does, in his way. This makes the whole thing considerably more complicated and not meaningfully less wrong.
+        </p>
+        <div class="behaviors">
+          <div class="behavior-col">
+            <div class="behavior-label green">VISIBLE TRAITS (BAIT)</div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Celebrates your wins like they are his own</span></div>
+            <div class="behavior-item"><span class="dot dot-green"></span><span>Genuinely curious about what you think and feel</span></div>
+          </div>
+          <div class="behavior-col">
+            <div class="behavior-label red">HIDDEN TRAITS (ACTUAL)</div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Uses your vulnerability as material for their own growth</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Gets weird about you spending time with your own friends</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Makes you feel guilty for having a life outside of them</span></div>
+            <div class="behavior-item"><span class="dot dot-red"></span><span>Knows exactly what to say and rarely means any of it</span></div>
+          </div>
+        </div>
+        <div class="analyst-note" style="border-color:rgba(255,77,109,0.2);background:rgba(255,77,109,0.04);">
+          <div class="analyst-label" style="color:var(--accent);">LAST KNOWN ACTIVITY</div>
+          <p><span class="redacted">████████████████████████████████</span>. Profile operational since <span class="redacted">████</span>. If you dated this profile, your score reflects the hidden traits regardless of what you saw. The game knew what you didn't.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ ARCHETYPES -->
+<div id="archetypes" class="section-divider">
+  <div class="section-label">BEHAVIORAL TAXONOMY</div>
+  <div class="section-title">ARCHETYPES DECODED</div>
+  <p style="font-size:13px;color:var(--muted);margin-top:12px;">
+    All sixteen archetypes that appear in the game's profile rotation. Each character is assigned one at the start of your game. These are the honest diagnoses behind the labels.
+  </p>
+</div>
+
+<div class="page" style="padding-top:0;">
+  <div class="archetypes-grid">
+    <div class="archetype-card">
+      <div class="archetype-name">THE OVERTHINKER</div>
+      <div class="archetype-tags"><span class="tag">SPIRALING</span><span class="tag">TRIPLE TEXTED</span><span class="tag">DRAFTED 11 VERSIONS</span></div>
+      <div class="archetype-bio">Has typed and deleted this message eleven times. Genuinely thoughtful. The gap between feeling and saying is just — wide.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE SITUATIONSHIP</div>
+      <div class="archetype-tags"><span class="tag">UNDEFINED</span><span class="tag">NO LABELS</span><span class="tag">IT IS COMPLICATED</span></div>
+      <div class="archetype-bio">Not your person. Not not your person. The grey zone has been home for two and a half years now.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE LOVE BOMBER</div>
+      <div class="archetype-tags"><span class="tag">INTENSE</span><span class="tag">TOO FAST</span><span class="tag">TOO MUCH</span></div>
+      <div class="archetype-bio">Makes you feel like the main character. For about two weeks. The disappearance is always a surprise and never is.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE GYM PERSON</div>
+      <div class="archetype-tags"><span class="tag">5AM WAKEUP</span><span class="tag">PROTEIN FIRST</span><span class="tag">NO REST DAYS</span></div>
+      <div class="archetype-bio">The body is a temple. Your feelings are a side quest. The schedule is tight. You are a variable.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE SOFT LAUNCH</div>
+      <div class="archetype-tags"><span class="tag">BACK OF PHOTO</span><span class="tag">NO CAPTIONS</span><span class="tag">ALMOST OFFICIAL</span></div>
+      <div class="archetype-bio">You have been in six posts. None of them show your face. The main grid is earned, not given.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE THERAPY SPEAK</div>
+      <div class="archetype-tags"><span class="tag">BOUNDARIES</span><span class="tag">TRIGGERED</span><span class="tag">DOING THE WORK</span></div>
+      <div class="archetype-bio">Has the vocabulary. Working on the follow-through. The gap between knowing and doing is the whole arc.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE TRAVELER</div>
+      <div class="archetype-tags"><span class="tag">JUST LANDED</span><span class="tag">ALWAYS LEAVING</span><span class="tag">CHECK MY STORIES</span></div>
+      <div class="archetype-bio">Amazing in photos. Never in the same city for two weeks. Connection is real but the timezone is always different.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE HOMEBODY</div>
+      <div class="archetype-tags"><span class="tag">COUCH FIRST</span><span class="tag">STAY IN</span><span class="tag">MOVIE NIGHT</span></div>
+      <div class="archetype-bio">Warm, comfortable, has not left the apartment since Thursday. Deep loyalty once the couch is shared.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE PARTY HOST</div>
+      <div class="archetype-tags"><span class="tag">COME THROUGH</span><span class="tag">BRING PEOPLE</span><span class="tag">STILL GOING</span></div>
+      <div class="archetype-bio">Knows everyone. Close with almost nobody. The party is always open. The door is harder to find.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE FLAKE</div>
+      <div class="archetype-tags"><span class="tag">MAYBE</span><span class="tag">LET ME CHECK</span><span class="tag">SOMETHING CAME UP</span></div>
+      <div class="archetype-bio">Fully committed to attending. Right up until they are not. The intent is always real. The follow-through is not.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE ROMANTIC</div>
+      <div class="archetype-tags"><span class="tag">HOPEFUL</span><span class="tag">SOFT HEART</span><span class="tag">ALL IN</span></div>
+      <div class="archetype-bio">Has been waiting their whole life to meet someone like you. They mean it. Both parts of it.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE COMMITMENT-PHOBE</div>
+      <div class="archetype-tags"><span class="tag">JUST HAVING FUN</span><span class="tag">NOT LOOKING FOR ANYTHING</span><span class="tag">OPEN</span></div>
+      <div class="archetype-bio">Great one-on-one. Horrified by the word exclusive. The feelings are genuine. The timeline is not.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE PEOPLE PLEASER</div>
+      <div class="archetype-tags"><span class="tag">NO IS HARD</span><span class="tag">WHATEVER YOU WANT</span><span class="tag">TOTALLY FINE</span></div>
+      <div class="archetype-bio">Will agree with everything and slowly resent you for it. The resentment arrives as a surprise to everyone including them.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE SOCIAL MEDIA ONE</div>
+      <div class="archetype-tags"><span class="tag">CONTENT FIRST</span><span class="tag">GOOD LIGHTING</span><span class="tag">THAT IS CUTE</span></div>
+      <div class="archetype-bio">If it is not posted it did not happen. Including you. The question is whether existing offline is enough.</div>
+    </div>
+    <div class="archetype-card">
+      <div class="archetype-name">THE LATE BLOOMER</div>
+      <div class="archetype-tags"><span class="tag">STILL FIGURING IT OUT</span><span class="tag">GREW UP RECENTLY</span><span class="tag">TRYING</span></div>
+      <div class="archetype-bio">Just started doing the work. The growth is real and recent. Give them a minute — but verify.</div>
+    </div>
+    <div class="archetype-card" style="border-color:rgba(255,77,109,0.25);background:rgba(255,77,109,0.04);">
+      <div class="archetype-name" style="color:var(--accent);">THE LEGENDARY DROP</div>
+      <div class="archetype-tags">
+        <span class="tag" style="color:var(--gold);border-color:rgba(228,196,106,0.3);">LEGENDARY TIER</span>
+        <span class="tag" style="color:var(--gold);border-color:rgba(228,196,106,0.3);">1% DROP RATE</span>
+        <span class="tag" style="color:var(--gold);border-color:rgba(228,196,106,0.3);">FINAL AREA</span>
+      </div>
+      <div class="archetype-bio" style="color:rgba(228,196,106,0.7);">1% chance. Only appears in the final round. Your whole game comes down to this one moment. The one worth finding.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ ACHIEVEMENTS -->
+<div id="achievements" class="section-divider">
+  <div class="section-label">UNLOCK REGISTRY</div>
+  <div class="section-title">ACHIEVEMENT VAULT</div>
+  <p style="font-size:13px;color:var(--muted);margin-top:12px;">
+    Eleven hidden achievements tracked across your playthrough. Some require specific patterns. Some are unavoidable. Some players never see certain ones. That is also data about how they play.
+  </p>
+</div>
+
+<div class="page" style="padding-top:0;">
+  <div class="achievements-grid">
+    <div class="achievement-card">
+      <div class="ach-emoji">🎣</div>
+      <div>
+        <div class="ach-title">CATFISH DODGER</div>
+        <div class="ach-desc">You felt something was off and you were right. The instinct that fires before the reason is the most important one.</div>
+      </div>
+    </div>
+    <div class="achievement-card" style="border-color:rgba(255,77,109,0.2);background:rgba(255,77,109,0.04);">
+      <div class="ach-emoji">🪝</div>
+      <div>
+        <div class="ach-title">GOT CATFISHED</div>
+        <div class="ach-desc">They were too perfect. You should have trusted your gut. Most players unlock this before they unlock CATFISH DODGER.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">👻</div>
+      <div>
+        <div class="ach-title">GHOST MASTER</div>
+        <div class="ach-desc">Used all three ghosts. No mess, no drama. The cleanest exit available and you took it every time.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">🔥</div>
+      <div>
+        <div class="ach-title">CHAOS ENJOYER</div>
+        <div class="ach-desc">Dated every red flag and came back for more. The score reflects the choice. The choice reflects something.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">🚩</div>
+      <div>
+        <div class="ach-title">RED FLAG RADAR</div>
+        <div class="ach-desc">You spotted the pattern before it spotted you. Pattern recognition is a skill and you have it.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">🛋️</div>
+      <div>
+        <div class="ach-title">THERAPIZED</div>
+        <div class="ach-desc">You took a step back and it paid off. The pause was correct. Not every situation requires forward motion.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">⚡</div>
+      <div>
+        <div class="ach-title">SMOOTH CRIMINAL</div>
+        <div class="ach-desc">You took their points and they didn't even see it coming. High-efficiency play. Cold-blooded, in a game sense.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">♥♥</div>
+      <div>
+        <div class="ach-title">DOUBLE DATER</div>
+        <div class="ach-desc">Shared the risk and split the reward. The double date is the most underused move in the game. You used it.</div>
+      </div>
+    </div>
+    <div class="achievement-card" style="border-color:rgba(228,196,106,0.25);background:rgba(228,196,106,0.04);">
+      <div class="ach-emoji">💘</div>
+      <div>
+        <div class="ach-title" style="color:var(--gold);">FOUND THE ONE</div>
+        <div class="ach-desc">Against 1% odds, you caught the legendary drop. The rarest unlock in the game. If you have this, you know what it cost.</div>
+      </div>
+    </div>
+    <div class="achievement-card" style="border-color:rgba(255,77,109,0.2);background:rgba(255,77,109,0.04);">
+      <div class="ach-emoji">💔</div>
+      <div>
+        <div class="ach-title">UNMATCHED</div>
+        <div class="ach-desc">Went all in on The One and lost it all. You knew the odds and went anyway. There is something to be said for that.</div>
+      </div>
+    </div>
+    <div class="achievement-card">
+      <div class="ach-emoji">☠️</div>
+      <div>
+        <div class="ach-title">NO SURVIVORS</div>
+        <div class="ach-desc">Every date was a red flag. You survived anyway. The score is low. The resilience is noted.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider-line" style="margin-top:40px;">
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:24px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;">
+      <div style="font-size:10px;letter-spacing:0.3em;font-weight:700;color:var(--teal);margin-bottom:8px;">RAREST UNLOCK</div>
+      <div class="anton" style="font-size:20px;color:var(--gold);">FOUND THE ONE</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">1% chance per game. Requires reaching the final round with enough score to date Quinn.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;">
+      <div style="font-size:10px;letter-spacing:0.3em;font-weight:700;color:var(--teal);margin-bottom:8px;">MOST COMMON</div>
+      <div class="anton" style="font-size:20px;color:var(--cream);">GOT CATFISHED</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">The catfish is designed to pass a casual read. Most players date them at least once.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;">
+      <div style="font-size:10px;letter-spacing:0.3em;font-weight:700;color:var(--teal);margin-bottom:8px;">MUTUALLY EXCLUSIVE</div>
+      <div class="anton" style="font-size:20px;color:var(--cream);">FOUND / UNMATCHED</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">You cannot hold both. One means you got there. One means you got close and the score wasn't enough.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ BACK COVER -->
+<div id="back">
+  <div class="back-title anton">THE CATCH</div>
+  <div class="back-sub">SEASON ONE · CLASSIFIED DOSSIER · FOUNDING BACKER EDITION</div>
+  <div style="margin-top:20px;font-size:12px;color:var(--dim);line-height:1.8;">
+    Game design, writing &amp; art direction by Maya Walsh<br>
+    All characters are fictional. All archetypes are real.
+  </div>
+  <div class="back-link">
+    <a href="https://bymayawalsh.design">bymayawalsh.design</a>
+  </div>
+  <div style="margin-top:32px;font-size:10px;letter-spacing:0.2em;color:var(--dim);">
+    THIS DOCUMENT IS FOR APPROVED BACKERS ONLY · UNAUTHORIZED REDISTRIBUTION PROHIBITED<br>
+    © THE CATCH · SEASON ONE · ALL RIGHTS RESERVED
+  </div>
+</div>
+
+</body>
+</html>

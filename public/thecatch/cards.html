@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE CATCH — Archetype Card Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0e0b12;
+      --s1:      #15101e;
+      --s2:      #1c1528;
+      --border:  rgba(255,255,255,0.07);
+      --accent:  #FF4D6D;
+      --teal:    #7CE0A8;
+      --gold:    #E4C46A;
+      --lavender:#B8A4D4;
+      --cream:   #EFE6DC;
+      --muted:   #6b5e7e;
+      --dim:     #3a3245;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Work Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 28px;
+      background: rgba(14,11,18,0.94); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 0.14em; color: var(--accent); }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 11px; letter-spacing: 0.15em; font-weight: 600;
+      margin-left: 20px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+
+    /* ── HERO ─────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 56px 28px 44px; text-align: center;
+      background: radial-gradient(ellipse at 50% 0%, rgba(184,164,212,0.07) 0%, transparent 65%);
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.012) 40px),
+                  repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.012) 40px);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block; margin-bottom: 24px;
+      border: 1px solid rgba(184,164,212,0.4); color: var(--lavender);
+      font-size: 10px; letter-spacing: 0.3em; font-weight: 700;
+      padding: 6px 18px;
+    }
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(32px, 7vw, 64px);
+      line-height: 0.9; letter-spacing: 0.04em;
+      color: var(--cream); margin-bottom: 12px;
+    }
+    .hero-title em { color: var(--lavender); font-style: normal; }
+    .hero-sub {
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+      max-width: 440px; margin: 14px auto 0;
+    }
+
+    /* ── COLLECTION HEADER ────────────────────────────────────────────── */
+    .collection-header {
+      max-width: 1200px; margin: 0 auto;
+      padding: 36px 28px 20px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .collection-count {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1; letter-spacing: 0.03em;
+    }
+    .collection-count .n-unlocked { color: var(--lavender); }
+    .collection-count .n-total    { color: rgba(255,255,255,0.18); font-size: 0.6em; }
+    .collection-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.25em;
+      color: var(--muted); margin-top: 4px;
+    }
+    .collection-cta {
+      font-family: 'Work Sans', sans-serif; font-weight: 700;
+      font-size: 12px; letter-spacing: 0.18em;
+      color: var(--accent); text-decoration: none;
+      border: 1px solid rgba(255,77,109,0.4); padding: 10px 20px;
+      transition: background 0.2s;
+    }
+    .collection-cta:hover { background: rgba(255,77,109,0.08); }
+
+    /* Progress bar */
+    .progress-track {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 28px 28px;
+    }
+    .progress-bar {
+      width: 100%; height: 2px;
+      background: rgba(255,255,255,0.06);
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%; background: var(--lavender);
+      transition: width 0.6s ease;
+      box-shadow: 0 0 8px rgba(184,164,212,0.5);
+    }
+
+    /* ── CARD GRID ────────────────────────────────────────────────────── */
+    .deck-section { padding: 0 28px 60px; max-width: 1200px; margin: 0 auto; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── BASE CARD ────────────────────────────────────────────────────── */
+    .card {
+      aspect-ratio: 5 / 7;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      break-inside: avoid;
+    }
+
+    /* top accent stripe */
+    .card-stripe { height: 5px; flex-shrink: 0; }
+
+    .card-header {
+      padding: 12px 14px 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .card-id   { font-family: 'Anton', sans-serif; font-size: 9px; letter-spacing: 0.25em; opacity: 0.45; }
+    .card-game { font-family: 'Anton', sans-serif; font-size: 8px; letter-spacing: 0.2em; opacity: 0.3; }
+
+    .card-name {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; padding: 0 14px; min-height: 0;
+    }
+    .card-the   { font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 0.25em; opacity: 0.35; margin-bottom: 2px; }
+    .card-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(18px, 3.5vw, 26px);
+      line-height: 0.88; letter-spacing: 0.03em; color: var(--cream);
+    }
+
+    .card-tags { padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 4px; flex-shrink: 0; }
+    .card-tag  { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; padding: 3px 7px; border: 1px solid; opacity: 0.7; }
+
+    .card-div { height: 1px; margin: 0 14px; background: var(--border); flex-shrink: 0; }
+
+    .card-quote {
+      padding: 10px 14px; font-style: italic; font-weight: 300;
+      font-size: 11px; line-height: 1.55;
+      color: rgba(239,230,220,0.65);
+      flex: 1; display: flex; align-items: center; min-height: 0;
+    }
+
+    .card-footer {
+      padding: 8px 14px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .card-logo { font-family: 'Anton', sans-serif; font-size: 8px; letter-spacing: 0.3em; opacity: 0.25; }
+    .card-dot  { width: 20px; height: 20px; border-radius: 50%; opacity: 0.35; }
+
+    /* ── COLOR VARIANTS ───────────────────────────────────────────────── */
+    .c-red  .card-stripe { background: var(--accent); }
+    .c-red  .card-id     { color: var(--accent); }
+    .c-red  .card-tag    { color: var(--accent); border-color: rgba(255,77,109,0.35); }
+    .c-red  .card-dot    { background: var(--accent); }
+    .c-red:hover         { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(255,77,109,0.18); }
+
+    .c-teal .card-stripe { background: var(--teal); }
+    .c-teal .card-id     { color: var(--teal); }
+    .c-teal .card-tag    { color: var(--teal); border-color: rgba(124,224,168,0.35); }
+    .c-teal .card-dot    { background: var(--teal); }
+    .c-teal:hover        { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(124,224,168,0.18); }
+
+    .c-gold .card-stripe { background: var(--gold); }
+    .c-gold .card-id     { color: var(--gold); }
+    .c-gold .card-tag    { color: var(--gold); border-color: rgba(228,196,106,0.35); }
+    .c-gold .card-dot    { background: var(--gold); }
+    .c-gold:hover        { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(228,196,106,0.18); }
+
+    .c-lav  .card-stripe { background: var(--lavender); }
+    .c-lav  .card-id     { color: var(--lavender); }
+    .c-lav  .card-tag    { color: var(--lavender); border-color: rgba(184,164,212,0.35); }
+    .c-lav  .card-dot    { background: var(--lavender); }
+    .c-lav:hover         { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(184,164,212,0.18); }
+
+    /* ── LOCKED CARD ──────────────────────────────────────────────────── */
+    .card-locked {
+      aspect-ratio: 5 / 7;
+      background: var(--s1);
+      border: 1px solid rgba(255,255,255,0.04);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      opacity: 0.38;
+      break-inside: avoid;
+    }
+    .card-locked .card-stripe { height: 5px; flex-shrink: 0; background: rgba(255,255,255,0.06); }
+    .card-locked .card-header {
+      padding: 12px 14px 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .card-locked .card-id   { font-family: 'Anton', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: rgba(255,255,255,0.15); }
+    .card-locked .card-game { font-family: 'Anton', sans-serif; font-size: 8px; letter-spacing: 0.2em; color: rgba(255,255,255,0.08); }
+    .card-back {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 10px),
+        repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 10px);
+    }
+    .card-back-logo {
+      font-family: 'Anton', sans-serif; font-size: 9px;
+      letter-spacing: 0.3em; color: rgba(255,255,255,0.08);
+    }
+    .card-back-q {
+      font-family: 'Anton', sans-serif; font-size: 36px;
+      color: rgba(255,255,255,0.06);
+    }
+    .card-locked .card-footer {
+      padding: 8px 14px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .card-locked .lock-label {
+      font-family: 'Anton', sans-serif; font-size: 8px;
+      letter-spacing: 0.3em; color: rgba(255,255,255,0.12);
+    }
+
+    /* ── EMPTY STATE ──────────────────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center; padding: 60px 28px;
+    }
+    .empty-state p {
+      font-size: 13px; color: var(--muted); line-height: 1.8;
+      max-width: 360px; margin: 0 auto 28px;
+    }
+
+    /* ── PAGE FOOTER ──────────────────────────────────────────────────── */
+    .page-footer {
+      padding: 40px 28px; text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    .page-footer p { font-size: 11px; letter-spacing: 0.15em; color: var(--muted); line-height: 2; }
+
+    /* ── PRINT ────────────────────────────────────────────────────────── */
+    @media print {
+      nav, .hero, .collection-header, .progress-track,
+      .page-footer, .card-locked { display: none; }
+      html, body { background: #fff; color: #0e0b12; }
+      .deck-section { padding: 0; max-width: none; }
+      .cards-grid { display: flex; flex-wrap: wrap; gap: 0; padding: 0.25in; }
+      .card {
+        width: 2.5in; height: 3.5in; margin: 0.06in;
+        background: #fff !important; border: 1px solid #ccc !important;
+        transform: none !important; box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+      .card-stripe { height: 6px; }
+      .card-id, .card-game { color: #555; }
+      .card-the { color: #333; }
+      .card-title { color: #0e0b12; font-size: 22px; }
+      .card-quote { color: #444; }
+      .card-logo { color: #888; }
+      .card-div { background: #ddd; }
+      .c-red  .card-tag { color: #d63057; border-color: rgba(214,48,87,0.4); }
+      .c-teal .card-tag { color: #2a7a56; border-color: rgba(42,122,86,0.4); }
+      .c-gold .card-tag { color: #8a6e1a; border-color: rgba(138,110,26,0.4); }
+      .c-lav  .card-tag { color: #5a4780; border-color: rgba(90,71,128,0.4); }
+      .c-red  .card-dot { background: #d63057; }
+      .c-teal .card-dot { background: #2a7a56; }
+      .c-gold .card-dot { background: #8a6e1a; }
+      .c-lav  .card-dot { background: #5a4780; }
+      .c-red  .card-stripe { background: #d63057; }
+      .c-teal .card-stripe { background: #2a7a56; }
+      .c-gold .card-stripe { background: #8a6e1a; }
+      .c-lav  .card-stripe { background: #5a4780; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-brand">THE CATCH</div>
+  <div class="nav-links">
+    <a href="/thecatch/quiz.html">TAKE THE QUIZ</a>
+    <a href="/">PORTFOLIO</a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-badge">COLLECTOR'S TOKEN № 002</div>
+  <h1 class="hero-title">ARCHETYPE<br><em>CARD DECK</em></h1>
+  <p class="hero-sub">
+    Cards are unlocked by your quiz results. Each archetype you get adds a card to your deck. 16 total.
+  </p>
+</div>
+
+<!-- ── COLLECTION HEADER ─────────────────────────────────────────────────── -->
+<div class="collection-header">
+  <div>
+    <div class="collection-count">
+      <span class="n-unlocked" id="count-unlocked">0</span>
+      <span class="n-total"> / 16</span>
+    </div>
+    <div class="collection-label">ARCHETYPES UNLOCKED</div>
+  </div>
+  <a href="/thecatch/quiz.html" class="collection-cta">↗ TAKE THE QUIZ TO UNLOCK MORE</a>
+</div>
+<div class="progress-track">
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ── CARD GRID ─────────────────────────────────────────────────────────── -->
+<div class="deck-section">
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+
+<!-- ── PAGE FOOTER ───────────────────────────────────────────────────────── -->
+<div class="page-footer">
+  <p>
+    THE CATCH — ARCHETYPE CARD DECK<br>
+    <span style="opacity:0.4;">16 CARDS · UNLOCK VIA QUIZ · PRINTABLE 2.5" × 3.5"</span>
+  </p>
+</div>
+
+<script>
+const STORAGE_KEY = 'thecatch_unlocked'
+
+const ARCHETYPES = [
+  { key: 'romantic',         id: 'ARCH-01', name: 'ROMANTIC',        tags: ['HOPEFUL', 'SOFT HEART', 'ALL IN'],                      bio: 'Has been waiting their whole life to meet someone like you.',       color: 'c-teal' },
+  { key: 'soft_launch',      id: 'ARCH-02', name: 'SOFT LAUNCH',      tags: ['BACK OF PHOTO', 'NO CAPTIONS', 'ALMOST OFFICIAL'],      bio: 'You have been in six posts. None of them show your face.',          color: 'c-gold' },
+  { key: 'main_character',   id: 'ARCH-03', name: 'MAIN CHARACTER',   tags: ['STORYLINE', 'ERA', 'UNBOTHERED'],                       bio: 'Every moment is their moment. Including yours.',                    color: 'c-red'  },
+  { key: 'therapy_speak',    id: 'ARCH-04', name: 'THERAPY SPEAK',    tags: ['BOUNDARIES', 'TRIGGERED', 'DOING THE WORK'],            bio: 'Has the vocabulary. Working on the follow-through.',                color: 'c-gold' },
+  { key: 'flake',            id: 'ARCH-05', name: 'FLAKE',            tags: ['MAYBE', 'LET ME CHECK', 'SOMETHING CAME UP'],           bio: 'Fully committed to attending. Right up until they are not.',        color: 'c-red'  },
+  { key: 'overthinker',      id: 'ARCH-06', name: 'OVERTHINKER',      tags: ['WAIT BUT', 'WHAT IF', 'BUT ALSO'],                      bio: 'Has drafted and deleted this message fourteen times.',              color: 'c-gold' },
+  { key: 'situationship',    id: 'ARCH-07', name: 'SITUATIONSHIP',    tags: ['UNDEFINED', 'NO LABELS', 'IT IS COMPLICATED'],          bio: 'Not your person. Not not your person.',                             color: 'c-lav'  },
+  { key: 'love_bomber',      id: 'ARCH-08', name: 'LOVE BOMBER',      tags: ['INTENSE', 'TOO FAST', 'TOO MUCH'],                      bio: 'Makes you feel like the main character. For about two weeks.',      color: 'c-red'  },
+  { key: 'gym_person',       id: 'ARCH-09', name: 'GYM PERSON',       tags: ['5AM WAKEUP', 'PROTEIN FIRST', 'NO REST DAYS'],          bio: 'The body is a temple. Your feelings are a side quest.',             color: 'c-teal' },
+  { key: 'traveler',         id: 'ARCH-10', name: 'TRAVELER',         tags: ['JUST LANDED', 'ALWAYS LEAVING', 'CHECK MY STORIES'],    bio: 'Amazing in photos. Never in the same city for two weeks.',          color: 'c-gold' },
+  { key: 'homebody',         id: 'ARCH-11', name: 'HOMEBODY',         tags: ['COUCH FIRST', 'STAY IN', 'MOVIE NIGHT'],                bio: 'Warm, comfortable, has not left the apartment since Thursday.',     color: 'c-teal' },
+  { key: 'party_host',       id: 'ARCH-12', name: 'PARTY HOST',       tags: ['COME THROUGH', 'BRING PEOPLE', 'STILL GOING'],          bio: 'Knows everyone. Close with almost nobody.',                         color: 'c-red'  },
+  { key: 'commitment_phobe', id: 'ARCH-13', name: 'COMMITMENT-PHOBE', tags: ['JUST HAVING FUN', 'OPEN', 'NOT LOOKING'],               bio: 'Great one-on-one. Horrified by the word exclusive.',                color: 'c-lav'  },
+  { key: 'people_pleaser',   id: 'ARCH-14', name: 'PEOPLE PLEASER',   tags: ['NO IS HARD', 'WHATEVER YOU WANT', 'TOTALLY FINE'],      bio: 'Will agree with everything and slowly resent you for it.',          color: 'c-lav'  },
+  { key: 'social_media',     id: 'ARCH-15', name: 'SOCIAL MEDIA ONE', tags: ['CONTENT FIRST', 'GOOD LIGHTING', 'THAT IS CUTE'],       bio: 'If it is not posted it did not happen. Including you.',             color: 'c-lav'  },
+  { key: 'late_bloomer',     id: 'ARCH-16', name: 'LATE BLOOMER',     tags: ['STILL FIGURING IT OUT', 'GREW UP RECENTLY', 'TRYING'],  bio: 'Just started doing the work. Give them a minute.',                  color: 'c-teal' },
+]
+
+function getUnlocked() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] }
+}
+
+function buildLockedCard(a) {
+  return `
+    <div class="card-locked">
+      <div class="card-stripe"></div>
+      <div class="card-header">
+        <span class="card-id">${a.id}</span>
+        <span class="card-game">THE CATCH</span>
+      </div>
+      <div class="card-back">
+        <div class="card-back-logo">THE CATCH</div>
+        <div class="card-back-q">?</div>
+      </div>
+      <div class="card-footer">
+        <span class="lock-label">LOCKED</span>
+      </div>
+    </div>`
+}
+
+function buildUnlockedCard(a) {
+  const tags = a.tags.map(t => `<span class="card-tag">${t}</span>`).join('')
+  return `
+    <div class="card ${a.color}">
+      <div class="card-stripe"></div>
+      <div class="card-header">
+        <span class="card-id">${a.id}</span>
+        <span class="card-game">THE CATCH</span>
+      </div>
+      <div class="card-name">
+        <div class="card-the">THE</div>
+        <div class="card-title">${a.name}</div>
+      </div>
+      <div class="card-tags">${tags}</div>
+      <div class="card-div"></div>
+      <div class="card-quote">"${a.bio}"</div>
+      <div class="card-footer">
+        <span class="card-logo">THE CATCH</span>
+        <div class="card-dot"></div>
+      </div>
+    </div>`
+}
+
+function render() {
+  const unlocked = getUnlocked()
+  const grid = document.getElementById('cards-grid')
+  const countEl = document.getElementById('count-unlocked')
+  const fillEl = document.getElementById('progress-fill')
+
+  countEl.textContent = unlocked.length
+  fillEl.style.width = `${(unlocked.length / 16) * 100}%`
+
+  // Unlocked cards first, then locked
+  const unlockedCards = ARCHETYPES.filter(a => unlocked.includes(a.key))
+  const lockedCards   = ARCHETYPES.filter(a => !unlocked.includes(a.key))
+
+  let html = unlockedCards.map(buildUnlockedCard).join('')
+  html += lockedCards.map(buildLockedCard).join('')
+
+  if (unlocked.length === 0) {
+    html = `
+      <div class="empty-state">
+        <p>No cards unlocked yet. Take the quiz to reveal your first archetype card.</p>
+        <a href="/thecatch/quiz.html" class="collection-cta">↗ TAKE THE QUIZ</a>
+      </div>`
+  }
+
+  grid.innerHTML = html
+}
+
+render()
+</script>
+</body>
+</html>

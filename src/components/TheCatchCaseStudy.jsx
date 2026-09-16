@@ -978,6 +978,44 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
         <Divider />
 
+        {/* Collector's Token */}
+        <Section>
+          <Label color={C.gold}>12 — COLLECTOR'S TOKENS</Label>
+          <Heading color={C.gold}>Built for<br />Backers.</Heading>
+          <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(14px,2vw,17px)', color: 'rgba(239,230,220,0.55)', lineHeight: 1.75, maxWidth: 600, marginBottom: 36 }}>
+            Two founding backer exclusives that extend THE CATCH universe beyond the game itself. Each one earned its existence through the lore — nothing invented, nothing arbitrary.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+
+            {/* Quiz */}
+            <div style={{ background: C.card, border: `1px solid ${C.accent}33`, padding: '24px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 10, letterSpacing: '0.3em' }}>TOKEN № 001</div>
+              <div style={{ fontFamily: ANTON, fontSize: 'clamp(18px,3vw,24px)', color: C.cream, lineHeight: 0.95, letterSpacing: '0.02em' }}>ARCHETYPE<br />PERSONALITY QUIZ</div>
+              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.45)', lineHeight: 1.65 }}>
+                8 questions. 16 possible results. Tells you which type of dater you are — and why you're probably not going to listen.
+              </div>
+              <a href="/thecatch/quiz.html" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, alignSelf: 'flex-start', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.14em', color: C.accent, background: 'transparent', border: `1px solid ${C.accent}55`, padding: '11px 20px', textDecoration: 'none' }}>
+                ↗ TAKE THE QUIZ
+              </a>
+            </div>
+
+            {/* Card Deck */}
+            <div style={{ background: C.card, border: `1px solid #B8A4D433`, padding: '24px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ fontFamily: ANTON, color: '#B8A4D4', fontSize: 10, letterSpacing: '0.3em' }}>TOKEN № 002</div>
+              <div style={{ fontFamily: ANTON, fontSize: 'clamp(18px,3vw,24px)', color: C.cream, lineHeight: 0.95, letterSpacing: '0.02em' }}>ARCHETYPE<br />CARD DECK</div>
+              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.45)', lineHeight: 1.65 }}>
+                16 printable cards — one per archetype. Tarot-style, 2.5&Prime; × 3.5&Prime;. Deal them face-down and see who gets who.
+              </div>
+              <a href="/thecatch/cards.html" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, alignSelf: 'flex-start', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.14em', color: '#B8A4D4', background: 'transparent', border: `1px solid #B8A4D455`, padding: '11px 20px', textDecoration: 'none' }}>
+                ↗ VIEW CARD DECK
+              </a>
+            </div>
+
+          </div>
+        </Section>
+
+        <Divider />
+
         {/* CTA */}
         <Section style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: ANTON, fontSize: 'clamp(48px,10vw,80px)', color: C.cream, lineHeight: 0.9, marginBottom: 6 }}>READY TO</div>
