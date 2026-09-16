@@ -1334,21 +1334,80 @@ function RoundScreen({ state, dispatch }) {
   if (state.roundPhase === 'revealing') {
     const hidden   = profile.traits.filter(t => !t.startVisible).length
     const allShown = state.revealStep >= hidden
+    const revealedCount = profile.traits.filter((t, i) => t.startVisible || traitInReveal(i)).length
     return (
-      <div style={{ flex: 1, overflowY: 'auto', background: C.velvet }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
         <Hud players={state.players} currentRound={state.currentRound} mode={state.mode} currentPlayer={curPlayer} />
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '20px 24px' }}>
+
+        {/* Profile hero strip */}
+        <div style={{ flexShrink: 0, padding: '18px 24px 14px', borderBottom: `1px solid rgba(255,255,255,0.06)`, background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
           <RivalBar players={state.players} decisions={state.roundDecisions} mode={state.mode} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-            <span style={{ fontSize: 28 }}>{profile.emoji}</span>
-            <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 20 }}>{profile.name.toUpperCase()}, {profile.age}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
+            <span style={{ fontSize: 38, lineHeight: 1 }}>{profile.emoji}</span>
+            <div>
+              <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 30, lineHeight: 1, letterSpacing: '0.02em' }}>
+                {profile.name.toUpperCase()}<span style={{ color: '#555', fontFamily: WS, fontWeight: 300, fontSize: 18 }}>, {profile.age}</span>
+              </div>
+              {profile.archetype && (
+                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold, letterSpacing: '0.2em', marginTop: 3 }}>{profile.archetype.toUpperCase()}</div>
+              )}
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 16, background: C.card, border: hairline }}>
-            {profile.traits.map((t, i) => <TraitRow key={i} trait={t} revealed={t.startVisible || traitInReveal(i)} stalked={false} />)}
+        </div>
+
+        {/* Trait cards — scrollable */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {profile.traits.map((t, i) => {
+              const show = t.startVisible || traitInReveal(i)
+              const isPos = t.value > 0
+              const accentCol = !show ? 'transparent' : isPos ? C.teal : C.accent
+              const scoreStr = t.value > 0 ? `+${t.value}` : `${t.value}`
+              return (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '11px 14px',
+                  background: !show ? 'rgba(255,255,255,0.03)' : isPos ? 'rgba(124,224,168,0.07)' : 'rgba(255,77,109,0.07)',
+                  border: `1px solid ${!show ? 'rgba(255,255,255,0.05)' : isPos ? 'rgba(124,224,168,0.2)' : 'rgba(255,77,109,0.2)'}`,
+                  borderRadius: 6,
+                  transition: 'all 0.2s ease',
+                }}>
+                  <div style={{ flex: 1, fontFamily: WS, fontWeight: show ? 500 : 300, fontSize: 13, color: show ? C.cream : '#3a3535', lineHeight: 1.35 }}>
+                    {show ? t.text : '?????'}
+                  </div>
+                  <div style={{
+                    flexShrink: 0, minWidth: 34, height: 34,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    borderRadius: '50%',
+                    background: !show ? 'rgba(255,255,255,0.04)' : isPos ? 'rgba(124,224,168,0.15)' : 'rgba(255,77,109,0.15)',
+                    fontFamily: ANTON, fontSize: 14, color: accentCol,
+                  }}>
+                    {show ? scoreStr : '?'}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Progress + action button */}
+        <div style={{ flexShrink: 0, padding: '10px 20px 16px', background: '#0e0b12', borderTop: `1px solid rgba(255,255,255,0.06)` }}>
+          {/* progress dots */}
+          <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 10 }}>
+            {profile.traits.map((_, i) => {
+              const filled = profile.traits[i].startVisible || traitInReveal(i)
+              return <div key={i} style={{ width: filled ? 16 : 6, height: 4, borderRadius: 2, background: filled ? C.accent : 'rgba(255,255,255,0.12)', transition: 'width 0.25s ease, background 0.25s ease' }} />
+            })}
           </div>
           {!allShown
-            ? <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.cardAlt, color: C.cream, fontSize: 15, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>TAP TO SKIP ▼</button>
-            : <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })} style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.1em', border: 'none', minHeight: 52, borderRadius: 4, cursor: 'pointer' }}>SEE SCORES →</button>
+            ? <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })}
+                style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: 'transparent', color: '#555', fontSize: 13, letterSpacing: '0.15em', border: `1px solid rgba(255,255,255,0.1)`, minHeight: 46, borderRadius: 6, cursor: 'pointer' }}>
+                TAP TO REVEAL ▼
+              </button>
+            : <button onClick={() => dispatch({ type: 'ADVANCE_REVEAL' })}
+                style={{ width: '100%', fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, letterSpacing: '0.12em', border: 'none', minHeight: 52, borderRadius: 6, cursor: 'pointer', boxShadow: `0 0 20px rgba(255,77,109,0.35)` }}>
+                SEE SCORES →
+              </button>
           }
         </div>
       </div>
