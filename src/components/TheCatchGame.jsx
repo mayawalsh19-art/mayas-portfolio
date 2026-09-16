@@ -1256,6 +1256,11 @@ function RoundScreen({ state, dispatch }) {
         </div>
         )}
 
+        {/* Profile photo — auto-revealed when player dated */}
+        {myResult && (myResult.action === 'date' || myResult.action === 'double_date') && (
+          <ProfileCard profile={profile} goldTheme={false} lookUnlocked={true} />
+        )}
+
         {isCatfish && (
           <div style={{ padding: '10px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
             <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 18, letterSpacing: '0.1em' }}>🎣 CATFISH</div>
