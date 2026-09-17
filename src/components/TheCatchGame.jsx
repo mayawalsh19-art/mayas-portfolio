@@ -1368,8 +1368,8 @@ function RoundScreen({ state, dispatch }) {
         </div>
 
         {/* Trait cards — scrollable */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 8px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 8px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ margin: 'auto 0', display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
             {profile.traits.map((t, i) => {
               const show = t.startVisible || traitInReveal(i)
               const isPos = t.value > 0
@@ -1453,8 +1453,8 @@ function RoundScreen({ state, dispatch }) {
       </div>
 
       {/* Traits — scrollable rounded cards */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ margin: 'auto 0', display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
           {profile.traits.map((t, i) => {
             const show = traitVisible(i)
             const isPos = t.value > 0
@@ -1665,8 +1665,8 @@ function TheOneScreen({ state, dispatch }) {
       </div>
 
       {/* Traits — scrollable rounded cards */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ margin: 'auto 0', display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
           {profile.traits.map((t, i) => {
             const show = traitVisible(i)
             const isPos = t.value > 0
@@ -1809,8 +1809,8 @@ function TiebreakerScreen({ state, dispatch }) {
       </div>
 
       {/* Traits — scrollable rounded cards */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 6px', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ margin: 'auto 0', display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
           {profile.traits.map((t, i) => {
             const show = t.startVisible
             const isPos = t.value > 0
