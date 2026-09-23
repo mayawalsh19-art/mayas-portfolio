@@ -102,3 +102,12 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* The Catch — on desktop, show the game as an iPhone 15 (393 × 852) device frame */
+@media (min-width: 600px) and (min-height: 880px) {
+  .catch-phone {
+    border-radius: 48px;
+    border: 1px solid rgba(239, 230, 220, 0.08);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  }
+}

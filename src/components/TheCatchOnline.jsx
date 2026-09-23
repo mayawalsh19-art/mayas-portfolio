@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { generateProfiles, PLAYER_TYPES, THE_ONE_PROFILE, TRAIT_POOL } from '../data/catchProfiles'
 import { useGameRoom, hostPeerId } from '../hooks/useGameRoom'
+import { CatchWordmark, CatchHero } from './CatchBrand'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
@@ -1226,7 +1227,7 @@ function GameScreen({
   }
 
   return (
-    <Frame onClose={onClose} title="THE CATCH">
+    <Frame onClose={onClose} title={<CatchWordmark size={12} accent={C.accent} cream={C.cream} />}>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#555' }}>Loading…</div>
       </div>
@@ -1237,7 +1238,7 @@ function GameScreen({
 // ─── Frame wrapper ────────────────────────────────────────────────────────────
 function Frame({ children, onClose, title, right }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.bg, overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: C.bg, overflow: 'hidden' }}>
       <Nav
         left={<button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: 'rgba(239,230,220,0.4)', background: 'transparent', border: 'none', cursor: 'pointer' }}>← Back</button>}
         center={title}
@@ -1262,7 +1263,7 @@ export default function TheCatchOnline({ onClose }) {
   if (role === 'join') return <ClientGame onClose={onClose} />
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.bg }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: C.bg }}>
       <Nav
         left={<button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: 'rgba(239,230,220,0.4)', background: 'transparent', border: 'none', cursor: 'pointer' }}>← Back</button>}
         center="ONLINE MULTIPLAYER"
@@ -1270,9 +1271,12 @@ export default function TheCatchOnline({ onClose }) {
 
       {/* Hero */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px 40px', textAlign: 'center' }}>
-        <div style={{ fontFamily: ANTON, fontSize: 'clamp(52px,14vw,72px)', color: C.accent, lineHeight: 0.88, marginBottom: 4 }}>THE</div>
-        <div style={{ fontFamily: ANTON, fontSize: 'clamp(52px,14vw,72px)', color: C.cream, lineHeight: 0.88, marginBottom: 20 }}>CATCH</div>
-        <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: 'rgba(239,230,220,0.38)', letterSpacing: '0.18em', marginBottom: 40 }}>SEPARATE DEVICES · ONLINE</div>
+        <CatchHero
+          maxWidth={320}
+          subtitle="SEPARATE DEVICES · ONLINE"
+          subtitleColor="rgba(239,230,220,0.38)"
+          style={{ marginBottom: 40 }}
+        />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300 }}>
           <button

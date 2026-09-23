@@ -78,49 +78,6 @@
       max-width: 440px; margin: 14px auto 0;
     }
 
-    /* ── COLLECTION HEADER ────────────────────────────────────────────── */
-    .collection-header {
-      max-width: 1200px; margin: 0 auto;
-      padding: 36px 28px 20px;
-      display: flex; align-items: flex-end; justify-content: space-between;
-      flex-wrap: wrap; gap: 16px;
-    }
-    .collection-count {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(28px, 5vw, 44px);
-      line-height: 1; letter-spacing: 0.03em;
-    }
-    .collection-count .n-unlocked { color: var(--lavender); }
-    .collection-count .n-total    { color: rgba(255,255,255,0.18); font-size: 0.6em; }
-    .collection-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.25em;
-      color: var(--muted); margin-top: 4px;
-    }
-    .collection-cta {
-      font-family: 'Work Sans', sans-serif; font-weight: 700;
-      font-size: 12px; letter-spacing: 0.18em;
-      color: var(--accent); text-decoration: none;
-      border: 1px solid rgba(255,77,109,0.4); padding: 10px 20px;
-      transition: background 0.2s;
-    }
-    .collection-cta:hover { background: rgba(255,77,109,0.08); }
-
-    /* Progress bar */
-    .progress-track {
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 28px 28px;
-    }
-    .progress-bar {
-      width: 100%; height: 2px;
-      background: rgba(255,255,255,0.06);
-      position: relative;
-    }
-    .progress-fill {
-      height: 100%; background: var(--lavender);
-      transition: width 0.6s ease;
-      box-shadow: 0 0 8px rgba(184,164,212,0.5);
-    }
-
     /* ── CARD GRID ────────────────────────────────────────────────────── */
     .deck-section { padding: 0 28px 60px; max-width: 1200px; margin: 0 auto; }
     .cards-grid {
@@ -207,59 +164,6 @@
     .c-lav  .card-dot    { background: var(--lavender); }
     .c-lav:hover         { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(184,164,212,0.18); }
 
-    /* ── LOCKED CARD ──────────────────────────────────────────────────── */
-    .card-locked {
-      aspect-ratio: 5 / 7;
-      background: var(--s1);
-      border: 1px solid rgba(255,255,255,0.04);
-      display: flex; flex-direction: column;
-      position: relative; overflow: hidden;
-      opacity: 0.38;
-      break-inside: avoid;
-    }
-    .card-locked .card-stripe { height: 5px; flex-shrink: 0; background: rgba(255,255,255,0.06); }
-    .card-locked .card-header {
-      padding: 12px 14px 8px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .card-locked .card-id   { font-family: 'Anton', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: rgba(255,255,255,0.15); }
-    .card-locked .card-game { font-family: 'Anton', sans-serif; font-size: 8px; letter-spacing: 0.2em; color: rgba(255,255,255,0.08); }
-    .card-back {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 10px;
-      background:
-        repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 10px),
-        repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 10px);
-    }
-    .card-back-logo {
-      font-family: 'Anton', sans-serif; font-size: 9px;
-      letter-spacing: 0.3em; color: rgba(255,255,255,0.08);
-    }
-    .card-back-q {
-      font-family: 'Anton', sans-serif; font-size: 36px;
-      color: rgba(255,255,255,0.06);
-    }
-    .card-locked .card-footer {
-      padding: 8px 14px 12px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .card-locked .lock-label {
-      font-family: 'Anton', sans-serif; font-size: 8px;
-      letter-spacing: 0.3em; color: rgba(255,255,255,0.12);
-    }
-
-    /* ── EMPTY STATE ──────────────────────────────────────────────────── */
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center; padding: 60px 28px;
-    }
-    .empty-state p {
-      font-size: 13px; color: var(--muted); line-height: 1.8;
-      max-width: 360px; margin: 0 auto 28px;
-    }
-
     /* ── PAGE FOOTER ──────────────────────────────────────────────────── */
     .page-footer {
       padding: 40px 28px; text-align: center;
@@ -269,8 +173,7 @@
 
     /* ── PRINT ────────────────────────────────────────────────────────── */
     @media print {
-      nav, .hero, .collection-header, .progress-track,
-      .page-footer, .card-locked { display: none; }
+      nav, .hero, .page-footer { display: none; }
       html, body { background: #fff; color: #0e0b12; }
       .deck-section { padding: 0; max-width: none; }
       .cards-grid { display: flex; flex-wrap: wrap; gap: 0; padding: 0.25in; }
@@ -306,37 +209,19 @@
 
 <!-- ── NAV ──────────────────────────────────────────────────────────────── -->
 <nav>
-  <div class="nav-brand">THE CATCH</div>
+  <div class="nav-brand"><span style="color:var(--accent);">THE </span><span style="color:var(--cream);">CATCH</span></div>
   <div class="nav-links">
-    <a href="/thecatch/quiz.html">TAKE THE QUIZ</a>
     <a href="/">PORTFOLIO</a>
   </div>
 </nav>
 
 <!-- ── HERO ─────────────────────────────────────────────────────────────── -->
 <div class="hero">
-  <div class="hero-badge">COLLECTOR'S TOKEN № 002</div>
+  <div class="hero-badge">COLLECTOR'S TOKEN № 001</div>
   <h1 class="hero-title">ARCHETYPE<br><em>CARD DECK</em></h1>
   <p class="hero-sub">
-    Cards are unlocked by your quiz results. Each archetype you get adds a card to your deck. 16 total.
+    16 archetypes. Tarot-style, 2.5&Prime; × 3.5&Prime;. Deal them face-down and see who gets who.
   </p>
-</div>
-
-<!-- ── COLLECTION HEADER ─────────────────────────────────────────────────── -->
-<div class="collection-header">
-  <div>
-    <div class="collection-count">
-      <span class="n-unlocked" id="count-unlocked">0</span>
-      <span class="n-total"> / 16</span>
-    </div>
-    <div class="collection-label">ARCHETYPES UNLOCKED</div>
-  </div>
-  <a href="/thecatch/quiz.html" class="collection-cta">↗ TAKE THE QUIZ TO UNLOCK MORE</a>
-</div>
-<div class="progress-track">
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-  </div>
 </div>
 
 <!-- ── CARD GRID ─────────────────────────────────────────────────────────── -->
@@ -348,13 +233,11 @@
 <div class="page-footer">
   <p>
     THE CATCH — ARCHETYPE CARD DECK<br>
-    <span style="opacity:0.4;">16 CARDS · UNLOCK VIA QUIZ · PRINTABLE 2.5" × 3.5"</span>
+    <span style="opacity:0.4;">16 CARDS · PRINTABLE 2.5" × 3.5"</span>
   </p>
 </div>
 
 <script>
-const STORAGE_KEY = 'thecatch_unlocked'
-
 const ARCHETYPES = [
   { key: 'romantic',         id: 'ARCH-01', name: 'ROMANTIC',        tags: ['HOPEFUL', 'SOFT HEART', 'ALL IN'],                      bio: 'Has been waiting their whole life to meet someone like you.',       color: 'c-teal' },
   { key: 'soft_launch',      id: 'ARCH-02', name: 'SOFT LAUNCH',      tags: ['BACK OF PHOTO', 'NO CAPTIONS', 'ALMOST OFFICIAL'],      bio: 'You have been in six posts. None of them show your face.',          color: 'c-gold' },
@@ -373,28 +256,6 @@ const ARCHETYPES = [
   { key: 'social_media',     id: 'ARCH-15', name: 'SOCIAL MEDIA ONE', tags: ['CONTENT FIRST', 'GOOD LIGHTING', 'THAT IS CUTE'],       bio: 'If it is not posted it did not happen. Including you.',             color: 'c-lav'  },
   { key: 'late_bloomer',     id: 'ARCH-16', name: 'LATE BLOOMER',     tags: ['STILL FIGURING IT OUT', 'GREW UP RECENTLY', 'TRYING'],  bio: 'Just started doing the work. Give them a minute.',                  color: 'c-teal' },
 ]
-
-function getUnlocked() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] }
-}
-
-function buildLockedCard(a) {
-  return `
-    <div class="card-locked">
-      <div class="card-stripe"></div>
-      <div class="card-header">
-        <span class="card-id">${a.id}</span>
-        <span class="card-game">THE CATCH</span>
-      </div>
-      <div class="card-back">
-        <div class="card-back-logo">THE CATCH</div>
-        <div class="card-back-q">?</div>
-      </div>
-      <div class="card-footer">
-        <span class="lock-label">LOCKED</span>
-      </div>
-    </div>`
-}
 
 function buildUnlockedCard(a) {
   const tags = a.tags.map(t => `<span class="card-tag">${t}</span>`).join('')
@@ -420,30 +281,7 @@ function buildUnlockedCard(a) {
 }
 
 function render() {
-  const unlocked = getUnlocked()
-  const grid = document.getElementById('cards-grid')
-  const countEl = document.getElementById('count-unlocked')
-  const fillEl = document.getElementById('progress-fill')
-
-  countEl.textContent = unlocked.length
-  fillEl.style.width = `${(unlocked.length / 16) * 100}%`
-
-  // Unlocked cards first, then locked
-  const unlockedCards = ARCHETYPES.filter(a => unlocked.includes(a.key))
-  const lockedCards   = ARCHETYPES.filter(a => !unlocked.includes(a.key))
-
-  let html = unlockedCards.map(buildUnlockedCard).join('')
-  html += lockedCards.map(buildLockedCard).join('')
-
-  if (unlocked.length === 0) {
-    html = `
-      <div class="empty-state">
-        <p>No cards unlocked yet. Take the quiz to reveal your first archetype card.</p>
-        <a href="/thecatch/quiz.html" class="collection-cta">↗ TAKE THE QUIZ</a>
-      </div>`
-  }
-
-  grid.innerHTML = html
+  document.getElementById('cards-grid').innerHTML = ARCHETYPES.map(buildUnlockedCard).join('')
 }
 
 render()

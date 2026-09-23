@@ -1,4 +1,7 @@
 import { useEffect } from 'react'
+import { CatchHero, CatchWordmark } from './CatchBrand'
+import { Doll, DOLL_BG } from './DollCharacters'
+import { TRAIT_POOL } from '../data/catchProfiles'
 
 // ─── Design tokens (mirror the game) ─────────────────────────────────────────
 const C = {
@@ -41,7 +44,32 @@ function Heading({ children, color = C.cream, size = 'clamp(32px,7vw,56px)' }) {
 }
 
 function Divider() {
-  return <div style={{ height: 1, background: 'rgba(239,230,220,0.07)', margin: '72px 0' }} />
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 18, maxWidth: 820, margin: '72px auto', padding: '0 24px' }}>
+      <div style={{ flex: 1, height: 1, background: 'rgba(239,230,220,0.07)' }} />
+      <img src="/thecatch/brand/hook-heart.png" alt="" style={{ width: 22, opacity: 0.35 }} />
+      <div style={{ flex: 1, height: 1, background: 'rgba(239,230,220,0.07)' }} />
+    </div>
+  )
+}
+
+// ─── The cast: illustration + the B&W photo a LOOK reveals ────────────────────
+const CAST = ['bibi', 'kip', 'ada', 'dax', 'suki', 'rell']
+
+function CastStrip() {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 8 }}>
+      {CAST.map(name => (
+        <div key={name} style={{ background: C.card, border: hair, overflow: 'hidden' }}>
+          <div style={{ height: 150, background: DOLL_BG[name], overflow: 'hidden', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center', marginTop: 8 }}><Doll name={name} /></div>
+          </div>
+          <img src={`/catch-photos/${name}.jpg`} alt="" style={{ width: '100%', height: 110, objectFit: 'cover', objectPosition: 'center 30%', filter: 'grayscale(1) contrast(1.1) brightness(0.9)', display: 'block', borderTop: `2px solid ${C.accent}55` }} />
+          <div style={{ fontFamily: ANTON, fontSize: 12, color: C.cream, letterSpacing: '0.14em', textAlign: 'center', padding: '8px 0' }}>{name.toUpperCase()}</div>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 // ─── System flow diagram ──────────────────────────────────────────────────────
@@ -70,99 +98,154 @@ function FlowNode({ label, sub, color = C.cream, accent = C.accent, dim = false,
   )
 }
 
-function FlowDiamond({ label, color = C.gold }) {
+function SystemFlow() {
+  const Chip = ({ label, color }) => (
+    <div style={{ padding: '4px 8px', border: `1px solid ${color}55`, background: `${color}10` }}>
+      <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color, letterSpacing: '0.1em' }}>{label}</span>
+    </div>
+  )
   return (
-    <div style={{ position: 'relative', width: 110, height: 52, flexShrink: 0 }}>
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: C.card, border: `1px solid ${color}55`,
-        transform: 'rotate(0deg) skewX(-12deg)',
-      }} />
-      <div style={{
-        position: 'absolute', inset: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <span style={{ fontFamily: ANTON, fontSize: 10, color, letterSpacing: '0.12em', textAlign: 'center' }}>{label}</span>
+    <div style={{ overflowX: 'auto', paddingBottom: 8 }}>
+      <div style={{ minWidth: 640, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <FlowNode label="▶ PLAY" sub="Phone + the trait card deck" accent={C.accent} />
+          <FlowArrow />
+          <FlowNode label="PLAYER SETUP" sub="1–6 players on one phone · alone = 2 AI rivals" accent={C.teal} />
+          <FlowArrow />
+          <FlowNode label="WRITE YOUR OWN" sub="Optional · blank cards become W1–W6" accent={C.gold} dim />
+          <FlowArrow label="START" color={C.accent} />
+
+          {/* 7-round loop */}
+          <div style={{ border: `1px dashed ${C.accent}44`, padding: '14px 16px', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
+            <div style={{ position: 'absolute', top: -9, left: 12, background: C.bg, padding: '0 6px', fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.accent, letterSpacing: '0.18em' }}>ROUND 1–7</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+              <FlowNode label="DEAL" sub="App calls the card numbers · 2 up, 4 down" accent={C.cream} small />
+              <FlowArrow />
+              <div style={{ display: 'flex', gap: 5 }}>
+                <Chip label="👁 LOOK · APP" color={C.teal} />
+                <Chip label="🔍 STALK · CHIPS" color={C.gold} />
+              </div>
+              <FlowArrow />
+              <FlowNode label="DECIDE" sub="Pass the phone · ♥ Date or ◌ Ghost" accent={C.accent} small />
+              <FlowArrow />
+              <FlowNode label="FLIP" sub="Turn the cards as the app reveals" accent={C.velvet} color={C.cream} small />
+              <FlowArrow />
+              <FlowNode label="SCORED" sub="Score · hearts · leaderboard" accent={C.teal} color={C.teal} small />
+            </div>
+          </div>
+
+          <FlowArrow label="AFTER 7" color="#555" />
+
+          <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.14em', marginBottom: 8 }}>10+ POINTS &amp; A HEART</div>
+              <FlowNode label="THE ONE" sub="App only · ±10" accent={C.gold} color={C.gold} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.14em', marginBottom: 8 }}>TIE AT THE TABLE</div>
+              <FlowNode label="SPEED DATING" sub="Tied players date or ghost" accent={C.gold} dim />
+            </div>
+          </div>
+          <FlowArrow />
+          <FlowNode label="RESULTS" sub="Rank · title · achievements" accent={C.teal} color={C.teal} />
+        </div>
       </div>
     </div>
   )
 }
 
-function SystemFlow() {
+// ─── The token: printed trait cards + stalk chips (mirrors the print deck) ────
+function flagOf(v) {
+  if (v >= 1)  return ['GREEN FLAG', C.teal]
+  if (v >= -1) return ['YELLOW FLAG', C.gold]
+  return ['RED FLAG', C.accent]
+}
+
+function TraitCardFront({ no, text, value, blank = false, green = true }) {
+  const [label, col] = blank ? (green ? ['GREEN FLAG', C.teal] : ['RED FLAG', C.accent]) : flagOf(value)
+  const val = blank ? (green ? '+2' : '−2') : value > 0 ? `+${value}` : value === 0 ? '±0' : `−${Math.abs(value)}`
   return (
-    <div style={{ overflowX: 'auto', paddingBottom: 8 }}>
-      <div style={{ minWidth: 640, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+    <div style={{ aspectRatio: '5 / 7', background: C.card, borderLeft: `5px solid ${col}`, padding: '12px 12px 11px 14px', display: 'flex', flexDirection: 'column', boxShadow: '0 16px 32px rgba(0,0,0,0.5)', boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
+        <span style={{ fontFamily: ANTON, fontSize: blank ? 9 : 11, letterSpacing: '0.08em', color: 'rgba(239,230,220,0.55)', whiteSpace: 'nowrap' }}>{blank ? 'WRITE YOUR OWN' : `№ ${String(no).padStart(2, '0')}`}</span>
+        <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 6, letterSpacing: '0.14em', color: col, border: `1px solid ${col}`, padding: '2px 4px', whiteSpace: 'nowrap' }}>{label}</span>
+      </div>
+      {blank
+        ? <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16 }}>{[0, 1, 2].map(i => <div key={i} style={{ borderBottom: '1px solid rgba(239,230,220,0.22)' }} />)}</div>
+        : <div style={{ flex: 1, display: 'flex', alignItems: 'center', fontFamily: WS, fontWeight: 500, fontSize: 11.5, lineHeight: 1.32, color: C.cream }}>{text}</div>}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <CatchWordmark size={7} accent={C.accent} cream="rgba(239,230,220,0.6)" />
+        <span style={{ fontFamily: ANTON, fontSize: 26, lineHeight: 0.9, color: col }}>{val}</span>
+      </div>
+    </div>
+  )
+}
 
-        {/* Entry nodes */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <FlowNode label="MODE SELECT" sub="Single / Multiplayer" accent={C.accent} />
-            <FlowArrow />
-            <FlowNode label="PLAYER SETUP" sub="Name · Avatar · Type" accent={C.teal} />
-            <FlowArrow />
-            <FlowNode label="CUSTOM TRAITS" sub="Optional" accent={C.gold} dim />
-            <FlowArrow label="START" color={C.accent} />
+function TraitCardBack() {
+  return (
+    <div style={{ aspectRatio: '5 / 7', background: C.bg, backgroundImage: 'radial-gradient(circle, rgba(239,230,220,0.07) 1px, transparent 1px)', backgroundSize: '8px 8px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 16px 32px rgba(0,0,0,0.5)' }}>
+      <div style={{ position: 'absolute', inset: 8, border: `1px solid ${C.accent}73` }} />
+      <img src="/thecatch/brand/logo-full.svg" alt="" style={{ width: '72%' }} />
+      <div style={{ position: 'absolute', bottom: 16, fontFamily: WS, fontWeight: 700, fontSize: 6.5, letterSpacing: '0.3em', color: C.accent }}>TRAIT CARD</div>
+    </div>
+  )
+}
 
-            {/* 7-round loop box */}
-            <div style={{ border: `1px dashed ${C.accent}44`, padding: '14px 16px', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
-              <div style={{ position: 'absolute', top: -9, left: 12, background: C.bg, padding: '0 6px', fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.accent, letterSpacing: '0.18em' }}>ROUND 1–7</div>
+function StalkChip({ size = 96 }) {
+  return (
+    <div style={{ width: size, height: size, borderRadius: '50%', background: C.card, border: `${Math.round(size * 0.045)}px solid ${C.gold}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 26px rgba(0,0,0,0.5)', flexShrink: 0 }}>
+      <div style={{ fontSize: size * 0.24, lineHeight: 1 }}>🔍</div>
+      <div style={{ fontFamily: ANTON, fontSize: size * 0.15, letterSpacing: '0.12em', color: C.gold, marginTop: 3 }}>STALK</div>
+      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: Math.max(5, size * 0.055), letterSpacing: '0.12em', color: 'rgba(239,230,220,0.55)', marginTop: 1 }}>PEEK AT 1 CARD</div>
+    </div>
+  )
+}
 
-              {/* Deciding phase */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-                <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 8 }}>
-                  <FlowNode label="DECIDING" sub="Player views profile" accent={C.cream} small />
-                </div>
+function TokenShowcase() {
+  const pick = n => ({ no: n, ...TRAIT_POOL[n - 1] })
+  const fronts = [pick(1), pick(34), pick(64)]
+  return (
+    <div>
+      {/* The cards */}
+      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555', marginBottom: 14 }}>THE TRAIT CARDS</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 14 }}>
+        <TraitCardBack />
+        {fronts.map(t => <TraitCardFront key={t.no} no={t.no} text={t.text} value={t.value} />)}
+        <TraitCardFront blank green />
+      </div>
+      <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#777', margin: '14px 0 0', lineHeight: 1.6 }}>
+        Every card's number matches the game — the app calls out which ones to deal. Green, yellow and red flags carry their point values; the blanks are for writing your own.
+      </p>
 
-                {/* Action options */}
-                <div style={{ display: 'flex', gap: 5, marginBottom: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-                  {[
-                    { label: '♥ DATE',        color: C.accent },
-                    { label: '◌ GHOST',        color: '#555' },
-                    { label: '⚡ STEAL',       color: C.gold },
-                    { label: '♥♥ DOUBLE',      color: C.accent },
-                    { label: '🔍 STALK',       color: C.teal },
-                  ].map(({ label, color }) => (
-                    <div key={label} style={{ padding: '4px 8px', border: `1px solid ${color}55`, background: `${color}10` }}>
-                      <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color, letterSpacing: '0.1em' }}>{label}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <FlowArrow />
-                <FlowNode label="REVEALING" sub="Traits unlock one by one" accent={C.velvet} color={C.cream} small />
-                <FlowArrow />
-                <FlowNode label="SCORED" sub="Score popup · Therapy option" accent={C.teal} color={C.teal} small />
-              </div>
-            </div>
-
-            <FlowArrow label="AFTER 7" color="#555" />
-
-            {/* Branching */}
-            <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-              {/* Qualified branch */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <FlowNode label="THE ONE" sub="Score ≥ 10 + ♥ alive" accent={C.gold} color={C.gold} />
-                <FlowArrow />
-                <FlowDiamond label="TIE?" color={C.gold} />
-                <div style={{ display: 'flex', gap: 8, marginTop: 0 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <FlowArrow label="YES" color={C.gold} />
-                    <FlowNode label="TIEBREAKER" sub="Speed dating" accent={C.gold} small />
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <FlowArrow label="NO" color="#555" />
-                    <FlowNode label="RESULTS" accent={C.teal} color={C.teal} small />
-                  </div>
-                </div>
-              </div>
-              {/* No qualify */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 0 }}>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.14em', marginBottom: 8 }}>NO QUALIFY</div>
-                <FlowNode label="RESULTS" accent={C.teal} color={C.teal} small />
-              </div>
-            </div>
-          </div>
+      {/* The stalk tokens */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 28, flexWrap: 'wrap', marginTop: 40, padding: '26px 24px', background: C.card, border: hair }}>
+        <div style={{ display: 'flex' }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ marginLeft: i ? -22 : 0, transform: `rotate(${(i - 1) * 8}deg)` }}><StalkChip /></div>
+          ))}
         </div>
+        <div style={{ flex: 1, minWidth: 220 }}>
+          <div style={{ fontFamily: ANTON, fontSize: 20, color: C.gold, letterSpacing: '0.06em' }}>STALK TOKENS</div>
+          <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.65)', lineHeight: 1.6, margin: '6px 0 0' }}>
+            Three per player. Spend one to secretly peek at a face-down card — then put it back and say nothing. Everyone sees you stalk; nobody sees what you found.
+          </p>
+        </div>
+      </div>
+
+      {/* What's in the deck + download */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginTop: 16 }}>
+        {[['64', 'TRAIT CARDS', C.teal], ['6', 'BLANK CARDS', C.gold], ['30', 'STALK CHIPS', C.accent], ['2', 'RULES CARDS', '#aaa']].map(([n, l, col]) => (
+          <div key={l} style={{ padding: '14px 16px', background: C.cardAlt, border: hair }}>
+            <div style={{ fontFamily: ANTON, fontSize: 28, color: col, lineHeight: 1 }}>{n}</div>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, letterSpacing: '0.16em', color: '#777', marginTop: 4 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+        <a href="/thecatch/trait-card-deck.pdf" target="_blank" rel="noopener noreferrer" style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: C.gold, border: `1px solid ${C.gold}66`, padding: '11px 20px', textDecoration: 'none', display: 'inline-block' }}>
+          ↓ PRINT-READY DECK (PDF)
+        </a>
+        <span style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666' }}>Poker size 2.5 × 3.5 in · print at 100% · cut on the dashed lines</span>
       </div>
     </div>
   )
@@ -251,7 +334,7 @@ function ComponentStates() {
   return (
     <div>
       {/* PRIMARY CTA */}
-      <StatesRow label="Primary CTA — ▶ Play Game">
+      <StatesRow label="Main button — ▶ Play">
         <StateCol name="DEFAULT">
           <div style={{ ...WS_BTN, fontSize: 13, padding: '13px 30px', background: C.accent, color: '#fff' }}>▶ PLAY</div>
         </StateCol>
@@ -267,7 +350,7 @@ function ComponentStates() {
       </StatesRow>
 
       {/* DATE ACTION */}
-      <StatesRow label="Game Action — ♥ Date">
+      <StatesRow label="Action — ♥ Date">
         <StateCol name="DEFAULT">
           <div style={{ ...WS_BTN, fontSize: 12, padding: '10px 20px', border: `1px solid ${C.accent}55`, color: C.cream, background: 'transparent' }}>♥ DATE</div>
         </StateCol>
@@ -277,13 +360,13 @@ function ComponentStates() {
         <StateCol name="ACTIVE / PRESSED">
           <div style={{ ...WS_BTN, fontSize: 12, padding: '10px 20px', border: `1px solid ${C.accent}`, color: '#fff', background: C.accent, transform: 'scale(0.96)' }}>♥ DATE</div>
         </StateCol>
-        <StateCol name="DISABLED (no hearts)">
+        <StateCol name="DISABLED (locked in)">
           <div style={{ ...WS_BTN, fontSize: 12, padding: '10px 20px', border: `1px solid #2a2525`, color: '#333', background: 'transparent', cursor: 'not-allowed' }}>♥ DATE</div>
         </StateCol>
       </StatesRow>
 
       {/* GHOST ACTION */}
-      <StatesRow label="Game Action — ◌ Ghost">
+      <StatesRow label="Action — ◌ Ghost">
         <StateCol name="DEFAULT">
           <div style={{ ...WS_BTN, fontSize: 12, padding: '10px 20px', border: `1px solid #3a3535`, color: '#888', background: 'transparent' }}>◌ GHOST</div>
         </StateCol>
@@ -298,28 +381,9 @@ function ComponentStates() {
         </StateCol>
       </StatesRow>
 
-      {/* STALK TOKENS */}
-      <StatesRow label="Token Chip — 🔍 Stalk (3 per game)">
-        <StateCol name="FULL (3 / 3)">
-          <div style={{ display: 'flex', gap: 4 }}>
-            {[1,2,3].map(i => <div key={i} style={{ padding: '6px 11px', background: `${C.gold}16`, border: `1px solid ${C.gold}55`, fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold }}>🔍</div>)}
-          </div>
-        </StateCol>
-        <StateCol name="PARTIAL (1 / 3)">
-          <div style={{ display: 'flex', gap: 4 }}>
-            <div style={{ padding: '6px 11px', background: `${C.gold}16`, border: `1px solid ${C.gold}55`, fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold }}>🔍</div>
-            {[1,2].map(i => <div key={i} style={{ padding: '6px 11px', background: 'transparent', border: `1px solid #2a2525`, fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#2a2525' }}>◇</div>)}
-          </div>
-        </StateCol>
-        <StateCol name="DEPLETED (0 / 3)">
-          <div style={{ display: 'flex', gap: 4 }}>
-            {[1,2,3].map(i => <div key={i} style={{ padding: '6px 11px', background: 'transparent', border: `1px solid #1e1a1b`, fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#2a2525' }}>◇</div>)}
-          </div>
-        </StateCol>
-      </StatesRow>
 
       {/* ONE-USE TOKENS */}
-      <StatesRow label="One-Use Token — ⚡ Steal / 🛋️ Therapy">
+      <StatesRow label="One-time action — ⚡ Steal / 🛋️ Therapy">
         <StateCol name="AVAILABLE">
           <div style={{ ...WS_BTN, fontSize: 11, padding: '9px 18px', background: `${C.gold}12`, border: `1px solid ${C.gold}44`, color: C.gold }}>⚡ STEAL</div>
         </StateCol>
@@ -331,15 +395,6 @@ function ComponentStates() {
         </StateCol>
       </StatesRow>
 
-      {/* NAV TEXT BUTTON */}
-      <StatesRow label="Nav / Text Button — ← Back">
-        <StateCol name="DEFAULT">
-          <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: 'rgba(239,230,220,0.38)', letterSpacing: '0.04em', padding: '6px 0', cursor: 'pointer' }}>← Back to Work</div>
-        </StateCol>
-        <StateCol name="HOVER">
-          <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: 'rgba(239,230,220,0.85)', letterSpacing: '0.04em', padding: '6px 0', cursor: 'pointer' }}>← Back to Work</div>
-        </StateCol>
-      </StatesRow>
 
       {/* SCREEN STATES */}
       <div style={{ marginTop: 8 }}>
@@ -387,7 +442,7 @@ function ComponentStates() {
               <div style={{ fontFamily: WS, fontSize: 6.5, color: 'rgba(239,230,220,0.45)', marginTop: 3, letterSpacing: '0.1em' }}>TOTAL: 9 PTS</div>
             </div>
             <div style={{ margin: '5px 6px 6px', display:'flex', flexDirection:'column', gap:3 }}>
-              {[{t:'Texts back quickly',v:'+1',c:C.teal},{t:'Gets jealous easily',v:'−2',c:C.accent},{t:'Ugly laughs freely',v:'+2',c:C.teal},{t:'Cancels plans often',v:'−1',c:C.gold}].map((r,i)=>(
+              {[{t:'Texts back quickly',v:'+1',c:C.teal},{t:'Gets jealous easily',v:'−2',c:C.accent},{t:'Ugly laughs freely',v:'+2',c:C.teal},{t:'Remembers small things',v:'+2',c:C.teal}].map((r,i)=>(
                 <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:`${r.c}11`, border:`1px solid ${r.c}33`, borderRadius:3 }}>
                   <span style={{ fontFamily:WS, fontSize:6, color:'rgba(239,230,220,0.7)', flex:1, lineHeight:1.3 }}>{r.t}</span>
                   <div style={{ width:13, height:13, borderRadius:'50%', background:`${r.c}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:r.c }}>{r.v}</div>
@@ -404,9 +459,9 @@ function ComponentStates() {
             </div>
             <div style={{ height: 1, background: `${C.gold}33` }} />
             <div style={{ margin: '6px 6px 0' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.gold, marginBottom: 4, paddingLeft: 1 }}>JORDAN ★</div>
+              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.gold, marginBottom: 4, paddingLeft: 1 }}>QUINN, 27 ★</div>
               <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
-                {[{t:'Makes you feel seen',v:'+3',c:C.teal},{t:'Remembers everything',v:'+2',c:C.teal},{t:'?????',v:'?',c:'#3a3535'}].map((r,i)=>(
+                {[{t:'Never leaves things unfinished',v:'+2',c:C.teal},{t:'?????',v:'?',c:'#3a3535'},{t:'?????',v:'?',c:'#3a3535'}].map((r,i)=>(
                   <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:r.c==='#3a3535'?'rgba(255,255,255,0.02)':`${r.c}11`, border:`1px solid ${r.c==='#3a3535'?'rgba(255,255,255,0.05)':r.c+'33'}`, borderRadius:3 }}>
                     <span style={{ fontFamily:WS, fontSize:6, color:r.c==='#3a3535'?r.c:'rgba(239,230,220,0.7)', flex:1, lineHeight:1.3 }}>{r.t}</span>
                     <div style={{ width:13, height:13, borderRadius:'50%', background:r.c==='#3a3535'?'rgba(255,255,255,0.03)':`${r.c}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:r.c }}>{r.v}</div>
@@ -414,7 +469,7 @@ function ComponentStates() {
                 ))}
               </div>
             </div>
-            <div style={{ margin: '5px 7px 7px', padding: '5px', background: C.gold, textAlign: 'center', fontFamily: ANTON, fontSize: 7.5, color: '#131011', letterSpacing: '0.1em' }}>♥ DATE THE ONE</div>
+            <div style={{ margin: '5px 7px 7px', padding: '5px', background: C.gold, textAlign: 'center', fontFamily: ANTON, fontSize: 7.5, color: '#131011', letterSpacing: '0.1em' }}>♛ TAKE A CHANCE</div>
           </MiniScreen>
 
           {/* RESULTS */}
@@ -470,7 +525,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: 'rgba(239,230,220,0.5)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.04em' }}>
           ← Back to Work
         </button>
-        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontFamily: ANTON, color: C.accent, fontSize: 14, letterSpacing: '0.14em', pointerEvents: 'none' }}>THE CATCH</div>
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }}><CatchWordmark size={14} accent={C.accent} cream={C.cream} /></div>
         <div style={{ display: 'flex', gap: 8 }}>
           {onPlayOnline && (
             <button onClick={onPlayOnline} style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: C.accent, background: 'transparent', border: `1px solid ${C.accent}44`, padding: '8px 14px', cursor: 'pointer' }}>
@@ -495,18 +550,14 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: C.accent, animation: 'catch-bar-glow 3s ease-in-out infinite' }} />
 
         <div style={{ position: 'relative' }}>
-          <div style={{ fontFamily: ANTON, fontSize: 'clamp(76px,16vw,140px)', color: C.accent, lineHeight: 0.85, marginBottom: 0 }}>THE</div>
-          <div style={{ fontFamily: ANTON, fontSize: 'clamp(76px,16vw,140px)', color: C.cream, lineHeight: 0.85, marginBottom: 28 }}>CATCH</div>
-          <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(13px,2vw,17px)', color: 'rgba(239,230,220,0.45)', letterSpacing: '0.14em', marginBottom: 36 }}>
-            SAME RULES. LOUDER CONSEQUENCES.
-          </p>
+          <CatchHero style={{ marginBottom: 36 }} />
 
           {/* Meta row */}
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
             {[
               ['TYPE', 'Game Design'],
               ['PLATFORM', 'Web / Mobile'],
-              ['STACK', 'React + Vite'],
+              ['MODES', 'Solo + Online'],
               ['YEAR', '2025'],
             ].map(([k, v]) => (
               <div key={k} style={{ padding: '6px 14px', border: hair, background: C.card }}>
@@ -523,7 +574,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               padding: '16px 40px', cursor: 'pointer',
               boxShadow: `0 0 40px rgba(255,77,109,0.35)`,
             }}>
-              ▶ PLAY SOLO
+              ▶ PLAY
             </button>
             {onPlayOnline && (
               <button onClick={onPlayOnline} style={{
@@ -555,10 +606,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>01 — OVERVIEW</Label>
           <Heading>A dating sim where<br />every flag counts.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(14px,2vw,17px)', color: 'rgba(239,230,220,0.65)', lineHeight: 1.75, maxWidth: 640 }}>
-            The Catch is an interactive game built into my portfolio — a fully custom React game engine disguised as a Hinge-style dating sim. Players swipe through profiles, reading visible green flags and hidden red ones, deciding who to date and who to ghost. The twist: every trait has a numeric value, every decision has real consequences, and nothing plays out the same twice.
+            The Catch is a dating game built into my portfolio, designed to feel like a dating app. Players read through profiles, weigh the green flags they can see against the red ones they can't, and decide who to date and who to ghost. Every trait is worth points, every choice has consequences, and no two games play out the same.
           </p>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(14px,2vw,17px)', color: 'rgba(239,230,220,0.65)', lineHeight: 1.75, maxWidth: 640, marginTop: 20 }}>
-            The project started as a question: what if a portfolio piece could be both a design artefact <em>and</em> the thing it's demonstrating? The Catch is a fully shipped game with two modes — solo (you vs. AI opponents) and live online multiplayer where everyone joins from their own device via WebRTC — plus achievements, a catfish mechanic, and six player personalities, all running in the browser with no backend.
+            The project started with a question: what if a portfolio piece could be both the design work <em>and</em> the thing it's showing off? The Catch is a finished, playable game with two modes — solo against two AI rivals, and online multiplayer where everyone plays on their own phone. It runs free in the browser, with nothing to download.
           </p>
         </Section>
 
@@ -577,13 +628,13 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             <div style={{ background: C.card, border: `1px solid ${C.teal}44`, padding: '28px 24px' }}>
               <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 12, letterSpacing: '0.18em', marginBottom: 12 }}>THE APPROACH</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.7)', lineHeight: 1.7, margin: 0 }}>
-                Design a game with a complete visual identity, a state machine game engine, and enough depth to replay multiple times. Every mechanic should feel intentional — not just functional, but expressive.
+                Design a game with a complete visual identity, a custom-built game engine, and enough depth to replay multiple times. Every mechanic should feel intentional — not just functional, but expressive.
               </p>
             </div>
             <div style={{ background: C.card, border: `1px solid ${C.gold}44`, padding: '28px 24px' }}>
               <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 12, letterSpacing: '0.18em', marginBottom: 12 }}>THE CONSTRAINT</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.7)', lineHeight: 1.7, margin: 0 }}>
-                It had to run entirely client-side. No backend, no database. All state managed in a single reducer. For online multiplayer, it had to stay in sync across separate devices with no server — just peer-to-peer WebRTC.
+                It had to run entirely in the browser — no servers, no accounts, no database. Online games connect players' phones directly to each other, with the host's phone keeping score.
               </p>
             </div>
           </div>
@@ -595,7 +646,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         <Section>
           <Label color={C.accent}>03 — COMPETITIVE LANDSCAPE</Label>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 32 }}>
-            Two existing games occupy the dating-game space — one narrative, one IP-driven. The Catch sits in neither category.
+            Two tabletop games anchor the dating-game space — one narrative, one IP-driven. The Catch sits in neither category.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, marginBottom: 28 }}>
 
@@ -605,12 +656,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                 <div>
                   <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 16, letterSpacing: '0.08em' }}>FOG OF LOVE</div>
-                  <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.1em', marginTop: 3 }}>2019 · HUSH HUSH PROJECTS</div>
+                  <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.1em', marginTop: 3 }}>2017 · HUSH HUSH PROJECTS</div>
                 </div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#9a9090', letterSpacing: '0.15em', border: '1px solid #3a3535', padding: '4px 9px' }}>PHYSICAL</div>
               </div>
               <div style={{ display: 'flex', gap: 20, marginBottom: 18 }}>
-                {[['2', 'PLAYERS'], ['40–90', 'MINUTES'], ['$40', 'COST']].map(([val, lbl]) => (
+                {[['2', 'PLAYERS'], ['60–120', 'MINUTES'], ['$50', 'COST']].map(([val, lbl]) => (
                   <div key={lbl}>
                     <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 14 }}>{val}</div>
                     <div style={{ fontFamily: WS, fontSize: 9, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.1em' }}>{lbl}</div>
@@ -628,7 +679,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               </div>
               <div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.accent, letterSpacing: '0.15em', marginBottom: 8 }}>GAPS</div>
-                {['Exactly 2 players — no group or solo play', 'Long sessions; heavy rulebook, high barrier to entry', 'Physical only, requires purchase (~$40)'].map(s => (
+                {['Exactly 2 players — no group or solo play', 'Long sessions; heavy rulebook, high barrier to entry', 'Physical only, requires purchase (~$50)'].map(s => (
                   <div key={s} style={{ display: 'flex', gap: 8, marginBottom: 5 }}>
                     <span style={{ color: C.accent, fontSize: 11, lineHeight: 1.5 }}>–</span>
                     <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.65)', lineHeight: 1.5 }}>{s}</div>
@@ -648,12 +699,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                 <div>
                   <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 16, letterSpacing: '0.08em' }}>THE BACHELOR</div>
-                  <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.1em', marginTop: 3 }}>2018 · IMAGINATION GAMING</div>
+                  <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.1em', marginTop: 3 }}>2018 · IMAGINATION GAMES</div>
                 </div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#9a9090', letterSpacing: '0.15em', border: '1px solid #3a3535', padding: '4px 9px' }}>PHYSICAL</div>
               </div>
               <div style={{ display: 'flex', gap: 20, marginBottom: 18 }}>
-                {[['3–7', 'PLAYERS'], ['30–60', 'MINUTES'], ['$25', 'COST']].map(([val, lbl]) => (
+                {[['3+', 'PLAYERS'], ['18+', 'AGES'], ['PARTY', 'GENRE']].map(([val, lbl]) => (
                   <div key={lbl}>
                     <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 14 }}>{val}</div>
                     <div style={{ fontFamily: WS, fontSize: 9, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.1em' }}>{lbl}</div>
@@ -662,7 +713,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               </div>
               <div style={{ marginBottom: 14 }}>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.teal, letterSpacing: '0.15em', marginBottom: 8 }}>STRENGTHS</div>
-                {['Familiar IP lowers the barrier to entry', 'Party-friendly competitive elimination format', 'Accessible rules, fast to learn'].map(s => (
+                {['Familiar IP lowers the barrier to entry', 'Built for groups — a party game for 3+', 'Answer-paddle guessing anyone can pick up'].map(s => (
                   <div key={s} style={{ display: 'flex', gap: 8, marginBottom: 5 }}>
                     <span style={{ color: C.teal, fontSize: 11, lineHeight: 1.5 }}>+</span>
                     <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.65)', lineHeight: 1.5 }}>{s}</div>
@@ -671,7 +722,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               </div>
               <div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.accent, letterSpacing: '0.15em', marginBottom: 8 }}>GAPS</div>
-                {['Passive mimicry of a TV show — no original mechanics', 'No deduction, hidden information, or strategy layer', 'Tied to IP, requires purchase, no digital play'].map(s => (
+                {['Leans on the show — most fun if you already watch it', 'Guessing about friends, not a scoring or strategy system', 'Physical only, requires purchase, no solo or digital play'].map(s => (
                   <div key={s} style={{ display: 'flex', gap: 8, marginBottom: 5 }}>
                     <span style={{ color: C.accent, fontSize: 11, lineHeight: 1.5 }}>–</span>
                     <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.65)', lineHeight: 1.5 }}>{s}</div>
@@ -685,7 +736,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ background: C.cardAlt, border: `1px solid ${C.accent}33`, padding: '20px 22px' }}>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 11, letterSpacing: '0.16em', marginBottom: 10 }}>WHERE THE CATCH FITS</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.7)', margin: 0, lineHeight: 1.7 }}>
-              Neither competitor offers free, instant, browser-based play — or any deduction mechanic. The Catch combines the group-competitive format of The Bachelor with original hidden-information mechanics (the catfish, trait reveals, action economy), delivers it free with no setup, and scales from solo to 8-player online multiplayer. It's a new genre of game, not a reskin of an existing one.
+              Neither competitor offers free, instant, browser-based play, and neither builds its scoring around hidden red flags. The Catch pairs the group, party-game energy of The Bachelor with its own hidden-information mechanics — the catfish, hidden-trait reveals, stalk and look tokens, and player types that change the math — delivers it free with no setup, and runs solo against AI rivals or online with everyone on their own phone.
             </p>
           </div>
         </Section>
@@ -699,6 +750,27 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
             The visual identity was built around late-night tension — dark backgrounds, neon accents, high-contrast typography. Every color carries meaning inside the game logic.
           </p>
+
+          {/* Logo & marks */}
+          <div style={{ marginBottom: 48 }}>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555', marginBottom: 20 }}>LOGO &amp; MARKS</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12 }}>
+              {[
+                [<img src="/thecatch/brand/logo-full.svg" alt="The Catch logo" style={{ width: '88%', maxWidth: 190 }} />, 'FULL LOCKUP', 'Hero and cover moments'],
+                [<CatchWordmark size={22} accent={C.accent} cream={C.cream} />, 'WORDMARK', 'Nav bars and small spaces'],
+                [<img src="/thecatch/brand/hook-heart.png" alt="" style={{ height: 64 }} />, 'HOOK + HEART', 'Wins, reveals, transitions', C.cream],
+                [<img src="/thecatch/brand/flank-heart.svg" alt="" style={{ height: 64 }} />, 'HAND-DRAWN HEART', 'Accent only'],
+              ].map(([mark, name, use, tile]) => (
+                <div key={name} style={{ background: C.card, border: hair }}>
+                  <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', background: tile }}>{mark}</div>
+                  <div style={{ padding: '10px 14px', borderTop: hair }}>
+                    <div style={{ fontFamily: ANTON, fontSize: 11, color: C.cream, letterSpacing: '0.12em' }}>{name}</div>
+                    <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', marginTop: 2 }}>{use}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Colors */}
           <div style={{ marginBottom: 48 }}>
@@ -733,6 +805,24 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               </div>
             </div>
           </div>
+
+          {/* Voice */}
+          <div style={{ marginTop: 48 }}>
+            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555', marginBottom: 20 }}>VOICE</div>
+            <div style={{ padding: '26px 24px', background: C.card, border: hair, borderLeft: `3px solid ${C.accent}` }}>
+              <div style={{ fontFamily: ANTON, fontSize: 'clamp(22px,4vw,30px)', color: C.cream, lineHeight: 1.1, letterSpacing: '0.02em' }}>
+                SAME RULES. <span style={{ color: C.accent }}>LOUDER CONSEQUENCES.</span>
+              </div>
+              <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', lineHeight: 1.6, margin: '10px 0 18px', maxWidth: 520 }}>
+                Dry, knowing, a little too honest — the friend who reads the group chat and says what everyone's thinking.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {['Not your person. Not not your person.', 'Everything checks out. So why does something feel off?', 'Has the vocabulary. Working on the follow-through.'].map(line => (
+                  <div key={line} style={{ fontFamily: WS, fontWeight: 400, fontStyle: 'italic', fontSize: 14, color: C.cream }}>“{line}”</div>
+                ))}
+              </div>
+            </div>
+          </div>
         </Section>
 
         <Divider />
@@ -742,7 +832,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>05 — COMPONENT STATES</Label>
           <Heading>Every element,<br />every state.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            All interactive elements were designed with four distinct states: Default, Hover, Active/Pressed, and Disabled. State transitions communicate system feedback through color shifts, glow intensity, and scale — keeping players oriented without UI clutter.
+            Every button has four states — default, hover, pressed and disabled — so players always know what they can tap and what's used up.
           </p>
           <ComponentStates />
         </Section>
@@ -752,39 +842,17 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         {/* System Flow */}
         <Section>
           <Label color={C.accent}>06 — SYSTEM FLOW</Label>
-          <Heading>How the state<br />machine works.</Heading>
+          <Heading>How a game<br />flows.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            The entire game runs on a single <code style={{ fontFamily: 'monospace', background: C.cardAlt, padding: '2px 6px', fontSize: 12, color: C.teal }}>useReducer</code>. Every screen transition, score update, and mechanic is a dispatched action. Below is the full game state graph.
+            The app and the trait cards work together: set up, then seven rounds of deal → look &amp; stalk → decide → flip → score, then The One for anyone who qualifies.
           </p>
           <SystemFlow />
 
-          {/* State table */}
-          <div style={{ marginTop: 48 }}>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#9a9090', marginBottom: 16 }}>KEY STATE FIELDS</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 8 }}>
-              {[
-                { field: 'screen', desc: 'Active view (mode_select, round, the_one, results…)' },
-                { field: 'roundPhase', desc: 'deciding → pass_device → revealing → scored' },
-                { field: 'roundDecisions', desc: 'Map of playerId → {action, stalkedIdxs}' },
-                { field: 'revealStep', desc: 'Index of the currently-revealed hidden trait' },
-                { field: 'players[]', desc: 'Full player state: score, hearts, tokens, achievements' },
-                { field: 'profiles[]', desc: 'Generated fresh every game, includes 1 catfish' },
-                { field: 'qualifiedIds', desc: 'Players who hit score ≥ 10 to face The One' },
-                { field: 'customTraits', desc: 'Player-added traits injected into profile generation' },
-              ].map(({ field, desc }) => (
-                <div key={field} style={{ padding: '12px 14px', background: C.cardAlt, border: hair }}>
-                  <code style={{ fontFamily: 'monospace', fontSize: 11, color: C.teal, display: 'block', marginBottom: 4 }}>{field}</code>
-                  <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: 'rgba(239,230,220,0.6)', lineHeight: 1.5 }}>{desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Figma downloads */}
           <div style={{ marginTop: 40, padding: '20px 22px', background: C.card, border: `1px solid ${C.gold}33`, display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ fontFamily: ANTON, fontSize: 11, color: C.gold, letterSpacing: '0.16em' }}>FIGMA-EDITABLE FILES</div>
+            <div style={{ fontFamily: ANTON, fontSize: 11, color: C.gold, letterSpacing: '0.16em' }}>EDITABLE IN FIGMA</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', margin: 0, lineHeight: 1.6 }}>
-              Both SVG files below import into Figma as fully editable vector layers — every node, label, and color is adjustable. File → Import in Figma, or drag-and-drop into any frame.
+              Both diagrams open in Figma as editable layers — drag either file into any frame.
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <a href="/thecatch/system-flow.svg" download="TheCatch-SystemFlow.svg" style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', color: C.gold, border: `1px solid ${C.gold}44`, padding: '9px 18px', textDecoration: 'none', display: 'inline-block' }}>
@@ -804,7 +872,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>07 — PROFILE GENERATION</Label>
           <Heading>No two games<br />play the same.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            Every game generates 7 profiles procedurally from a pool of 65 real dating behaviors. Each profile gets 6 traits — 2 visible on load, 4 hidden behind stalk tokens. Trait extremity determines visibility order.
+            Every game builds 7 fresh profiles from a pool of 64 real dating behaviors. Each gets 6 traits — you see the 2 mildest, and the other 4 stay hidden until you decide.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 32 }}>
@@ -827,14 +895,14 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             <div style={{ background: C.card, border: `1px solid ${C.accent}44`, padding: '22px 20px' }}>
               <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>🪝 THE CATFISH</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.6)', lineHeight: 1.6, margin: 0 }}>
-                One catfish is injected into every game at a random position (rounds 1–5). Visible traits are all positive. Hidden traits are all −3. Dating them costs −4 extra. Ghosting them earns +1 and the "Catfish Dodger" achievement.
+                One catfish is injected into every game at a random position (rounds 2–5). Visible traits are all positive. Hidden traits are all −3. Dating them costs −4 extra and a heart — and a LOOK gives them away: their photo is a lot older than their age. Ghosting them earns +1 and the "Catfish Dodger" achievement.
               </p>
             </div>
 
             <div style={{ background: C.card, border: `1px solid ${C.gold}44`, padding: '22px 20px' }}>
               <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>💘 THE ONE</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.6)', lineHeight: 1.6, margin: 0 }}>
-                A legendary profile with a 1% drop rate vibe. Only players who scored ≥ 10 points and kept at least one heart get to face them. Their hidden trait is worth +5 — enough to flip the entire game.
+                A legendary final profile, pitched in-game as a "1% drop". Only players who scored ≥ 10 points and kept at least one heart get to face them. Four hidden traits, one worth +5. In solo, a type-adjusted total of 7+ pays +10; anything less costs −10 and a heart.
               </p>
             </div>
           </div>
@@ -866,6 +934,15 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               )
             })}
           </div>
+
+          {/* The cast */}
+          <div style={{ marginTop: 40 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555' }}>THE CAST</div>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.14em', color: C.teal }}>👁 A LOOK SWAPS THE ILLUSTRATION FOR THE REAL PHOTO</div>
+            </div>
+            <CastStrip />
+          </div>
         </Section>
 
         <Divider />
@@ -879,17 +956,19 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
             <MechanicCard icon="♥" name="DATE" color={C.accent} tag="CORE"
-              desc="Score the profile's traits. Positive totals earn points. Negative totals cost you a heart. If you date a catfish you get hit with a −4 penalty on top." />
+              desc="Score the profile's traits, adjusted by your player type. Negative totals cost a heart. Solo adds a +2 bonus for 7+ and a −2 Red Flag penalty at −5 or worse. Date the catfish and it's −4 on top." />
             <MechanicCard icon="◌" name="GHOST" color="#888" tag="CORE"
               desc="Skip the round. No points, no hearts lost. You only have 3 ghosts per game — spend them wisely. Ghosting a catfish earns +1 bonus point." />
-            <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="INTEL"
-              desc="Reveal one hidden trait early. Costs a stalk token. You start with 3. Use them to make a more informed call before committing." />
-            <MechanicCard icon="⚡" name="STEAL" color={C.gold} tag="MULTIPLAYER"
-              desc="Take 3 points directly from the current leader. One-time use. Earns the Smooth Criminal achievement. Works on NPCs too." />
-            <MechanicCard icon="♥♥" name="DOUBLE DATE" color={C.accent} tag="MULTIPLAYER"
-              desc="Both players go on the date together and split the score. Lower risk, lower reward. If only one person picks it, it reverts to a regular date." />
-            <MechanicCard icon="🛋️" name="THERAPY" color={C.velvet} tag="RECOVERY"
-              desc="Use after a rough round. Auto-skip next round, then roll 50/50 for +4 or +0. One use per game. Worth it when you're in a hole." />
+            <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="SOLO · INTEL"
+              desc="Reveal one random hidden trait early. Costs a stalk token. You start with 3, and they work on The One too. Use them to make a more informed call before committing." />
+            <MechanicCard icon="👁" name="LOOK" color={C.teal} tag="SOLO · INTEL"
+              desc="Spend a look token to swap the illustrated avatar for the profile's real black-and-white photo. 3 per game, once per profile. The catfish's photo never matches their age." />
+            <MechanicCard icon="⚡" name="STEAL" color={C.gold} tag="ONLINE"
+              desc="Skip the date and take up to 3 points from the highest-scoring other player — never more than they have. One use per game. Earns the Smooth Criminal achievement." />
+            <MechanicCard icon="♥♥" name="DOUBLE DATE" color={C.accent} tag="ONLINE"
+              desc="If two or more players pick it, the score is split evenly between them. Lower risk, lower reward. If only one person picks it, it counts as a regular date." />
+            <MechanicCard icon="🛋️" name="THERAPY" color="#8B7EA8" tag="SOLO · RECOVERY"
+              desc="One use per game, from any score screen. Roll 50/50 for +4 or +0, banked when the next match starts. Used after round 7, the +4 can push you over the line for The One." />
           </div>
         </Section>
 
@@ -908,13 +987,13 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             <TypePill emoji="🎯" label="THE SELECTIVE"
               desc="Red flags cost double. Any negative trait loses 1 more. Your standards are a feature, not a bug." />
             <TypePill emoji="🔥" label="THE CHAOTIC ONE"
-              desc="Red flags barely sting. Negative traits get +2 forgiveness. Boring is the only dealbreaker." />
+              desc="Red flags barely sting. Negative traits get +2 forgiveness, never rising above 0. Boring is the only dealbreaker." />
             <TypePill emoji="🌀" label="THE OVERTHINKER"
-              desc="Yellow flags become red flags. −1 traits become −3. Patterns are everywhere. Your gut is always right." />
+              desc="Yellow flags become red flags. −1 traits become −3, and neutral 0s become −1. Patterns are everywhere." />
             <TypePill emoji="🚪" label="THE AVOIDANT"
-              desc="Too intense is a red flag. Traits of +3 or worse drop by 1. Traits of −2 or worse also drop. Space is your love language." />
+              desc="Too intense is a red flag. Traits of +3 drop by 1, and traits of −2 or worse drop 1 more. Space is your love language." />
             <TypePill emoji="💰" label="THE GOLD DIGGER"
-              desc="Stability pays. Strong positives (+2 and above) score +1 more. Strong negatives hurt worse. The math maths." />
+              desc="Stability pays. Strong positives (+2 and above) score +1 more. Strong negatives (−2 and below) lose 1 more. The math maths." />
           </div>
         </Section>
 
@@ -925,23 +1004,23 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>10 — ACHIEVEMENTS</Label>
           <Heading>Rewarding<br />the story, not just the score.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            11 achievements track behaviors across a full game. They toast during play and appear on the results screen — turning each run into a story you can share.
+            11 achievements track behaviors across a full game — 9 live, 2 still locked. In solo they toast the moment you earn them, and every mode shows them on the results screen — turning each run into a story you can share.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 8 }}>
             {[
               ['🎣', 'CATFISH DODGER', 'Ghost the catfish'],
               ['🪝', 'GOT CATFISHED', 'Date the catfish'],
               ['👻', 'GHOST MASTER', 'Use all 3 ghosts'],
-              ['🔥', 'CHAOS ENJOYER', 'Date multiple red flags'],
-              ['🚩', 'RED FLAG RADAR', 'Spot the pattern early'],
-              ['🛋️', 'THERAPIZED', 'Use the therapy action'],
-              ['⚡', 'SMOOTH CRIMINAL', 'Successfully steal points'],
-              ['♥♥', 'DOUBLE DATER', 'Both players pick double date'],
+              ['🔥', 'CHAOS ENJOYER', 'Go on 2+ Red Flag dates (solo)'],
+              ['🛋️', 'THERAPIZED', 'Use the therapy action (solo)'],
+              ['⚡', 'SMOOTH CRIMINAL', 'Use Steal (online)'],
+              ['♥♥', 'DOUBLE DATER', 'Pick Double Date (online)'],
               ['💘', 'FOUND THE ONE', 'Win at The One round'],
               ['💔', 'UNMATCHED', 'Lose at The One round'],
-              ['☠️', 'NO SURVIVORS', 'Every date was a red flag'],
-            ].map(([emoji, title, trigger]) => (
-              <div key={title} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', background: C.cardAlt, border: hair }}>
+              ['🚩', 'RED FLAG RADAR', 'Locked — coming soon', true],
+              ['☠️', 'NO SURVIVORS', 'Locked — coming soon', true],
+            ].map(([emoji, title, trigger, locked]) => (
+              <div key={title} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', background: C.cardAlt, border: hair, opacity: locked ? 0.45 : 1 }}>
                 <span style={{ fontSize: 18, flexShrink: 0 }}>{emoji}</span>
                 <div>
                   <div style={{ fontFamily: ANTON, fontSize: 10, color: C.gold, letterSpacing: '0.1em', marginBottom: 2 }}>{title}</div>
@@ -957,7 +1036,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         {/* Design decisions */}
         <Section>
           <Label color={C.accent}>11 — DESIGN DECISIONS</Label>
-          <Heading>What I'd<br />do differently.</Heading>
+          <Heading>Why it works<br />this way.</Heading>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
               {
@@ -969,12 +1048,8 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
                 a: 'Playtesting showed players were looking for their result first, then reading the context. Leading with the number (large, glowing) lets the emotion land, then the breakdown gives it meaning.',
               },
               {
-                q: 'Why a single reducer instead of multiple state slices?',
-                a: 'The game has deeply interdependent state — player scores, round decisions, active mechanics, and screen transitions all interact. A single reducer keeps every transition explicit and auditable with no hidden side effects.',
-              },
-              {
-                q: 'Why phone-width on desktop?',
-                a: "The game is built to feel like a phone app. Keeping the viewport at 390px max enforces the social context — it always feels like something on your phone, not something filling a monitor. In online multiplayer, everyone is literally on their own device.",
+                q: 'Why phone-sized on a computer?',
+                a: "The game is built to feel like a phone app. On a computer it opens as an iPhone 15-sized screen, so it always feels like something in your hand, not something filling a monitor. In online multiplayer, everyone is literally on their own phone.",
               },
               {
                 q: 'Why switch from left-border rows to rounded trait cards?',
@@ -991,40 +1066,14 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
         <Divider />
 
-        {/* Collector's Token */}
+        {/* The token: cards + stalk chips */}
         <Section>
-          <Label color={C.gold}>12 — COLLECTOR'S TOKENS</Label>
-          <Heading color={C.gold}>Built for<br />Backers.</Heading>
-          <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(14px,2vw,17px)', color: 'rgba(239,230,220,0.55)', lineHeight: 1.75, maxWidth: 600, marginBottom: 36 }}>
-            Two founding backer exclusives that extend THE CATCH universe beyond the game itself. Each one earned its existence through the lore — nothing invented, nothing arbitrary.
+          <Label color={C.gold}>12 — THE TOKEN</Label>
+          <Heading>The cards hold<br /><span style={{ color: C.accent }}>the secrets.</span></Heading>
+          <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 36, maxWidth: 560 }}>
+            A hand-made deck that plays alongside the app. The phone shows who's on the market and keeps score — the cards decide what they're really like.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-
-            {/* Quiz */}
-            <div style={{ background: C.card, border: `1px solid ${C.accent}33`, padding: '24px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 10, letterSpacing: '0.3em' }}>TOKEN № 001</div>
-              <div style={{ fontFamily: ANTON, fontSize: 'clamp(18px,3vw,24px)', color: C.cream, lineHeight: 0.95, letterSpacing: '0.02em' }}>ARCHETYPE<br />PERSONALITY QUIZ</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.45)', lineHeight: 1.65 }}>
-                8 questions. 16 possible results. Tells you which type of dater you are — and why you're probably not going to listen.
-              </div>
-              <a href="/thecatch/quiz.html" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, alignSelf: 'flex-start', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.14em', color: C.accent, background: 'transparent', border: `1px solid ${C.accent}55`, padding: '11px 20px', textDecoration: 'none' }}>
-                ↗ TAKE THE QUIZ
-              </a>
-            </div>
-
-            {/* Card Deck */}
-            <div style={{ background: C.card, border: `1px solid #B8A4D433`, padding: '24px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontFamily: ANTON, color: '#B8A4D4', fontSize: 10, letterSpacing: '0.3em' }}>TOKEN № 002</div>
-              <div style={{ fontFamily: ANTON, fontSize: 'clamp(18px,3vw,24px)', color: C.cream, lineHeight: 0.95, letterSpacing: '0.02em' }}>ARCHETYPE<br />CARD DECK</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.45)', lineHeight: 1.65 }}>
-                16 printable cards — one per archetype. Tarot-style, 2.5&Prime; × 3.5&Prime;. Deal them face-down and see who gets who.
-              </div>
-              <a href="/thecatch/cards.html" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, alignSelf: 'flex-start', fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.14em', color: '#B8A4D4', background: 'transparent', border: `1px solid #B8A4D455`, padding: '11px 20px', textDecoration: 'none' }}>
-                ↗ VIEW CARD DECK
-              </a>
-            </div>
-
-          </div>
+          <TokenShowcase />
         </Section>
 
         <Divider />
@@ -1040,7 +1089,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               padding: '18px 48px', cursor: 'pointer',
               boxShadow: `0 0 48px rgba(255,77,109,0.4)`,
             }}>
-              ▶ PLAY SOLO
+              ▶ PLAY
             </button>
             {onPlayOnline && (
               <button onClick={onPlayOnline} style={{
@@ -1055,7 +1104,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
           <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
             <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#444', letterSpacing: '0.1em' }}>
-              SOLO · ONLINE MULTIPLAYER · 7 ROUNDS · 1% CHANCE AT THE ONE
+              SOLO · ONLINE MULTIPLAYER · 7 ROUNDS · THEN THE ONE
             </div>
           </div>
           <div style={{ marginTop: 20 }}>
@@ -1077,16 +1126,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           ← Back to Portfolio
         </button>
         <div style={{ fontFamily: ANTON, color: '#2a2525', fontSize: 12, letterSpacing: '0.12em' }}>THE CATCH · MAYA WALSH</div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {onPlayOnline && (
-            <button onClick={onPlayOnline} style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', color: C.accent, background: 'transparent', border: `1px solid ${C.accent}33`, padding: '8px 14px', cursor: 'pointer' }}>
-              ↗ ONLINE
-            </button>
-          )}
-          <button onClick={onPlay} style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: C.accent, background: 'transparent', border: `1px solid ${C.accent}55`, padding: '8px 18px', cursor: 'pointer' }}>
-            ▶ PLAY
-          </button>
-        </div>
+        <div style={{ width: 140 }} />
       </div>
 
     </div>

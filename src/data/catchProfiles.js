@@ -24,6 +24,8 @@ function shuffle(arr) {
 }
 
 // ─── Large trait pool — all real dating behaviors ─────────────────────────────
+// ORDER MATTERS: each trait's position (1-based) is its number on the printed
+// trait card deck. Only ever append new traits to the end.
 export const TRAIT_POOL = [
   // Green flags
   { text: 'Actually listens without waiting for their turn to talk',         value:  3 },
@@ -175,17 +177,21 @@ const DOLLS   = ['rell', 'bibi', 'ada', 'dax', 'kip', 'suki']
 const AGES    = [22, 23, 24, 25, 26, 27, 28, 29, 30]
 
 // ─── Profile generator — called fresh every game ──────────────────────────────
+// The printed card number for a pool trait: its 1-based position in TRAIT_POOL.
+const CARD_POOL = TRAIT_POOL.map((t, i) => ({ ...t, card: i + 1 }))
+
 export function generateProfiles(count = 7, customTraits = [], customProfiles = []) {
   const names      = shuffle([...NAME_POOL])
   const archetypes = shuffle([...ARCHETYPE_POOL])
 
   // Positive and negative trait pools for catfish injection
-  const posPool = TRAIT_POOL.filter(t => t.value > 0)
-  const negPool = TRAIT_POOL.filter(t => t.value <= -3)
+  const posPool = CARD_POOL.filter(t => t.value > 0)
+  const negPool = CARD_POOL.filter(t => t.value <= -3)
 
+  // Custom traits are the hand-written blank cards (card = 'W1'…'W6')
   const fullPool   = shuffle([
-    ...TRAIT_POOL,
-    ...customTraits.map(ct => ({ text: ct.text, value: ct.value })),
+    ...CARD_POOL,
+    ...customTraits.map(ct => ({ text: ct.text, value: ct.value, card: ct.card })),
   ])
 
   const profiles = []
@@ -227,14 +233,16 @@ export function generateProfiles(count = 7, customTraits = [], customProfiles = 
     ...posTraits.map(t => ({ ...t, startVisible: true })),
     ...negTraits.map(t => ({ ...t, value: -3, startVisible: false })),
   ]
+  // The catfish wears an ordinary archetype so nothing on the card gives it away
+  const disguise = archetypes[count % archetypes.length]
   profiles.splice(catfishPos, 0, {
     id:        'catfish',
     name:      names[count % names.length] || 'Alex',
     age:       AGES[Math.floor(Math.random() * AGES.length)],
-    emoji:     '🪝',
+    emoji:     EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
     doll:      DOLLS[Math.floor(Math.random() * DOLLS.length)],
-    archetype: 'THE CATFISH',
-    tags:      ['TOO PERFECT', 'GUT FEELING', 'TRUST THE SIGNS'],
+    archetype: disguise.archetype,
+    tags:      disguise.tags,
     bio:       'Everything checks out. So why does something feel off?',
     traits:    catfishTraits,
     isCatfish: true,

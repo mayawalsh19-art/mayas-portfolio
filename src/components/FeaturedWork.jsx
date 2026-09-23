@@ -55,9 +55,7 @@ function TheCatchCard({ onClick }) {
 
   const INK = '#131011'
   const SMOKE = '#1E1A1B'
-  const CREAM = '#EFE6DC'
   const NEON = '#FF4D6D'
-  const ANTON = "'Anton', sans-serif"
   const WS = "'Work Sans', sans-serif"
 
   return (
@@ -121,43 +119,24 @@ function TheCatchCard({ onClick }) {
           transform: hov ? 'translateY(-10px)' : 'translateY(0)',
           transition: 'transform 0.45s cubic-bezier(0.22,1,0.36,1)',
         }}>
-          {/* THE — slides in from left */}
           <div style={{
-            fontFamily: ANTON,
-            fontSize: 'clamp(62px, 10.5vw, 116px)',
-            color: NEON,
-            lineHeight: 0.88,
-            animation: visible ? 'catch-pulse 3.5s ease-in-out infinite' : 'none',
             opacity: visible ? 1 : 0,
-            transform: visible ? 'translateX(0)' : 'translateX(-48px)',
+            transform: visible ? 'scale(1)' : 'scale(0.92)',
             transition: 'opacity 0.55s ease 0.05s, transform 0.6s cubic-bezier(0.22,1,0.36,1) 0.05s',
-          }}>THE</div>
-
-          {/* CATCH — slides in from right */}
-          <div style={{
-            fontFamily: ANTON,
-            fontSize: 'clamp(62px, 10.5vw, 116px)',
-            color: CREAM,
-            lineHeight: 0.88,
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateX(0)' : 'translateX(48px)',
-            transition: 'opacity 0.55s ease 0.2s, transform 0.6s cubic-bezier(0.22,1,0.36,1) 0.2s',
-          }}>CATCH</div>
+            width: '78%',
+            maxWidth: 340,
+            textAlign: 'center',
+          }}>
+            <img
+              src="/thecatch/brand/logo-full.svg"
+              alt="THE CATCH"
+              style={{ width: '100%', display: 'block' }}
+            />
+            <p style={{ fontFamily: "'Work Sans', sans-serif", fontWeight: 300, fontSize: 10, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.16em', margin: '8px 0 0' }}>
+              SAME RULES. LOUDER CONSEQUENCES.
+            </p>
+          </div>
         </div>
-
-        {/* Tagline — slides up from bottom on hover */}
-        <div style={{
-          position: 'absolute', bottom: 18, left: 0, right: 0,
-          textAlign: 'center',
-          fontFamily: WS,
-          fontWeight: 300,
-          fontSize: 10,
-          letterSpacing: '0.18em',
-          color: `rgba(239,230,220,0.45)`,
-          opacity: hov ? 1 : 0,
-          transform: hov ? 'translateY(0)' : 'translateY(10px)',
-          transition: 'opacity 0.38s ease 0.08s, transform 0.42s cubic-bezier(0.22,1,0.36,1) 0.08s',
-        }}>SAME RULES. LOUDER CONSEQUENCES.</div>
 
         {/* Bottom neon bar */}
         <div style={{

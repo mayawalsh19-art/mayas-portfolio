@@ -1,298 +1,197 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="860" height="1760" viewBox="0 0 860 1760" style="font-family: sans-serif;">
-
-  <!-- Background -->
-  <rect id="Background" width="860" height="1760" fill="#131011"/>
-
-  <!-- Dot grid texture -->
-  <defs>
-    <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="1" cy="1" r="1" fill="rgba(239,230,220,0.055)"/>
-    </pattern>
-  </defs>
-  <rect width="860" height="1760" fill="url(#dots)"/>
-
-  <!-- Title -->
-  <g id="Title">
-    <text x="430" y="52" font-family="'Anton', Impact, sans-serif" font-size="22" fill="#FF4D6D" text-anchor="middle" letter-spacing="5">THE CATCH</text>
-    <text x="430" y="76" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#333" text-anchor="middle" letter-spacing="4">SYSTEM FLOW — STATE MACHINE DIAGRAM</text>
-    <line x1="100" y1="92" x2="760" y2="92" stroke="rgba(239,230,220,0.07)" stroke-width="1"/>
-  </g>
-
-  <!-- ─── NODE: MODE SELECT ─── -->
-  <g id="Node-ModeSelect" transform="translate(295,112)">
-    <rect width="270" height="58" fill="#1E1A1B" stroke="#FF4D6D" stroke-opacity="0.45" stroke-width="1"/>
-    <text x="135" y="30" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">MODE SELECT</text>
-    <text x="135" y="47" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">Single Player  ·  Multiplayer (pass-the-phone)</text>
-  </g>
-
-  <!-- ARROW: MODE SELECT → PLAYER SETUP -->
-  <g id="Arrow-1">
-    <line x1="430" y1="170" x2="430" y2="198" stroke="#2a2525" stroke-width="1"/>
-    <polygon points="424,196 436,196 430,204" fill="#333"/>
-  </g>
-
-  <!-- ─── NODE: PLAYER SETUP ─── -->
-  <g id="Node-PlayerSetup" transform="translate(295,204)">
-    <rect width="270" height="58" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.45" stroke-width="1"/>
-    <text x="135" y="30" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">PLAYER SETUP</text>
-    <text x="135" y="47" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">Name  ·  Avatar  ·  Player Type (1 of 6)</text>
-  </g>
-
-  <!-- ARROW: PLAYER SETUP → CUSTOM TRAITS -->
-  <g id="Arrow-2">
-    <line x1="430" y1="262" x2="430" y2="290" stroke="#2a2525" stroke-width="1"/>
-    <polygon points="424,288 436,288 430,296" fill="#333"/>
-  </g>
-
-  <!-- ─── NODE: CUSTOM TRAITS (optional) ─── -->
-  <g id="Node-CustomTraits" transform="translate(295,296)">
-    <rect width="270" height="58" fill="#1A1617" stroke="#E4C46A" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="5,3"/>
-    <text x="135" y="30" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#666" text-anchor="middle" letter-spacing="2.5">CUSTOM TRAITS</text>
-    <text x="135" y="47" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444" text-anchor="middle">Optional  ·  Add personal traits to the pool</text>
-  </g>
-
-  <!-- ARROW + LABEL: CUSTOM TRAITS → ROUND LOOP (START) -->
-  <g id="Arrow-Start">
-    <line x1="430" y1="354" x2="430" y2="386" stroke="#FF4D6D" stroke-width="1" stroke-opacity="0.5"/>
-    <polygon points="424,384 436,384 430,392" fill="#FF4D6D" fill-opacity="0.6"/>
-    <rect x="398" y="364" width="64" height="16" fill="#131011"/>
-    <text x="430" y="376" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="2.5">START</text>
-  </g>
-
-  <!-- ─── ROUND LOOP BOX ─── -->
-  <g id="RoundLoop">
-    <rect x="160" y="392" width="540" height="472" fill="none" stroke="#FF4D6D" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="6,4"/>
-    <!-- ROUND 1–7 label on border -->
-    <rect x="340" y="384" width="100" height="16" fill="#131011"/>
-    <text x="390" y="396" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="3">ROUND 1–7</text>
-
-    <!-- ─── NODE: DECIDING ─── -->
-    <g id="Node-Deciding" transform="translate(305,416)">
-      <rect width="250" height="54" fill="#1E1A1B" stroke="#EFE6DC" stroke-opacity="0.3" stroke-width="1"/>
-      <text x="125" y="27" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DECIDING</text>
-      <text x="125" y="44" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">Player views profile  ·  Choose an action</text>
-    </g>
-
-    <!-- Arrow: DECIDING → ACTIONS -->
-    <line x1="430" y1="470" x2="430" y2="494" stroke="#2a2525" stroke-width="1"/>
-    <polygon points="424,492 436,492 430,500" fill="#333"/>
-
-    <!-- ACTION CHIPS -->
-    <g id="ActionChips" transform="translate(0,498)">
-      <!-- DATE -->
-      <rect x="172" y="0" width="68" height="26" fill="rgba(255,77,109,0.1)" stroke="#FF4D6D" stroke-opacity="0.4" stroke-width="1"/>
-      <text x="206" y="17" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="1.5">♥ DATE</text>
-      <!-- GHOST -->
-      <rect x="248" y="0" width="68" height="26" fill="rgba(100,100,100,0.1)" stroke="#444" stroke-width="1"/>
-      <text x="282" y="17" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.5">◌ GHOST</text>
-      <!-- STEAL -->
-      <rect x="324" y="0" width="68" height="26" fill="rgba(228,196,106,0.1)" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
-      <text x="358" y="17" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.5">⚡ STEAL</text>
-      <!-- DOUBLE DATE -->
-      <rect x="400" y="0" width="88" height="26" fill="rgba(255,77,109,0.08)" stroke="#FF4D6D" stroke-opacity="0.3" stroke-width="1"/>
-      <text x="444" y="17" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="1">♥♥ DOUBLE</text>
-      <!-- STALK -->
-      <rect x="496" y="0" width="68" height="26" fill="rgba(124,224,168,0.08)" stroke="#7CE0A8" stroke-opacity="0.35" stroke-width="1"/>
-      <text x="530" y="17" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.5">🔍 STALK</text>
-      <!-- THERAPY branch note -->
-      <text x="430" y="44" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#444" text-anchor="middle" letter-spacing="1">(Multiplayer: Steal + Double Date available)</text>
-    </g>
-
-    <!-- Arrow: ACTIONS → REVEALING -->
-    <line x1="430" y1="572" x2="430" y2="598" stroke="#2a2525" stroke-width="1"/>
-    <polygon points="424,596 436,596 430,604" fill="#333"/>
-
-    <!-- ─── NODE: REVEALING ─── -->
-    <g id="Node-Revealing" transform="translate(305,604)">
-      <rect width="250" height="54" fill="#1E1A1B" stroke="#3B2E4A" stroke-width="1" stroke-opacity="0.8"/>
-      <text x="125" y="27" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">REVEALING</text>
-      <text x="125" y="44" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">Hidden traits unlock one by one</text>
-    </g>
-
-    <!-- Arrow: REVEALING → SCORED -->
-    <line x1="430" y1="658" x2="430" y2="686" stroke="#2a2525" stroke-width="1"/>
-    <polygon points="424,684 436,684 430,692" fill="#333"/>
-
-    <!-- ─── NODE: SCORED ─── -->
-    <g id="Node-Scored" transform="translate(305,692)">
-      <rect width="250" height="54" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.45" stroke-width="1"/>
-      <text x="125" y="27" font-family="'Anton', Impact, sans-serif" font-size="13" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">SCORED</text>
-      <text x="125" y="44" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">Score popup  ·  Catfish reveal  ·  Therapy option</text>
-    </g>
-
-    <!-- Therapy branch right -->
-    <g id="TherapyBranch">
-      <line x1="555" y1="719" x2="660" y2="719" stroke="#3B2E4A" stroke-width="1"/>
-      <polygon points="658,713 658,725 666,719" fill="#3B2E4A"/>
-      <rect x="662" y="706" width="28" height="26" fill="#3B2E4A" stroke="#3B2E4A" stroke-width="1"/>
-      <text x="676" y="723" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#EFE6DC" text-anchor="middle">🛋️</text>
-      <!-- therapy note -->
-      <rect x="648" y="740" width="56" height="32" fill="none"/>
-      <text x="676" y="752" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">THERAPY</text>
-      <text x="676" y="764" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#444" text-anchor="middle">Skip + 50/50</text>
-    </g>
-
-    <!-- Round loop back arrow (left side) -->
-    <g id="LoopBack">
-      <line x1="305" y1="719" x2="212" y2="719" stroke="#2a2525" stroke-width="1" stroke-dasharray="3,2"/>
-      <line x1="212" y1="719" x2="212" y2="443" stroke="#2a2525" stroke-width="1" stroke-dasharray="3,2"/>
-      <polygon points="206,443 218,443 212,437" fill="#333"/>
-      <rect x="170" y="572" width="36" height="16" fill="#131011"/>
-      <text x="188" y="584" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#333" text-anchor="middle" letter-spacing="1">NEXT</text>
-    </g>
-
-  </g>
-  <!-- END ROUND LOOP -->
-
-  <!-- ARROW: AFTER 7 ROUNDS -->
-  <g id="Arrow-After7">
-    <line x1="430" y1="864" x2="430" y2="904" stroke="#333" stroke-width="1"/>
-    <polygon points="424,902 436,902 430,910" fill="#333"/>
-    <rect x="360" y="876" width="140" height="16" fill="#131011"/>
-    <text x="430" y="888" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2.5">AFTER 7 ROUNDS</text>
-  </g>
-
-  <!-- ─── DIAMOND: QUALIFIED? ─── -->
-  <g id="Diamond-Qualified" transform="translate(430,910)">
-    <polygon points="0,-36 120,0 0,36 -120,0" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
-    <text x="0" y="-8" font-family="'Anton', Impact, sans-serif" font-size="11" fill="#E4C46A" text-anchor="middle" letter-spacing="2">QUALIFIED?</text>
-    <text x="0" y="10" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#555" text-anchor="middle">score ≥ 10  ·  hearts > 0</text>
-  </g>
-
-  <!-- YES branch label (left) -->
-  <text x="290" y="928" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
-  <!-- NO branch label (right) -->
-  <text x="570" y="928" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2">NO</text>
-
-  <!-- YES arrow: QUALIFIED → THE ONE -->
-  <g id="Arrow-TheOne">
-    <line x1="310" y1="910" x2="250" y2="910" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.6"/>
-    <line x1="250" y1="910" x2="250" y2="968" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.6"/>
-    <polygon points="244,966 256,966 250,974" fill="#E4C46A" fill-opacity="0.6"/>
-  </g>
-
-  <!-- NO arrow: → RESULTS RIGHT -->
-  <g id="Arrow-NoQualify">
-    <line x1="550" y1="910" x2="640" y2="910" stroke="#333" stroke-width="1"/>
-    <line x1="640" y1="910" x2="640" y2="968" stroke="#333" stroke-width="1"/>
-    <polygon points="634,966 646,966 640,974" fill="#333"/>
-  </g>
-
-  <!-- ─── NODE: THE ONE ─── -->
-  <g id="Node-TheOne" transform="translate(135,974)">
-    <rect width="230" height="58" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
-    <text x="115" y="28" font-family="'Anton', Impact, sans-serif" font-size="14" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">💘 THE ONE</text>
-    <text x="115" y="46" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#888" text-anchor="middle">Legendary profile  ·  1% energy</text>
-  </g>
-
-  <!-- NO-QUALIFY node: RESULTS right -->
-  <g id="Node-ResultsNoQualify" transform="translate(525,974)">
-    <rect width="230" height="58" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.35" stroke-width="1"/>
-    <text x="115" y="28" font-family="'Anton', Impact, sans-serif" font-size="14" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">RESULTS</text>
-    <text x="115" y="46" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">No qualify  ·  Final leaderboard</text>
-  </g>
-
-  <!-- ARROW: THE ONE → TIE? -->
-  <g id="Arrow-ToTie">
-    <line x1="250" y1="1032" x2="250" y2="1072" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.5"/>
-    <polygon points="244,1070 256,1070 250,1078" fill="#E4C46A" fill-opacity="0.5"/>
-  </g>
-
-  <!-- ─── DIAMOND: TIE? ─── -->
-  <g id="Diamond-Tie" transform="translate(250,1110)">
-    <polygon points="0,-36 100,0 0,36 -100,0" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.35" stroke-width="1"/>
-    <text x="0" y="5" font-family="'Anton', Impact, sans-serif" font-size="11" fill="#E4C46A" text-anchor="middle" letter-spacing="2">TIE?</text>
-  </g>
-
-  <!-- TIE YES arrow → TIEBREAKER -->
-  <g id="Arrow-Tiebreaker">
-    <line x1="150" y1="1110" x2="100" y2="1110" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.5"/>
-    <line x1="100" y1="1110" x2="100" y2="1168" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.5"/>
-    <polygon points="94,1166 106,1166 100,1174" fill="#E4C46A" fill-opacity="0.5"/>
-    <text x="124" y="1108" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
-  </g>
-
-  <!-- TIE NO arrow → RESULTS LEFT -->
-  <g id="Arrow-TieNo">
-    <line x1="350" y1="1110" x2="400" y2="1110" stroke="#333" stroke-width="1"/>
-    <line x1="400" y1="1110" x2="400" y2="1168" stroke="#333" stroke-width="1"/>
-    <polygon points="394,1166 406,1166 400,1174" fill="#333"/>
-    <text x="376" y="1108" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2">NO</text>
-  </g>
-
-  <!-- ─── NODE: TIEBREAKER ─── -->
-  <g id="Node-Tiebreaker" transform="translate(20,1174)">
-    <rect width="160" height="54" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.35" stroke-width="1"/>
-    <text x="80" y="27" font-family="'Anton', Impact, sans-serif" font-size="11" fill="#E4C46A" text-anchor="middle" letter-spacing="2">TIEBREAKER</text>
-    <text x="80" y="43" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#555" text-anchor="middle">Speed round</text>
-  </g>
-
-  <!-- ARROW: TIEBREAKER → RESULTS -->
-  <g id="Arrow-TiebreakerResult">
-    <line x1="100" y1="1228" x2="100" y2="1268" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.4"/>
-    <line x1="100" y1="1268" x2="345" y2="1268" stroke="#E4C46A" stroke-width="1" stroke-opacity="0.4"/>
-    <polygon points="343,1262 343,1274 351,1268" fill="#E4C46A" fill-opacity="0.4"/>
-  </g>
-
-  <!-- ─── NODE: RESULTS (main) ─── -->
-  <g id="Node-ResultsMain" transform="translate(305,1174)">
-    <rect width="250" height="54" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
-    <text x="125" y="27" font-family="'Anton', Impact, sans-serif" font-size="14" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">RESULTS</text>
-    <text x="125" y="44" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="middle">Leaderboard  ·  Achievements  ·  Play again</text>
-  </g>
-
-  <!-- Merge arrow: No-Qualify results → main results area -->
-  <g id="Arrow-MergeNoQualify">
-    <line x1="640" y1="1032" x2="640" y2="1200" stroke="#333" stroke-width="1" stroke-dasharray="4,3"/>
-    <line x1="640" y1="1200" x2="556" y2="1200" stroke="#333" stroke-width="1" stroke-dasharray="4,3"/>
-    <polygon points="558,1194 558,1206 550,1200" fill="#333"/>
-  </g>
-
-  <!-- ─── LEGEND ─── -->
-  <g id="Legend" transform="translate(100, 1310)">
-    <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#333" letter-spacing="3">LEGEND</text>
-    <line x1="0" y1="10" x2="660" y2="10" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
-
-    <!-- Screen node -->
-    <rect x="0" y="24" width="120" height="32" fill="#1E1A1B" stroke="rgba(239,230,220,0.25)" stroke-width="1"/>
-    <text x="60" y="44" font-family="'Anton', Impact, sans-serif" font-size="10" fill="#EFE6DC" text-anchor="middle" letter-spacing="1.5">SCREEN</text>
-    <text x="140" y="44" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">= distinct game state / view</text>
-
-    <!-- Optional node -->
-    <rect x="0" y="68" width="120" height="32" fill="#1A1617" stroke="rgba(239,230,220,0.15)" stroke-width="1" stroke-dasharray="5,3"/>
-    <text x="60" y="88" font-family="'Anton', Impact, sans-serif" font-size="10" fill="#555" text-anchor="middle" letter-spacing="1.5">OPTIONAL</text>
-    <text x="140" y="88" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">= skippable / conditional screen</text>
-
-    <!-- Diamond decision -->
-    <polygon points="60,112 120,140 60,168 0,140" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
-    <text x="60" y="144" font-family="'Anton', Impact, sans-serif" font-size="9" fill="#E4C46A" text-anchor="middle" letter-spacing="1">BRANCH</text>
-    <text x="140" y="148" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">= conditional branch (diamond)</text>
-
-    <!-- Dashed loop -->
-    <line x1="0" y1="196" x2="120" y2="196" stroke="#333" stroke-width="1" stroke-dasharray="4,3"/>
-    <text x="140" y="200" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">= loop-back / repeated path</text>
-
-    <!-- Neon line -->
-    <line x1="0" y1="224" x2="120" y2="224" stroke="#FF4D6D" stroke-width="1" stroke-opacity="0.6"/>
-    <text x="140" y="228" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#444">= primary / start path</text>
-
-    <!-- Color key row -->
-    <g transform="translate(0,254)">
-      <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#333" letter-spacing="2">COLOR KEY</text>
-      <rect x="0" y="12" width="12" height="12" fill="#FF4D6D"/>
-      <text x="18" y="22" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#555">Accent / Danger</text>
-      <rect x="120" y="12" width="12" height="12" fill="#7CE0A8"/>
-      <text x="138" y="22" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#555">Safe / Positive</text>
-      <rect x="240" y="12" width="12" height="12" fill="#E4C46A"/>
-      <text x="258" y="22" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#555">The One / Premium</text>
-      <rect x="390" y="12" width="12" height="12" fill="#3B2E4A"/>
-      <text x="408" y="22" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#555">Velvet / The One screen</text>
-    </g>
-  </g>
-
-  <!-- Footer -->
-  <line x1="100" y1="1700" x2="760" y2="1700" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
-  <text x="430" y="1724" font-family="'Anton', Impact, sans-serif" font-size="11" fill="#2a2525" text-anchor="middle" letter-spacing="3">THE CATCH · MAYA WALSH · SYSTEM FLOW · FIGMA-EDITABLE SVG</text>
-  <text x="430" y="1742" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#2a2525" text-anchor="middle">Import into Figma · All nodes are editable vector groups · Double-click any layer to edit text</text>
-
+<rect id="Background" width="860" height="1760" fill="#131011"/>
+<defs><pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(239,230,220,0.055)"/></pattern></defs>
+<rect width="860" height="1760" fill="url(#dots)"/>
+<g id="Title">
+<text x="430" y="52" font-family="'Anton', Impact, sans-serif" font-size="22" font-weight="400" fill="#FF4D6D" text-anchor="middle" letter-spacing="5">THE CATCH</text>
+<text x="430" y="76" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="4">SYSTEM FLOW — THE APP + THE TRAIT CARDS</text>
+<line x1="100" y1="92" x2="760" y2="92" stroke="rgba(239,230,220,0.07)" stroke-width="1"/>
+</g>
+<g id="Node-Play">
+<rect x="295.0" y="120" width="270" height="56" fill="#1E1A1B" stroke="#FF4D6D" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="146" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">▶ PLAY</text>
+<text x="430" y="164" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">bymayawalsh.design → The Catch</text>
+<rect x="532.4" y="100" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="111" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<line x1="430" y1="176" x2="430" y2="216" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,208 436,208 430,216" fill="#333" fill-opacity="1"/>
+<g id="Node-Setup">
+<rect x="295.0" y="216" width="270" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="242" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">PLAYER SETUP</text>
+<text x="430" y="260" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">1–6 players on one phone · name · avatar · type</text>
+<rect x="532.4" y="196" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="207" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<text x="280" y="250" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="end" letter-spacing="0">Alone? 2 AI rivals join</text>
+<line x1="430" y1="272" x2="430" y2="312" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,304 436,304 430,312" fill="#333" fill-opacity="1"/>
+<g id="Node-WriteOwn">
+<rect x="295.0" y="312" width="270" height="56" fill="#1A1617" stroke="#888" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="430" y="338" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#9a9090" text-anchor="middle" letter-spacing="2.5">WRITE YOUR OWN</text>
+<text x="430" y="356" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Optional · blank cards become W1–W6</text>
+<rect x="532.4" y="292" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="303" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<rect x="487.4" y="292" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="506.9" y="303" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+</g>
+<line x1="430" y1="368" x2="430" y2="420" stroke="#FF4D6D" stroke-opacity="0.7" stroke-width="1"/>
+<polygon points="424,412 436,412 430,420" fill="#FF4D6D" fill-opacity="0.7"/>
+<rect x="409.0" y="385.0" width="42.0" height="16" fill="#131011"/>
+<text x="430.0" y="397.0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="2">START</text>
+<g id="RoundLoop">
+<rect x="150" y="430" width="560" height="470" fill="none" stroke="#FF4D6D" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="166" y="422" width="190" height="16" fill="#131011"/>
+<text x="172" y="434" font-family="'Work Sans', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#FF4D6D" text-anchor="start" letter-spacing="1.8">ROUND 1–7 · ONE PROFILE EACH</text>
+<g id="Node-Deal">
+<rect x="295.0" y="470" width="270" height="56" fill="#1E1A1B" stroke="#EFE6DC" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="496" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DEAL</text>
+<text x="430" y="514" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">App calls the card numbers · 2 face-up, 4 face-down</text>
+<rect x="532.4" y="450" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="461" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<rect x="487.4" y="450" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="506.9" y="461" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+</g>
+<line x1="430" y1="526" x2="430" y2="556" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,548 436,548 430,556" fill="#333" fill-opacity="1"/>
+<g id="DigChips">
+<rect x="302" y="558" width="120" height="40" fill="#7CE0A8" fill-opacity="0.08" stroke="#7CE0A8" stroke-opacity="0.4" stroke-width="1"/>
+<text x="362" y="574" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.5">👁 LOOK</text>
+<text x="362" y="589" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#777" text-anchor="middle" letter-spacing="0">Real photo · in the app</text>
+<rect x="438" y="558" width="120" height="40" fill="#E4C46A" fill-opacity="0.08" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
+<text x="498" y="574" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.5">🔍 STALK</text>
+<text x="498" y="589" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#777" text-anchor="middle" letter-spacing="0">Secret peek · chips</text>
+<text x="430" y="614" font-family="'Work Sans', Arial, sans-serif" font-size="8.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="1">optional — before deciding</text>
+</g>
+<line x1="430" y1="620" x2="430" y2="640" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,632 436,632 430,640" fill="#333" fill-opacity="1"/>
+<g id="Node-Decide">
+<rect x="295.0" y="640" width="270" height="56" fill="#1E1A1B" stroke="#FF4D6D" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="666" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DECIDE</text>
+<text x="430" y="684" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Pass the phone · ♥ DATE or ◌ GHOST in private</text>
+<rect x="532.4" y="620" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="631" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<text x="580" y="674" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="start" letter-spacing="0">AI rivals decide too</text>
+<line x1="430" y1="696" x2="430" y2="726" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,718 436,718 430,726" fill="#333" fill-opacity="1"/>
+<g id="Node-Flip">
+<rect x="295.0" y="726" width="270" height="56" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="752" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">FLIP</text>
+<text x="430" y="770" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Turn the face-down cards as the app reveals them</text>
+<rect x="532.4" y="706" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="717" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<rect x="487.4" y="706" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="506.9" y="717" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+</g>
+<line x1="430" y1="782" x2="430" y2="812" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,804 436,804 430,812" fill="#333" fill-opacity="1"/>
+<g id="Node-Scored">
+<rect x="295.0" y="812" width="270" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="838" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">SCORED</text>
+<text x="430" y="856" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Type-adjusted score · hearts · leaderboard</text>
+<rect x="532.4" y="792" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="803" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<g id="LoopBack">
+<line x1="295" y1="840" x2="200" y2="840" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="200" y1="840" x2="200" y2="498" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="200" y1="498" x2="287" y2="498" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
+<polygon points="287,492 287,504 295,498" fill="#444"/>
+<rect x="158" y="640" width="84" height="44" fill="#131011"/>
+<text x="200" y="656" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">NEXT ROUND</text>
+<text x="200" y="669" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="0">cards go back</text>
+<text x="200" y="680" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="0">in the deck</text>
+</g>
+</g>
+<line x1="430" y1="900" x2="430" y2="950" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,942 436,942 430,950" fill="#333" fill-opacity="1"/>
+<rect x="375.4" y="916.0" width="109.2" height="16" fill="#131011"/>
+<text x="430.0" y="928.0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2">AFTER ROUND 7</text>
+<g id="Diamond-Qualified"><polygon points="430,954 550,990 430,1026 310,990" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
+<text x="430" y="986" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2">QUALIFIED?</text>
+<text x="430" y="1002" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="middle" letter-spacing="0">10+ points · 1+ heart</text>
+</g>
+<text x="282" y="982" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
+<text x="578" y="982" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#555" text-anchor="middle" letter-spacing="2">NO</text>
+<line x1="310" y1="990" x2="250" y2="990" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<line x1="250" y1="990" x2="250" y2="1050" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<polygon points="244,1042 256,1042 250,1050" fill="#E4C46A" fill-opacity="0.6"/>
+<g id="Node-TheOne">
+<rect x="125.0" y="1050" width="250" height="56" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
+<text x="250" y="1076" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">💘 THE ONE</text>
+<text x="250" y="1094" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">App only · take a chance (±10) or walk away</text>
+<rect x="342.4" y="1030" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="355.7" y="1041" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<line x1="550" y1="990" x2="640" y2="990" stroke="#333" stroke-width="1"/>
+<line x1="640" y1="990" x2="640" y2="1170" stroke="#333" stroke-width="1"/>
+<line x1="250" y1="1106" x2="250" y2="1170" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+<line x1="250" y1="1170" x2="330" y2="1170" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+<polygon points="322,1164 322,1176 330,1170" fill="#E4C46A" fill-opacity="0.5"/>
+<line x1="640" y1="1170" x2="538" y2="1170" stroke="#333" stroke-width="1"/>
+<polygon points="538,1164 538,1176 530,1170" fill="#333"/>
+<g id="Diamond-Tie"><polygon points="430,1136 530,1170 430,1204 330,1170" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
+<text x="430" y="1166" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2">TIE FOR FIRST?</text>
+<text x="430" y="1182" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="middle" letter-spacing="0">table play · most hearts wins first</text>
+</g>
+<text x="340" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
+<line x1="430" y1="1204" x2="430" y2="1215" stroke="#333" stroke-width="1"/>
+<line x1="300" y1="1215" x2="430" y2="1215" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+<line x1="300" y1="1215" x2="300" y2="1250" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
+<polygon points="294,1242 306,1242 300,1250" fill="#E4C46A" fill-opacity="0.5"/>
+<g id="Node-SpeedDating">
+<rect x="200.0" y="1250" width="200" height="50" fill="#1A1617" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="300" y="1276" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">⚡ SPEED DATING</text>
+<text x="300" y="1294" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Tied players date or ghost</text>
+<rect x="367.4" y="1230" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="380.7" y="1241" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<text x="540" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#555" text-anchor="middle" letter-spacing="2">NO / SOLO</text>
+<line x1="430" y1="1215" x2="560" y2="1215" stroke="#333" stroke-width="1"/>
+<line x1="560" y1="1215" x2="560" y2="1330" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="554,1322 566,1322 560,1330" fill="#333" fill-opacity="1"/>
+<line x1="300" y1="1300" x2="300" y2="1358" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
+<line x1="300" y1="1358" x2="335" y2="1358" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
+<polygon points="327,1352 327,1364 335,1358" fill="#E4C46A" fill-opacity="0.4"/>
+<g id="Node-Results">
+<rect x="335.0" y="1330" width="250" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
+<text x="460" y="1356" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">RESULTS</text>
+<text x="460" y="1374" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Rank · title · achievements</text>
+<rect x="552.4" y="1310" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="565.7" y="1321" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<g id="PlayAgain">
+<line x1="555" y1="1358" x2="760" y2="1358" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="760" y1="1358" x2="760" y2="244" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="760" y1="244" x2="573" y2="244" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<polygon points="573,238 573,250 565,244" fill="#444"/>
+<rect x="722" y="780" width="76" height="30" fill="#131011"/>
+<text x="760" y="793" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.5">PLAY</text>
+<text x="760" y="805" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.5">AGAIN</text>
+</g>
+<g id="Legend" transform="translate(100, 1440)">
+<text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#444" text-anchor="start" letter-spacing="3">LEGEND</text>
+<line x1="0" y1="10" x2="660" y2="10" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+<rect x="0" y="24" width="110" height="30" fill="#1E1A1B" stroke="rgba(239,230,220,0.25)" stroke-width="1"/>
+<text x="55" y="43" font-family="'Anton', Impact, sans-serif" font-size="10" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="1.5">STEP</text>
+<text x="124" y="43" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= a screen / step in the game</text>
+<rect x="0" y="66" width="110" height="30" fill="#1A1617" stroke="rgba(239,230,220,0.15)" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="55" y="85" font-family="'Anton', Impact, sans-serif" font-size="10" font-weight="400" fill="#777" text-anchor="middle" letter-spacing="1.5">OPTIONAL</text>
+<text x="124" y="85" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= optional or conditional step</text>
+<polygon points="55,108 110,128 55,148 0,128" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
+<text x="55" y="132" font-family="'Anton', Impact, sans-serif" font-size="9" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="1">BRANCH</text>
+<text x="124" y="132" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= decision point</text>
+<line x1="0" y1="170" x2="110" y2="170" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="124" y="174" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= loop back</text>
+<rect x="13.399999999999999" y="190" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="26.7" y="201" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<text x="124" y="202" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens on the phone</text>
+<rect x="11.0" y="214" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="30.5" y="225" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+<text x="124" y="226" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens with the physical trait cards / chips</text>
+</g>
+<line x1="100" y1="1700" x2="760" y2="1700" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+<text x="430" y="1724" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#3a3535" text-anchor="middle" letter-spacing="3">THE CATCH · MAYA WALSH · SYSTEM FLOW · FIGMA-EDITABLE SVG</text>
+<text x="430" y="1742" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#3a3535" text-anchor="middle" letter-spacing="0">Import into Figma · every node is an editable vector group</text>
 </svg>
