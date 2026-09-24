@@ -60,23 +60,6 @@ const ANTON  = "'Anton', sans-serif"
 const hairline = `1px solid rgba(239,230,220,0.08)`
 const DVH    = '100%'  // fills parent flex container (modal constrains to phone width)
 
-// ─── NPC rival system ─────────────────────────────────────────────────────────
-const NPC_NAMES   = ['Jordan', 'Riley', 'Drew', 'Morgan', 'Casey', 'Sage', 'Frankie', 'Remy', 'Sasha', 'Tyler']
-const NPC_AVATARS = ['🌙', '🔥', '⚡', '💀', '🌊', '🎯', '🦁', '🃏']
-
-function makeNPC(idx) {
-  const pool = shuffle([...NPC_NAMES])
-  return { ...makePlayer(`npc${idx}`, pool[idx % pool.length], NPC_AVATARS[idx % NPC_AVATARS.length]), isNPC: true }
-}
-
-function npcDecide(profile, npc) {
-  if (npc.ghosts <= 0) return 'date'
-  const vis = profile.traits.filter(t => t.startVisible).reduce((s, t) => s + t.value, 0)
-  if (vis >= 3) return Math.random() > 0.1 ? 'date' : 'ghost'
-  if (vis <= -2) return Math.random() > 0.3 ? 'ghost' : 'date'
-  return Math.random() > 0.48 ? 'date' : 'ghost'
-}
-
 // ─── utils ────────────────────────────────────────────────────────────────────
 function shuffle(arr) {
   const a = [...arr]
@@ -133,7 +116,7 @@ function applyRound(state) {
   const sharedScore  = profileScore(profile)
   const daters       = state.players.filter(p => state.roundDecisions[p.id]?.action === 'date')
   const doubleDaters = state.players.filter(p => state.roundDecisions[p.id]?.action === 'double_date')
-  const isChemistry  = state.mode === 'multi' && sharedScore >= 7 && daters.length === 1
+  const isChemistry  = sharedScore >= 7 && daters.length === 1
   const isDoubleDateValid = doubleDaters.length >= 2
 
   // Resolve steal effects first — find the leader, apply deductions
@@ -180,8 +163,7 @@ function applyRound(state) {
         isRedFlag  = false
       } else {
         // only 1 person chose it — treat as regular date
-        const bonusApplies = state.mode === 'single' && pScore >= 7
-        ;({ pts, heartsLost, isRedFlag } = calcDate(p, pScore, bonusApplies))
+        ;({ pts, heartsLost, isRedFlag } = calcDate(p, pScore, false))
       }
       if (isCatfish) { pts -= 4; isRedFlag = true }
       const stealDeduction = stealVictimPts[p.id] ?? 0
@@ -196,7 +178,7 @@ function applyRound(state) {
 
     // Regular date
     const pScore       = profileScoreForPlayer(profile, p)
-    const bonusApplies = (state.mode === 'single' && pScore >= 7) || (isChemistry && p.id === daters[0]?.id)
+    const bonusApplies = isChemistry && p.id === daters[0]?.id
     let { pts, heartsLost, isRedFlag } = calcDate(p, pScore, bonusApplies)
     if (isCatfish) { pts -= 4; isRedFlag = true; heartsLost = Math.max(heartsLost, 1) }
     const stealDeduction = stealVictimPts[p.id] ?? 0
@@ -232,7 +214,6 @@ function applyTheOne(state) {
 }
 
 function resolveWinner(state) {
-  if (state.mode === 'single') return { ...state, screen: 'results' }
   let pool = [...state.players]
   const maxScore = Math.max(...pool.map(p => p.loveScore))
   pool = pool.filter(p => p.loveScore === maxScore)
@@ -248,7 +229,7 @@ function resolveWinner(state) {
 
 // ─── reducer ──────────────────────────────────────────────────────────────────
 const INIT = {
-  screen: 'player_setup', mode: 'single', players: [], profiles: [], currentRound: 0,
+  screen: 'player_setup', players: [], profiles: [], currentRound: 0,
   roundPhase: 'deciding', decidingPlayerIdx: 0, roundDecisions: {}, revealStep: 0, roundResults: null,
   qualifiedIds: [], theOnePhase: 'deciding', theOneDecidingIdx: 0, theOneDecisions: {}, theOneRevealStep: 0, theOneResults: null,
   winnerId: null, tiedIds: [], tbProfile: null, tbDecisions: {}, tbDecidingIdx: 0, tbPhase: 'deciding', tbRevealStep: 0,
@@ -257,13 +238,10 @@ const INIT = {
 
 function reducer(state, { type, ...p }) {
   switch (type) {
-    case 'SELECT_MODE': return { ...state, mode: p.mode, screen: 'player_setup' }
+    case 'PLAY_AGAIN': return { ...INIT }
 
-    case 'GO_TO_CUSTOM_TRAITS': {
-      // One person = solo against 2 AI rivals; more = pass-the-phone at the table
-      const mode = p.players.length > 1 ? 'multi' : 'single'
-      return { ...state, mode, screen: 'custom_traits', pendingPlayers: p.players, customTraits: [] }
-    }
+    case 'GO_TO_CUSTOM_TRAITS':
+      return { ...state, screen: 'custom_traits', pendingPlayers: p.players, customTraits: [] }
 
     // Write-your-own cards are labelled W1…W6 in the order they're added
     case 'ADD_CUSTOM_TRAIT': {
@@ -278,9 +256,8 @@ function reducer(state, { type, ...p }) {
 
     case 'START_GAME': {
       const players  = state.pendingPlayers?.length ? state.pendingPlayers : (p.players ?? [])
-      const npcs     = state.mode === 'single' ? [makeNPC(0), makeNPC(1)] : []
       const traits   = p.skipCustom ? [] : (state.customTraits ?? [])
-      return { ...INIT, mode: state.mode, players: [...players, ...npcs], profiles: generateProfiles(7, traits), screen: 'round', roundPhase: 'deciding' }
+      return { ...INIT, players, profiles: generateProfiles(7, traits), screen: 'round', roundPhase: 'deciding' }
     }
 
 
@@ -290,34 +267,17 @@ function reducer(state, { type, ...p }) {
       const phaseKey = isTO ? 'theOnePhase'       : 'roundPhase'
       const idxKey   = isTO ? 'theOneDecidingIdx' : 'decidingPlayerIdx'
       const allPool  = isTO ? state.players.filter(pl => state.qualifiedIds.includes(pl.id)) : state.players
-      const humanPool = allPool.filter(pl => !pl.isNPC)
-      const cur      = humanPool[state[idxKey]]
+      const cur      = allPool[state[idxKey]]
       let updPlayers = state.players
       if (!isTO && (p.action === 'ghost' || p.action === 'therapy_ghost')) {
         updPlayers = state.players.map(pl => pl.id === cur.id ? { ...pl, ghosts: pl.ghosts - 1 } : pl)
       }
-      let newDec = { ...state[decKey], [cur.id]: { ...(state[decKey][cur.id] ?? {}), action: p.action } }
-
-      // Single player: auto-decide NPCs alongside the human
-      if (state.mode === 'single') {
-        allPool.filter(pl => pl.isNPC).forEach(npc => {
-          if (newDec[npc.id]) return
-          let action
-          if (isTO) {
-            const visScore = THE_ONE_PROFILE.traits.filter(t => t.startVisible).reduce((s, t) => s + t.value, 0)
-            action = (visScore >= 0 && npc.loveScore >= 8) ? 'take_chance' : 'walk_away'
-          } else {
-            action = npcDecide(state.profiles[state.currentRound], npc)
-            if (action === 'ghost') updPlayers = updPlayers.map(pl => pl.id === npc.id ? { ...pl, ghosts: pl.ghosts - 1 } : pl)
-          }
-          newDec = { ...newDec, [npc.id]: { action, stalkedIdxs: [] } }
-        })
-      }
+      const newDec = { ...state[decKey], [cur.id]: { ...(state[decKey][cur.id] ?? {}), action: p.action } }
 
       const nextIdx = state[idxKey] + 1
 
       const allDone = allPool.every(pl => newDec[pl.id]?.action != null)
-      if (state.mode === 'single' || allDone) return { ...state, players: updPlayers, [decKey]: newDec, [phaseKey]: 'revealing', revealStep: 0, theOneRevealStep: 0 }
+      if (allDone) return { ...state, players: updPlayers, [decKey]: newDec, [phaseKey]: 'revealing', revealStep: 0, theOneRevealStep: 0 }
       return { ...state, players: updPlayers, [decKey]: newDec, [phaseKey]: 'pass_device', [idxKey]: nextIdx }
     }
 
@@ -337,11 +297,6 @@ function reducer(state, { type, ...p }) {
       if (state.currentRound >= 6) {
         const qualified = state.players.filter(pl => pl.loveScore >= 10 && pl.hearts >= 1)
         if (!qualified.length) return resolveWinner(state)
-        // Only AI rivals made it: they decide on their own, then straight to results
-        if (qualified.every(pl => pl.isNPC)) {
-          const theOneDecisions = Object.fromEntries(qualified.map(pl => [pl.id, { action: pl.loveScore >= 8 ? 'take_chance' : 'walk_away' }]))
-          return resolveWinner(applyTheOne({ ...state, qualifiedIds: qualified.map(pl => pl.id), theOneDecisions }))
-        }
         return { ...state, screen: 'the_one', qualifiedIds: qualified.map(pl => pl.id), theOnePhase: 'deciding', theOneDecidingIdx: 0, theOneDecisions: {}, theOneRevealStep: 0, theOneResults: null }
       }
       return { ...state, currentRound: state.currentRound + 1, roundPhase: 'deciding', decidingPlayerIdx: 0, roundDecisions: {}, revealStep: 0, roundResults: null }
@@ -377,8 +332,7 @@ function reducer(state, { type, ...p }) {
     }
 
     case 'USE_LOOK': {
-      const pool = state.players.filter(pl => !pl.isNPC)
-      const cur  = pool[state.decidingPlayerIdx]
+      const cur  = state.players[state.decidingPlayerIdx]
       if (!cur || cur.looks <= 0) return state
       const newPlayers = state.players.map(pl => pl.id === cur.id ? { ...pl, looks: pl.looks - 1 } : pl)
       const newDec = { ...state.roundDecisions, [cur.id]: { ...(state.roundDecisions[cur.id] ?? {}), lookUsed: true } }
@@ -390,8 +344,8 @@ function reducer(state, { type, ...p }) {
 }
 
 // ─── shared components ────────────────────────────────────────────────────────
-function Hud({ players, currentRound, mode, currentPlayer }) {
-  const p = mode === 'single' ? players.find(pl => !pl.isNPC) : currentPlayer
+function Hud({ currentRound, currentPlayer }) {
+  const p = currentPlayer
   if (!p) return null
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 16px', background: C.bg, borderBottom: hairline }}>
@@ -452,11 +406,12 @@ function AchievementToast({ achievement, onDone }) {
 }
 
 // ─── PLAYER SETUP ─────────────────────────────────────────────────────────────
-// Everyone at the table plays on this one phone. One player = 2 AI rivals join.
+// Everyone at the table plays on this one phone.
+const MIN_PLAYERS = 2
 const MAX_PLAYERS = 6
 
 function PlayerSetupScreen({ dispatch }) {
-  const [slots, setSlots] = useState([{ name: '', avatar: PLAYER_AVATARS[0], playerType: PLAYER_TYPES[0] }])
+  const [slots, setSlots] = useState(() => Array.from({ length: MIN_PLAYERS }, (_, i) => ({ name: '', avatar: PLAYER_AVATARS[i], playerType: PLAYER_TYPES[0] })))
   const update   = (i, key, val) => setSlots(s => s.map((sl, idx) => idx === i ? { ...sl, [key]: val } : sl))
   const canStart = slots.every(s => s.name.trim().length > 0)
   const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.avatar, sl.playerType)) })
@@ -476,7 +431,7 @@ function PlayerSetupScreen({ dispatch }) {
             <div key={i} style={{ padding: 14, background: C.card, border: hairline, borderRadius: 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.2em' }}>PLAYER {i + 1}</span>
-                {i > 0 && (
+                {i >= MIN_PLAYERS && (
                   <button onClick={() => setSlots(s => s.filter((_, j) => j !== i))}
                     style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: '#666', background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px 4px' }}>
                     ✕
@@ -525,13 +480,6 @@ function PlayerSetupScreen({ dispatch }) {
               style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, padding: '12px 0', border: `1px dashed ${C.slate}`, color: '#777', background: 'transparent', cursor: 'pointer', borderRadius: 6 }}>
               + Add player
             </button>
-          )}
-
-          {slots.length === 1 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: C.card, border: hairline, borderRadius: 6 }}>
-              <span style={{ fontSize: 16 }}>🌙🔥</span>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold, letterSpacing: '0.15em' }}>PLAYING ALONE? 2 AI RIVALS JOIN YOU</div>
-            </div>
           )}
         </div>
 
@@ -750,9 +698,7 @@ function ProfileCard({ profile, goldTheme, lookUnlocked = false }) {
 }
 
 // Compact rival decision recap shown in reveal phase
-function RivalBar({ players, decisions, mode }) {
-  const showRivals = mode === 'multi' || players.some(p => p.isNPC)
-  if (!showRivals) return null
+function RivalBar({ players, decisions }) {
   return (
     <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
       {players.map(pl => {
@@ -762,7 +708,7 @@ function RivalBar({ players, decisions, mode }) {
           <div key={pl.id} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: dated ? `${C.accent}1a` : C.cardAlt, border: dated ? `1px solid ${C.accent}44` : hairline, borderRadius: 2 }}>
             <span style={{ fontSize: 14 }}>{pl.avatar}</span>
             <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: dated ? C.accent : '#555', letterSpacing: '0.08em' }}>
-              {pl.isNPC || mode === 'multi' ? pl.name.toUpperCase() : 'YOU'} {dated ? '♥' : '◌'}
+              {pl.name.toUpperCase()} {dated ? '♥' : '◌'}
             </span>
           </div>
         )
@@ -774,7 +720,7 @@ function RivalBar({ players, decisions, mode }) {
 // ─── ROUND ────────────────────────────────────────────────────────────────────
 function RoundScreen({ state, dispatch }) {
   const profile   = state.profiles[state.currentRound]
-  const curPlayer = state.players.filter(pl => !pl.isNPC)[state.decidingPlayerIdx] ?? state.players[0]
+  const curPlayer = state.players[state.decidingPlayerIdx] ?? state.players[0]
   const dec       = state.roundDecisions[curPlayer?.id] ?? { stalkedIdxs: [] }
 
   const traitInReveal = i => {
@@ -784,19 +730,17 @@ function RoundScreen({ state, dispatch }) {
     return pos !== -1 && pos < state.revealStep
   }
 
-  const [showScorePopup, setShowScorePopup] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [toastAch, setToastAch] = useState(null)
   const prevAchRef = useRef([])
 
   useEffect(() => {
     if (state.roundPhase === 'scored') {
-      setShowScorePopup(true)
       setShowLeaderboard(false)
-      const id1 = setTimeout(() => { setShowScorePopup(false); setShowLeaderboard(true) }, 1800)
+      const id1 = setTimeout(() => setShowLeaderboard(true), 1800)
       const id2 = setTimeout(() => setShowLeaderboard(false), 1800 + 7000)
-      // Check for new achievements on the real player
-      const realPlayer = state.players.find(pl => !pl.isNPC)
+      // Check for new achievements on the first player
+      const realPlayer = state.players[0]
       if (realPlayer) {
         const prev = prevAchRef.current
         const newOnes = realPlayer.achievements.filter(id => !prev.includes(id))
@@ -812,8 +756,7 @@ function RoundScreen({ state, dispatch }) {
 
 
   if (state.roundPhase === 'pass_device') {
-    const humanPlayers = state.players.filter(pl => !pl.isNPC)
-    const next = humanPlayers[state.decidingPlayerIdx]
+    const next = state.players[state.decidingPlayerIdx]
     return <PassDevice name={next?.name} avatar={next?.avatar} onReady={() => dispatch({ type: 'CONTINUE_NEXT' })} />
   }
 
@@ -822,35 +765,8 @@ function RoundScreen({ state, dispatch }) {
     const score      = profileScore(profile)
     const isCatfish  = profile.isCatfish === true
     const anyRedFlag = !isCatfish && state.players.some(pl => results[pl.id]?.isRedFlag)
-    const realPlayer = state.players.find(pl => !pl.isNPC)
-    const myResult   = results[realPlayer?.id]
+    const myResult   = results[state.players[0]?.id]
     const sorted     = [...state.players].sort((a, b) => b.loveScore - a.loveScore)
-
-    if (showScorePopup && myResult && state.mode === 'single') {
-      const pts     = myResult.pts
-      const isGhost = myResult.action === 'ghost' || myResult.action === 'therapy_ghost'
-      const isDodge = myResult.catfishDodged
-      const ptColor = isDodge ? C.teal : pts > 0 ? C.teal : pts < 0 ? C.accent : C.slate
-      const ptGlow  = pts > 0 || isDodge
-        ? `0 0 32px rgba(124,224,168,0.7), 0 0 72px rgba(124,224,168,0.35)`
-        : pts < 0
-        ? `0 0 32px rgba(255,77,109,0.7), 0 0 72px rgba(255,77,109,0.35)`
-        : 'none'
-      return (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0e0b12', gap: 4, userSelect: 'none', position: 'relative' }}>
-          {toastAch && <AchievementToast achievement={toastAch} onDone={() => setToastAch(null)} />}
-          <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.22em', color: '#444' }}>
-            {isDodge ? '🎣 DODGED' : isGhost ? '◌' : myResult.action === 'steal' ? '⚡' : myResult.action === 'double_date' ? '♥♥' : '♥'}
-          </div>
-          <div style={{ fontFamily: ANTON, fontSize: 'clamp(100px,26vw,148px)', color: ptColor, lineHeight: 1, textShadow: ptGlow }}>
-            {pts > 0 ? `+${pts}` : pts === 0 ? '±0' : pts}
-          </div>
-          {isCatfish && myResult.action !== 'ghost' && myResult.action !== 'therapy_ghost' && (
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.12em' }}>🪝 −4</div>
-          )}
-        </div>
-      )
-    }
 
     return (
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
@@ -876,13 +792,12 @@ function RoundScreen({ state, dispatch }) {
             </div>
             {sorted.map((pl, rank) => {
               const r = results[pl.id]
-              const isMe = !pl.isNPC
               return (
-                <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: isMe ? `${C.accent}12` : 'transparent', border: isMe ? `1px solid ${C.accent}30` : hairline, marginBottom: 4 }}>
+                <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: `${C.accent}12`, border: `1px solid ${C.accent}30`, marginBottom: 4 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontFamily: ANTON, fontSize: 12, color: '#444', minWidth: 16 }}>#{rank + 1}</span>
                     <span style={{ fontSize: 16 }}>{pl.avatar}</span>
-                    <div style={{ fontFamily: WS, fontWeight: isMe ? 700 : 400, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe && state.mode === 'single' ? 'YOU' : pl.name}</div>
+                    <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{pl.name}</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     {r && <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: r.action === 'date' || r.action === 'double_date' ? C.accent : r.action === 'steal' ? C.gold : '#555', letterSpacing: '0.08em' }}>
@@ -904,7 +819,7 @@ function RoundScreen({ state, dispatch }) {
         {/* Profile photo — fixed at top, outside scroll */}
         {myResult && (myResult.action === 'date' || myResult.action === 'double_date') && (
           <div style={{ flexShrink: 0 }}>
-            <ProfileCard profile={profile} goldTheme={false} lookUnlocked={state.mode === 'single' && (state.roundDecisions[realPlayer?.id]?.lookUsed ?? false)} />
+            <ProfileCard profile={profile} goldTheme={false} lookUnlocked={false} />
           </div>
         )}
 
@@ -943,11 +858,11 @@ function RoundScreen({ state, dispatch }) {
               })}
             </div>
 
-            {/* Each human's result */}
-            {state.players.filter(pl => !pl.isNPC).map(pl => { const myResult = results[pl.id]; const realPlayer = pl; return myResult && (
+            {/* Each player's result */}
+            {state.players.map(pl => { const myResult = results[pl.id]; return myResult && (
               <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: `1px solid ${myResult.pts > 0 ? 'rgba(124,224,168,0.2)' : myResult.pts < 0 ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 8 }}>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
-                  {realPlayer?.avatar} {state.mode === 'single' ? 'YOU' : realPlayer?.name}
+                  {pl.avatar} {pl.name}
                   <span style={{ fontWeight: 400, color: '#555' }}> — {
                     myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌'
                     : myResult.action === 'steal' ? '⚡'
@@ -981,11 +896,11 @@ function RoundScreen({ state, dispatch }) {
     const revealedCount = profile.traits.filter((t, i) => t.startVisible || traitInReveal(i)).length
     return (
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
-        <Hud players={state.players} currentRound={state.currentRound} mode={state.mode} currentPlayer={curPlayer} />
+        <Hud currentRound={state.currentRound} currentPlayer={curPlayer} />
 
         {/* Profile hero strip */}
         <div style={{ flexShrink: 0, padding: '18px 24px 14px', borderBottom: `1px solid rgba(255,255,255,0.06)`, background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
-          <RivalBar players={state.players} decisions={state.roundDecisions} mode={state.mode} />
+          <RivalBar players={state.players} decisions={state.roundDecisions} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
             <span style={{ fontSize: 38, lineHeight: 1 }}>{profile.emoji}</span>
             <div>
@@ -1068,16 +983,14 @@ function RoundScreen({ state, dispatch }) {
   const canLook   = (curPlayer?.looks ?? 0) > 0 && !!profilePhoto && !(dec.lookUsed ?? false)
   const faceUp    = profile.traits.filter(t => t.startVisible)
   const faceDown  = profile.traits.filter(t => !t.startVisible)
-  const alreadyDealt = state.mode === 'multi' && state.decidingPlayerIdx > 0
+  const alreadyDealt = state.decidingPlayerIdx > 0
 
   return (
     <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
-      <Hud players={state.players} currentRound={state.currentRound} mode={state.mode} currentPlayer={curPlayer} />
-      {state.mode === 'multi' && (
-        <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '6px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
-          {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
-        </div>
-      )}
+      <Hud currentRound={state.currentRound} currentPlayer={curPlayer} />
+      <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '6px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
+        {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+      </div>
 
       {/* Profile card — fixed height, no grow */}
       <div style={{ flex: '0 0 auto' }}>
@@ -1148,8 +1061,7 @@ function TheOneScreen({ state, dispatch }) {
   const profile     = THE_ONE_PROFILE
   const score       = profileScore(profile)
   const qualPlayers = state.players.filter(p => state.qualifiedIds.includes(p.id))
-  const humanQual   = qualPlayers.filter(p => !p.isNPC)
-  const curPlayer   = humanQual[state.theOneDecidingIdx]
+  const curPlayer   = qualPlayers[state.theOneDecidingIdx]
   const dec         = state.theOneDecisions[curPlayer?.id] ?? { stalkedIdxs: [] }
 
   const traitVisible  = i => profile.traits[i].startVisible || (dec.stalkedIdxs ?? []).includes(i)
@@ -1161,7 +1073,7 @@ function TheOneScreen({ state, dispatch }) {
   }
 
   if (state.theOnePhase === 'pass_device') {
-    const next = humanQual[state.theOneDecidingIdx]
+    const next = qualPlayers[state.theOneDecidingIdx]
     return <PassDevice name={next?.name} avatar={next?.avatar} onReady={() => dispatch({ type: 'CONTINUE_NEXT' })} />
   }
 
@@ -1191,13 +1103,11 @@ function TheOneScreen({ state, dispatch }) {
           {qualPlayers.map(pl => {
             const r = results[pl.id]
             if (!r) return null
-            const isMe = !pl.isNPC
-            const label = isMe && state.mode === 'single' ? 'YOU' : pl.name
             return (
-              <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: isMe ? `${C.accent}12` : 'rgba(255,255,255,0.04)', border: `1px solid ${isMe ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 6, textAlign: 'left' }}>
+              <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: `${C.accent}12`, border: '1px solid rgba(255,77,109,0.2)', borderRadius: 6, marginBottom: 6, textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ fontSize: 18 }}>{pl.avatar}</span>
-                  <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: isMe ? C.cream : '#888' }}>{label}</span>
+                  <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{pl.name}</span>
                 </div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: r.foundTheOne ? C.teal : r.action === 'walk_away' ? '#555' : C.accent, letterSpacing: '0.08em' }}>
                   {r.foundTheOne ? '♛ +10' : r.action === 'walk_away' ? 'WALKED' : '♥̸ −10'}
@@ -1221,7 +1131,7 @@ function TheOneScreen({ state, dispatch }) {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
         {/* Hero strip */}
         <div style={{ flexShrink: 0, padding: '18px 24px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
-          <RivalBar players={qualPlayers} decisions={state.theOneDecisions} mode={state.mode} />
+          <RivalBar players={qualPlayers} decisions={state.theOneDecisions} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
             <span style={{ fontSize: 38 }}>{profile.emoji}</span>
             <div>
@@ -1273,11 +1183,9 @@ function TheOneScreen({ state, dispatch }) {
         <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.2em' }}>THE ONE</div>
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#999', margin: '2px 0 0' }}>No cards for this one — it all plays out on screen.</p>
       </div>
-      {state.mode === 'multi' && (
-        <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: `${C.accent}1a`, color: C.accent, borderBottom: `1px solid ${C.accent}33` }}>
-          {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
-        </div>
-      )}
+      <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: `${C.accent}1a`, color: C.accent, borderBottom: `1px solid ${C.accent}33` }}>
+        {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+      </div>
 
       {/* Profile card — fixed */}
       <div style={{ flex: '0 0 auto' }}>
@@ -1354,7 +1262,7 @@ function TiebreakerScreen({ state, dispatch }) {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
         {/* Hero strip */}
         <div style={{ flexShrink: 0, padding: '18px 24px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, #1a1020 0%, #0e0b12 100%)' }}>
-          <RivalBar players={tied} decisions={state.tbDecisions} mode={state.mode} />
+          <RivalBar players={tied} decisions={state.tbDecisions} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
             <span style={{ fontSize: 38 }}>{profile.emoji}</span>
             <div>
@@ -1407,11 +1315,9 @@ function TiebreakerScreen({ state, dispatch }) {
         <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 16, letterSpacing: '0.1em' }}>⚡ SPEED DATING</div>
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', margin: '2px 0 0' }}>It's a tie. One profile. No STALK Tokens.</p>
       </div>
-      {state.mode === 'multi' && (
-        <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
-          {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
-        </div>
-      )}
+      <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
+        {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+      </div>
 
       {/* Photo */}
       <div style={{ flex: '0 0 auto', position: 'relative', height: 'clamp(120px, 18dvh, 170px)', overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : '#111', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
@@ -1470,24 +1376,22 @@ function TiebreakerScreen({ state, dispatch }) {
 // ─── RESULTS ──────────────────────────────────────────────────────────────────
 function ResultsScreen({ state, dispatch, onClose }) {
   const allPlayers = [...state.players].sort((a, b) => b.loveScore - a.loveScore)
-  const realPlayer = state.players.find(p => !p.isNPC)
-  const winner     = state.mode === 'multi' ? state.players.find(p => p.id === state.winnerId) : realPlayer
+  const winner     = state.players.find(p => p.id === state.winnerId)
   const persona    = winner ? getPersonality(winner) : null
-  const myRank     = allPlayers.findIndex(p => !p.isNPC) + 1
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column' }}>
       <div style={{ maxWidth: 400, margin: 'auto', width: '100%', padding: '28px 24px' }}>
-        {/* Winner/your result card */}
+        {/* Winner card */}
         {winner && (
           <div style={{ textAlign: 'center', marginBottom: 24, padding: 22, background: 'rgba(228,196,106,0.08)', border: `1px solid ${C.gold}88`, borderRadius: 12 }}>
             <img src="/thecatch/brand/hook-heart.png" alt="" style={{ width: 30, marginBottom: 10 }} />
             <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.2em' }}>
-              {state.mode === 'single' ? `YOU FINISHED #${myRank}` : '♛ THE CATCH'}
+              ♛ THE CATCH
             </div>
             <div style={{ fontSize: 44, marginTop: 8 }}>{winner.avatar}</div>
             <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 26, lineHeight: 1, marginTop: 6 }}>
-              {state.mode === 'single' ? 'YOU ARE' : winner.name.toUpperCase() + ' IS'}
+              {winner.name.toUpperCase()} IS
             </div>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, lineHeight: 1.1 }}>{persona?.title}</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: '#999', marginTop: 10 }}>{persona?.desc}</p>
@@ -1500,19 +1404,18 @@ function ResultsScreen({ state, dispatch, onClose }) {
         {/* Full leaderboard */}
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#444', letterSpacing: '0.2em', marginBottom: 8 }}>
-            {state.mode === 'single' ? 'FINAL RANKINGS' : 'LEADERBOARD'}
+            LEADERBOARD
           </div>
           {allPlayers.map((p, rank) => {
-            const isMe   = !p.isNPC
             const persona = getPersonality(p)
             return (
               <div key={p.id} style={{ marginBottom: 6 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: isMe ? `${C.accent}12` : 'rgba(255,255,255,0.04)', border: (state.mode === 'multi' && p.id === winner?.id) ? `1px solid ${C.gold}55` : isMe ? `1px solid ${C.accent}30` : hairline, borderRadius: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: `${C.accent}12`, border: p.id === winner?.id ? `1px solid ${C.gold}55` : `1px solid ${C.accent}30`, borderRadius: 6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ fontFamily: ANTON, fontSize: 13, color: '#444', minWidth: 18 }}>#{rank + 1}</span>
                     <span style={{ fontSize: 20 }}>{p.avatar}</span>
                     <div>
-                      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: isMe ? C.cream : '#888' }}>{isMe && state.mode === 'single' ? 'YOU' : p.name}</div>
+                      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{p.name}</div>
                       <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 10, color: '#555', letterSpacing: '0.08em' }}>{persona.title}</div>
                     </div>
                   </div>
@@ -1521,7 +1424,7 @@ function ResultsScreen({ state, dispatch, onClose }) {
                     <div style={{ fontSize: 10 }}>{[0,1,2].map(i => <span key={i} style={{ color: C.accent, opacity: i < p.hearts ? 1 : 0.18 }}>♥</span>)}</div>
                   </div>
                 </div>
-                {isMe && p.achievements?.length > 0 && (
+                {p.achievements?.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, padding: '6px 10px', background: `${C.velvet}88`, border: `1px solid ${C.gold}22`, borderTop: 'none' }}>
                     {p.achievements.map(achId => {
                       const ach = ACHIEVEMENTS.find(a => a.id === achId)
@@ -1539,7 +1442,7 @@ function ResultsScreen({ state, dispatch, onClose }) {
         </div>
 
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => dispatch({ type: 'SELECT_MODE', mode: state.mode })}
+          <button onClick={() => dispatch({ type: 'PLAY_AGAIN' })}
             style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 14, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 6, cursor: 'pointer' }}>
             PLAY AGAIN
           </button>
@@ -1589,7 +1492,6 @@ export default function TheCatchGame({ onClose }) {
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
-        {state.screen === 'mode_select'   && <PlayerSetupScreen state={state} dispatch={dispatch} />}
         {state.screen === 'player_setup'  && <PlayerSetupScreen state={state} dispatch={dispatch} />}
         {state.screen === 'custom_traits' && <CustomTraitsScreen state={state} dispatch={dispatch} />}
         {state.screen === 'round'         && <RoundScreen state={state} dispatch={dispatch} />}
