@@ -411,10 +411,10 @@ const MIN_PLAYERS = 2
 const MAX_PLAYERS = 6
 
 function PlayerSetupScreen({ dispatch }) {
-  const [slots, setSlots] = useState(() => Array.from({ length: MIN_PLAYERS }, (_, i) => ({ name: '', avatar: PLAYER_AVATARS[i], playerType: PLAYER_TYPES[0] })))
+  const [slots, setSlots] = useState(() => Array.from({ length: MIN_PLAYERS }, () => ({ name: '', playerType: PLAYER_TYPES[0] })))
   const update   = (i, key, val) => setSlots(s => s.map((sl, idx) => idx === i ? { ...sl, [key]: val } : sl))
   const canStart = slots.every(s => s.name.trim().length > 0)
-  const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.avatar, sl.playerType)) })
+  const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), PLAYER_AVATARS[i % PLAYER_AVATARS.length], sl.playerType)) })
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column', padding: '0 24px 28px', boxSizing: 'border-box' }}>
@@ -437,14 +437,6 @@ function PlayerSetupScreen({ dispatch }) {
                     ✕
                   </button>
                 )}
-              </div>
-              <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
-                {PLAYER_AVATARS.map(av => (
-                  <button key={av} onClick={() => update(i, 'avatar', av)}
-                    style={{ width: 38, height: 38, fontSize: 18, background: sl.avatar === av ? C.accent : C.cardAlt, border: sl.avatar === av ? `1px solid ${C.accent}` : '1px solid transparent', borderRadius: 4, cursor: 'pointer' }}>
-                    {av}
-                  </button>
-                ))}
               </div>
               <input
                 style={{ width: '100%', fontFamily: ANTON, fontSize: 22, letterSpacing: '0.04em', background: C.cardAlt, color: C.cream, border: sl.name ? `1px solid rgba(239,230,220,0.2)` : hairline, padding: '10px 12px', outline: 'none', boxSizing: 'border-box', caretColor: C.accent, borderRadius: 4 }}
@@ -476,7 +468,7 @@ function PlayerSetupScreen({ dispatch }) {
           ))}
 
           {slots.length < MAX_PLAYERS && (
-            <button onClick={() => setSlots(s => [...s, { name: '', avatar: PLAYER_AVATARS[s.length % PLAYER_AVATARS.length], playerType: PLAYER_TYPES[0] }])}
+            <button onClick={() => setSlots(s => [...s, { name: '', playerType: PLAYER_TYPES[0] }])}
               style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, padding: '12px 0', border: `1px dashed ${C.slate}`, color: '#777', background: 'transparent', cursor: 'pointer', borderRadius: 6 }}>
               + Add player
             </button>
