@@ -1,5 +1,5 @@
 import { useReducer, useState, useEffect, useRef } from 'react'
-import { generateProfiles, TRAIT_POOL, PLAYER_TYPES, THE_ONE_PROFILE, PLAYER_AVATARS, ACHIEVEMENTS, profileScore, getPersonality } from '../data/catchProfiles'
+import { generateProfiles, TRAIT_POOL, PLAYER_TYPES, THE_ONE_PROFILE, ACHIEVEMENTS, profileScore, getPersonality } from '../data/catchProfiles'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { CatchWordmark } from './CatchBrand'
 
@@ -70,8 +70,8 @@ function shuffle(arr) {
   return a
 }
 
-function makePlayer(id, name, avatar, playerType = null) {
-  return { id, name, avatar, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, looks: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false, therapyTokens: 1, therapyActive: false, therapyBonus: 0, stealTokens: 1, achievements: [], ghostedRedFlags: 0 }
+function makePlayer(id, name, playerType = null) {
+  return { id, name, playerType, hearts: 3, stalkTokens: 3, ghosts: 3, looks: 3, loveScore: 0, heartbreakMode: false, ghostsUsed: 0, datesCount: 0, redFlagsCount: 0, foundTheOne: false, therapyTokens: 1, therapyActive: false, therapyBonus: 0, stealTokens: 1, achievements: [], ghostedRedFlags: 0 }
 }
 
 function grantAchievement(achievements, id) {
@@ -367,12 +367,12 @@ function Hud({ currentRound, currentPlayer }) {
   )
 }
 
-function PassDevice({ name, avatar, onReady }) {
+function PassDevice({ name, onReady }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: DVH, padding: '0 24px', textAlign: 'center', background: C.bg }}>
       <img src="/thecatch/brand/hook-heart.png" alt="" style={{ width: 34, marginBottom: 14, opacity: 0.9 }} />
       <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, letterSpacing: '0.08em' }}>PASS THE DEVICE</div>
-      <div style={{ fontFamily: WS, fontWeight: 300, color: C.cream, fontSize: 18, marginTop: 16 }}>{avatar} {name}, you're up.</div>
+      <div style={{ fontFamily: WS, fontWeight: 300, color: C.cream, fontSize: 18, marginTop: 16 }}>{name}, you're up.</div>
       <div style={{ fontFamily: WS, fontWeight: 300, color: '#777', fontSize: 13, marginTop: 8, marginBottom: 32 }}>Don't let anyone see your choice.</div>
       <button onClick={onReady} style={{ fontFamily: WS, fontWeight: 700, background: C.accent, color: '#fff', fontSize: 15, minHeight: 52, minWidth: 200, border: 'none', borderRadius: 4, letterSpacing: '0.12em', cursor: 'pointer' }}>
         I'M READY
@@ -414,7 +414,7 @@ function PlayerSetupScreen({ dispatch }) {
   const [slots, setSlots] = useState(() => Array.from({ length: MIN_PLAYERS }, () => ({ name: '', playerType: PLAYER_TYPES[0] })))
   const update   = (i, key, val) => setSlots(s => s.map((sl, idx) => idx === i ? { ...sl, [key]: val } : sl))
   const canStart = slots.every(s => s.name.trim().length > 0)
-  const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), PLAYER_AVATARS[i % PLAYER_AVATARS.length], sl.playerType)) })
+  const start    = () => dispatch({ type: 'GO_TO_CUSTOM_TRAITS', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.playerType)) })
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#0e0b12', display: 'flex', flexDirection: 'column', padding: '0 24px 28px', boxSizing: 'border-box' }}>
@@ -698,7 +698,6 @@ function RivalBar({ players, decisions }) {
         const dated  = action === 'date' || action === 'take_chance'
         return (
           <div key={pl.id} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: dated ? `${C.accent}1a` : C.cardAlt, border: dated ? `1px solid ${C.accent}44` : hairline, borderRadius: 2 }}>
-            <span style={{ fontSize: 14 }}>{pl.avatar}</span>
             <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: dated ? C.accent : '#555', letterSpacing: '0.08em' }}>
               {pl.name.toUpperCase()} {dated ? '♥' : '◌'}
             </span>
@@ -749,7 +748,7 @@ function RoundScreen({ state, dispatch }) {
 
   if (state.roundPhase === 'pass_device') {
     const next = state.players[state.decidingPlayerIdx]
-    return <PassDevice name={next?.name} avatar={next?.avatar} onReady={() => dispatch({ type: 'CONTINUE_NEXT' })} />
+    return <PassDevice name={next?.name} onReady={() => dispatch({ type: 'CONTINUE_NEXT' })} />
   }
 
   if (state.roundPhase === 'scored') {
@@ -788,7 +787,6 @@ function RoundScreen({ state, dispatch }) {
                 <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: `${C.accent}12`, border: `1px solid ${C.accent}30`, marginBottom: 4 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontFamily: ANTON, fontSize: 12, color: '#444', minWidth: 16 }}>#{rank + 1}</span>
-                    <span style={{ fontSize: 16 }}>{pl.avatar}</span>
                     <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{pl.name}</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -854,7 +852,7 @@ function RoundScreen({ state, dispatch }) {
             {state.players.map(pl => { const myResult = results[pl.id]; return myResult && (
               <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: myResult.pts > 0 ? `${C.teal}12` : myResult.pts < 0 ? `${C.accent}12` : C.card, border: `1px solid ${myResult.pts > 0 ? 'rgba(124,224,168,0.2)' : myResult.pts < 0 ? 'rgba(255,77,109,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 6, marginBottom: 8 }}>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
-                  {pl.avatar} {pl.name}
+                  {pl.name}
                   <span style={{ fontWeight: 400, color: '#555' }}> — {
                     myResult.action === 'ghost' || myResult.action === 'therapy_ghost' ? '◌'
                     : myResult.action === 'steal' ? '⚡'
@@ -981,7 +979,7 @@ function RoundScreen({ state, dispatch }) {
     <div style={{ height: DVH, display: 'flex', flexDirection: 'column', background: '#0e0b12', overflow: 'hidden' }}>
       <Hud currentRound={state.currentRound} currentPlayer={curPlayer} />
       <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '6px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
-        {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+        {curPlayer?.name?.toUpperCase()}'S TURN
       </div>
 
       {/* Profile card — fixed height, no grow */}
@@ -1066,7 +1064,7 @@ function TheOneScreen({ state, dispatch }) {
 
   if (state.theOnePhase === 'pass_device') {
     const next = qualPlayers[state.theOneDecidingIdx]
-    return <PassDevice name={next?.name} avatar={next?.avatar} onReady={() => dispatch({ type: 'CONTINUE_NEXT' })} />
+    return <PassDevice name={next?.name} onReady={() => dispatch({ type: 'CONTINUE_NEXT' })} />
   }
 
   if (state.theOnePhase === 'scored') {
@@ -1098,7 +1096,6 @@ function TheOneScreen({ state, dispatch }) {
             return (
               <div key={pl.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: `${C.accent}12`, border: '1px solid rgba(255,77,109,0.2)', borderRadius: 6, marginBottom: 6, textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 18 }}>{pl.avatar}</span>
                   <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{pl.name}</span>
                 </div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: r.foundTheOne ? C.teal : r.action === 'walk_away' ? '#555' : C.accent, letterSpacing: '0.08em' }}>
@@ -1176,7 +1173,7 @@ function TheOneScreen({ state, dispatch }) {
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#999', margin: '2px 0 0' }}>No cards for this one — it all plays out on screen.</p>
       </div>
       <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: `${C.accent}1a`, color: C.accent, borderBottom: `1px solid ${C.accent}33` }}>
-        {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+        {curPlayer?.name?.toUpperCase()}'S TURN
       </div>
 
       {/* Profile card — fixed */}
@@ -1244,7 +1241,7 @@ function TiebreakerScreen({ state, dispatch }) {
 
   if (state.tbPhase === 'pass_device') {
     const next = tied[state.tbDecidingIdx]
-    return <PassDevice name={next?.name} avatar={next?.avatar} onReady={() => dispatch({ type: 'TB_CONTINUE_NEXT' })} />
+    return <PassDevice name={next?.name} onReady={() => dispatch({ type: 'TB_CONTINUE_NEXT' })} />
   }
 
   if (state.tbPhase === 'revealing') {
@@ -1308,7 +1305,7 @@ function TiebreakerScreen({ state, dispatch }) {
         <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', margin: '2px 0 0' }}>It's a tie. One profile. No STALK Tokens.</p>
       </div>
       <div style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.12em', padding: '7px 16px', textAlign: 'center', background: C.card, color: C.accent, borderBottom: hairline }}>
-        {curPlayer?.avatar} {curPlayer?.name?.toUpperCase()}'S TURN
+        {curPlayer?.name?.toUpperCase()}'S TURN
       </div>
 
       {/* Photo */}
@@ -1381,7 +1378,6 @@ function ResultsScreen({ state, dispatch, onClose }) {
             <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.2em' }}>
               ♛ THE CATCH
             </div>
-            <div style={{ fontSize: 44, marginTop: 8 }}>{winner.avatar}</div>
             <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 26, lineHeight: 1, marginTop: 6 }}>
               {winner.name.toUpperCase()} IS
             </div>
@@ -1405,7 +1401,6 @@ function ResultsScreen({ state, dispatch, onClose }) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: `${C.accent}12`, border: p.id === winner?.id ? `1px solid ${C.gold}55` : `1px solid ${C.accent}30`, borderRadius: 6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ fontFamily: ANTON, fontSize: 13, color: '#444', minWidth: 18 }}>#{rank + 1}</span>
-                    <span style={{ fontSize: 20 }}>{p.avatar}</span>
                     <div>
                       <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{p.name}</div>
                       <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 10, color: '#555', letterSpacing: '0.08em' }}>{persona.title}</div>
