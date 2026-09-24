@@ -221,9 +221,9 @@ function Nav({ left, center, right }) {
       padding: '0 14px', background: 'rgba(19,16,17,0.95)',
       borderBottom: hair, flexShrink: 0,
     }}>
-      <div style={{ minWidth: 60 }}>{left}</div>
+      <div style={{ flex: 1, minWidth: 60 }}>{left}</div>
       <div style={{ fontFamily: ANTON, fontSize: 12, color: C.accent, letterSpacing: '0.14em' }}>{center}</div>
-      <div style={{ minWidth: 60, textAlign: 'right' }}>{right}</div>
+      <div style={{ flex: 1, minWidth: 60, textAlign: 'right' }}>{right}</div>
     </div>
   )
 }

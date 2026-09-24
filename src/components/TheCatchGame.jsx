@@ -1483,12 +1483,14 @@ export default function TheCatchGame({ onClose }) {
 
   return (
     <div style={{ fontFamily: WS, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: C.bg, overflow: 'hidden' }}>
-      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', background: C.bg, borderBottom: hairline, height: 48 }}>
+      <div style={{ flexShrink: 0, position: 'relative', display: 'flex', alignItems: 'center', padding: '0 20px', background: C.bg, borderBottom: hairline, height: 48 }}>
         <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: '#555', background: 'transparent', border: 'none', cursor: 'pointer', padding: '8px 0' }}>
           ← Back
         </button>
-        <CatchWordmark size={14} accent={C.accent} cream={C.cream} />
-        <div style={{ width: 48 }} />
+        {/* Absolutely centred so the Back button's width doesn't push it off-centre */}
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }}>
+          <CatchWordmark size={14} accent={C.accent} cream={C.cream} />
+        </div>
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
