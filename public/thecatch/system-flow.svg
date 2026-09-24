@@ -19,11 +19,11 @@
 <g id="Node-Setup">
 <rect x="295.0" y="216" width="270" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
 <text x="430" y="242" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">PLAYER SETUP</text>
-<text x="430" y="260" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">1–6 players on one phone · name · avatar · type</text>
+<text x="430" y="260" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">2–6 players on one phone · name · avatar · type</text>
 <rect x="532.4" y="196" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
 <text x="545.7" y="207" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
 </g>
-<text x="280" y="250" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="end" letter-spacing="0">Alone? 2 AI rivals join</text>
+<text x="280" y="250" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="end" letter-spacing="0">Group game · 2+ players</text>
 <line x1="430" y1="272" x2="430" y2="312" stroke="#333" stroke-opacity="1" stroke-width="1"/>
 <polygon points="424,304 436,304 430,312" fill="#333" fill-opacity="1"/>
 <g id="Node-WriteOwn">
@@ -72,7 +72,7 @@
 <rect x="532.4" y="620" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
 <text x="545.7" y="631" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
 </g>
-<text x="580" y="674" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="start" letter-spacing="0">AI rivals decide too</text>
+<text x="580" y="674" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="start" letter-spacing="0">Each player in turn</text>
 <line x1="430" y1="696" x2="430" y2="726" stroke="#333" stroke-opacity="1" stroke-width="1"/>
 <polygon points="424,718 436,718 430,726" fill="#333" fill-opacity="1"/>
 <g id="Node-Flip">
@@ -133,7 +133,7 @@
 <polygon points="538,1164 538,1176 530,1170" fill="#333"/>
 <g id="Diamond-Tie"><polygon points="430,1136 530,1170 430,1204 330,1170" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
 <text x="430" y="1166" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2">TIE FOR FIRST?</text>
-<text x="430" y="1182" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="middle" letter-spacing="0">table play · most hearts wins first</text>
+<text x="430" y="1182" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="middle" letter-spacing="0">most hearts wins first</text>
 </g>
 <text x="340" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
 <line x1="430" y1="1204" x2="430" y2="1215" stroke="#333" stroke-width="1"/>
@@ -147,7 +147,7 @@
 <rect x="367.4" y="1230" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
 <text x="380.7" y="1241" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
 </g>
-<text x="540" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#555" text-anchor="middle" letter-spacing="2">NO / SOLO</text>
+<text x="540" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#555" text-anchor="middle" letter-spacing="2">NO</text>
 <line x1="430" y1="1215" x2="560" y2="1215" stroke="#333" stroke-width="1"/>
 <line x1="560" y1="1215" x2="560" y2="1330" stroke="#333" stroke-opacity="1" stroke-width="1"/>
 <polygon points="554,1322 566,1322 560,1330" fill="#333" fill-opacity="1"/>

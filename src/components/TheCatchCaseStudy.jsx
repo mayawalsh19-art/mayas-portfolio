@@ -110,7 +110,7 @@ function SystemFlow() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <FlowNode label="▶ PLAY" sub="Phone + the trait card deck" accent={C.accent} />
           <FlowArrow />
-          <FlowNode label="PLAYER SETUP" sub="1–6 players on one phone · alone = 2 AI rivals" accent={C.teal} />
+          <FlowNode label="PLAYER SETUP" sub="2–6 players on one phone · pass it around" accent={C.teal} />
           <FlowArrow />
           <FlowNode label="WRITE YOUR OWN" sub="Optional · blank cards become W1–W6" accent={C.gold} dim />
           <FlowArrow label="START" color={C.accent} />
@@ -383,7 +383,7 @@ function ComponentStates() {
 
 
       {/* ONE-USE TOKENS */}
-      <StatesRow label="One-time action — ⚡ Steal / 🛋️ Therapy">
+      <StatesRow label="Online one-time action — ⚡ Steal">
         <StateCol name="AVAILABLE">
           <div style={{ ...WS_BTN, fontSize: 11, padding: '9px 18px', background: `${C.gold}12`, border: `1px solid ${C.gold}44`, color: C.gold }}>⚡ STEAL</div>
         </StateCol>
@@ -557,7 +557,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             {[
               ['TYPE', 'Game Design'],
               ['PLATFORM', 'Web / Mobile'],
-              ['MODES', 'Solo + Online'],
+              ['MODES', 'Table + Online'],
               ['YEAR', '2025'],
             ].map(([k, v]) => (
               <div key={k} style={{ padding: '6px 14px', border: hair, background: C.card }}>
@@ -609,7 +609,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             The Catch is a dating game built into my portfolio, designed to feel like a dating app. Players read through profiles, weigh the green flags they can see against the red ones they can't, and decide who to date and who to ghost. Every trait is worth points, every choice has consequences, and no two games play out the same.
           </p>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(14px,2vw,17px)', color: 'rgba(239,230,220,0.65)', lineHeight: 1.75, maxWidth: 640, marginTop: 20 }}>
-            The project started with a question: what if a portfolio piece could be both the design work <em>and</em> the thing it's showing off? The Catch is a finished, playable game with two modes — solo against two AI rivals, and online multiplayer where everyone plays on their own phone. It runs free in the browser, with nothing to download.
+            The project started with a question: what if a portfolio piece could be both the design work <em>and</em> the thing it's showing off? The Catch is a finished, playable game with two modes — a table game where 2–6 players pass one phone and deal real trait cards, and online multiplayer where everyone plays on their own phone. It runs free in the browser, with nothing to download.
           </p>
         </Section>
 
@@ -679,7 +679,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               </div>
               <div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.accent, letterSpacing: '0.15em', marginBottom: 8 }}>GAPS</div>
-                {['Exactly 2 players — no group or solo play', 'Long sessions; heavy rulebook, high barrier to entry', 'Physical only, requires purchase (~$50)'].map(s => (
+                {['Exactly 2 players — no group play', 'Long sessions; heavy rulebook, high barrier to entry', 'Physical only, requires purchase (~$50)'].map(s => (
                   <div key={s} style={{ display: 'flex', gap: 8, marginBottom: 5 }}>
                     <span style={{ color: C.accent, fontSize: 11, lineHeight: 1.5 }}>–</span>
                     <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.65)', lineHeight: 1.5 }}>{s}</div>
@@ -722,7 +722,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               </div>
               <div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.accent, letterSpacing: '0.15em', marginBottom: 8 }}>GAPS</div>
-                {['Leans on the show — most fun if you already watch it', 'Guessing about friends, not a scoring or strategy system', 'Physical only, requires purchase, no solo or digital play'].map(s => (
+                {['Leans on the show — most fun if you already watch it', 'Guessing about friends, not a scoring or strategy system', 'Physical only, requires purchase, no digital play'].map(s => (
                   <div key={s} style={{ display: 'flex', gap: 8, marginBottom: 5 }}>
                     <span style={{ color: C.accent, fontSize: 11, lineHeight: 1.5 }}>–</span>
                     <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.65)', lineHeight: 1.5 }}>{s}</div>
@@ -736,7 +736,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ background: C.cardAlt, border: `1px solid ${C.accent}33`, padding: '20px 22px' }}>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 11, letterSpacing: '0.16em', marginBottom: 10 }}>WHERE THE CATCH FITS</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.7)', margin: 0, lineHeight: 1.7 }}>
-              Neither competitor offers free, instant, browser-based play, and neither builds its scoring around hidden red flags. The Catch pairs the group, party-game energy of The Bachelor with its own hidden-information mechanics — the catfish, hidden-trait reveals, stalk and look tokens, and player types that change the math — delivers it free with no setup, and runs solo against AI rivals or online with everyone on their own phone.
+              Neither competitor offers free, instant, browser-based play, and neither builds its scoring around hidden red flags. The Catch pairs the group, party-game energy of The Bachelor with its own hidden-information mechanics — the catfish, hidden-trait reveals, stalk and look tokens, and player types that change the math — delivers it free with no setup, and runs at the table with one phone and a deck of trait cards, or online with everyone on their own phone.
             </p>
           </div>
         </Section>
@@ -956,19 +956,17 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
             <MechanicCard icon="♥" name="DATE" color={C.accent} tag="CORE"
-              desc="Score the profile's traits, adjusted by your player type. Negative totals cost a heart. Solo adds a +2 bonus for 7+ and a −2 Red Flag penalty at −5 or worse. Date the catfish and it's −4 on top." />
+              desc="Score the profile's traits, adjusted by your player type. A negative total costs a heart, and −5 or worse is a Red Flag: −2 more. Score 7+ as the only one who dated and it's Chemistry: +2. Date the catfish and it's −4 on top." />
             <MechanicCard icon="◌" name="GHOST" color="#888" tag="CORE"
               desc="Skip the round. No points, no hearts lost. You only have 3 ghosts per game — spend them wisely. Ghosting a catfish earns +1 bonus point." />
-            <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="SOLO · INTEL"
-              desc="Reveal one random hidden trait early. Costs a stalk token. You start with 3, and they work on The One too. Use them to make a more informed call before committing." />
-            <MechanicCard icon="👁" name="LOOK" color={C.teal} tag="SOLO · INTEL"
+            <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="TABLE · INTEL"
+              desc="Spend a stalk chip to secretly peek at one face-down trait card, then put it back. 3 chips each. Stack them on one profile if you like — just don't tell anyone what you saw." />
+            <MechanicCard icon="👁" name="LOOK" color={C.teal} tag="APP · INTEL"
               desc="Spend a look token to swap the illustrated avatar for the profile's real black-and-white photo. 3 per game, once per profile. The catfish's photo never matches their age." />
             <MechanicCard icon="⚡" name="STEAL" color={C.gold} tag="ONLINE"
               desc="Skip the date and take up to 3 points from the highest-scoring other player — never more than they have. One use per game. Earns the Smooth Criminal achievement." />
             <MechanicCard icon="♥♥" name="DOUBLE DATE" color={C.accent} tag="ONLINE"
               desc="If two or more players pick it, the score is split evenly between them. Lower risk, lower reward. If only one person picks it, it counts as a regular date." />
-            <MechanicCard icon="🛋️" name="THERAPY" color="#8B7EA8" tag="SOLO · RECOVERY"
-              desc="One use per game, from any score screen. Roll 50/50 for +4 or +0, banked when the next match starts. Used after round 7, the +4 can push you over the line for The One." />
           </div>
         </Section>
 
@@ -1004,15 +1002,15 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>10 — ACHIEVEMENTS</Label>
           <Heading>Rewarding<br />the story, not just the score.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            11 achievements track behaviors across a full game — 9 live, 2 still locked. In solo they toast the moment you earn them, and every mode shows them on the results screen — turning each run into a story you can share.
+            11 achievements track behaviors across a full game — 8 live, 3 locked or retired. They show up next to every player on the results screen — turning each game into a story the table can share.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 8 }}>
             {[
               ['🎣', 'CATFISH DODGER', 'Ghost the catfish'],
               ['🪝', 'GOT CATFISHED', 'Date the catfish'],
               ['👻', 'GHOST MASTER', 'Use all 3 ghosts'],
-              ['🔥', 'CHAOS ENJOYER', 'Go on 2+ Red Flag dates (solo)'],
-              ['🛋️', 'THERAPIZED', 'Use the therapy action (solo)'],
+              ['🔥', 'CHAOS ENJOYER', 'Go on 2+ Red Flag dates'],
+              ['🛋️', 'THERAPIZED', 'Retired with Therapy', true],
               ['⚡', 'SMOOTH CRIMINAL', 'Use Steal (online)'],
               ['♥♥', 'DOUBLE DATER', 'Pick Double Date (online)'],
               ['💘', 'FOUND THE ONE', 'Win at The One round'],
@@ -1042,10 +1040,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               {
                 q: 'Why reveal traits automatically instead of on-tap?',
                 a: 'The original version required tapping each hidden trait. It felt like work. The auto-reveal creates a rhythm — you watch the profile unfold. The tension of waiting is the mechanic.',
-              },
-              {
-                q: 'Why put the score popup before the full breakdown?',
-                a: 'Playtesting showed players were looking for their result first, then reading the context. Leading with the number (large, glowing) lets the emotion land, then the breakdown gives it meaning.',
               },
               {
                 q: 'Why phone-sized on a computer?',
@@ -1104,7 +1098,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
           <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
             <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#444', letterSpacing: '0.1em' }}>
-              SOLO · ONLINE MULTIPLAYER · 7 ROUNDS · THEN THE ONE
+              TABLE GAME · ONLINE MULTIPLAYER · 7 ROUNDS · THEN THE ONE
             </div>
           </div>
           <div style={{ marginTop: 20 }}>
