@@ -22,6 +22,7 @@ export function useGameRoom({ isHost, roomCode, onMessage, onPeerJoin, onPeerLea
   const hostConnRef    = useRef(null)  // client: conn to host
   const [status, setStatus]         = useState('idle')
   const [connectedIds, setConnectedIds] = useState([])
+  const [myPeerId, setMyPeerId]         = useState(null)  // this phone's peer ID = how the host knows it
 
   useEffect(() => {
     if (!roomCode) return
@@ -39,7 +40,8 @@ export function useGameRoom({ isHost, roomCode, onMessage, onPeerJoin, onPeerLea
       })
       peerRef.current = peer
 
-      peer.on('open', () => {
+      peer.on('open', id => {
+        setMyPeerId(id)
         setStatus('open')
         if (!isHost) {
           const conn = peer.connect(hostPeerId(roomCode), { reliable: true })
@@ -89,5 +91,5 @@ export function useGameRoom({ isHost, roomCode, onMessage, onPeerJoin, onPeerLea
     try { if (connsRef.current[pid]?.open) connsRef.current[pid].send(data) } catch {}
   }, [])
 
-  return { status, connectedIds, broadcast, sendToHost, sendTo }
+  return { status, connectedIds, myPeerId, broadcast, sendToHost, sendTo }
 }

@@ -1,5 +1,6 @@
 import { useReducer, useState } from 'react'
 import { generateProfiles, PLAYER_TYPES, getTitle } from '../data/catchProfiles'
+import { ROUNDS, HEARTS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { CatchWordmark } from './CatchBrand'
 
@@ -27,47 +28,12 @@ const WS       = "'Work Sans', sans-serif"
 const ANTON    = "'Anton', sans-serif"
 const hairline = '1px solid rgba(239,230,220,0.08)'
 
-const ROUNDS      = 7
 const MIN_PLAYERS = 2
 const MAX_PLAYERS = 6
-const GHOSTS      = 3
-const HEARTS      = 3
 
 // ─── game state ───────────────────────────────────────────────────────────────
 function makePlayer(id, name, playerType) {
   return { id, name, playerType, score: 0, hearts: HEARTS, ghosts: GHOSTS, dates: 0, redFlags: 0 }
-}
-
-// Score one match from what the table entered. `decisions[id]` is
-// { action: 'date' | 'ghost', total } where total is the player's own
-// type-adjusted card sum. The app only layers the automatic rules on top.
-function scoreMatch(players, decisions, isCatfish) {
-  const daters = players.filter(p => decisions[p.id]?.action === 'date')
-  const results = {}
-  const next = players.map(p => {
-    const d = decisions[p.id]
-    if (d.action === 'ghost') {
-      const pts = isCatfish ? 1 : 0
-      results[p.id] = { action: 'ghost', pts, notes: isCatfish ? ['🎣 Dodged the catfish +1'] : [] }
-      return { ...p, score: p.score + pts, ghosts: p.ghosts - 1 }
-    }
-    const raw = d.total
-    let pts = raw, heartsLost = 0, redFlag = false
-    const notes = []
-    if (isCatfish) {
-      pts -= 4; heartsLost = 1
-      notes.push('🎣 Catfished −4')
-    } else {
-      if (raw < 0) heartsLost = 1
-      if (raw <= -5) { pts -= 2; redFlag = true; notes.push('🚩 Red flag −2') }
-      if (raw >= 7 && daters.length === 1) { pts += 2; notes.push('💘 Chemistry +2') }
-    }
-    if (p.hearts === 0 && pts > 0) { pts = Math.floor(pts / 2); notes.push('½ Heartbroken') }
-    if (heartsLost) notes.push('♥ −1')
-    results[p.id] = { action: 'date', raw, pts, notes }
-    return { ...p, score: p.score + pts, hearts: Math.max(0, p.hearts - heartsLost), dates: p.dates + 1, redFlags: p.redFlags + (redFlag ? 1 : 0) }
-  })
-  return { players: next, results }
 }
 
 const INIT = { screen: 'setup', players: [], profiles: [], round: 0, results: null }
@@ -93,11 +59,6 @@ function reducer(state, { type, ...p }) {
     default:
       return state
   }
-}
-
-// Highest score wins; a tie goes to whoever kept more hearts; still tied = shared.
-function rankPlayers(players) {
-  return [...players].sort((a, b) => b.score - a.score || b.hearts - a.hearts)
 }
 
 // ─── shared bits ──────────────────────────────────────────────────────────────

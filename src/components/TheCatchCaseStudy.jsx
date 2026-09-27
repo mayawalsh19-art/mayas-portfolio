@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { CatchHero, CatchWordmark } from './CatchBrand'
+import { TraitCardFront, TraitCardBack, StalkChip } from './CatchCards'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { TRAIT_POOL } from '../data/catchProfiles'
 
@@ -155,52 +156,6 @@ function SystemFlow() {
 }
 
 // ─── The token: printed trait cards + stalk chips (mirrors the print deck) ────
-function flagOf(v) {
-  if (v >= 1)  return ['GREEN FLAG', C.teal]
-  if (v >= -1) return ['YELLOW FLAG', C.gold]
-  return ['RED FLAG', C.accent]
-}
-
-function TraitCardFront({ no, text, value, blank = false, green = true }) {
-  const [label, col] = blank ? (green ? ['GREEN FLAG', C.teal] : ['RED FLAG', C.accent]) : flagOf(value)
-  const val = blank ? (green ? '+2' : '−2') : value > 0 ? `+${value}` : value === 0 ? '±0' : `−${Math.abs(value)}`
-  return (
-    <div style={{ aspectRatio: '5 / 7', background: C.card, borderLeft: `5px solid ${col}`, padding: '12px 12px 11px 14px', display: 'flex', flexDirection: 'column', boxShadow: '0 16px 32px rgba(0,0,0,0.5)', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
-        <span style={{ fontFamily: ANTON, fontSize: blank ? 9 : 11, letterSpacing: '0.08em', color: 'rgba(239,230,220,0.55)', whiteSpace: 'nowrap' }}>{blank ? 'WRITE YOUR OWN' : `№ ${String(no).padStart(2, '0')}`}</span>
-        <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 6, letterSpacing: '0.14em', color: col, border: `1px solid ${col}`, padding: '2px 4px', whiteSpace: 'nowrap' }}>{label}</span>
-      </div>
-      {blank
-        ? <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16 }}>{[0, 1, 2].map(i => <div key={i} style={{ borderBottom: '1px solid rgba(239,230,220,0.22)' }} />)}</div>
-        : <div style={{ flex: 1, display: 'flex', alignItems: 'center', fontFamily: WS, fontWeight: 500, fontSize: 11.5, lineHeight: 1.32, color: C.cream }}>{text}</div>}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <CatchWordmark size={7} accent={C.accent} cream="rgba(239,230,220,0.6)" />
-        <span style={{ fontFamily: ANTON, fontSize: 26, lineHeight: 0.9, color: col }}>{val}</span>
-      </div>
-    </div>
-  )
-}
-
-function TraitCardBack() {
-  return (
-    <div style={{ aspectRatio: '5 / 7', background: C.bg, backgroundImage: 'radial-gradient(circle, rgba(239,230,220,0.07) 1px, transparent 1px)', backgroundSize: '8px 8px', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 16px 32px rgba(0,0,0,0.5)' }}>
-      <div style={{ position: 'absolute', inset: 8, border: `1px solid ${C.accent}73` }} />
-      <img src="/thecatch/brand/logo-full.svg" alt="" style={{ width: '72%' }} />
-      <div style={{ position: 'absolute', bottom: 16, fontFamily: WS, fontWeight: 700, fontSize: 6.5, letterSpacing: '0.3em', color: C.accent }}>TRAIT CARD</div>
-    </div>
-  )
-}
-
-function StalkChip({ size = 96 }) {
-  return (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: C.card, border: `${Math.round(size * 0.045)}px solid ${C.gold}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 26px rgba(0,0,0,0.5)', flexShrink: 0 }}>
-      <div style={{ fontSize: size * 0.24, lineHeight: 1 }}>🔍</div>
-      <div style={{ fontFamily: ANTON, fontSize: size * 0.15, letterSpacing: '0.12em', color: C.gold, marginTop: 3 }}>STALK</div>
-      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: Math.max(5, size * 0.055), letterSpacing: '0.12em', color: 'rgba(239,230,220,0.55)', marginTop: 1 }}>PEEK AT 1 CARD</div>
-    </div>
-  )
-}
-
 function TokenShowcase() {
   const pick = n => ({ no: n, ...TRAIT_POOL[n - 1] })
   const fronts = [pick(1), pick(34), pick(64)]
