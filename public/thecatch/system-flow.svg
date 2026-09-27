@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="860" height="1760" viewBox="0 0 860 1760" style="font-family: sans-serif;">
-<rect id="Background" width="860" height="1760" fill="#131011"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="1575" viewBox="0 0 860 1575" style="font-family: sans-serif;">
+<rect id="Background" width="860" height="1575" fill="#131011"/>
 <defs><pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(239,230,220,0.055)"/></pattern></defs>
-<rect width="860" height="1760" fill="url(#dots)"/>
+<rect width="860" height="1575" fill="url(#dots)"/>
 <g id="Title">
 <text x="430" y="52" font-family="'Anton', Impact, sans-serif" font-size="22" font-weight="400" fill="#FF4D6D" text-anchor="middle" letter-spacing="5">THE CATCH</text>
 <text x="430" y="76" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="4">SYSTEM FLOW — THE APP + THE TRAIT CARDS</text>
@@ -19,7 +19,7 @@
 <g id="Node-Setup">
 <rect x="295.0" y="216" width="270" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
 <text x="430" y="242" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">PLAYER SETUP</text>
-<text x="430" y="260" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">2–6 players on one phone · name · avatar · type</text>
+<text x="430" y="260" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">2–6 players on one phone · name · type</text>
 <rect x="532.4" y="196" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
 <text x="545.7" y="207" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
 </g>
@@ -29,148 +29,117 @@
 <g id="Node-WriteOwn">
 <rect x="295.0" y="312" width="270" height="56" fill="#1A1617" stroke="#888" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="5,3"/>
 <text x="430" y="338" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#9a9090" text-anchor="middle" letter-spacing="2.5">WRITE YOUR OWN</text>
-<text x="430" y="356" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Optional · blank cards become W1–W6</text>
-<rect x="532.4" y="292" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="545.7" y="303" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
-<rect x="487.4" y="292" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
-<text x="506.9" y="303" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+<text x="430" y="356" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Optional · write on blanks, shuffle them in</text>
+<rect x="520.0" y="292" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="539.5" y="303" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
 </g>
 <line x1="430" y1="368" x2="430" y2="420" stroke="#FF4D6D" stroke-opacity="0.7" stroke-width="1"/>
 <polygon points="424,412 436,412 430,420" fill="#FF4D6D" fill-opacity="0.7"/>
 <rect x="409.0" y="385.0" width="42.0" height="16" fill="#131011"/>
 <text x="430.0" y="397.0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#FF4D6D" text-anchor="middle" letter-spacing="2">START</text>
-<g id="RoundLoop">
-<rect x="150" y="430" width="560" height="470" fill="none" stroke="#FF4D6D" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="6,4"/>
-<rect x="166" y="422" width="190" height="16" fill="#131011"/>
-<text x="172" y="434" font-family="'Work Sans', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#FF4D6D" text-anchor="start" letter-spacing="1.8">ROUND 1–7 · ONE PROFILE EACH</text>
-<g id="Node-Deal">
+<g id="MatchLoop">
+<rect x="150" y="430" width="560" height="630" fill="none" stroke="#FF4D6D" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="166" y="422" width="200" height="16" fill="#131011"/>
+<text x="172" y="434" font-family="'Work Sans', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#FF4D6D" text-anchor="start" letter-spacing="1.8">MATCH 1–7 · ONE PROFILE EACH</text>
+<g id="Node-Profile">
 <rect x="295.0" y="470" width="270" height="56" fill="#1E1A1B" stroke="#EFE6DC" stroke-opacity="0.55" stroke-width="1"/>
-<text x="430" y="496" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DEAL</text>
-<text x="430" y="514" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">App calls the card numbers · 2 face-up, 4 face-down</text>
+<text x="430" y="496" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">PROFILE CARD</text>
+<text x="430" y="514" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Who&#x27;s on the market · avatar, archetype, bio</text>
 <rect x="532.4" y="450" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
 <text x="545.7" y="461" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
-<rect x="487.4" y="450" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
-<text x="506.9" y="461" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
 </g>
 <line x1="430" y1="526" x2="430" y2="556" stroke="#333" stroke-opacity="1" stroke-width="1"/>
 <polygon points="424,548 436,548 430,556" fill="#333" fill-opacity="1"/>
-<g id="DigChips">
-<rect x="302" y="558" width="120" height="40" fill="#7CE0A8" fill-opacity="0.08" stroke="#7CE0A8" stroke-opacity="0.4" stroke-width="1"/>
-<text x="362" y="574" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.5">👁 LOOK</text>
-<text x="362" y="589" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#777" text-anchor="middle" letter-spacing="0">Real photo · in the app</text>
-<rect x="438" y="558" width="120" height="40" fill="#E4C46A" fill-opacity="0.08" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
-<text x="498" y="574" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.5">🔍 STALK</text>
-<text x="498" y="589" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="300" fill="#777" text-anchor="middle" letter-spacing="0">Secret peek · chips</text>
-<text x="430" y="614" font-family="'Work Sans', Arial, sans-serif" font-size="8.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="1">optional — before deciding</text>
+<g id="Node-Deal">
+<rect x="295.0" y="556" width="270" height="56" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="582" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DEAL</text>
+<text x="430" y="600" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">6 cards off the deck · 2 face-up, 4 face-down</text>
+<rect x="520.0" y="536" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="539.5" y="547" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
 </g>
-<line x1="430" y1="620" x2="430" y2="640" stroke="#333" stroke-opacity="1" stroke-width="1"/>
-<polygon points="424,632 436,632 430,640" fill="#333" fill-opacity="1"/>
+<line x1="430" y1="612" x2="430" y2="642" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,634 436,634 430,642" fill="#333" fill-opacity="1"/>
+<g id="Node-Stalk">
+<rect x="310.0" y="642" width="240" height="50" fill="#1A1617" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="430" y="668" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">🔍 STALK</text>
+<text x="430" y="686" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Optional · spend a chip, peek at 1 card</text>
+<rect x="505.0" y="622" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="524.5" y="633" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+</g>
+<line x1="430" y1="692" x2="430" y2="722" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,714 436,714 430,722" fill="#333" fill-opacity="1"/>
 <g id="Node-Decide">
-<rect x="295.0" y="640" width="270" height="56" fill="#1E1A1B" stroke="#FF4D6D" stroke-opacity="0.55" stroke-width="1"/>
-<text x="430" y="666" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DECIDE</text>
-<text x="430" y="684" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Pass the phone · ♥ DATE or ◌ GHOST in private</text>
-<rect x="532.4" y="620" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="545.7" y="631" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<rect x="295.0" y="722" width="270" height="56" fill="#1E1A1B" stroke="#FF4D6D" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="748" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">DECIDE</text>
+<text x="430" y="766" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">On 3, everyone says DATE or GHOST</text>
+<rect x="520.0" y="702" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="539.5" y="713" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
 </g>
-<text x="580" y="674" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="start" letter-spacing="0">Each player in turn</text>
-<line x1="430" y1="696" x2="430" y2="726" stroke="#333" stroke-opacity="1" stroke-width="1"/>
-<polygon points="424,718 436,718 430,726" fill="#333" fill-opacity="1"/>
+<line x1="430" y1="778" x2="430" y2="808" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,800 436,800 430,808" fill="#333" fill-opacity="1"/>
 <g id="Node-Flip">
-<rect x="295.0" y="726" width="270" height="56" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
-<text x="430" y="752" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">FLIP</text>
-<text x="430" y="770" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Turn the face-down cards as the app reveals them</text>
-<rect x="532.4" y="706" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="545.7" y="717" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
-<rect x="487.4" y="706" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
-<text x="506.9" y="717" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+<rect x="295.0" y="808" width="270" height="56" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="834" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">FLIP &amp; ADD UP</text>
+<text x="430" y="852" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Daters add all 6 cards using their type</text>
+<rect x="520.0" y="788" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="539.5" y="799" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
 </g>
-<line x1="430" y1="782" x2="430" y2="812" stroke="#333" stroke-opacity="1" stroke-width="1"/>
-<polygon points="424,804 436,804 430,812" fill="#333" fill-opacity="1"/>
+<line x1="430" y1="864" x2="430" y2="894" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,886 436,886 430,894" fill="#333" fill-opacity="1"/>
+<g id="Node-Enter">
+<rect x="295.0" y="894" width="270" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="920" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#EFE6DC" text-anchor="middle" letter-spacing="2.5">ENTER TOTALS</text>
+<text x="430" y="938" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Each player: ♥ + card total, or ◌ ghost</text>
+<rect x="532.4" y="874" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="545.7" y="885" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+</g>
+<line x1="430" y1="950" x2="430" y2="980" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,972 436,972 430,980" fill="#333" fill-opacity="1"/>
 <g id="Node-Scored">
-<rect x="295.0" y="812" width="270" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
-<text x="430" y="838" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">SCORED</text>
-<text x="430" y="856" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Type-adjusted score · hearts · leaderboard</text>
-<rect x="532.4" y="792" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="545.7" y="803" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<rect x="280.0" y="980" width="300" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="1006" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">SCORED</text>
+<text x="430" y="1024" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Red Flag · Chemistry · hearts · Catfish reveal · leaderboard</text>
+<rect x="547.4" y="960" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="560.7" y="971" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
 </g>
 <g id="LoopBack">
-<line x1="295" y1="840" x2="200" y2="840" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
-<line x1="200" y1="840" x2="200" y2="498" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="280" y1="1008" x2="200" y2="1008" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="200" y1="1008" x2="200" y2="498" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
 <line x1="200" y1="498" x2="287" y2="498" stroke="#444" stroke-width="1" stroke-dasharray="3,2"/>
 <polygon points="287,492 287,504 295,498" fill="#444"/>
-<rect x="158" y="640" width="84" height="44" fill="#131011"/>
-<text x="200" y="656" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">NEXT ROUND</text>
-<text x="200" y="669" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="0">cards go back</text>
-<text x="200" y="680" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="0">in the deck</text>
+<rect x="158" y="730" width="84" height="44" fill="#131011"/>
+<text x="200" y="746" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">NEXT MATCH</text>
+<text x="200" y="759" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="0">discard the</text>
+<text x="200" y="770" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="300" fill="#555" text-anchor="middle" letter-spacing="0">six cards</text>
 </g>
 </g>
-<line x1="430" y1="900" x2="430" y2="950" stroke="#333" stroke-opacity="1" stroke-width="1"/>
-<polygon points="424,942 436,942 430,950" fill="#333" fill-opacity="1"/>
-<rect x="375.4" y="916.0" width="109.2" height="16" fill="#131011"/>
-<text x="430.0" y="928.0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2">AFTER ROUND 7</text>
-<g id="Diamond-Qualified"><polygon points="430,954 550,990 430,1026 310,990" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
-<text x="430" y="986" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2">QUALIFIED?</text>
-<text x="430" y="1002" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="middle" letter-spacing="0">10+ points · 1+ heart</text>
-</g>
-<text x="282" y="982" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
-<text x="578" y="982" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#555" text-anchor="middle" letter-spacing="2">NO</text>
-<line x1="310" y1="990" x2="250" y2="990" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
-<line x1="250" y1="990" x2="250" y2="1050" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
-<polygon points="244,1042 256,1042 250,1050" fill="#E4C46A" fill-opacity="0.6"/>
-<g id="Node-TheOne">
-<rect x="125.0" y="1050" width="250" height="56" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
-<text x="250" y="1076" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">💘 THE ONE</text>
-<text x="250" y="1094" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">App only · take a chance (±10) or walk away</text>
-<rect x="342.4" y="1030" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="355.7" y="1041" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
-</g>
-<line x1="550" y1="990" x2="640" y2="990" stroke="#333" stroke-width="1"/>
-<line x1="640" y1="990" x2="640" y2="1170" stroke="#333" stroke-width="1"/>
-<line x1="250" y1="1106" x2="250" y2="1170" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
-<line x1="250" y1="1170" x2="330" y2="1170" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
-<polygon points="322,1164 322,1176 330,1170" fill="#E4C46A" fill-opacity="0.5"/>
-<line x1="640" y1="1170" x2="538" y2="1170" stroke="#333" stroke-width="1"/>
-<polygon points="538,1164 538,1176 530,1170" fill="#333"/>
-<g id="Diamond-Tie"><polygon points="430,1136 530,1170 430,1204 330,1170" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
-<text x="430" y="1166" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2">TIE FOR FIRST?</text>
-<text x="430" y="1182" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#666" text-anchor="middle" letter-spacing="0">most hearts wins first</text>
-</g>
-<text x="340" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="2">YES</text>
-<line x1="430" y1="1204" x2="430" y2="1215" stroke="#333" stroke-width="1"/>
-<line x1="300" y1="1215" x2="430" y2="1215" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
-<line x1="300" y1="1215" x2="300" y2="1250" stroke="#E4C46A" stroke-opacity="0.5" stroke-width="1"/>
-<polygon points="294,1242 306,1242 300,1250" fill="#E4C46A" fill-opacity="0.5"/>
-<g id="Node-SpeedDating">
-<rect x="200.0" y="1250" width="200" height="50" fill="#1A1617" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="300" y="1276" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">⚡ SPEED DATING</text>
-<text x="300" y="1294" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Tied players date or ghost</text>
-<rect x="367.4" y="1230" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="380.7" y="1241" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
-</g>
-<text x="540" y="1228" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#555" text-anchor="middle" letter-spacing="2">NO</text>
-<line x1="430" y1="1215" x2="560" y2="1215" stroke="#333" stroke-width="1"/>
-<line x1="560" y1="1215" x2="560" y2="1330" stroke="#333" stroke-opacity="1" stroke-width="1"/>
-<polygon points="554,1322 566,1322 560,1330" fill="#333" fill-opacity="1"/>
-<line x1="300" y1="1300" x2="300" y2="1358" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
-<line x1="300" y1="1358" x2="335" y2="1358" stroke="#E4C46A" stroke-opacity="0.4" stroke-width="1"/>
-<polygon points="327,1352 327,1364 335,1358" fill="#E4C46A" fill-opacity="0.4"/>
-<g id="Node-Results">
-<rect x="335.0" y="1330" width="250" height="56" fill="#1E1A1B" stroke="#7CE0A8" stroke-opacity="0.55" stroke-width="1"/>
-<text x="460" y="1356" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#7CE0A8" text-anchor="middle" letter-spacing="2.5">RESULTS</text>
-<text x="460" y="1374" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Rank · title · achievements</text>
-<rect x="552.4" y="1310" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="565.7" y="1321" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<line x1="430" y1="1060" x2="430" y2="1110" stroke="#333" stroke-opacity="1" stroke-width="1"/>
+<polygon points="424,1102 436,1102 430,1110" fill="#333" fill-opacity="1"/>
+<rect x="375.4" y="1076.0" width="109.2" height="16" fill="#131011"/>
+<text x="430.0" y="1088.0" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2">AFTER MATCH 7</text>
+<g id="Node-Titles">
+<rect x="270.0" y="1110" width="320" height="56" fill="#3B2E4A" stroke="#E4C46A" stroke-opacity="0.55" stroke-width="1"/>
+<text x="430" y="1136" font-family="'Anton', Impact, sans-serif" font-size="14" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="2.5">♛ FINAL TITLES</text>
+<text x="430" y="1154" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="300" fill="#8a8080" text-anchor="middle" letter-spacing="0">Winner (ties → most hearts) · everyone&#x27;s title by score</text>
+<rect x="557.4" y="1090" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="570.7" y="1101" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
 </g>
 <g id="PlayAgain">
-<line x1="555" y1="1358" x2="760" y2="1358" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
-<line x1="760" y1="1358" x2="760" y2="244" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="590" y1="1138" x2="760" y2="1138" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="760" y1="1138" x2="760" y2="244" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
 <line x1="760" y1="244" x2="573" y2="244" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
 <polygon points="573,238 573,250 565,244" fill="#444"/>
-<rect x="722" y="780" width="76" height="30" fill="#131011"/>
-<text x="760" y="793" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.5">PLAY</text>
-<text x="760" y="805" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.5">AGAIN</text>
+<rect x="722" y="680" width="76" height="30" fill="#131011"/>
+<text x="760" y="693" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">PLAY</text>
+<text x="760" y="705" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">AGAIN</text>
 </g>
-<g id="Legend" transform="translate(100, 1440)">
+<g id="OnlineMode">
+<rect x="150" y="1200" width="560" height="64" fill="#1A1617" stroke="#7CE0A8" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="170" y="1222" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#7CE0A8" text-anchor="start" letter-spacing="1.8">ONLINE MODE — SAME LOOP, NO DECK</text>
+<text x="170" y="1242" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#8a8080" text-anchor="start" letter-spacing="0">Each phone is dealt the profile&#x27;s 6 cards on screen · tap a face-down card to stalk it (only you see it)</text>
+<text x="170" y="1256" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#8a8080" text-anchor="start" letter-spacing="0">DATE / GHOST in secret · the host phone adds up every total with each type · then SCORED as above</text>
+</g>
+<g id="Legend" transform="translate(100, 1310)">
 <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#444" text-anchor="start" letter-spacing="3">LEGEND</text>
 <line x1="0" y1="10" x2="660" y2="10" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
 <rect x="0" y="24" width="110" height="30" fill="#1E1A1B" stroke="rgba(239,230,220,0.25)" stroke-width="1"/>
@@ -179,19 +148,16 @@
 <rect x="0" y="66" width="110" height="30" fill="#1A1617" stroke="rgba(239,230,220,0.15)" stroke-width="1" stroke-dasharray="5,3"/>
 <text x="55" y="85" font-family="'Anton', Impact, sans-serif" font-size="10" font-weight="400" fill="#777" text-anchor="middle" letter-spacing="1.5">OPTIONAL</text>
 <text x="124" y="85" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= optional or conditional step</text>
-<polygon points="55,108 110,128 55,148 0,128" fill="#1E1A1B" stroke="#E4C46A" stroke-opacity="0.45" stroke-width="1"/>
-<text x="55" y="132" font-family="'Anton', Impact, sans-serif" font-size="9" font-weight="400" fill="#E4C46A" text-anchor="middle" letter-spacing="1">BRANCH</text>
-<text x="124" y="132" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= decision point</text>
-<line x1="0" y1="170" x2="110" y2="170" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
-<text x="124" y="174" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= loop back</text>
-<rect x="13.399999999999999" y="190" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
-<text x="26.7" y="201" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
-<text x="124" y="202" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens on the phone</text>
-<rect x="11.0" y="214" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
-<text x="30.5" y="225" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
-<text x="124" y="226" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens with the physical trait cards / chips</text>
+<line x1="0" y1="124" x2="110" y2="124" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="124" y="128" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= loop back</text>
+<rect x="13.399999999999999" y="144" width="26.6" height="15" rx="2" fill="none" stroke="#7CE0A8" stroke-opacity="0.6" stroke-width="1"/>
+<text x="26.7" y="155" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#7CE0A8" text-anchor="middle" letter-spacing="1.2">APP</text>
+<text x="124" y="156" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens on the phone</text>
+<rect x="11.0" y="168" width="39.0" height="15" rx="2" fill="none" stroke="#E4C46A" stroke-opacity="0.6" stroke-width="1"/>
+<text x="30.5" y="179" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
+<text x="124" y="180" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens with the physical trait cards / chips</text>
 </g>
-<line x1="100" y1="1700" x2="760" y2="1700" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
-<text x="430" y="1724" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#3a3535" text-anchor="middle" letter-spacing="3">THE CATCH · MAYA WALSH · SYSTEM FLOW · FIGMA-EDITABLE SVG</text>
-<text x="430" y="1742" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#3a3535" text-anchor="middle" letter-spacing="0">Import into Figma · every node is an editable vector group</text>
+<line x1="100" y1="1515" x2="760" y2="1515" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+<text x="430" y="1539" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#3a3535" text-anchor="middle" letter-spacing="3">THE CATCH · MAYA WALSH · SYSTEM FLOW · FIGMA-EDITABLE SVG</text>
+<text x="430" y="1557" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#3a3535" text-anchor="middle" letter-spacing="0">Import into Figma · every node is an editable vector group</text>
 </svg>

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { CatchHero, CatchWordmark } from './CatchBrand'
 import { TraitCardFront, TraitCardBack, StalkChip } from './CatchCards'
 import { Doll, DOLL_BG } from './DollCharacters'
-import { TRAIT_POOL } from '../data/catchProfiles'
+import { TRAIT_POOL, SCORE_TITLES } from '../data/catchProfiles'
 
 // ─── Design tokens (mirror the game) ─────────────────────────────────────────
 const C = {
@@ -54,7 +54,7 @@ function Divider() {
   )
 }
 
-// ─── The cast: illustration + the B&W photo a LOOK reveals ────────────────────
+// ─── The cast: the illustrated avatar on every profile card ───────────────────
 const CAST = ['bibi', 'kip', 'ada', 'dax', 'suki', 'rell']
 
 function CastStrip() {
@@ -65,7 +65,6 @@ function CastStrip() {
           <div style={{ height: 150, background: DOLL_BG[name], overflow: 'hidden', display: 'flex', justifyContent: 'center' }}>
             <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center', marginTop: 8 }}><Doll name={name} /></div>
           </div>
-          <img src={`/catch-photos/${name}.jpg`} alt="" style={{ width: '100%', height: 110, objectFit: 'cover', objectPosition: 'center 30%', filter: 'grayscale(1) contrast(1.1) brightness(0.9)', display: 'block', borderTop: `2px solid ${C.accent}55` }} />
           <div style={{ fontFamily: ANTON, fontSize: 12, color: C.cream, letterSpacing: '0.14em', textAlign: 'center', padding: '8px 0' }}>{name.toUpperCase()}</div>
         </div>
       ))}
@@ -109,46 +108,35 @@ function SystemFlow() {
     <div style={{ overflowX: 'auto', paddingBottom: 8 }}>
       <div style={{ minWidth: 640, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <FlowNode label="▶ PLAY" sub="Phone + the trait card deck" accent={C.accent} />
+          <FlowNode label="▶ PLAY" sub="The trait card deck + one phone" accent={C.accent} />
           <FlowArrow />
-          <FlowNode label="PLAYER SETUP" sub="2–6 players on one phone · pass it around" accent={C.teal} />
+          <FlowNode label="PLAYER SETUP" sub="2–6 players · name + type · on the phone" accent={C.teal} />
           <FlowArrow />
-          <FlowNode label="WRITE YOUR OWN" sub="Optional · blank cards become W1–W6" accent={C.gold} dim />
+          <FlowNode label="WRITE YOUR OWN" sub="Optional · write on blanks, shuffle them in" accent={C.gold} dim />
           <FlowArrow label="START" color={C.accent} />
 
-          {/* 7-round loop */}
+          {/* 7-match loop */}
           <div style={{ border: `1px dashed ${C.accent}44`, padding: '14px 16px', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
-            <div style={{ position: 'absolute', top: -9, left: 12, background: C.bg, padding: '0 6px', fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.accent, letterSpacing: '0.18em' }}>ROUND 1–7</div>
+            <div style={{ position: 'absolute', top: -9, left: 12, background: C.bg, padding: '0 6px', fontFamily: WS, fontWeight: 700, fontSize: 8, color: C.accent, letterSpacing: '0.18em' }}>MATCH 1–7</div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-              <FlowNode label="DEAL" sub="App calls the card numbers · 2 up, 4 down" accent={C.cream} small />
+              <FlowNode label="PROFILE CARD" sub="Phone · who's on the market" accent={C.teal} small />
               <FlowArrow />
-              <div style={{ display: 'flex', gap: 5 }}>
-                <Chip label="👁 LOOK · APP" color={C.teal} />
-                <Chip label="🔍 STALK · CHIPS" color={C.gold} />
-              </div>
+              <FlowNode label="DEAL" sub="Table · 6 cards, 2 up and 4 down" accent={C.gold} small />
               <FlowArrow />
-              <FlowNode label="DECIDE" sub="Pass the phone · ♥ Date or ◌ Ghost" accent={C.accent} small />
+              <Chip label="🔍 STALK · A CHIP PEEKS AT 1 CARD" color={C.gold} />
               <FlowArrow />
-              <FlowNode label="FLIP" sub="Turn the cards as the app reveals" accent={C.velvet} color={C.cream} small />
+              <FlowNode label="DECIDE" sub="Table · on 3, say Date or Ghost" accent={C.accent} small />
               <FlowArrow />
-              <FlowNode label="SCORED" sub="Score · hearts · leaderboard" accent={C.teal} color={C.teal} small />
+              <FlowNode label="FLIP & ADD UP" sub="Table · daters add their 6 cards by type" accent={C.velvet} color={C.cream} small />
+              <FlowArrow />
+              <FlowNode label="ENTER TOTALS" sub="Phone · ♥ + total, or ◌ ghost" accent={C.teal} small />
+              <FlowArrow />
+              <FlowNode label="SCORED" sub="Bonuses · hearts · catfish reveal · leaderboard" accent={C.teal} color={C.teal} small />
             </div>
           </div>
 
-          <FlowArrow label="AFTER 7" color="#555" />
-
-          <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.14em', marginBottom: 8 }}>10+ POINTS &amp; A HEART</div>
-              <FlowNode label="THE ONE" sub="App only · ±10" accent={C.gold} color={C.gold} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.14em', marginBottom: 8 }}>TIE AT THE TABLE</div>
-              <FlowNode label="SPEED DATING" sub="Tied players date or ghost" accent={C.gold} dim />
-            </div>
-          </div>
-          <FlowArrow />
-          <FlowNode label="RESULTS" sub="Rank · title · achievements" accent={C.teal} color={C.teal} />
+          <FlowArrow label="AFTER MATCH 7" color="#555" />
+          <FlowNode label="♛ FINAL TITLES" sub="Winner · everyone's title from their score" accent={C.gold} color={C.gold} />
         </div>
       </div>
     </div>
@@ -169,7 +157,7 @@ function TokenShowcase() {
         <TraitCardFront blank green />
       </div>
       <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#777', margin: '14px 0 0', lineHeight: 1.6 }}>
-        Every card's number matches the game — the app calls out which ones to deal. Green, yellow and red flags carry their point values; the blanks are for writing your own.
+        Shuffle, deal six, flip and add them up — the deck is the whole game. Green, yellow and red flags carry their point values; the blanks are for writing your own. Online mode deals these same cards on screen.
       </p>
 
       {/* The stalk tokens */}
@@ -337,20 +325,6 @@ function ComponentStates() {
       </StatesRow>
 
 
-      {/* ONE-USE TOKENS */}
-      <StatesRow label="Online one-time action — ⚡ Steal">
-        <StateCol name="AVAILABLE">
-          <div style={{ ...WS_BTN, fontSize: 11, padding: '9px 18px', background: `${C.gold}12`, border: `1px solid ${C.gold}44`, color: C.gold }}>⚡ STEAL</div>
-        </StateCol>
-        <StateCol name="HOVER">
-          <div style={{ ...WS_BTN, fontSize: 11, padding: '9px 18px', background: `${C.gold}22`, border: `1px solid ${C.gold}88`, color: C.gold, boxShadow: `0 0 12px rgba(228,196,106,0.18)` }}>⚡ STEAL</div>
-        </StateCol>
-        <StateCol name="USED / DISABLED">
-          <div style={{ ...WS_BTN, fontSize: 11, padding: '9px 18px', background: 'transparent', border: `1px solid #1e1a1b`, color: '#2a2525', cursor: 'not-allowed' }}>⚡ STEAL</div>
-        </StateCol>
-      </StatesRow>
-
-
       {/* SCREEN STATES */}
       <div style={{ marginTop: 8 }}>
         <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#444', letterSpacing: '0.18em', marginBottom: 20, textTransform: 'uppercase' }}>Screen States</div>
@@ -359,7 +333,7 @@ function ComponentStates() {
           {/* DECIDING */}
           <MiniScreen label="DECIDING">
             <div style={{ height: 26, background: C.card, borderBottom: `1px solid rgba(239,230,220,0.07)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 7, color: C.accent, letterSpacing: '0.1em' }}>ROUND 3</div>
+              <div style={{ fontFamily: ANTON, fontSize: 7, color: C.accent, letterSpacing: '0.1em' }}>MATCH 3</div>
               <div style={{ fontFamily: WS, fontSize: 8, color: '#666' }}>♥ ♥ ♥</div>
             </div>
             <div style={{ margin: '6px 6px 0' }}>
@@ -389,7 +363,7 @@ function ComponentStates() {
           {/* SCORED */}
           <MiniScreen label="SCORED">
             <div style={{ height: 26, background: C.card, borderBottom: `1px solid rgba(239,230,220,0.07)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 7, color: C.accent, letterSpacing: '0.1em' }}>ROUND 3</div>
+              <div style={{ fontFamily: ANTON, fontSize: 7, color: C.accent, letterSpacing: '0.1em' }}>MATCH 3</div>
               <div style={{ fontFamily: WS, fontSize: 8, color: '#666' }}>♥ ♥ ♥</div>
             </div>
             <div style={{ margin: '7px 7px 0', background: C.cardAlt, border: `1px solid ${C.teal}44`, padding: '8px', textAlign: 'center' }}>
@@ -406,31 +380,33 @@ function ComponentStates() {
             </div>
           </MiniScreen>
 
-          {/* THE ONE */}
-          <MiniScreen label="THE ONE">
-            <div style={{ background: C.velvet, padding: '10px 8px', textAlign: 'center' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.gold, letterSpacing: '0.14em', marginBottom: 2 }}>💘 THE ONE</div>
-              <div style={{ fontFamily: WS, fontSize: 6.5, color: 'rgba(239,230,220,0.45)', letterSpacing: '0.1em' }}>LEGENDARY PROFILE</div>
+          {/* ENTER TOTALS */}
+          <MiniScreen label="ENTER TOTALS">
+            <div style={{ padding: '9px 8px 6px' }}>
+              <div style={{ fontFamily: ANTON, fontSize: 11, color: C.cream, lineHeight: 0.95 }}>WHO DATED</div>
+              <div style={{ fontFamily: ANTON, fontSize: 11, color: C.accent, lineHeight: 0.95 }}>ALEX?</div>
             </div>
-            <div style={{ height: 1, background: `${C.gold}33` }} />
-            <div style={{ margin: '6px 6px 0' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 8, color: C.gold, marginBottom: 4, paddingLeft: 1 }}>QUINN, 27 ★</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
-                {[{t:'Never leaves things unfinished',v:'+2',c:C.teal},{t:'?????',v:'?',c:'#3a3535'},{t:'?????',v:'?',c:'#3a3535'}].map((r,i)=>(
-                  <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 5px', background:r.c==='#3a3535'?'rgba(255,255,255,0.02)':`${r.c}11`, border:`1px solid ${r.c==='#3a3535'?'rgba(255,255,255,0.05)':r.c+'33'}`, borderRadius:3 }}>
-                    <span style={{ fontFamily:WS, fontSize:6, color:r.c==='#3a3535'?r.c:'rgba(239,230,220,0.7)', flex:1, lineHeight:1.3 }}>{r.t}</span>
-                    <div style={{ width:13, height:13, borderRadius:'50%', background:r.c==='#3a3535'?'rgba(255,255,255,0.03)':`${r.c}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:ANTON, fontSize:6.5, color:r.c }}>{r.v}</div>
+            <div style={{ margin: '0 6px 7px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {[{n: 'MAYA', d: true, v: '+6'}, {n: 'JORDAN', d: false}].map(p => (
+                <div key={p.n} style={{ padding: '5px 6px', background: C.card, border: hair }}>
+                  <div style={{ fontFamily: ANTON, fontSize: 7.5, color: C.cream, marginBottom: 4 }}>{p.n}</div>
+                  <div style={{ display: 'flex', gap: 3 }}>
+                    <div style={{ flex: 1, padding: '3px 0', textAlign: 'center', fontFamily: WS, fontWeight: 700, fontSize: 5.5, background: p.d ? C.accent : 'transparent', color: p.d ? '#fff' : C.accent, border: `1px solid ${C.accent}66` }}>♥ DATED</div>
+                    <div style={{ flex: 1, padding: '3px 0', textAlign: 'center', fontFamily: WS, fontWeight: 700, fontSize: 5.5, background: p.d ? 'transparent' : '#555', color: p.d ? '#888' : '#fff', border: '1px solid #555' }}>◌ GHOSTED</div>
                   </div>
-                ))}
-              </div>
+                  {p.d && <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3, marginTop: 4 }}>
+                    <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 5, color: '#777', letterSpacing: '0.1em', flex: 1 }}>CARD TOTAL</span>
+                    <span style={{ fontFamily: ANTON, fontSize: 9, color: C.teal, padding: '1px 6px', background: C.cardAlt }}>{p.v}</span>
+                  </div>}
+                </div>
+              ))}
             </div>
-            <div style={{ margin: '5px 7px 7px', padding: '5px', background: C.gold, textAlign: 'center', fontFamily: ANTON, fontSize: 7.5, color: '#131011', letterSpacing: '0.1em' }}>♛ TAKE A CHANCE</div>
           </MiniScreen>
 
           {/* RESULTS */}
-          <MiniScreen label="RESULTS">
+          <MiniScreen label="FINAL TITLES">
             <div style={{ height: 26, background: C.card, borderBottom: `1px solid rgba(239,230,220,0.07)`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 7.5, color: C.cream, letterSpacing: '0.1em' }}>FINAL RESULTS</div>
+              <div style={{ fontFamily: ANTON, fontSize: 7.5, color: C.cream, letterSpacing: '0.1em' }}>FINAL TITLES</div>
             </div>
             <div style={{ padding: '7px 10px' }}>
               {[{n:'Maya',p:24,r:'🥇'},{n:'Jordan',p:18,r:'🥈'},{n:'Alex',p:11,r:'🥉'}].map((p,i)=>(
@@ -441,9 +417,9 @@ function ComponentStates() {
                 </div>
               ))}
             </div>
-            <div style={{ padding:'0 8px 8px', display:'flex', gap:4, flexWrap:'wrap' }}>
-              {['🎣','👻','⚡'].map(e=>(
-                <div key={e} style={{ padding:'2px 5px', background:C.cardAlt, border:`1px solid ${C.gold}33`, fontSize:8 }}>{e}</div>
+            <div style={{ padding:'0 8px 8px', display:'flex', flexDirection:'column', gap:2 }}>
+              {['THE CATCH','THE ROMANTIC','THE SITUATIONSHIP'].map(t=>(
+                <div key={t} style={{ fontFamily:WS, fontWeight:700, fontSize:5.5, color:C.accent, letterSpacing:'0.1em' }}>{t}</div>
               ))}
             </div>
           </MiniScreen>
@@ -564,7 +540,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             The Catch is a dating game built into my portfolio, designed to feel like a dating app. Players read through profiles, weigh the green flags they can see against the red ones they can't, and decide who to date and who to ghost. Every trait is worth points, every choice has consequences, and no two games play out the same.
           </p>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 'clamp(14px,2vw,17px)', color: 'rgba(239,230,220,0.65)', lineHeight: 1.75, maxWidth: 640, marginTop: 20 }}>
-            The project started with a question: what if a portfolio piece could be both the design work <em>and</em> the thing it's showing off? The Catch is a finished, playable game with two modes — a table game where 2–6 players pass one phone and deal real trait cards, and online multiplayer where everyone plays on their own phone. It runs free in the browser, with nothing to download.
+            The project started with a question: what if a portfolio piece could be both the design work <em>and</em> the thing it's showing off? The Catch is a finished, playable game with two modes: a card game where the printed trait deck is the whole game and one phone is the companion — it shows each profile, takes everyone's card totals, keeps the leaderboard and hands out titles — and online multiplayer, where every player's phone is dealt the same cards digitally. It runs free in the browser, with nothing to download.
           </p>
         </Section>
 
@@ -691,7 +667,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ background: C.cardAlt, border: `1px solid ${C.accent}33`, padding: '20px 22px' }}>
             <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 11, letterSpacing: '0.16em', marginBottom: 10 }}>WHERE THE CATCH FITS</div>
             <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.7)', margin: 0, lineHeight: 1.7 }}>
-              Neither competitor offers free, instant, browser-based play, and neither builds its scoring around hidden red flags. The Catch pairs the group, party-game energy of The Bachelor with its own hidden-information mechanics — the catfish, hidden-trait reveals, stalk and look tokens, and player types that change the math — delivers it free with no setup, and runs at the table with one phone and a deck of trait cards, or online with everyone on their own phone.
+              Neither competitor offers free, instant, browser-based play, and neither builds its scoring around hidden red flags. The Catch pairs the group, party-game energy of The Bachelor with its own hidden-information mechanics — the catfish, face-down cards, stalk chips, and player types that change the math — delivers it free with no setup, and plays as a card game with a phone for a scorekeeper, or online with the cards dealt to everyone's own phone.
             </p>
           </div>
         </Section>
@@ -734,9 +710,9 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               <Swatch hex={C.bg}     name="MIDNIGHT"  role="Background" />
               <Swatch hex={C.accent} name="NEON RED"   role="Danger · Date" />
               <Swatch hex={C.teal}   name="MINT"       role="Safe · Positive" />
-              <Swatch hex={C.gold}   name="GOLD"       role="The One · Premium" />
+              <Swatch hex={C.gold}   name="GOLD"       role="Titles · Stalk" />
               <Swatch hex={C.cream}  name="CREAM"      role="Primary text" />
-              <Swatch hex={C.velvet} name="VELVET"     role="The One screen" />
+              <Swatch hex={C.velvet} name="VELVET"     role="Flip · Final title" />
             </div>
           </div>
 
@@ -799,7 +775,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>06 — SYSTEM FLOW</Label>
           <Heading>How a game<br />flows.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            The app and the trait cards work together: set up, then seven rounds of deal → look &amp; stalk → decide → flip → score, then The One for anyone who qualifies.
+            The cards run the game and the phone keeps score: set up, then seven matches of profile → deal → stalk → decide → flip &amp; add up → enter totals → score, then everyone gets a final title.
           </p>
           <SystemFlow />
 
@@ -827,7 +803,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>07 — PROFILE GENERATION</Label>
           <Heading>No two games<br />play the same.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            Every game builds 7 fresh profiles from a pool of 64 real dating behaviors. Each gets 6 traits — you see the 2 mildest, and the other 4 stay hidden until you decide.
+            Every game lines up 7 fresh profiles — name, age, archetype, bio and an illustrated avatar. Their traits come from a pool of 64 real dating behaviors: at the table, six cards dealt off the deck; online, six digital cards. Two face-up, four face-down.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 32 }}>
@@ -850,14 +826,14 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             <div style={{ background: C.card, border: `1px solid ${C.accent}44`, padding: '22px 20px' }}>
               <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>🪝 THE CATFISH</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.6)', lineHeight: 1.6, margin: 0 }}>
-                One catfish is injected into every game at a random position (rounds 2–5). Visible traits are all positive. Hidden traits are all −3. Dating them costs −4 extra and a heart — and a LOOK gives them away: their photo is a lot older than their age. Ghosting them earns +1 and the "Catfish Dodger" achievement.
+                One profile in matches 2–5 is secretly a catfish, and nothing on its profile card gives it away. The phone reveals it only after everyone has entered their scores: anyone who dated it takes −4 and a heart, anyone who ghosted it gets +1. Online, its hidden cards are all −3.
               </p>
             </div>
 
             <div style={{ background: C.card, border: `1px solid ${C.gold}44`, padding: '22px 20px' }}>
-              <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>💘 THE ONE</div>
+              <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>📱 THE COMPANION</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.6)', lineHeight: 1.6, margin: 0 }}>
-                A legendary final profile, pitched in-game as a "1% drop". Only players who scored ≥ 10 points and kept at least one heart get to face them. Four hidden traits, one worth +5. In solo, a type-adjusted total of 7+ pays +10; anything less costs −10 and a heart.
+                At the table the phone never sees the cards. Each player adds up their own six cards with their type and types in one number. The phone layers on the fine print — Red Flag, Chemistry, Heartbroken, the catfish — and keeps the leaderboard.
               </p>
             </div>
           </div>
@@ -894,7 +870,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ marginTop: 40 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
               <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555' }}>THE CAST</div>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.14em', color: C.teal }}>👁 A LOOK SWAPS THE ILLUSTRATION FOR THE REAL PHOTO</div>
+              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.14em', color: C.teal }}>EVERY PROFILE CARD GETS AN ILLUSTRATED AVATAR</div>
             </div>
             <CastStrip />
           </div>
@@ -911,17 +887,17 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
             <MechanicCard icon="♥" name="DATE" color={C.accent} tag="CORE"
-              desc="Score the profile's traits, adjusted by your player type. A negative total costs a heart, and −5 or worse is a Red Flag: −2 more. Score 7+ as the only one who dated and it's Chemistry: +2. Date the catfish and it's −4 on top." />
+              desc="Add up all six cards for your type — at the table you do the math and enter it; online the phone does it. A negative total costs a heart, −5 or worse is a Red Flag (−2 more), and 7+ as the only one who dated is Chemistry (+2)." />
             <MechanicCard icon="◌" name="GHOST" color="#888" tag="CORE"
-              desc="Skip the round. No points, no hearts lost. You only have 3 ghosts per game — spend them wisely. Ghosting a catfish earns +1 bonus point." />
-            <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="TABLE · INTEL"
-              desc="Spend a stalk chip to secretly peek at one face-down trait card, then put it back. 3 chips each. Stack them on one profile if you like — just don't tell anyone what you saw." />
-            <MechanicCard icon="👁" name="LOOK" color={C.teal} tag="APP · INTEL"
-              desc="Spend a look token to swap the illustrated avatar for the profile's real black-and-white photo. 3 per game, once per profile. The catfish's photo never matches their age." />
-            <MechanicCard icon="⚡" name="STEAL" color={C.gold} tag="ONLINE"
-              desc="Skip the date and take up to 3 points from the highest-scoring other player — never more than they have. One use per game. Earns the Smooth Criminal achievement." />
-            <MechanicCard icon="♥♥" name="DOUBLE DATE" color={C.accent} tag="ONLINE"
-              desc="If two or more players pick it, the score is split evenly between them. Lower risk, lower reward. If only one person picks it, it counts as a regular date." />
+              desc="Pass on the match. No points, no hearts lost. You only get 3 ghosts per game — when they're gone, you have to date. Ghosting the catfish earns +1." />
+            <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="TABLE + ONLINE"
+              desc="At the table, spend a chip to secretly peek at one face-down card, then put it back. Online, tap a face-down card on your phone and it flips for you only. 3 per player, per game." />
+            <MechanicCard icon="🎣" name="CATFISH" color={C.teal} tag="SECRET"
+              desc="One profile in matches 2–5 is secretly a catfish. Nothing gives it away until the scores are in — then daters take −4 and a heart, and ghosters get +1." />
+            <MechanicCard icon="📱" name="ENTER TOTALS" color={C.teal} tag="COMPANION"
+              desc="Each player taps Dated or Ghosted and types their card total. The phone adds the bonuses and penalties, so nobody has to remember the fine print." />
+            <MechanicCard icon="♛" name="FINAL TITLES" color={C.gold} tag="ENDGAME"
+              desc="After match 7 the highest total wins (ties go to whoever kept more hearts), and every player gets a title based on their score." />
           </div>
         </Section>
 
@@ -954,31 +930,19 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
         {/* Achievements */}
         <Section>
-          <Label color={C.accent}>10 — ACHIEVEMENTS</Label>
-          <Heading>Rewarding<br />the story, not just the score.</Heading>
+          <Label color={C.accent}>10 — FINAL TITLES</Label>
+          <Heading>Everyone leaves<br />with a title.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            11 achievements track behaviors across a full game — 8 live, 3 locked or retired. They show up next to every player on the results screen — turning each game into a story the table can share.
+            The game ends on one clear moment: every player gets a title from their final score. It's easy to explain at the table and easy to screenshot after.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 8 }}>
-            {[
-              ['🎣', 'CATFISH DODGER', 'Ghost the catfish'],
-              ['🪝', 'GOT CATFISHED', 'Date the catfish'],
-              ['👻', 'GHOST MASTER', 'Use all 3 ghosts'],
-              ['🔥', 'CHAOS ENJOYER', 'Go on 2+ Red Flag dates'],
-              ['🛋️', 'THERAPIZED', 'Retired with Therapy', true],
-              ['⚡', 'SMOOTH CRIMINAL', 'Use Steal (online)'],
-              ['♥♥', 'DOUBLE DATER', 'Pick Double Date (online)'],
-              ['💘', 'FOUND THE ONE', 'Win at The One round'],
-              ['💔', 'UNMATCHED', 'Lose at The One round'],
-              ['🚩', 'RED FLAG RADAR', 'Locked — coming soon', true],
-              ['☠️', 'NO SURVIVORS', 'Locked — coming soon', true],
-            ].map(([emoji, title, trigger, locked]) => (
-              <div key={title} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', background: C.cardAlt, border: hair, opacity: locked ? 0.45 : 1 }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{emoji}</span>
-                <div>
-                  <div style={{ fontFamily: ANTON, fontSize: 10, color: C.gold, letterSpacing: '0.1em', marginBottom: 2 }}>{title}</div>
-                  <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', lineHeight: 1.4 }}>{trigger}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8 }}>
+            {SCORE_TITLES.map((t, i) => (
+              <div key={t.title} style={{ padding: '16px 16px', background: C.cardAlt, border: i === 0 ? `1px solid ${C.gold}55` : hair, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: i === 0 ? C.gold : '#777', letterSpacing: '0.16em' }}>
+                  {i === 0 ? `${t.min}+ POINTS` : t.min === -Infinity ? `${SCORE_TITLES[i - 1].min - 1} OR LESS` : `${t.min}–${SCORE_TITLES[i - 1].min - 1} POINTS`}
                 </div>
+                <div style={{ fontFamily: ANTON, fontSize: 18, color: C.accent, letterSpacing: '0.04em' }}>{t.title}</div>
+                <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: 'rgba(239,230,220,0.6)', lineHeight: 1.5 }}>{t.desc}</div>
               </div>
             ))}
           </div>
@@ -993,16 +957,16 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
               {
-                q: 'Why reveal traits automatically instead of on-tap?',
-                a: 'The original version required tapping each hidden trait. It felt like work. The auto-reveal creates a rhythm — you watch the profile unfold. The tension of waiting is the mechanic.',
+                q: 'Why let the cards run the game?',
+                a: "Earlier versions had the app call out card numbers, collect private decisions by passing the phone around, and do all the math. The phone kept pulling everyone's attention away from the table. Now the table does the playing — dealing, peeking, saying Date or Ghost out loud — and the phone only does what people are bad at: remembering the fine print and keeping score.",
               },
               {
                 q: 'Why phone-sized on a computer?',
                 a: "The game is built to feel like a phone app. On a computer it opens as an iPhone 15-sized screen, so it always feels like something in your hand, not something filling a monitor. In online multiplayer, everyone is literally on their own phone.",
               },
               {
-                q: 'Why switch from left-border rows to rounded trait cards?',
-                a: "The original left-border row pattern read like a data table — clean, but cold. Rounded cards with tinted backgrounds and circular score bubbles give each trait its own visual weight. The color tinting communicates sentiment at a glance before the score even registers, and the card format reinforces that you're making a judgment call about a person, not parsing a spreadsheet.",
+                q: 'Why draw the online cards like the printed deck?',
+                a: "So both modes feel like one game. The same card faces — number, flag label, point value, wordmark — show up on the table and on the phone, and stalking online is literally flipping a card over. Nothing new to learn when you switch between them.",
               },
             ].map(({ q, a }) => (
               <div key={q} style={{ padding: '22px 24px', background: C.card, border: hair, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -1020,7 +984,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.gold}>12 — THE TOKEN</Label>
           <Heading>The cards hold<br /><span style={{ color: C.accent }}>the secrets.</span></Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 36, maxWidth: 560 }}>
-            A hand-made deck that plays alongside the app. The phone shows who's on the market and keeps score — the cards decide what they're really like.
+            A hand-made deck that is the game. The phone shows who's on the market and keeps score — the cards decide what they're really like.
           </p>
           <TokenShowcase />
         </Section>
@@ -1053,7 +1017,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
           <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
             <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#444', letterSpacing: '0.1em' }}>
-              TABLE GAME · ONLINE MULTIPLAYER · 7 ROUNDS · THEN THE ONE
+              CARD GAME + PHONE · ONLINE MULTIPLAYER · 7 MATCHES · FINAL TITLES
             </div>
           </div>
           <div style={{ marginTop: 20 }}>
