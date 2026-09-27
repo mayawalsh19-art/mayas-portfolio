@@ -125,6 +125,7 @@ export const PLAYER_TYPES = [
     label: 'THE ROMANTIC',
     emoji: '💘',
     desc: 'You fall fast. Green flags hit different.',
+    rule: 'Every green flag is worth 1 more.',
     adjust: v => v > 0 ? v + 1 : v,
   },
   {
@@ -132,6 +133,7 @@ export const PLAYER_TYPES = [
     label: 'THE SELECTIVE',
     emoji: '🎯',
     desc: 'High standards. Red flags cost double.',
+    rule: 'Every negative card costs 1 more.',
     adjust: v => v < 0 ? v - 1 : v,
   },
   {
@@ -139,6 +141,7 @@ export const PLAYER_TYPES = [
     label: 'THE CHAOTIC ONE',
     emoji: '🔥',
     desc: 'Red flags? Spicy. Boring is the dealbreaker.',
+    rule: 'Negative cards get +2 (never above 0).',
     adjust: v => v < 0 ? Math.min(v + 2, 0) : v,
   },
   {
@@ -146,6 +149,7 @@ export const PLAYER_TYPES = [
     label: 'THE OVERTHINKER',
     emoji: '🌀',
     desc: 'Yellow flags are red flags. Patterns everywhere.',
+    rule: 'A −1 card counts as −3. A 0 card counts as −1.',
     adjust: v => v === -1 ? -3 : v === 0 ? -1 : v,
   },
   {
@@ -153,6 +157,7 @@ export const PLAYER_TYPES = [
     label: 'THE AVOIDANT',
     emoji: '🚪',
     desc: 'Too much too soon. Space is your love language.',
+    rule: '+3 cards are worth 1 less. −2 and worse cost 1 more.',
     adjust: v => v >= 3 ? v - 1 : v <= -2 ? v - 1 : v,
   },
   {
@@ -160,6 +165,7 @@ export const PLAYER_TYPES = [
     label: 'THE GOLD DIGGER',
     emoji: '💰',
     desc: 'Stability and potential. The math maths.',
+    rule: '+2 and up are worth 1 more. −2 and worse cost 1 more.',
     adjust: v => v < -1 ? v - 1 : v >= 2 ? v + 1 : v,
   },
 ]
@@ -277,6 +283,19 @@ export const THE_ONE_PROFILE = {
 
 export function profileScore(profile) {
   return profile.traits.reduce((s, t) => s + t.value, 0)
+}
+
+// ─── End-of-game title — based only on final score ──────────────────────────
+// Used by the table companion: every player gets one of these at the end.
+export const SCORE_TITLES = [
+  { min: 18,        title: 'THE CATCH',           desc: 'Every call landed. Everyone at the table wants your number.' },
+  { min: 10,        title: 'THE ROMANTIC',        desc: 'Your heart led the way — and it mostly paid off.' },
+  { min: 1,         title: 'THE SITUATIONSHIP',   desc: 'Some sparks, some red flags. It\'s complicated.' },
+  { min: -Infinity, title: 'THE RED FLAG MAGNET', desc: 'It wasn\'t you. (It was a little bit you.)' },
+]
+
+export function getTitle(score) {
+  return SCORE_TITLES.find(t => score >= t.min)
 }
 
 export function getPersonality(player) {
