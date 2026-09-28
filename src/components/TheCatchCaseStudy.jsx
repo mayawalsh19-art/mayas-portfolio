@@ -157,7 +157,7 @@ function TokenShowcase() {
         <TraitCardFront blank green />
       </div>
       <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#777', margin: '14px 0 0', lineHeight: 1.6 }}>
-        Shuffle, deal six, flip and add them up — the deck is the whole game. Green, yellow and red flags carry their point values; the blanks are for writing your own. Online mode deals these same cards on screen.
+        Shuffle, deal six, flip and add them up — the deck is the whole game, and a printed how-to sheet in the box teaches it, so the phone never has to. Green, yellow and red flags carry their point values; the blanks are for writing your own. Online mode deals these same cards on screen.
       </p>
 
       {/* The stalk tokens */}
@@ -177,7 +177,7 @@ function TokenShowcase() {
 
       {/* What's in the deck + download */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginTop: 16 }}>
-        {[['64', 'TRAIT CARDS', C.teal], ['6', 'BLANK CARDS', C.gold], ['30', 'STALK CHIPS', C.accent], ['2', 'RULES CARDS', '#aaa']].map(([n, l, col]) => (
+        {[['64', 'TRAIT CARDS', C.teal], ['6', 'BLANK CARDS', C.gold], ['30', 'STALK CHIPS', C.accent], ['1', 'HOW-TO SHEET', '#aaa']].map(([n, l, col]) => (
           <div key={l} style={{ padding: '14px 16px', background: C.cardAlt, border: hair }}>
             <div style={{ fontFamily: ANTON, fontSize: 28, color: col, lineHeight: 1 }}>{n}</div>
             <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, letterSpacing: '0.16em', color: '#777', marginTop: 4 }}>{l}</div>

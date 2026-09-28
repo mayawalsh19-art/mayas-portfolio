@@ -239,6 +239,35 @@ function Hand({ profile, peeked = [], revealAll = false, onStalk }) {
   )
 }
 
+// ─── How to play (online only — at the table the rules are on the printed sheet)
+const HOW_TO = [
+  ['Meet them', "Everyone sees the same profile and is dealt the same 6 trait cards: 2 face-up, 4 face-down."],
+  ['Stalk', 'Tap a face-down card to spend a stalk token. It flips for you only. 3 per game.'],
+  ['Decide', 'Tap DATE or GHOST in secret. 3 ghosts per game — when they\'re gone, you have to date.'],
+  ['Reveal', 'When everyone is in, every card flips and your phone adds them up for your type.'],
+  ['Win', 'After 7 matches the highest total wins, and everyone gets a title from their score.'],
+]
+const HOW_TO_RULES = 'A negative date costs a heart · −5 or worse: −2 more · 7+ as the only dater: +2 · at 0 hearts good dates count half · one secret catfish: dated −4 & a heart, ghosted +1'
+
+function HowToPlay() {
+  return (
+    <div style={{ background: C.card, border: hair, borderRadius: 6, padding: '14px 14px 12px', marginTop: 18 }}>
+      <div style={{ fontFamily: ANTON, fontSize: 14, color: C.accent, letterSpacing: '0.1em', marginBottom: 10 }}>HOW TO PLAY</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {HOW_TO.map(([title, text], i) => (
+          <div key={title} style={{ display: 'flex', gap: 10 }}>
+            <span style={{ fontFamily: ANTON, fontSize: 15, color: C.accent, lineHeight: 1.1, minWidth: 12 }}>{i + 1}</span>
+            <div style={{ fontFamily: WS, fontSize: 12, color: 'rgba(239,230,220,0.75)', lineHeight: 1.45 }}>
+              <b style={{ color: C.cream }}>{title}.</b> {text}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10.5, color: '#888', lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: hair }}>{HOW_TO_RULES}</div>
+    </div>
+  )
+}
+
 // ─── Scroll / nav / frame ─────────────────────────────────────────────────────
 function Scroll({ children, style = {} }) {
   return <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', minHeight: 0, ...style }}>{children}</div>
@@ -372,6 +401,7 @@ function HostGame({ onClose }) {
             {lobbyPlayers.length === 0 && (
               <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#555', textAlign: 'center', padding: '20px 0' }}>Waiting for players to join…</div>
             )}
+            <HowToPlay />
           </div>
         </Scroll>
         <Footer>
@@ -462,7 +492,8 @@ function ClientGame({ onClose }) {
   if (screen === 'waiting' && !gameState) {
     return (
       <Frame onClose={onClose} title={`ROOM ${roomCode}`}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Scroll>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '28px 16px 20px' }}>
           <div style={{ fontFamily: ANTON, fontSize: 28, color: C.teal, letterSpacing: '0.12em', marginBottom: 12 }}>READY</div>
           <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', textAlign: 'center', lineHeight: 1.6 }}>Waiting for the host to start the game…</div>
           {room.status === 'connecting' && <div style={{ fontFamily: WS, fontSize: 11, color: '#555', marginTop: 16 }}>Connecting to room {roomCode}…</div>}
@@ -472,7 +503,9 @@ function ClientGame({ onClose }) {
             <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 14, color: C.cream }}>{myName}</div>
             <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#777' }}>{PLAYER_TYPES.find(t => t.id === myType)?.label}</div>
           </div>
+          <div style={{ width: '100%' }}><HowToPlay /></div>
         </div>
+        </Scroll>
       </Frame>
     )
   }
@@ -518,6 +551,7 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
             Your trait cards
           </SectionLabel>
           <Hand profile={profile} peeked={myPeeks} onStalk={canStalk ? onStalk : null} />
+          {round === 0 && <HowToPlay />}
           <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#777', marginTop: 10, textAlign: 'center' }}>
             {decided ? 'Cards flip once everyone has decided.'
               : canStalk ? 'Tap a face-down card to stalk it — only you see it.'

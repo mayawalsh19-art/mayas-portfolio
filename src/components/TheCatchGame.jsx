@@ -114,7 +114,7 @@ function SetupScreen({ dispatch }) {
 
   return (
     <Screen footer={<button onClick={start} disabled={!canStart} style={primaryBtn(canStart)}>START THE GAME →</button>}>
-      <Hero top="WHO'S" bottom="PLAYING?" sub="The cards are the game. This phone just shows who's on the market and keeps score." />
+      <Hero top="WHO'S" bottom="PLAYING?" sub="Rules are on the direction sheet in the box." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {slots.map((sl, i) => (
           <div key={i} style={{ padding: 14, background: C.card, border: hairline, borderRadius: 6 }}>
@@ -145,7 +145,6 @@ function SetupScreen({ dispatch }) {
                 })}
               </div>
               <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#999', marginTop: 6 }}>{sl.playerType.desc}</div>
-              <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 11, color: C.teal, marginTop: 3 }}>Your cards: {sl.playerType.rule}</div>
             </div>
           </div>
         ))}
@@ -188,37 +187,16 @@ function ProfileCard({ profile }) {
   )
 }
 
-// ─── ROUND: the profile + what to do at the table ─────────────────────────────
-const TABLE_STEPS = [
-  ['Deal', 'Deal 6 trait cards: 2 face-up, 4 face-down.'],
-  ['Stalk', 'Spend a chip to secretly peek at one face-down card.'],
-  ['Decide', 'On 3, everyone says DATE or GHOST out loud.'],
-  ['Flip', 'Turn over the rest. If you dated, add up all 6 cards using your type.'],
-]
-
+// ─── ROUND: just the profile — how to play lives on the direction sheet in the box
 function RoundScreen({ state, dispatch }) {
   const profile = state.profiles[state.round]
   return (
-    <Screen footer={<button onClick={() => dispatch({ type: 'ENTER_SCORES' })} style={primaryBtn(true)}>CARDS FLIPPED — ENTER SCORES →</button>}>
+    <Screen footer={<button onClick={() => dispatch({ type: 'ENTER_SCORES' })} style={primaryBtn(true)}>ENTER SCORES →</button>}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0 12px' }}>
         <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.22em' }}>NOW ON THE MARKET</div>
         <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 13, letterSpacing: '0.12em' }}>MATCH {String(state.round + 1).padStart(2, '0')} / {String(ROUNDS).padStart(2, '0')}</div>
       </div>
       <ProfileCard profile={profile} />
-      <div style={{ marginTop: 18 }}>
-        <Label>AT THE TABLE</Label>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {TABLE_STEPS.map(([title, text], i) => (
-            <div key={title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 12px', background: C.card, border: hairline, borderRadius: 6 }}>
-              <span style={{ fontFamily: ANTON, fontSize: 18, color: C.accent, lineHeight: 1, minWidth: 14 }}>{i + 1}</span>
-              <div>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, color: C.cream, letterSpacing: '0.06em' }}>{title.toUpperCase()}</div>
-                <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#999', lineHeight: 1.45, marginTop: 2 }}>{text}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
       <MiniBoard players={state.players} />
     </Screen>
   )
@@ -256,7 +234,7 @@ function ScoreScreen({ state, dispatch }) {
         <button onClick={() => dispatch({ type: 'SCORE', decisions: dec })} disabled={!ready} style={primaryBtn(ready)}>SCORE THE MATCH →</button>
       </div>
     }>
-      <Hero top="WHO DATED" bottom={`${profile.name.toUpperCase()}?`} sub="Dated? Enter what your 6 cards added up to, using your type's rule. Ghosted scores ±0." />
+      <Hero top="WHO DATED" bottom={`${profile.name.toUpperCase()}?`}  />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {state.players.map(p => {
           const d = dec[p.id] ?? {}
@@ -267,7 +245,7 @@ function ScoreScreen({ state, dispatch }) {
                 <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, letterSpacing: '0.03em' }}>{p.name.toUpperCase()}</div>
                 <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#666', letterSpacing: '0.14em' }}>{p.playerType.emoji} {p.playerType.label.replace('THE ', '')}</div>
               </div>
-              <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: C.teal, margin: '2px 0 10px' }}>{p.playerType.rule}</div>
+              <div style={{ height: 10 }} />
               <div style={{ display: 'flex', gap: 6 }}>
                 <button onClick={() => set(p.id, { action: 'date' })}
                   style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.1em', minHeight: 42, borderRadius: 6, cursor: 'pointer', background: d.action === 'date' ? C.accent : 'transparent', color: d.action === 'date' ? '#fff' : C.accent, border: `1px solid ${C.accent}${d.action === 'date' ? '' : '66'}` }}>
