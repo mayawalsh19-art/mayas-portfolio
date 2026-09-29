@@ -70,6 +70,16 @@ const primaryBtn = enabled => ({
   boxShadow: enabled ? '0 0 20px rgba(255,77,109,0.35)' : 'none',
 })
 
+// Every choice button in the game shares this look: even size, sentence-case
+// text, pink fill when selected.
+const choiceBtn = (selected, disabled = false) => ({
+  minHeight: 40, padding: '0 6px', fontFamily: WS, fontWeight: 600, fontSize: 12,
+  color: disabled ? '#444' : selected ? '#fff' : '#aaa',
+  background: selected ? C.accent : 'transparent',
+  border: `1px solid ${selected ? C.accent : disabled ? '#2a2525' : '#3a3535'}`,
+  borderRadius: 6, cursor: disabled ? 'not-allowed' : 'pointer',
+})
+
 function Screen({ children, footer, center = false }) {
   // center: content sits in the middle of the screen when it's short, and
   // scrolls normally when it's long (margin auto never clips the top).
@@ -108,6 +118,9 @@ function Hearts({ n }) {
 function signed(n) { return n > 0 ? `+${n}` : n === 0 ? '±0' : `${n}` }
 
 // ─── SETUP ────────────────────────────────────────────────────────────────────
+// Short, sentence-case names for the type buttons.
+const TYPE_NAME = { romantic: 'Romantic', selective: 'Selective', chaotic: 'Chaotic', overthinker: 'Overthinker', avoidant: 'Avoidant', gold_digger: 'Gold Digger' }
+
 // Who the table wants to date: decides which characters show up this game.
 function LookingFor({ value, onChange }) {
   return (
@@ -117,9 +130,8 @@ function LookingFor({ value, onChange }) {
         {LOOKING_FOR.map(l => {
           const sel = value === l.id
           return (
-            <button key={l.id} onClick={() => onChange(l.id)}
-              style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', minHeight: 42, borderRadius: 6, cursor: 'pointer', background: sel ? C.accent : 'transparent', color: sel ? '#fff' : '#999', border: `1px solid ${sel ? C.accent : '#3a3535'}` }}>
-              {l.label}
+            <button key={l.id} onClick={() => onChange(l.id)} style={{ ...choiceBtn(sel), flex: 1 }}>
+              {l.label.charAt(0) + l.label.slice(1).toLowerCase()}
             </button>
           )
         })}
@@ -155,14 +167,12 @@ function SetupScreen({ dispatch }) {
             />
             <div style={{ marginTop: 10 }}>
               <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.18em', marginBottom: 6 }}>TYPE</div>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
                 {PLAYER_TYPES.map(pt => {
                   const sel = sl.playerType?.id === pt.id
                   return (
-                    <button key={pt.id} onClick={() => update(i, 'playerType', pt)}
-                      style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 8px', background: sel ? `${C.teal}18` : 'transparent', border: `1px solid ${sel ? C.teal : '#333'}`, borderRadius: 4, cursor: 'pointer' }}>
-                      <span style={{ fontSize: 14 }}>{pt.emoji}</span>
-                      <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 8, color: sel ? C.teal : '#666', letterSpacing: '0.1em' }}>{pt.label.replace('THE ', '')}</span>
+                    <button key={pt.id} onClick={() => update(i, 'playerType', pt)} style={choiceBtn(sel)}>
+                      {TYPE_NAME[pt.id]}
                     </button>
                   )
                 })}
@@ -226,6 +236,8 @@ function ScoreScreen({ state, dispatch }) {
   const profile = state.profiles[state.round]
   const [dec, setDec] = useState({})
   const set = (id, patch) => setDec(d => ({ ...d, [id]: { total: 0, ...d[id], ...patch } }))
+  // +/− read the latest total, so fast taps all count
+  const bump = (id, by) => setDec(d => { const cur = d[id]?.total ?? 0; return { ...d, [id]: { ...d[id], total: Math.max(-40, Math.min(40, cur + by)) } } })
   const ready = state.players.every(p => dec[p.id]?.action)
 
   return (
@@ -248,30 +260,26 @@ function ScoreScreen({ state, dispatch }) {
             <div key={p.id} style={{ padding: 14, background: C.card, border: hairline, borderRadius: 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, letterSpacing: '0.03em' }}>{p.name.toUpperCase()}</div>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#666', letterSpacing: '0.14em' }}>{p.playerType.emoji} {p.playerType.label.replace('THE ', '')}</div>
+                <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: '#777' }}>{TYPE_NAME[p.playerType.id]}</div>
               </div>
               <div style={{ height: 10 }} />
-              <div style={{ display: 'flex', gap: 6 }}>
-                <button onClick={() => set(p.id, { action: 'date' })}
-                  style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.1em', minHeight: 42, borderRadius: 6, cursor: 'pointer', background: d.action === 'date' ? C.accent : 'transparent', color: d.action === 'date' ? '#fff' : C.accent, border: `1px solid ${C.accent}${d.action === 'date' ? '' : '66'}` }}>
-                  ♥ DATED
-                </button>
-                <button onClick={() => canGhost && set(p.id, { action: 'ghost' })} disabled={!canGhost}
-                  style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.1em', minHeight: 42, borderRadius: 6, cursor: canGhost ? 'pointer' : 'not-allowed', background: d.action === 'ghost' ? '#555' : 'transparent', color: !canGhost ? '#3a3535' : d.action === 'ghost' ? '#fff' : '#999', border: `1px solid ${canGhost ? '#555' : '#2a2525'}` }}>
-                  ◌ GHOSTED · {p.ghosts}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                <button onClick={() => set(p.id, { action: 'date' })} style={choiceBtn(d.action === 'date')}>Dated</button>
+                <button onClick={() => canGhost && set(p.id, { action: 'ghost' })} disabled={!canGhost} style={choiceBtn(d.action === 'ghost', !canGhost)}>
+                  Ghosted ({p.ghosts} left)
                 </button>
               </div>
               {!canGhost && <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#777', marginTop: 6 }}>No ghosts left — you have to date.</div>}
               {d.action === 'date' && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10 }}>
-                  <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#777', letterSpacing: '0.16em', flex: 1 }}>CARD TOTAL</span>
-                  <button onClick={() => set(p.id, { total: (d.total ?? 0) - 1 })} aria-label="minus one"
-                    style={{ width: 42, height: 42, fontFamily: ANTON, fontSize: 22, color: C.cream, background: C.cardAlt, border: 'none', borderRadius: 6, cursor: 'pointer' }}>−</button>
+                  <span style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: '#999', flex: 1 }}>Card total</span>
+                  <button onClick={() => bump(p.id, -1)} aria-label="minus one"
+                    style={{ ...choiceBtn(false), width: 40, fontSize: 18, color: C.cream }}>−</button>
                   <input type="number" value={d.total ?? 0}
                     onChange={e => { const v = parseInt(e.target.value, 10); set(p.id, { total: Number.isNaN(v) ? 0 : Math.max(-40, Math.min(40, v)) }) }}
-                    style={{ width: 64, height: 42, textAlign: 'center', fontFamily: ANTON, fontSize: 22, color: (d.total ?? 0) >= 0 ? C.teal : C.accent, background: C.cardAlt, border: hairline, borderRadius: 6, outline: 'none' }} />
-                  <button onClick={() => set(p.id, { total: (d.total ?? 0) + 1 })} aria-label="plus one"
-                    style={{ width: 42, height: 42, fontFamily: ANTON, fontSize: 22, color: C.cream, background: C.cardAlt, border: 'none', borderRadius: 6, cursor: 'pointer' }}>+</button>
+                    style={{ width: 64, height: 40, boxSizing: 'border-box', textAlign: 'center', fontFamily: WS, fontWeight: 600, fontSize: 16, color: (d.total ?? 0) >= 0 ? C.teal : C.accent, background: 'transparent', border: '1px solid #3a3535', borderRadius: 6, outline: 'none' }} />
+                  <button onClick={() => bump(p.id, 1)} aria-label="plus one"
+                    style={{ ...choiceBtn(false), width: 40, fontSize: 18, color: C.cream }}>+</button>
                 </div>
               )}
             </div>
