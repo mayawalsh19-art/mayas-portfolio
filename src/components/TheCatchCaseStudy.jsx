@@ -139,7 +139,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
       {/* ── Hero ── */}
       <header style={{ textAlign: 'center', padding: '88px 16px 96px', borderBottom: hair }}>
         <CatchHero maxWidth={460} style={{ marginBottom: 30 }} />
-        <p style={{ fontFamily: WS, fontSize: 'clamp(17px,2.4vw,21px)', color: C.cream, lineHeight: 1.5, maxWidth: 560, margin: '0 auto 30px' }}>
+        <p style={{ fontFamily: WS, fontSize: 'clamp(15px,2vw,18px)', color: C.cream, lineHeight: 1.55, maxWidth: 500, margin: '0 auto 30px' }}>
           A dating card game with a phone for a matchmaker. Read the flags, bluff the table, and find out who you really went home with.
         </p>
         <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 34 }}>
