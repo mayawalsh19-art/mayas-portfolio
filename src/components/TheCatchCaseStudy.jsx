@@ -155,14 +155,24 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
       <Gap h={110} />
 
-      {/* ── The idea ── */}
+      {/* ── Overview ── */}
       <Section wide>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
-            <Head kicker="The idea">What if the portfolio piece was the thing itself?</Head>
+            <Head kicker="Overview">What if the portfolio piece was the thing itself?</Head>
             <P>The Catch started as a question: could one project be both the design work and the thing it shows off? It became a finished, playable dating game you can pick up right from my portfolio.</P>
             <P>The cards are the game. You deal a stranger's traits face-up and face-down, peek where you can, and decide out loud whether to date or ghost. One phone sits in the middle of the table as the matchmaker: it shows who's on the market, keeps score, and hands everyone a title at the end.</P>
-            <Small>2–6 players · 7 matches · 20–40 minutes</Small>
+            <div style={{ marginTop: 10 }}>
+            {[
+              ['The challenge', 'Show interaction design, visual identity and systems thinking at once, as a live, playable artifact instead of mockups.'],
+              ['The approach', 'A complete game with its own identity, a printed deck, and enough depth to replay.'],
+              ['The constraint', 'Everything runs in the browser, with no servers, accounts or database.'],
+            ].map(([t, d]) => (
+              <div key={t} style={{ fontFamily: WS, fontSize: 15, color: body, lineHeight: 1.6, padding: '10px 0', borderTop: hair }}>
+                <span style={{ fontWeight: 600, color: C.cream }}>{t}. </span>{d}
+              </div>
+            ))}
+            </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 420 }}>
             <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width={230} />
@@ -172,22 +182,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             </div>
           </div>
         </div>
-      </Section>
-
-      <Gap />
-
-      {/* ── The brief ── */}
-      <Section wide>
-        <Head kicker="The brief">One project, three jobs.</Head>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 32, marginTop: 10 }}>
-          {[
-            ['The challenge', 'Show interaction design, visual identity and systems thinking at once. No mockups or static screens: a live, playable artifact.'],
-            ['The approach', 'A complete game with its own identity, a printed deck, and enough depth to replay. Every mechanic had to feel intentional, not just functional.'],
-            ['The constraint', 'Everything runs in the browser, with no servers, accounts or database. Online games connect phones directly, with the host keeping score.'],
-          ].map(([t, d]) => (
-            <div key={t} style={{ borderTop: `2px solid ${C.accent}`, paddingTop: 18 }}>
-              <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 10 }}>{t.toUpperCase()}</div>
-              <P style={{ fontSize: 15 }}>{d}</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 1, marginTop: 56, background: 'rgba(239,230,220,0.08)', border: hair, borderRadius: 8, overflow: 'hidden' }}>
+          {[['Course', 'IXD 432, senior year'], ['Year', '2026'], ['Built with', 'React, Vite, PeerJS'], ['Made', 'Web app, printed deck, rulebook'], ['Players', '2–6, 20–40 minutes']].map(([k, v]) => (
+            <div key={k} style={{ background: C.bg, padding: '16px 18px' }}>
+              <Small>{k}</Small>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginTop: 3 }}>{v}</div>
             </div>
           ))}
         </div>
@@ -195,9 +194,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
       <Gap />
 
-      {/* ── Where it fits ── */}
+      {/* ── The problem ── */}
       <Section wide>
-        <Head kicker="Where it fits">Two games anchor the space. Neither is this.</Head>
+        <Head kicker="The problem">Dating games are either long or shallow.</Head>
+        <P>Two tabletop games anchor the space. One is a deep two-player roleplay; the other is a party game about guessing. Neither has real hidden information that a whole group can play with.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 10 }}>
           {[
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min · $50', good: 'Rich relationship roleplay with deep emotional mechanics.', gap: 'Exactly two players, long sessions, and a heavy rulebook.', img: '/competitors/fog-of-love.jpg' },
@@ -216,14 +216,15 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             </div>
           ))}
         </div>
-        <P style={{ marginTop: 28, maxWidth: 760 }}>The Catch takes the group energy of a party game and adds real hidden information: face-down cards, a secret catfish, stalk chips, and player types that change the math. It's free, needs no setup, and plays at the table or online.</P>
+        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE OPPORTUNITY</div>
+        <P style={{ maxWidth: 760 }}>The Catch takes the group energy of a party game and adds real hidden information: face-down cards, a secret catfish, stalk chips, and player types that change the math. It's free, needs no setup, and plays at the table or online.</P>
       </Section>
 
       <Gap />
 
-      {/* ── How a match plays ── */}
+      {/* ── The game ── */}
       <Section wide>
-        <Head kicker="How a match plays">Seven matches. Four moments each.</Head>
+        <Head kicker="The game">Seven matches. Four moments each.</Head>
         <P>The table does the playing and the phone keeps up. Each match is a new stranger, and each one follows the same rhythm.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28, marginTop: 30, alignItems: 'start' }}>
           {[
@@ -246,6 +247,51 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
               <Small style={{ marginTop: 6, maxWidth: 240, fontSize: 14 }}>{d}</Small>
             </div>
           ))}
+        </div>
+        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '90px 0 12px' }}>IT ALL COMES DOWN TO POINTS</div>
+        <P>Every date adds your six cards to your total. Your player type changes what each card is worth to you, so the same stranger can be a great date for one player and a disaster for another.</P>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 40, marginTop: 30 }}>
+          <div>
+            <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 12 }}>PLAYER TYPES</div>
+            {PLAYER_TYPES.map(t => (
+              <div key={t.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, padding: '12px 0', borderBottom: hair }}>
+                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, whiteSpace: 'nowrap' }}>{TYPE_NAME[t.id]}</span>
+                <span style={{ fontFamily: WS, fontSize: 14, color: muted, textAlign: 'right' }}>{t.rule}</span>
+              </div>
+            ))}
+          </div>
+          <div>
+            <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 12 }}>THE TWISTS</div>
+            {[
+              ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
+              ['Chemistry', '+2', 'Total 7 or more as the only one who dated them.', C.teal],
+              ['The catfish', '−4 / +1', 'One secret profile per game. Date it and lose 4, ghost it and gain 1.', C.gold],
+              ['Ghosts', '3 each', 'Pass on a match for ±0. When they’re gone, you have to date.', '#aaa'],
+            ].map(([n, v, d, col]) => (
+              <div key={n} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2px 16px', padding: '12px 0', borderBottom: hair }}>
+                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream }}>{n}</span>
+                <span style={{ fontFamily: ANTON, fontSize: 18, color: col }}>{v}</span>
+                <span style={{ fontFamily: WS, fontSize: 14, color: muted, gridColumn: '1 / -1' }}>{d}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ marginTop: 90, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}><Phone src="/thecatch/screens/final.jpg" alt="Final titles screen" width={250} /></div>
+          <div>
+            <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 12 }}>EVERYONE LEAVES WITH A TITLE</div>
+            <P>After seven matches the highest total wins, and ties are shared. Then every player gets a title from their score, which is easy to explain at the table and easy to screenshot after.</P>
+            <div style={{ marginTop: 10 }}>
+              {SCORE_TITLES.map((t, i) => (
+                <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
+                  <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
+                    {i === 0 ? `${t.min}+` : t.min === -Infinity ? `${SCORE_TITLES[i - 1].min - 1} or less` : `${t.min}–${SCORE_TITLES[i - 1].min - 1}`}
+                  </span>
+                  <span style={{ fontFamily: ANTON, fontSize: 18, color: C.accent }}>{t.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -288,63 +334,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
       <Gap />
 
-      {/* ── Scoring ── */}
-      <Section wide>
-        <Head kicker="Scoring">It all comes down to points.</Head>
-        <P>Every date adds your six cards to your total. Your player type changes what each card is worth to you, so the same stranger can be a great date for one player and a disaster for another.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 40, marginTop: 30 }}>
-          <div>
-            <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 12 }}>PLAYER TYPES</div>
-            {PLAYER_TYPES.map(t => (
-              <div key={t.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, padding: '12px 0', borderBottom: hair }}>
-                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, whiteSpace: 'nowrap' }}>{TYPE_NAME[t.id]}</span>
-                <span style={{ fontFamily: WS, fontSize: 14, color: muted, textAlign: 'right' }}>{t.rule}</span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 12 }}>THE TWISTS</div>
-            {[
-              ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
-              ['Chemistry', '+2', 'Total 7 or more as the only one who dated them.', C.teal],
-              ['The catfish', '−4 / +1', 'One secret profile per game. Date it and lose 4, ghost it and gain 1.', C.gold],
-              ['Ghosts', '3 each', 'Pass on a match for ±0. When they’re gone, you have to date.', '#aaa'],
-            ].map(([n, v, d, col]) => (
-              <div key={n} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2px 16px', padding: '12px 0', borderBottom: hair }}>
-                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream }}>{n}</span>
-                <span style={{ fontFamily: ANTON, fontSize: 18, color: col }}>{v}</span>
-                <span style={{ fontFamily: WS, fontSize: 14, color: muted, gridColumn: '1 / -1' }}>{d}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      <Gap />
-
-      {/* ── The ending ── */}
-      <Section wide>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center' }}><Phone src="/thecatch/screens/final.jpg" alt="Final titles screen" width={250} /></div>
-          <div>
-            <Head kicker="The ending">Everyone leaves with a title.</Head>
-            <P>After seven matches the highest total wins, and ties are shared. Then every player gets a title from their score, which is easy to explain at the table and easy to screenshot after.</P>
-            <div style={{ marginTop: 10 }}>
-              {SCORE_TITLES.map((t, i) => (
-                <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
-                  <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
-                    {i === 0 ? `${t.min}+` : t.min === -Infinity ? `${SCORE_TITLES[i - 1].min - 1} or less` : `${t.min}–${SCORE_TITLES[i - 1].min - 1}`}
-                  </span>
-                  <span style={{ fontFamily: ANTON, fontSize: 18, color: C.accent }}>{t.title}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Gap />
-
       {/* ── Online ── */}
       <Section wide>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
@@ -355,6 +344,48 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}><OnlineHand /></div>
         </div>
+      </Section>
+
+      <Gap />
+
+      {/* ── Process ── */}
+      <Section>
+        <Head kicker="Process">How it evolved.</Head>
+        <P>The Catch changed a lot between the first playable version and this one. Each round of playtesting pushed it the same direction: fewer rules on the screen, more of the game in people's hands.</P>
+        <div style={{ margin: '28px 0 70px' }}>
+          {[
+            ['Version 1', 'An app game', 'The phone ran everything: solo play against AI rivals, private decisions passed around the phone, photo reveals, a bonus final round, achievements and online power-ups.'],
+            ['Version 2', 'Multiplayer only', 'Solo mode came out. The phone told the table which numbered cards to deal, and players still decided in private on the phone.'],
+            ['Version 3', 'The cards are the game', 'The deck took over: deal, peek and say Date or Ghost out loud. The phone became a matchmaker that shows the profile and keeps score, and the rules moved onto a printed sheet in the box.'],
+            ['Version 4', 'Points only', 'Hearts, the bonus round and achievements were cut so everything comes down to one total. The interface lost its emoji, bios and extra labels, and every choice now shares one button style.'],
+          ].map(([v, t, d], i, arr) => (
+            <div key={v} style={{ display: 'grid', gridTemplateColumns: '18px 1fr', gap: 18 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ width: 12, height: 12, borderRadius: '50%', background: i === arr.length - 1 ? C.accent : C.bg, border: `2px solid ${C.accent}`, marginTop: 6 }} />
+                {i < arr.length - 1 && <span style={{ flex: 1, width: 2, background: 'rgba(255,77,109,0.3)' }} />}
+              </div>
+              <div style={{ paddingBottom: 28 }}>
+                <Small style={{ color: C.accent, fontWeight: 600 }}>{v}</Small>
+                <div style={{ fontFamily: ANTON, fontSize: 24, color: C.cream, margin: '2px 0 6px' }}>{t.toUpperCase()}</div>
+                <P style={{ marginBottom: 0, fontSize: 15 }}>{d}</P>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 6 }}>KEY DECISIONS</div>
+        {[
+          ['Why let the cards run the game?', "Earlier versions had the app call out card numbers, collect private decisions by passing the phone around, and do all the math. The phone kept pulling everyone's attention away from the table. Now the table does the playing, dealing and peeking and saying Date or Ghost out loud, and the phone only does what people are bad at: remembering the fine print and keeping score."],
+          ['Why phone-sized on a computer?', 'The game is built to feel like a phone app. On a computer it opens as an iPhone-sized screen, so it always feels like something in your hand, not something filling a monitor.'],
+          ['Why draw the online cards like the printed deck?', 'So both modes feel like one game. The same card faces show up on the table and on the phone, and stalking online is literally flipping a card over.'],
+        ].map(([q, a], i) => (
+          <div key={q} style={{ display: 'grid', gridTemplateColumns: '44px 1fr', gap: 12, padding: '24px 0', borderTop: hair }}>
+            <span style={{ fontFamily: ANTON, fontSize: 28, color: C.accent, lineHeight: 1 }}>{i + 1}</span>
+            <div>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 18, color: C.cream, marginBottom: 8 }}>{q}</div>
+              <P style={{ marginBottom: 0 }}>{a}</P>
+            </div>
+          </div>
+        ))}
       </Section>
 
       <Gap />
@@ -396,26 +427,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           ))}
         </div>
         <Small style={{ marginTop: 12 }}>Players choose who they’re looking for at the start: girls, guys or everyone.</Small>
-      </Section>
-
-      <Gap />
-
-      {/* ── Decisions ── */}
-      <Section>
-        <Head kicker="Decisions">Why it works this way.</Head>
-        {[
-          ['Why let the cards run the game?', "Earlier versions had the app call out card numbers, collect private decisions by passing the phone around, and do all the math. The phone kept pulling everyone's attention away from the table. Now the table does the playing, dealing and peeking and saying Date or Ghost out loud, and the phone only does what people are bad at: remembering the fine print and keeping score."],
-          ['Why phone-sized on a computer?', 'The game is built to feel like a phone app. On a computer it opens as an iPhone-sized screen, so it always feels like something in your hand, not something filling a monitor.'],
-          ['Why draw the online cards like the printed deck?', 'So both modes feel like one game. The same card faces show up on the table and on the phone, and stalking online is literally flipping a card over.'],
-        ].map(([q, a], i) => (
-          <div key={q} style={{ display: 'grid', gridTemplateColumns: '44px 1fr', gap: 12, padding: '24px 0', borderTop: hair }}>
-            <span style={{ fontFamily: ANTON, fontSize: 28, color: C.accent, lineHeight: 1 }}>{i + 1}</span>
-            <div>
-              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 18, color: C.cream, marginBottom: 8 }}>{q}</div>
-              <P style={{ marginBottom: 0 }}>{a}</P>
-            </div>
-          </div>
-        ))}
       </Section>
 
       <Gap h={130} />
