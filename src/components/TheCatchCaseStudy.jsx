@@ -741,10 +741,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ marginTop: 48 }}>
             <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color: '#555', marginBottom: 20 }}>VOICE</div>
             <div style={{ padding: '26px 24px', background: C.card, border: hair, borderLeft: `3px solid ${C.accent}` }}>
-              <div style={{ fontFamily: ANTON, fontSize: 'clamp(22px,4vw,30px)', color: C.cream, lineHeight: 1.1, letterSpacing: '0.02em' }}>
-                SAME RULES. <span style={{ color: C.accent }}>LOUDER CONSEQUENCES.</span>
-              </div>
-              <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', lineHeight: 1.6, margin: '10px 0 18px', maxWidth: 520 }}>
+              <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', lineHeight: 1.6, margin: '0 0 18px', maxWidth: 520 }}>
                 Dry, knowing, a little too honest — the friend who reads the group chat and says what everyone's thinking.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

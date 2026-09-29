@@ -4,8 +4,8 @@
 // the user supplied — public/thecatch/brand/logo-full.svg — used as-is, not
 // redrawn in code. Earlier versions tried to hand-recreate it and never
 // matched; don't go back to that. Unlike the older PNG version, this SVG
-// does NOT bake in the "SAME RULES. LOUDER CONSEQUENCES." tagline, so
-// CatchHero renders that as real text underneath instead.
+// does not bake in any tagline; pass `subtitle` to CatchHero to show one
+// underneath as real text.
 
 const ANTON = "'Anton', sans-serif"
 const WS = "'Work Sans', sans-serif"
@@ -32,9 +32,11 @@ export function CatchHero({ maxWidth = 560, subtitle, subtitleColor = 'rgba(239,
         alt="THE CATCH"
         style={{ width: '100%', maxWidth, display: 'inline-block' }}
       />
-      <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: subtitleColor, letterSpacing: '0.18em', margin: '10px 0 0' }}>
-        {subtitle || 'SAME RULES. LOUDER CONSEQUENCES.'}
-      </p>
+      {subtitle && (
+        <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: subtitleColor, letterSpacing: '0.18em', margin: '10px 0 0' }}>
+          {subtitle}
+        </p>
+      )}
     </div>
   )
 }
