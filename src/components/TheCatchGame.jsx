@@ -392,9 +392,6 @@ function FinalScreen({ state, dispatch, onClose }) {
 
       <Label>Everyone's title</Label>
       <Leaderboard players={state.players} withTitles />
-      <p style={{ fontFamily: WS, fontSize: 12, color: '#666', lineHeight: 1.6, marginTop: 14, textAlign: 'center' }}>
-        18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet · Ties are shared
-      </p>
     </Screen>
   )
 }

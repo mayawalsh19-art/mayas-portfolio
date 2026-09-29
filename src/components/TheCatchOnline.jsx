@@ -664,8 +664,6 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
           )}
           <SectionLabel>Everyone's title</SectionLabel>
           <Leaderboard players={players} myId={myId} withTitles />
-          <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', lineHeight: 1.6, marginTop: 14 }}>
-            18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet. Ties are shared.</p>
         </Scroll>
         <Footer><Btn onClick={onClose} outline>← BACK TO PORTFOLIO</Btn></Footer>
       </Frame>
