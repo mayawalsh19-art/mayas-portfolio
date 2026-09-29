@@ -132,9 +132,6 @@ function TheCatchCard({ onClick }) {
               alt="THE CATCH"
               style={{ width: '100%', display: 'block' }}
             />
-            <p style={{ fontFamily: "'Work Sans', sans-serif", fontWeight: 300, fontSize: 10, color: 'rgba(239,230,220,0.4)', letterSpacing: '0.16em', margin: '8px 0 0' }}>
-              SAME RULES. LOUDER CONSEQUENCES.
-            </p>
           </div>
         </div>
 
