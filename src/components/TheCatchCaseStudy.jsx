@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CatchHero, CatchWordmark } from './CatchBrand'
 import { TraitCardFront, TraitCardBack, StalkChip } from './CatchCards'
 import { Doll, DOLL_BG } from './DollCharacters'
@@ -111,15 +111,18 @@ function OnlineHand() {
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
+  const [enlarged, setEnlarged] = useState(null)   // image shown full size, or null
+
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    const onKey = e => { if (e.key === 'Escape') onClose() }
+    // Esc closes the enlarged image first; only then the whole case study
+    const onKey = e => { if (e.key === 'Escape') { if (enlarged) setEnlarged(null); else onClose() } }
     window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
     }
-  }, [onClose])
+  }, [onClose, enlarged])
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
@@ -270,7 +273,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center', marginTop: 70 }}>
-          <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet" style={{ width: '100%', maxWidth: 440, justifySelf: 'center', borderRadius: 6, boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }} />
+          <button onClick={() => setEnlarged({ src: '/thecatch/screens/howto.jpg', alt: 'The one-page how-to sheet' })}
+            aria-label="Enlarge the how-to sheet"
+            style={{ all: 'unset', justifySelf: 'center', width: '100%', maxWidth: 440, cursor: 'zoom-in', textAlign: 'center' }}>
+            <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet" style={{ display: 'block', width: '100%', borderRadius: 6, boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }} />
+            <Small style={{ marginTop: 12 }}>Click to enlarge</Small>
+          </button>
           <div>
             <div style={{ fontFamily: ANTON, fontSize: 28, color: C.cream, marginBottom: 12 }}>THE HOW-TO SHEET</div>
             <P>Everything a new table needs on one page: setup, the five steps of a match, card values, the six player types, what the phone adds for you, and the final titles. It folds into quarters and lives in the box.</P>
@@ -423,6 +431,16 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
       </Section>
 
       <Gap h={110} />
+
+      {/* ── Enlarged image ── */}
+      {enlarged && (
+        <div onClick={() => setEnlarged(null)} role="dialog" aria-label={enlarged.alt}
+          style={{ position: 'fixed', inset: 0, zIndex: 60, background: 'rgba(8,6,10,0.92)', overflowY: 'auto', cursor: 'zoom-out', padding: '64px 16px 40px', boxSizing: 'border-box' }}>
+          <button onClick={() => setEnlarged(null)} aria-label="Close"
+            style={{ position: 'fixed', top: 14, right: 16, width: 40, height: 40, borderRadius: 6, border: line, background: C.bg, color: C.cream, fontFamily: WS, fontSize: 18, cursor: 'pointer' }}>✕</button>
+          <img src={enlarged.src} alt={enlarged.alt} style={{ display: 'block', width: '100%', maxWidth: 900, margin: '0 auto', borderRadius: 6, boxShadow: '0 30px 80px rgba(0,0,0,0.6)' }} />
+        </div>
+      )}
 
       {/* ── Footer ── */}
       <footer style={{ borderTop: hair, padding: '26px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
