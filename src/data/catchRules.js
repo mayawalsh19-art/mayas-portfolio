@@ -1,8 +1,8 @@
-// The Catch — scoring rules shared by the table companion and online mode.
+// The Catch — scoring rules for the table companion.
 //
 // A player is { score, ghosts, dates, redFlags, ... }. It's purely a points game.
 // decisions[id] is { action: 'date' | 'ghost', total } where `total` is that
-// player's type-adjusted card sum (typed in at the table; computed online).
+// player's type-adjusted card sum, typed in at the table.
 // Everything below is layered on automatically.
 
 export const ROUNDS = 7

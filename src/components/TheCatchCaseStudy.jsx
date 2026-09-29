@@ -82,37 +82,8 @@ function Btn({ children, onClick, primary = false }) {
 
 const Gap = ({ h = 120 }) => <div style={{ height: h }} />
 
-// ─── Online: a phone showing the dealt hand (live card components) ────────────
-function OnlineHand() {
-  const up = [card(10), card(17)], peeked = card(63)
-  return (
-    <div style={{ width: 330, maxWidth: '100%', padding: 7, borderRadius: 34, background: '#08060a', border: line, boxShadow: '0 30px 60px rgba(0,0,0,0.45)', flexShrink: 0 }}>
-      <div style={{ borderRadius: 27, overflow: 'hidden', background: C.bg, padding: '16px 12px 14px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12, padding: '0 2px' }}>
-          <span style={{ fontFamily: ANTON, fontSize: 13, color: C.accent, letterSpacing: '0.1em' }}>MATCH 3 / 7</span>
-          <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.cream }}>+9 pts</span>
-        </div>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, lineHeight: 1, marginBottom: 2 }}>RIVER, 26</div>
-        <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.18em', marginBottom: 12 }}>THE SOFT LAUNCH</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 7 }}>
-          {up.map(t => <TraitCardFront key={t.no} compact text={t.text} value={t.value} />)}
-          <div style={{ position: 'relative', outline: `2px solid ${C.gold}`, outlineOffset: 2, borderRadius: 2 }}>
-            <TraitCardFront compact text={peeked.text} value={peeked.value} />
-          </div>
-          <TraitCardBack compact /><TraitCardBack compact />
-        </div>
-        <div style={{ fontFamily: WS, fontSize: 11, color: muted, textAlign: 'center', margin: '10px 0 12px' }}>You stalked one card. Only you can see it.</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-          <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', color: '#fff', background: C.accent, borderRadius: 6, padding: '11px 0', textAlign: 'center' }}>DATE</div>
-          <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', color: C.cream, border: line, borderRadius: 6, padding: '11px 0', textAlign: 'center' }}>GHOST</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
-export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
+export default function TheCatchCaseStudy({ onClose, onPlay }) {
   const [enlarged, setEnlarged] = useState(null)   // image shown full size, or null
 
   useEffect(() => {
@@ -143,7 +114,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           A dating card game with a phone for a matchmaker. Read the flags, bluff the table, and find out who you really went home with.
         </p>
         <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 34 }}>
-          {[['Type', 'Card game + companion app'], ['Platform', 'Printed deck + phone'], ['Modes', 'In person + Online'], ['Year', '2026']].map(([k, v]) => (
+          {[['Type', 'Card game + companion app'], ['Platform', 'Printed deck + phone'], ['Players', '2–6'], ['Year', '2026']].map(([k, v]) => (
             <div key={k} style={{ padding: '9px 14px', border: line, borderRadius: 6, fontFamily: WS, fontSize: 13 }}>
               <span style={{ fontWeight: 500, color: '#888' }}>{k} </span><span style={{ fontWeight: 600, color: C.cream }}>{v}</span>
             </div>
@@ -151,7 +122,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         </div>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn primary onClick={onPlay}>PLAY</Btn>
-          {onPlayOnline && <Btn onClick={onPlayOnline}>PLAY ONLINE</Btn>}
         </div>
       </header>
 
@@ -185,7 +155,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 1, marginTop: 56, background: 'rgba(239,230,220,0.08)', border: hair, borderRadius: 8, overflow: 'hidden' }}>
-          {[['Course', 'IXD 432, senior year'], ['Year', '2026'], ['Built with', 'React, Vite, PeerJS'], ['Made', 'Web app, printed deck, rulebook'], ['Players', '2–6, 20–40 minutes']].map(([k, v]) => (
+          {[['Course', 'IXD 432, senior year'], ['Year', '2026'], ['Built with', 'React, Vite'], ['Made', 'Web app, printed deck, rulebook'], ['Players', '2–6, 20–40 minutes']].map(([k, v]) => (
             <div key={k} style={{ background: C.bg, padding: '16px 18px' }}>
               <Small>{k}</Small>
               <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginTop: 3 }}>{v}</div>
@@ -219,7 +189,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           ))}
         </div>
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE OPPORTUNITY</div>
-        <P style={{ maxWidth: 760 }}>The Catch takes the group energy of a party game and adds real hidden information: face-down cards, a secret catfish, stalk chips, and player types that change the math. It's free, needs no setup, and plays at the table or online.</P>
+        <P style={{ maxWidth: 760 }}>The Catch takes the group energy of a party game and adds real hidden information: face-down cards, a secret catfish, stalk chips, and player types that change the math. It's free to print, and all it needs besides the deck is one phone.</P>
       </Section>
 
       <Gap />
@@ -331,20 +301,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
 
       <Gap />
 
-      {/* ── Online ── */}
-      <Section wide>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
-          <div>
-            <Head kicker="Online">No deck? No problem.</Head>
-            <P>When friends are apart, every phone is dealt the same six cards, drawn exactly like the printed deck. Tap a face-down card to stalk it and it flips for you alone. Everyone picks Date or Ghost in secret, and the host’s phone does the math.</P>
-            <P>Using the same card faces in both modes means there’s nothing new to learn when you switch between them.</P>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}><OnlineHand /></div>
-        </div>
-      </Section>
-
-      <Gap />
-
       {/* ── Process ── */}
       <Section>
         <Head kicker="Process">How it evolved.</Head>
@@ -355,6 +311,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             ['Version 2', 'Multiplayer only', 'Solo mode came out. The phone told the table which numbered cards to deal, and players still decided in private on the phone.'],
             ['Version 3', 'The cards are the game', 'The deck took over: deal, peek and say Date or Ghost out loud. The phone became a matchmaker that shows the profile and keeps score, and the rules moved onto a printed sheet in the box.'],
             ['Version 4', 'Points only', 'Hearts, the bonus round and achievements were cut so everything comes down to one total. The interface lost its emoji, bios and extra labels, and every choice now shares one button style.'],
+            ['Version 5', 'One mode', 'Online mode was cut. The game is the deck and one phone at the table, so every rule lives in one place and the cards stay at the centre.'],
           ].map(([v, t, d], i, arr) => (
             <div key={v} style={{ display: 'grid', gridTemplateColumns: '18px 1fr', gap: 18 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -373,7 +330,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         {[
           ['Why let the cards run the game?', "Earlier versions had the app call out card numbers, collect private decisions by passing the phone around, and do all the math. The phone kept pulling everyone's attention away from the table. Now the table does the playing, dealing and peeking and saying Date or Ghost out loud, and the phone only does what people are bad at: remembering the fine print and keeping score."],
           ['Why phone-sized on a computer?', 'The game is built to feel like a phone app. On a computer it opens as an iPhone-sized screen, so it always feels like something in your hand, not something filling a monitor.'],
-          ['Why draw the online cards like the printed deck?', 'So both modes feel like one game. The same card faces show up on the table and on the phone, and stalking online is literally flipping a card over.'],
+          ['Why cut online mode?', 'Online mode dealt the cards onto every phone, which made the phone the game again. It also meant every rule change had to be built twice, and it needed an internet connection to demo. One mode keeps the cards at the centre of the table.'],
         ].map(([q, a], i) => (
           <div key={q} style={{ display: 'grid', gridTemplateColumns: '44px 1fr', gap: 12, padding: '24px 0', borderTop: hair }}>
             <span style={{ fontFamily: ANTON, fontSize: 28, color: C.accent, lineHeight: 1 }}>{i + 1}</span>
@@ -431,10 +388,9 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
       {/* ── Play it ── */}
       <Section style={{ textAlign: 'center' }}>
         <h2 style={{ fontFamily: ANTON, fontWeight: 400, fontSize: 'clamp(48px,10vw,84px)', color: C.cream, lineHeight: 0.92, margin: '0 0 12px' }}>READY TO <span style={{ color: C.accent }}>PLAY?</span></h2>
-        <Small style={{ marginBottom: 28, fontSize: 15 }}>Grab a deck and a phone, or play online with friends.</Small>
+        <Small style={{ marginBottom: 28, fontSize: 15 }}>Grab the deck and one phone.</Small>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn primary onClick={onPlay}>PLAY</Btn>
-          {onPlayOnline && <Btn onClick={onPlayOnline}>PLAY ONLINE</Btn>}
         </div>
       </Section>
 

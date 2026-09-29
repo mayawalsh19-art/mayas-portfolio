@@ -1,8 +1,7 @@
 import { CatchWordmark } from './CatchBrand'
 
-// The printed trait cards and stalk chip, drawn in code. Shared by the case
-// study (to show the physical token) and online mode (where players get the
-// same cards on their phones). Keep these matching the print deck.
+// The printed trait cards and stalk chip, drawn in code for the case study.
+// Keep these matching the print deck.
 
 const C = { bg: '#131011', card: '#1E1A1B', accent: '#FF4D6D', teal: '#7CE0A8', gold: '#E4C46A', cream: '#EFE6DC' }
 const ANTON = "'Anton', sans-serif"

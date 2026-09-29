@@ -23,7 +23,7 @@ export function CatchWordmark({ size = 14, accent = '#FF4D6D', cream = '#EFE6DC'
 
 // Full hero lockup — the exact reference artwork, used as-is. `subtitle`
 // replaces the default tagline for a placement that needs different
-// context copy (e.g. online multiplayer's "SEPARATE DEVICES · ONLINE").
+// context copy.
 export function CatchHero({ maxWidth = 560, subtitle, subtitleColor = 'rgba(239,230,220,0.4)', style }) {
   return (
     <div style={{ textAlign: 'center', ...style }}>

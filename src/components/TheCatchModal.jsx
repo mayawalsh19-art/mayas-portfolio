@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import TheCatchGame from './TheCatchGame'
 import TheCatchCaseStudy from './TheCatchCaseStudy'
-import TheCatchOnline from './TheCatchOnline'
 
 export default function TheCatchModal({ onClose }) {
-  const [view, setView] = useState('case_study') // 'case_study' | 'game' | 'online'
-  const inGame = view === 'game' || view === 'online'
+  const [view, setView] = useState('case_study') // 'case_study' | 'game'
+  const inGame = view === 'game'
 
   // While a game is open, let the page run edge-to-edge on notched iPhones so the
   // frame can pad itself around the Dynamic Island and home indicator (safe-area insets).
@@ -44,14 +43,12 @@ export default function TheCatchModal({ onClose }) {
     </div>
   )
 
-  if (view === 'game')   return phoneFrame(<TheCatchGame   onClose={() => setView('case_study')} />)
-  if (view === 'online') return phoneFrame(<TheCatchOnline onClose={() => setView('case_study')} />)
+  if (view === 'game') return phoneFrame(<TheCatchGame onClose={() => setView('case_study')} />)
 
   return (
     <TheCatchCaseStudy
       onClose={onClose}
       onPlay={() => setView('game')}
-      onPlayOnline={() => setView('online')}
     />
   )
 }
