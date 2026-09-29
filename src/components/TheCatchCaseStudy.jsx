@@ -777,21 +777,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </p>
           <SystemFlow />
 
-          {/* Figma downloads */}
-          <div style={{ marginTop: 40, padding: '20px 22px', background: C.card, border: `1px solid ${C.gold}33`, display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ fontFamily: ANTON, fontSize: 11, color: C.gold, letterSpacing: '0.16em' }}>EDITABLE IN FIGMA</div>
-            <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', margin: 0, lineHeight: 1.6 }}>
-              Both diagrams open in Figma as editable layers — drag either file into any frame.
-            </p>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <a href="/thecatch/system-flow.svg" download="TheCatch-SystemFlow.svg" style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', color: C.gold, border: `1px solid ${C.gold}44`, padding: '9px 18px', textDecoration: 'none', display: 'inline-block' }}>
-                ↓ SYSTEM FLOW SVG
-              </a>
-              <a href="/thecatch/design-system.svg" download="TheCatch-DesignSystem.svg" style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', color: C.gold, border: `1px solid ${C.gold}44`, padding: '9px 18px', textDecoration: 'none', display: 'inline-block' }}>
-                ↓ DESIGN SYSTEM SVG
-              </a>
-            </div>
-          </div>
         </Section>
 
         <Divider />
