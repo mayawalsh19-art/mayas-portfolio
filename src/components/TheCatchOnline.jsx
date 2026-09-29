@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle } from '../data/catchProfiles'
-import { ROUNDS, HEARTS, GHOSTS, STALKS, scoreMatch, rankPlayers } from '../data/catchRules'
+import { ROUNDS, GHOSTS, STALKS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { useGameRoom } from '../hooks/useGameRoom'
 import { CatchWordmark, CatchHero } from './CatchBrand'
 import { TraitCardFront, TraitCardBack } from './CatchCards'
@@ -29,7 +29,7 @@ function genCode() {
 function signed(n) { return n > 0 ? `+${n}` : n === 0 ? '±0' : `${n}` }
 
 function makePlayer(id, name, typeId) {
-  return { id, name, typeId, score: 0, hearts: HEARTS, ghosts: GHOSTS, stalks: STALKS, dates: 0, redFlags: 0 }
+  return { id, name, typeId, score: 0, ghosts: GHOSTS, stalks: STALKS, dates: 0, redFlags: 0 }
 }
 
 function cardsOf(profile) {
@@ -157,10 +157,6 @@ function RoomCode({ code }) {
   )
 }
 
-function Hearts({ n }) {
-  return <span>{Array.from({ length: HEARTS }, (_, i) => <span key={i} style={{ color: C.accent, opacity: i < n ? 1 : 0.18 }}>♥</span>)}</span>
-}
-
 function Leaderboard({ players, myId, withTitles = false }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -179,7 +175,6 @@ function Leaderboard({ players, myId, withTitles = false }) {
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
               <div style={{ fontFamily: ANTON, fontSize: 20, color: p.score >= 0 ? C.teal : C.accent }}>{signed(p.score)}</div>
-              <div style={{ fontSize: 9 }}><Hearts n={p.hearts} /></div>
             </div>
           </div>
         )
@@ -243,7 +238,7 @@ const HOW_TO = [
   ['Reveal', 'When everyone is in, every card flips and your phone adds them up for your type.'],
   ['Win', 'After 7 matches the highest total wins, and everyone gets a title from their score.'],
 ]
-const HOW_TO_RULES = 'A negative date costs a heart · −5 or worse: −2 more · 7+ as the only dater: +2 · at 0 hearts good dates count half · one secret catfish: dated −4 & a heart, ghosted +1'
+const HOW_TO_RULES = 'It\'s all points · a total of −5 or worse: −2 more · 7+ as the only dater: +2 · one secret catfish: dated −4, ghosted +1 · ties are shared'
 
 function HowToPlay() {
   return (
@@ -542,7 +537,7 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
   const me       = players.find(p => p.id === myId)
   const profile  = profiles[round]
   const isHost   = !!onNext
-  const hearts   = <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10 }}><Hearts n={me?.hearts ?? 0} /></span>
+  const myScore  = <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, color: C.cream }}>{signed(me?.score ?? 0)} pts</span>
   const title    = `MATCH ${round + 1} / ${ROUNDS}`
 
   // ── DECIDING: look at the profile + your hand, stalk, then date or ghost ───
@@ -552,7 +547,7 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
     const canStalk = !decided && (me?.stalks ?? 0) > 0
     const waitingOn = players.filter(p => !decisions[p.id])
     return (
-      <Frame onClose={onClose} title={title} right={hearts}>
+      <Frame onClose={onClose} title={title} right={myScore}>
         <Scroll style={{ padding: '14px 14px 16px' }}>
           <ProfileHeader profile={profile} />
           <SectionLabel right={<span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold, letterSpacing: '0.1em' }}>🔍 {me?.stalks ?? 0} STALK{(me?.stalks ?? 0) === 1 ? '' : 'S'} LEFT</span>}>
@@ -592,12 +587,12 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
     const mine = results?.[myId]
     const last = round >= ROUNDS - 1
     return (
-      <Frame onClose={onClose} title={title} right={hearts}>
+      <Frame onClose={onClose} title={title} right={myScore}>
         <Scroll style={{ padding: '14px 14px 16px' }}>
           {profile.isCatfish && (
             <div style={{ background: '#0d1a10', border: `1px solid ${C.teal}44`, borderRadius: 6, padding: '12px 14px', marginBottom: 14, textAlign: 'center' }}>
               <div style={{ fontFamily: ANTON, fontSize: 18, color: C.teal, letterSpacing: '0.08em' }}>🎣 {profile.name.toUpperCase()} WAS THE CATFISH</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#9ab', marginTop: 4 }}>Dated them: −4 and a heart. Ghosted them: +1.</div>
+              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#9ab', marginTop: 4 }}>Dated them: −4. Ghosted them: +1.</div>
             </div>
           )}
           {mine && (
@@ -649,7 +644,7 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
   if (phase === 'results') {
     const ranked  = rankPlayers(players)
     const top     = ranked[0]
-    const winners = ranked.filter(p => p.score === top.score && p.hearts === top.hearts)
+    const winners = ranked.filter(p => p.score === top.score)
     const mineT   = me ? getTitle(me.score) : null
     return (
       <Frame onClose={onClose} title="FINAL TITLES">
@@ -670,8 +665,7 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
           <SectionLabel>Everyone's title</SectionLabel>
           <Leaderboard players={players} myId={myId} withTitles />
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', lineHeight: 1.6, marginTop: 14 }}>
-            18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet. Ties go to whoever kept more hearts.
-          </p>
+            18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet. Ties are shared.</p>
         </Scroll>
         <Footer><Btn onClick={onClose} outline>← BACK TO PORTFOLIO</Btn></Footer>
       </Frame>

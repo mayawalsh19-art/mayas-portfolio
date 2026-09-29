@@ -1,6 +1,6 @@
 import { useReducer, useState } from 'react'
 import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle } from '../data/catchProfiles'
-import { ROUNDS, HEARTS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
+import { ROUNDS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { CatchWordmark } from './CatchBrand'
 
@@ -33,7 +33,7 @@ const MAX_PLAYERS = 6
 
 // ─── game state ───────────────────────────────────────────────────────────────
 function makePlayer(id, name, playerType) {
-  return { id, name, playerType, score: 0, hearts: HEARTS, ghosts: GHOSTS, dates: 0, redFlags: 0 }
+  return { id, name, playerType, score: 0, ghosts: GHOSTS, dates: 0, redFlags: 0 }
 }
 
 const INIT = { screen: 'setup', players: [], profiles: [], round: 0, results: null }
@@ -109,10 +109,6 @@ function Hero({ top, bottom, sub }) {
 
 function Label({ children, color = '#888' }) {
   return <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color, marginBottom: 8 }}>{children}</div>
-}
-
-function Hearts({ n }) {
-  return <span>{Array.from({ length: HEARTS }, (_, i) => <span key={i} style={{ color: C.accent, opacity: i < n ? 1 : 0.18 }}>♥</span>)}</span>
 }
 
 function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) }
@@ -306,7 +302,7 @@ function MatchResultScreen({ state, dispatch }) {
         </div>
         {isCatfish && <>
           <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95 }}>WAS THE CATFISH</div>
-          <div style={{ fontFamily: WS, fontSize: 13, color: '#999', marginTop: 8 }}>Dated: −4 and a heart · Ghosted: +1</div>
+          <div style={{ fontFamily: WS, fontSize: 13, color: '#999', marginTop: 8 }}>Dated: −4 · Ghosted: +1</div>
         </>}
       </div>
 
@@ -319,7 +315,7 @@ function MatchResultScreen({ state, dispatch }) {
 // Each row: rank, name, what happened this match, and the running total.
 function Standings({ players, results }) {
   const ranked = rankPlayers(players)
-  const soleLeader = ranked.length > 1 && (ranked[0].score !== ranked[1].score || ranked[0].hearts !== ranked[1].hearts)
+  const soleLeader = ranked.length > 1 && ranked[0].score !== ranked[1].score
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {ranked.map((p, rank) => {
@@ -339,7 +335,6 @@ function Standings({ players, results }) {
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: p.score >= 0 ? C.cream : C.accent }}>{signed(p.score)}</div>
-              <div style={{ fontSize: 11, marginTop: 3 }}><Hearts n={p.hearts} /></div>
             </div>
           </div>
         )
@@ -364,7 +359,6 @@ function Leaderboard({ players, withTitles = false }) {
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
               <div style={{ fontFamily: ANTON, fontSize: 22, color: p.score >= 0 ? C.teal : C.accent }}>{signed(p.score)}</div>
-              <div style={{ fontSize: 11 }}><Hearts n={p.hearts} /></div>
             </div>
           </div>
         )
@@ -377,7 +371,7 @@ function Leaderboard({ players, withTitles = false }) {
 function FinalScreen({ state, dispatch, onClose }) {
   const ranked  = rankPlayers(state.players)
   const top     = ranked[0]
-  const winners = ranked.filter(p => p.score === top.score && p.hearts === top.hearts)
+  const winners = ranked.filter(p => p.score === top.score)
   const title   = getTitle(top.score)
 
   return (
@@ -393,13 +387,13 @@ function FinalScreen({ state, dispatch, onClose }) {
         <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95, marginTop: 6 }}>{winners.map(w => w.name.toUpperCase()).join(' & ')}</div>
         <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, lineHeight: 1.1, marginTop: 4 }}>{title.title}</div>
         <p style={{ fontFamily: WS, fontSize: 13, color: '#999', margin: '10px 0 0' }}>{title.desc}</p>
-        <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>{top.score} points · <Hearts n={top.hearts} /></div>
+        <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>{top.score} points</div>
       </div>
 
       <Label>Everyone's title</Label>
       <Leaderboard players={state.players} withTitles />
       <p style={{ fontFamily: WS, fontSize: 12, color: '#666', lineHeight: 1.6, marginTop: 14, textAlign: 'center' }}>
-        18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet · Ties go to whoever kept more hearts
+        18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet · Ties are shared
       </p>
     </Screen>
   )
