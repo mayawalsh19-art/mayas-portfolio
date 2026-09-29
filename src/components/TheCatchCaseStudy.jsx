@@ -273,7 +273,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="The deck">The cards hold the secrets.</Head>
-            <P>A printable deck made for this game: 64 trait cards in green, yellow and red flags, 6 blanks to write your own, 30 stalk chips, and a one-page how-to sheet that folds into the box. The rules live in the box, so the phone never has to explain itself.</P>
+            <P>A printable deck made for this game: 68 trait cards in green, yellow and red flags, including 4 dealbreakers worth −10, 6 blanks to write your own, 30 stalk chips, and a one-page how-to sheet that folds into the box. The rules live in the box, so the phone never has to explain itself.</P>
             <Small style={{ marginTop: 12 }}>Poker-size cards, 2.5 × 3.5 in.</Small>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
@@ -281,7 +281,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             <TraitCardFront text={card(10).text} value={card(10).value} />
             <TraitCardFront text={card(40).text} value={card(40).value} />
             <TraitCardFront text={card(48).text} value={card(48).value} />
-            <TraitCardFront blank green />
+            <TraitCardFront text={card(65).text} value={card(65).value} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><StalkChip size={92} /></div>
           </div>
         </div>

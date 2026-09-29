@@ -96,6 +96,11 @@ export const TRAIT_POOL = [
   { text: 'Never asks how you are doing — only talks about themselves',      value: -2 },
   { text: 'Gets jealous but calls it caring',                                value: -2 },
   { text: 'Knows exactly what to say and rarely means any of it',            value: -3 },
+  // Dealbreakers: one of these can sink a whole date
+  { text: "Is secretly still married", value: -10 },
+  { text: "Has a partner they “forgot” to mention", value: -10 },
+  { text: "Went through your phone while you slept", value: -10 },
+  { text: "Screams at waiters", value: -10 },
 ]
 
 // ─── Archetype pool — randomized each game ────────────────────────────────────
@@ -208,7 +213,7 @@ export function generateProfiles(count = 7, customTraits = [], customProfiles = 
 
   // Positive and negative trait pools for catfish injection
   const posPool = CARD_POOL.filter(t => t.value > 0)
-  const negPool = CARD_POOL.filter(t => t.value <= -3)
+  const negPool = CARD_POOL.filter(t => t.value === -3)
 
   // Custom traits are the hand-written blank cards (card = 'W1'…'W6')
   const fullPool   = shuffle([

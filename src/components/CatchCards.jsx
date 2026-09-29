@@ -8,6 +8,7 @@ const ANTON = "'Anton', sans-serif"
 const WS    = "'Work Sans', sans-serif"
 
 function flagOf(v) {
+  if (v <= -4) return ['DEALBREAKER', C.accent]
   if (v >= 1)  return ['GREEN FLAG', C.teal]
   if (v >= -1) return ['YELLOW FLAG', C.gold]
   return ['RED FLAG', C.accent]
@@ -23,7 +24,7 @@ export function TraitCardFront({ text, value, blank = false, green = true, compa
     <div style={{ aspectRatio: '5 / 7', background: C.card, borderLeft: `${s.border}px solid ${col}`, padding: s.pad, display: 'flex', flexDirection: 'column', boxShadow: '0 16px 32px rgba(0,0,0,0.5)', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 4 }}>
         {blank && <span style={{ fontFamily: ANTON, fontSize: s.no - 2, letterSpacing: '0.08em', color: 'rgba(239,230,220,0.55)', whiteSpace: 'nowrap' }}>WRITE YOUR OWN</span>}
-        <span style={{ fontFamily: WS, fontWeight: 700, fontSize: s.tag, letterSpacing: '0.14em', color: col, border: `1px solid ${col}`, padding: '2px 3px', whiteSpace: 'nowrap' }}>{label}</span>
+        <span style={{ fontFamily: WS, fontWeight: 700, fontSize: s.tag, letterSpacing: '0.14em', color: label === 'DEALBREAKER' ? C.bg : col, background: label === 'DEALBREAKER' ? col : 'transparent', border: `1px solid ${col}`, padding: '2px 3px', whiteSpace: 'nowrap' }}>{label}</span>
       </div>
       {blank
         ? <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16 }}>{[0, 1, 2].map(i => <div key={i} style={{ borderBottom: '1px solid rgba(239,230,220,0.22)' }} />)}</div>
