@@ -88,22 +88,34 @@ function advance(st) {
 }
 
 // ─── Shared design primitives ─────────────────────────────────────────────────
-function Btn({ children, onClick, color = C.accent, outline = false, disabled = false, style = {} }) {
+function Btn({ children, onClick, outline = false, disabled = false, style = {} }) {
   return (
     <button
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       style={{
-        fontFamily: WS, fontWeight: 700, fontSize: 13, letterSpacing: '0.12em',
-        padding: '14px 24px', border: outline ? `1px solid ${color}55` : 'none', borderRadius: 6,
-        background: disabled ? '#252020' : outline ? `${color}12` : color,
-        color: disabled ? '#3a3535' : outline ? color : '#fff',
-        cursor: disabled ? 'not-allowed' : 'pointer', width: '100%',
-        textTransform: 'uppercase', ...style,
+        fontFamily: WS, fontWeight: 700, fontSize: 15, letterSpacing: '0.12em',
+        minHeight: 52, padding: '0 20px', borderRadius: 6, width: '100%',
+        border: outline ? '1px solid #3a3535' : 'none',
+        background: disabled ? '#252020' : outline ? 'transparent' : C.accent,
+        color: disabled ? '#555' : outline ? C.cream : '#fff',
+        boxShadow: !disabled && !outline ? '0 0 20px rgba(255,77,109,0.35)' : 'none',
+        cursor: disabled ? 'not-allowed' : 'pointer', ...style,
       }}
     >{children}</button>
   )
 }
+
+// Every choice button shares this look (same as the table game): even size,
+// sentence-case text, pink fill when selected.
+const choiceBtn = selected => ({
+  minHeight: 40, padding: '0 6px', fontFamily: WS, fontWeight: 600, fontSize: 12,
+  color: selected ? '#fff' : '#aaa', background: selected ? C.accent : 'transparent',
+  border: `1px solid ${selected ? C.accent : '#3a3535'}`, borderRadius: 6, cursor: 'pointer',
+})
+
+const TYPE_NAME = { romantic: 'Romantic', selective: 'Selective', chaotic: 'Chaotic', overthinker: 'Overthinker', avoidant: 'Avoidant', gold_digger: 'Gold Digger' }
+function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) }
 
 function Input({ value, onChange, placeholder, maxLength = 20, style = {} }) {
   return (
@@ -124,22 +136,9 @@ function Input({ value, onChange, placeholder, maxLength = 20, style = {} }) {
 
 function TypePicker({ value, onChange }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
       {PLAYER_TYPES.map(t => (
-        <button
-          key={t.id}
-          onClick={() => onChange(t.id)}
-          style={{
-            fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.08em', borderRadius: 4,
-            padding: '11px 14px', border: `1px solid ${value === t.id ? C.accent + '88' : 'rgba(239,230,220,0.08)'}`,
-            background: value === t.id ? `${C.accent}18` : C.card,
-            color: value === t.id ? C.cream : 'rgba(239,230,220,0.45)',
-            cursor: 'pointer', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'center',
-          }}
-        >
-          <span style={{ fontSize: 18 }}>{t.emoji}</span>
-          <div style={{ color: value === t.id ? C.cream : 'rgba(239,230,220,0.45)' }}>{t.label}</div>
-        </button>
+        <button key={t.id} onClick={() => onChange(t.id)} style={choiceBtn(value === t.id)}>{TYPE_NAME[t.id]}</button>
       ))}
     </div>
   )
@@ -147,35 +146,60 @@ function TypePicker({ value, onChange }) {
 
 function RoomCode({ code }) {
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.accent}44`, borderRadius: 6, padding: '20px 24px', textAlign: 'center', marginBottom: 20 }}>
-      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.2em', marginBottom: 8 }}>ROOM CODE</div>
+    <div style={{ background: C.card, border: hair, borderRadius: 6, padding: '20px 24px', textAlign: 'center', marginBottom: 20 }}>
+      <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: '#888', marginBottom: 8 }}>Room code</div>
       <div style={{ fontFamily: ANTON, fontSize: 'clamp(48px,14vw,72px)', color: C.accent, letterSpacing: '0.18em', lineHeight: 1 }}>{code}</div>
-      <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', marginTop: 8, letterSpacing: '0.08em' }}>
-        Share this code — others open the game and tap JOIN
-      </div>
+      <div style={{ fontFamily: WS, fontSize: 12, color: '#777', marginTop: 8 }}>Everyone else opens the game and taps Join a room.</div>
     </div>
   )
 }
 
-function Leaderboard({ players, myId, withTitles = false }) {
+// Final list: rank, name, title and total. Gold only for a sole leader.
+function Leaderboard({ players, myId }) {
+  const ranked = rankPlayers(players)
+  const soleLeader = ranked.length > 1 && ranked[0].score !== ranked[1].score
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      {rankPlayers(players).map((p, rank) => {
-        const type = PLAYER_TYPES.find(t => t.id === p.typeId)
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {ranked.map((p, rank) => {
+        const lead = rank === 0 && soleLeader
         return (
-          <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '10px 14px', background: rank === 0 ? `${C.gold}12` : C.card, border: rank === 0 ? `1px solid ${C.gold}55` : p.id === myId ? `1px solid ${C.accent}44` : hair, borderRadius: 6 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-              <span style={{ fontFamily: ANTON, fontSize: 13, color: rank === 0 ? C.gold : '#444', minWidth: 20 }}>#{rank + 1}</span>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{p.name}{p.id === myId ? ' (you)' : ''}</div>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: withTitles ? C.accent : '#555', letterSpacing: '0.12em', marginTop: 2 }}>
-                  {withTitles ? getTitle(p.score).title : `${type?.emoji ?? ''} ${type?.label ?? ''}`}
-                </div>
+          <div key={p.id} style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', alignItems: 'center', gap: 12, padding: '12px 14px', background: C.card, border: lead ? `1px solid ${C.gold}66` : hair, borderRadius: 6 }}>
+            <span style={{ fontFamily: ANTON, fontSize: 20, color: lead ? C.gold : '#555', textAlign: 'center' }}>{rank + 1}</span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: ANTON, fontSize: 19, color: C.cream, letterSpacing: '0.03em', lineHeight: 1.1 }}>{p.name.toUpperCase()}{p.id === myId && <span style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: '#888', letterSpacing: 0 }}>  you</span>}</div>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: C.accent, marginTop: 3 }}>{titleCase(getTitle(p.score).title)}</div>
+            </div>
+            <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: p.score >= 0 ? C.cream : C.accent }}>{signed(p.score)}</div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// After each match: one list with what happened this match and the running
+// total, sorted, so nothing repeats (same as the table game).
+function Standings({ players, results, myId }) {
+  const ranked = rankPlayers(players)
+  const soleLeader = ranked.length > 1 && ranked[0].score !== ranked[1].score
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {ranked.map((p, rank) => {
+        const r = results[p.id]
+        const col = r.pts > 0 ? C.teal : r.pts < 0 ? C.accent : '#888'
+        const lead = rank === 0 && soleLeader
+        const what = [r.action === 'date' ? `Dated, cards ${signed(r.raw)}` : 'Ghosted', ...r.notes].join(' · ')
+        return (
+          <div key={p.id} style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', alignItems: 'center', gap: 12, padding: '12px 14px', background: C.card, border: lead ? `1px solid ${C.gold}66` : hair, borderRadius: 6 }}>
+            <span style={{ fontFamily: ANTON, fontSize: 20, color: lead ? C.gold : '#555', textAlign: 'center' }}>{rank + 1}</span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: ANTON, fontSize: 19, color: C.cream, letterSpacing: '0.03em', lineHeight: 1.1 }}>{p.name.toUpperCase()}{p.id === myId && <span style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: '#888', letterSpacing: 0 }}>  you</span>}</div>
+              <div style={{ fontFamily: WS, fontSize: 12, lineHeight: 1.45, marginTop: 3 }}>
+                <span style={{ fontWeight: 700, color: col }}>{signed(r.pts)} this match</span>
+                <span style={{ color: '#888' }}> · {what}</span>
               </div>
             </div>
-            <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <div style={{ fontFamily: ANTON, fontSize: 20, color: p.score >= 0 ? C.teal : C.accent }}>{signed(p.score)}</div>
-            </div>
+            <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: p.score >= 0 ? C.cream : C.accent }}>{signed(p.score)}</div>
           </div>
         )
       })}
@@ -190,7 +214,7 @@ function ProfileHeader({ profile }) {
       <div style={{ position: 'relative', height: 150, overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : '#111', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
         {profile.doll
           ? <div style={{ transform: 'scale(1.3)', transformOrigin: 'top center', marginTop: -6 }}><Doll name={profile.doll} /></div>
-          : <span style={{ fontSize: 64, lineHeight: 1, display: 'flex', alignItems: 'center', height: '100%' }}>{profile.emoji}</span>}
+          : null}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '44px 14px 10px', background: 'linear-gradient(to top,rgba(0,0,0,0.96),transparent)' }}>
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 24, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
           {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 10, letterSpacing: '0.2em', marginTop: 3 }}>{profile.archetype.toUpperCase()}</div>}
@@ -215,7 +239,7 @@ function Hand({ profile, peeked = [], revealAll = false, onStalk }) {
           return cell(`d${i}`, <>
             <TraitCardFront compact text={t.text} value={t.value} />
             {peeked.includes(i) && (
-              <span style={{ position: 'absolute', top: -6, right: -4, fontFamily: WS, fontWeight: 700, fontSize: 7, letterSpacing: '0.12em', color: '#131011', background: C.gold, padding: '2px 5px', borderRadius: 2 }}>🔍 STALKED</span>
+              <span style={{ position: 'absolute', top: -6, right: -4, fontFamily: WS, fontWeight: 700, fontSize: 7, letterSpacing: '0.12em', color: '#131011', background: C.gold, padding: '2px 5px', borderRadius: 2 }}>STALKED</span>
             )}
           </>, revealAll ? { animation: `catch-card-flip 0.45s ease ${0.15 + i * 0.35}s both` } : { animation: 'catch-card-flip 0.35s ease both' })
         }
@@ -234,7 +258,7 @@ function Hand({ profile, peeked = [], revealAll = false, onStalk }) {
 const HOW_TO = [
   ['Meet them', "Everyone sees the same profile and is dealt the same 6 trait cards: 2 face-up, 4 face-down."],
   ['Stalk', 'Tap a face-down card to spend a stalk token. It flips for you only. 3 per game.'],
-  ['Decide', 'Tap DATE or GHOST in secret. 3 ghosts per game — when they\'re gone, you have to date.'],
+  ['Decide', 'Tap Date or Ghost in secret. 3 ghosts per game. When they\'re gone, you have to date.'],
   ['Reveal', 'When everyone is in, every card flips and your phone adds them up for your type.'],
   ['Win', 'After 7 matches the highest total wins, and everyone gets a title from their score.'],
 ]
@@ -295,7 +319,7 @@ function Footer({ children }) {
 function SectionLabel({ children, right }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{children}</div>
+      <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: '#888' }}>{children}</div>
       {right}
     </div>
   )
@@ -345,59 +369,55 @@ function HostGame({ onClose }) {
 
   if (screen === 'setup') {
     return (
-      <Frame onClose={onClose} title="HOST GAME">
+      <Frame onClose={onClose} title="HOST A GAME">
         <Scroll>
           <div style={{ padding: '20px 16px' }}>
-            <SectionLabel>Your Name</SectionLabel>
+            <SectionLabel>Your name</SectionLabel>
             <Input value={myName} onChange={setMyName} placeholder="Enter your name" style={{ marginBottom: 20 }} />
-            <SectionLabel>Your Player Type</SectionLabel>
+            <SectionLabel>Your type</SectionLabel>
             <TypePicker value={myType} onChange={setMyType} />
             <div style={{ marginTop: 20 }}>
-              <SectionLabel>Looking for (the whole room)</SectionLabel>
+              <SectionLabel>Looking for</SectionLabel>
               <div style={{ display: 'flex', gap: 6 }}>
                 {LOOKING_FOR.map(l => (
-                  <button key={l.id} onClick={() => setLookingFor(l.id)}
-                    style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', minHeight: 42, borderRadius: 6, cursor: 'pointer', background: lookingFor === l.id ? C.accent : 'transparent', color: lookingFor === l.id ? '#fff' : '#999', border: `1px solid ${lookingFor === l.id ? C.accent : '#3a3535'}` }}>
-                    {l.label}
+                  <button key={l.id} onClick={() => setLookingFor(l.id)} style={{ ...choiceBtn(lookingFor === l.id), flex: 1 }}>
+                    {l.label.charAt(0) + l.label.slice(1).toLowerCase()}
                   </button>
                 ))}
               </div>
             </div>
           </div>
         </Scroll>
-        <Footer><Btn onClick={() => myName.trim() && setScreen('lobby')} disabled={!myName.trim()}>CREATE ROOM →</Btn></Footer>
+        <Footer><Btn onClick={() => myName.trim() && setScreen('lobby')} disabled={!myName.trim()}>CREATE ROOM</Btn></Footer>
       </Frame>
     )
   }
 
   if (screen === 'lobby') {
-    const typeOf = id => PLAYER_TYPES.find(t => t.id === id)
     return (
-      <Frame onClose={onClose} title="HOST — LOBBY">
+      <Frame onClose={onClose} title="LOBBY">
         <Scroll>
           <div style={{ padding: '20px 16px' }}>
             {room.status === 'connecting' && <div style={{ fontFamily: WS, fontSize: 12, color: '#555', textAlign: 'center', marginBottom: 16 }}>Connecting…</div>}
             {room.status === 'room-taken' && <div style={{ fontFamily: WS, fontSize: 12, color: C.accent, textAlign: 'center', marginBottom: 16 }}>Room code taken — refresh to get a new one.</div>}
             {room.status === 'open' && <RoomCode code={roomCode} />}
 
-            <SectionLabel>{lobbyPlayers.length + 1} PLAYER{lobbyPlayers.length !== 0 ? 'S' : ''} IN THE ROOM</SectionLabel>
+            <SectionLabel>{lobbyPlayers.length + 1} player{lobbyPlayers.length !== 0 ? 's' : ''} in the room</SectionLabel>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div style={{ padding: '10px 14px', background: `${C.accent}14`, border: `1px solid ${C.accent}33`, borderRadius: 4, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 16 }}>{typeOf(myType)?.emoji}</span>
+              <div style={{ padding: '12px 14px', background: C.card, border: `1px solid ${C.accent}66`, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{myName}</div>
-                  <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#777' }}>HOST · {typeOf(myType)?.label}</div>
+                  <div style={{ fontFamily: ANTON, fontSize: 18, color: C.cream, letterSpacing: '0.03em' }}>{myName.toUpperCase()}</div>
+                  <div style={{ fontFamily: WS, fontSize: 12, color: '#888' }}>Host · {TYPE_NAME[myType]}</div>
                 </div>
-                <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.accent, letterSpacing: '0.12em' }}>YOU</span>
+                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: C.accent }}>You</span>
               </div>
               {lobbyPlayers.map(lp => (
-                <div key={lp.id} style={{ padding: '10px 14px', background: C.card, border: hair, borderRadius: 4, display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 16 }}>{typeOf(lp.typeId)?.emoji || '👤'}</span>
+                <div key={lp.id} style={{ padding: '12px 14px', background: C.card, border: hair, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>{lp.name}</div>
-                    <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 10, color: '#777' }}>{typeOf(lp.typeId)?.label || 'JOINING…'}</div>
+                    <div style={{ fontFamily: ANTON, fontSize: 18, color: C.cream, letterSpacing: '0.03em' }}>{lp.name.toUpperCase()}</div>
+                    <div style={{ fontFamily: WS, fontSize: 12, color: '#888' }}>{TYPE_NAME[lp.typeId] || 'Joining…'}</div>
                   </div>
-                  <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.teal, letterSpacing: '0.1em' }}>READY</span>
+                  <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: C.teal }}>Ready</span>
                 </div>
               ))}
             </div>
@@ -409,7 +429,7 @@ function HostGame({ onClose }) {
         </Scroll>
         <Footer>
           <Btn onClick={startGame} disabled={lobbyPlayers.length === 0 || room.status !== 'open'}>
-            {lobbyPlayers.length === 0 ? 'NEED AT LEAST 2 PLAYERS' : `START WITH ${lobbyPlayers.length + 1} PLAYERS →`}
+            {lobbyPlayers.length === 0 ? 'NEED AT LEAST 2 PLAYERS' : `START WITH ${lobbyPlayers.length + 1} PLAYERS`}
           </Btn>
         </Footer>
       </Frame>
@@ -462,32 +482,32 @@ function ClientGame({ onClose }) {
 
   if (screen === 'code') {
     return (
-      <Frame onClose={onClose} title="JOIN GAME">
+      <Frame onClose={onClose} title="JOIN A GAME">
         <Scroll>
           <div style={{ padding: '20px 16px' }}>
-            <SectionLabel>Room Code</SectionLabel>
+            <SectionLabel>Room code</SectionLabel>
             <Input value={codeInput} onChange={v => setCodeInput(v.toUpperCase().slice(0, 4))} placeholder="4-letter code" maxLength={4}
               style={{ fontSize: 28, letterSpacing: '0.3em', textAlign: 'center', marginBottom: 20 }} />
             {connErr && <div style={{ fontFamily: WS, fontSize: 12, color: C.accent, marginBottom: 12 }}>{connErr}</div>}
           </div>
         </Scroll>
-        <Footer><Btn onClick={() => { setRoomCode(codeInput.trim().toUpperCase()); setScreen('setup') }} disabled={codeInput.trim().length !== 4}>NEXT →</Btn></Footer>
+        <Footer><Btn onClick={() => { setRoomCode(codeInput.trim().toUpperCase()); setScreen('setup') }} disabled={codeInput.trim().length !== 4}>NEXT</Btn></Footer>
       </Frame>
     )
   }
 
   if (screen === 'setup') {
     return (
-      <Frame onClose={onClose} title={`JOIN — ${roomCode}`}>
+      <Frame onClose={onClose} title={`ROOM ${roomCode}`}>
         <Scroll>
           <div style={{ padding: '20px 16px' }}>
-            <SectionLabel>Your Name</SectionLabel>
+            <SectionLabel>Your name</SectionLabel>
             <Input value={myName} onChange={setMyName} placeholder="Enter your name" style={{ marginBottom: 20 }} />
-            <SectionLabel>Your Player Type</SectionLabel>
+            <SectionLabel>Your type</SectionLabel>
             <TypePicker value={myType} onChange={setMyType} />
           </div>
         </Scroll>
-        <Footer><Btn onClick={() => myName.trim() && setScreen('waiting')} disabled={!myName.trim()}>JOIN ROOM →</Btn></Footer>
+        <Footer><Btn onClick={() => myName.trim() && setScreen('waiting')} disabled={!myName.trim()}>JOIN ROOM</Btn></Footer>
       </Frame>
     )
   }
@@ -501,10 +521,10 @@ function ClientGame({ onClose }) {
           <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.55)', textAlign: 'center', lineHeight: 1.6 }}>Waiting for the host to start the game…</div>
           {room.status === 'connecting' && <div style={{ fontFamily: WS, fontSize: 11, color: '#555', marginTop: 16 }}>Connecting to room {roomCode}…</div>}
           {connErr && <div style={{ fontFamily: WS, fontSize: 12, color: C.accent, marginTop: 12 }}>{connErr}</div>}
-          <div style={{ marginTop: 24, padding: '10px 20px', background: C.card, border: hair, borderRadius: 4 }}>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.16em', marginBottom: 4 }}>JOINED AS</div>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 14, color: C.cream }}>{myName}</div>
-            <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#777' }}>{PLAYER_TYPES.find(t => t.id === myType)?.label}</div>
+          <div style={{ marginTop: 24, padding: '12px 22px', background: C.card, border: hair, borderRadius: 6, textAlign: 'center' }}>
+            <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: '#888', marginBottom: 4 }}>Joined as</div>
+            <div style={{ fontFamily: ANTON, fontSize: 18, color: C.cream, letterSpacing: '0.03em' }}>{myName.toUpperCase()}</div>
+            <div style={{ fontFamily: WS, fontSize: 12, color: '#888' }}>{TYPE_NAME[myType]}</div>
           </div>
           <div style={{ width: '100%' }}><HowToPlay /></div>
         </div>
@@ -550,30 +570,30 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
       <Frame onClose={onClose} title={title} right={myScore}>
         <Scroll style={{ padding: '14px 14px 16px' }}>
           <ProfileHeader profile={profile} />
-          <SectionLabel right={<span style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.gold, letterSpacing: '0.1em' }}>🔍 {me?.stalks ?? 0} STALK{(me?.stalks ?? 0) === 1 ? '' : 'S'} LEFT</span>}>
+          <SectionLabel right={<span style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: C.gold }}>{me?.stalks ?? 0} stalk{(me?.stalks ?? 0) === 1 ? '' : 's'} · {me?.ghosts ?? 0} ghost{(me?.ghosts ?? 0) === 1 ? '' : 's'} left</span>}>
             Your trait cards
           </SectionLabel>
           <Hand profile={profile} peeked={myPeeks} onStalk={canStalk ? onStalk : null} />
           {round === 0 && <HowToPlay />}
           <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#777', marginTop: 10, textAlign: 'center' }}>
             {decided ? 'Cards flip once everyone has decided.'
-              : canStalk ? 'Tap a face-down card to stalk it — only you see it.'
+              : canStalk ? 'Tap a face-down card to stalk it. Only you see it.'
               : (me?.stalks ?? 0) === 0 ? 'Out of stalk tokens.' : ''}
           </div>
         </Scroll>
         <Footer>
           {decided ? (
             <div style={{ textAlign: 'center', padding: '4px 0' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 15, color: C.teal, letterSpacing: '0.12em' }}>{decided.action === 'date' ? '♥ DATE' : '◌ GHOST'} — LOCKED IN</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#777', marginTop: 4 }}>
+              <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, letterSpacing: '0.04em' }}>{decided.action === 'date' ? 'DATE' : 'GHOST'}, LOCKED IN</div>
+              <div style={{ fontFamily: WS, fontSize: 12, color: '#888', marginTop: 4 }}>
                 Waiting on {waitingOn.map(p => p.name).join(', ')}
               </div>
             </div>
           ) : (
             <div style={{ display: 'flex', gap: 8 }}>
-              <Btn onClick={() => onDecide('date')} style={{ flex: 1, boxShadow: '0 0 20px rgba(255,77,109,0.3)' }}>♥ DATE</Btn>
-              <Btn onClick={() => onDecide('ghost')} outline color="#aaa" disabled={(me?.ghosts ?? 0) <= 0} style={{ flex: 1 }}>
-                ◌ GHOST · {me?.ghosts ?? 0}
+              <Btn onClick={() => onDecide('date')} style={{ flex: 1 }}>DATE</Btn>
+              <Btn onClick={() => onDecide('ghost')} outline disabled={(me?.ghosts ?? 0) <= 0} style={{ flex: 1 }}>
+                GHOST
               </Btn>
             </div>
           )}
@@ -589,52 +609,37 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
     return (
       <Frame onClose={onClose} title={title} right={myScore}>
         <Scroll style={{ padding: '14px 14px 16px' }}>
-          {profile.isCatfish && (
-            <div style={{ background: '#0d1a10', border: `1px solid ${C.teal}44`, borderRadius: 6, padding: '12px 14px', marginBottom: 14, textAlign: 'center' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 18, color: C.teal, letterSpacing: '0.08em' }}>🎣 {profile.name.toUpperCase()} WAS THE CATFISH</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#9ab', marginTop: 4 }}>Dated them: −4. Ghosted them: +1.</div>
+          <div style={{ textAlign: 'center', marginBottom: 14 }}>
+            <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: '#888' }}>Match {round + 1} of {ROUNDS}</div>
+            <div style={{ fontFamily: ANTON, color: profile.isCatfish ? C.teal : C.cream, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95, marginTop: 6 }}>
+              {profile.name.toUpperCase()}{profile.isCatfish ? '' : `, ${profile.age}`}
             </div>
-          )}
+            {profile.isCatfish && <>
+              <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95 }}>WAS THE CATFISH</div>
+              <div style={{ fontFamily: WS, fontSize: 13, color: '#999', marginTop: 8 }}>Dated: −4 · Ghosted: +1</div>
+            </>}
+          </div>
           {mine && (
             <div style={{ textAlign: 'center', padding: '4px 0 14px' }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#666', letterSpacing: '0.2em' }}>
-                YOU {mine.action === 'date' ? `DATED ${profile.name.toUpperCase()} · CARDS ${signed(mine.raw)}` : `GHOSTED ${profile.name.toUpperCase()}`}
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: '#888' }}>
+                {mine.action === 'date' ? `You dated. Cards ${signed(mine.raw)}` : 'You ghosted'}
               </div>
               <div style={{ fontFamily: ANTON, fontSize: 'clamp(52px,16vw,68px)', lineHeight: 1, color: mine.pts > 0 ? C.teal : mine.pts < 0 ? C.accent : '#666', marginTop: 4 }}>{signed(mine.pts)}</div>
-              {mine.notes.length > 0 && <div style={{ fontFamily: WS, fontSize: 11, color: '#999', marginTop: 4 }}>{mine.notes.join(' · ')}</div>}
+              {mine.notes.length > 0 && <div style={{ fontFamily: WS, fontSize: 12, color: '#999', marginTop: 4 }}>{mine.notes.join(' · ')}</div>}
             </div>
           )}
           <SectionLabel>{profile.name}'s cards</SectionLabel>
           <Hand profile={profile} peeked={peeks[myId] ?? []} revealAll />
 
           <div style={{ marginTop: 18 }}>
-            <SectionLabel>This match</SectionLabel>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {players.map(p => {
-                const r = results[p.id]
-                return (
-                  <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '8px 12px', background: C.card, border: hair, borderRadius: 4 }}>
-                    <div style={{ minWidth: 0 }}>
-                      <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, color: C.cream }}>{p.name}</span>
-                      <span style={{ fontFamily: WS, fontSize: 11, color: '#777' }}> — {r.action === 'date' ? '♥ dated' : '◌ ghosted'}</span>
-                      {r.notes.length > 0 && <div style={{ fontFamily: WS, fontSize: 10, color: '#888', marginTop: 2 }}>{r.notes.join(' · ')}</div>}
-                    </div>
-                    <span style={{ fontFamily: ANTON, fontSize: 18, color: r.pts > 0 ? C.teal : r.pts < 0 ? C.accent : '#666' }}>{signed(r.pts)}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          <div style={{ marginTop: 18 }}>
-            <SectionLabel>Leaderboard</SectionLabel>
-            <Leaderboard players={players} myId={myId} />
+            <SectionLabel>Standings</SectionLabel>
+            <Standings players={players} results={results} myId={myId} />
           </div>
         </Scroll>
         <Footer>
           {isHost
-            ? <Btn onClick={onNext}>{last ? 'SEE FINAL TITLES →' : 'NEXT MATCH →'}</Btn>
-            : <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#777', textAlign: 'center', padding: '8px 0' }}>Waiting for the host to continue…</div>}
+            ? <Btn onClick={onNext}>{last ? 'SEE FINAL TITLES' : 'NEXT MATCH'}</Btn>
+            : <div style={{ fontFamily: WS, fontSize: 13, color: '#888', textAlign: 'center', padding: '14px 0' }}>Waiting for the host to continue…</div>}
         </Footer>
       </Frame>
     )
@@ -649,23 +654,24 @@ function GameScreen({ gameState, myId, onDecide, onStalk, onNext, onClose }) {
     return (
       <Frame onClose={onClose} title="FINAL TITLES">
         <Scroll style={{ padding: '14px 14px 16px' }}>
-          <div style={{ textAlign: 'center', padding: 20, background: 'rgba(228,196,106,0.08)', border: `1px solid ${C.gold}88`, borderRadius: 12, marginBottom: 18 }}>
-            <img src="/thecatch/brand/hook-heart.png" alt="" style={{ width: 28, marginBottom: 8 }} />
-            <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.2em' }}>♛ {winners.length > 1 ? "IT'S A TIE" : 'WINNER'}</div>
-            <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 26, lineHeight: 1.05, marginTop: 6 }}>{winners.map(w => w.name.toUpperCase()).join(' & ')}</div>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, color: C.teal, marginTop: 6 }}>{top.score} LOVE POINTS</div>
+          <div style={{ textAlign: 'center', marginBottom: 20, padding: '22px 18px', background: C.card, border: `1px solid ${C.gold}66`, borderRadius: 10 }}>
+            <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.gold }}>{winners.length > 1 ? "It's a tie" : 'Winner'}</div>
+            <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95, marginTop: 6 }}>{winners.map(w => w.name.toUpperCase()).join(' & ')}</div>
+            <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, lineHeight: 1.1, marginTop: 4 }}>{getTitle(top.score).title}</div>
+            <p style={{ fontFamily: WS, fontSize: 13, color: '#999', margin: '10px 0 0' }}>{getTitle(top.score).desc}</p>
+            <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>{top.score} points</div>
           </div>
-          {mineT && (
-            <div style={{ textAlign: 'center', marginBottom: 18 }}>
-              <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#666', letterSpacing: '0.2em' }}>YOUR TITLE</div>
+          {mineT && !winners.some(w => w.id === myId) && (
+            <div style={{ textAlign: 'center', marginBottom: 20 }}>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: '#888' }}>Your title</div>
               <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, lineHeight: 1.1, marginTop: 4 }}>{mineT.title}</div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#999', marginTop: 6 }}>{mineT.desc}</div>
+              <div style={{ fontFamily: WS, fontSize: 13, color: '#999', marginTop: 6 }}>{mineT.desc}</div>
             </div>
           )}
           <SectionLabel>Everyone's title</SectionLabel>
-          <Leaderboard players={players} myId={myId} withTitles />
+          <Leaderboard players={players} myId={myId} />
         </Scroll>
-        <Footer><Btn onClick={onClose} outline>← BACK TO PORTFOLIO</Btn></Footer>
+        <Footer><Btn onClick={onClose} outline>BACK TO PORTFOLIO</Btn></Footer>
       </Frame>
     )
   }
@@ -695,19 +701,13 @@ export default function TheCatchOnline({ onClose }) {
         center="ONLINE MULTIPLAYER"
       />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px 40px', textAlign: 'center' }}>
-        <CatchHero maxWidth={320} subtitle="SEPARATE DEVICES · ONLINE" subtitleColor="rgba(239,230,220,0.38)" style={{ marginBottom: 40 }} />
+        <CatchHero maxWidth={320} style={{ marginBottom: 40 }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300 }}>
-          <button onClick={() => setRole('host')}
-            style={{ fontFamily: WS, fontWeight: 700, fontSize: 14, letterSpacing: '0.12em', padding: '16px 24px', background: C.accent, color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', boxShadow: '0 0 32px rgba(255,77,109,0.3)' }}>
-            CREATE A ROOM
-          </button>
-          <button onClick={() => setRole('join')}
-            style={{ fontFamily: WS, fontWeight: 700, fontSize: 14, letterSpacing: '0.12em', padding: '16px 24px', background: 'transparent', color: C.cream, border: '1px solid rgba(239,230,220,0.2)', borderRadius: 6, cursor: 'pointer' }}>
-            JOIN A ROOM
-          </button>
+          <Btn onClick={() => setRole('host')}>CREATE A ROOM</Btn>
+          <Btn onClick={() => setRole('join')} outline>JOIN A ROOM</Btn>
         </div>
-        <div style={{ marginTop: 32, fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#666', lineHeight: 1.7, maxWidth: 280 }}>
-          No deck needed. Everyone's dealt the same trait cards on their own phone — stalk a card with a tap, then date or ghost in secret.
+        <div style={{ marginTop: 32, fontFamily: WS, fontSize: 13, color: '#888', lineHeight: 1.6, maxWidth: 290 }}>
+          No deck needed. Everyone is dealt the same trait cards on their own phone. Tap a card to stalk it, then date or ghost in secret.
         </div>
       </div>
     </div>
