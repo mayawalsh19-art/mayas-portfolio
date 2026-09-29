@@ -826,14 +826,14 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
             <div style={{ background: C.card, border: `1px solid ${C.accent}44`, padding: '22px 20px' }}>
               <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>🪝 THE CATFISH</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.6)', lineHeight: 1.6, margin: 0 }}>
-                One profile in matches 2–5 is secretly a catfish, and nothing on its profile card gives it away. The phone reveals it only after everyone has entered their scores: anyone who dated it takes −4 and a heart, anyone who ghosted it gets +1. Online, its hidden cards are all −3.
+                One profile in matches 2–5 is secretly a catfish, and nothing on its profile card gives it away. The phone reveals it only after everyone has entered their scores: anyone who dated it takes −4, anyone who ghosted it gets +1. Online, its hidden cards are all −3.
               </p>
             </div>
 
             <div style={{ background: C.card, border: `1px solid ${C.gold}44`, padding: '22px 20px' }}>
               <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.18em', marginBottom: 10 }}>📱 THE COMPANION</div>
               <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: 'rgba(239,230,220,0.6)', lineHeight: 1.6, margin: 0 }}>
-                At the table the phone never sees the cards. Each player adds up their own six cards with their type and types in one number. The phone layers on the fine print — Red Flag, Chemistry, Heartbroken, the catfish — and keeps the leaderboard.
+                At the table the phone never sees the cards. Each player adds up their own six cards with their type and types in one number. The phone layers on the fine print — Red Flag, Chemistry, the catfish — and keeps the leaderboard.
               </p>
             </div>
           </div>
@@ -887,17 +887,17 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
             <MechanicCard icon="♥" name="DATE" color={C.accent} tag="CORE"
-              desc="Add up all six cards for your type — at the table you do the math and enter it; online the phone does it. A negative total costs a heart, −5 or worse is a Red Flag (−2 more), and 7+ as the only one who dated is Chemistry (+2)." />
+              desc="Add up all six cards for your type — at the table you do the math and enter it; online the phone does it. A negative total costs points, −5 or worse is a Red Flag (−2 more), and 7+ as the only one who dated is Chemistry (+2)." />
             <MechanicCard icon="◌" name="GHOST" color="#888" tag="CORE"
-              desc="Pass on the match. No points, no hearts lost. You only get 3 ghosts per game — when they're gone, you have to date. Ghosting the catfish earns +1." />
+              desc="Pass on the match for ±0. You only get 3 ghosts per game — when they're gone, you have to date. Ghosting the catfish earns +1." />
             <MechanicCard icon="🔍" name="STALK" color={C.gold} tag="TABLE + ONLINE"
               desc="At the table, spend a chip to secretly peek at one face-down card, then put it back. Online, tap a face-down card on your phone and it flips for you only. 3 per player, per game." />
             <MechanicCard icon="🎣" name="CATFISH" color={C.teal} tag="SECRET"
-              desc="One profile in matches 2–5 is secretly a catfish. Nothing gives it away until the scores are in — then daters take −4 and a heart, and ghosters get +1." />
+              desc="One profile in matches 2–5 is secretly a catfish. Nothing gives it away until the scores are in — then daters take −4, and ghosters get +1." />
             <MechanicCard icon="📱" name="ENTER TOTALS" color={C.teal} tag="COMPANION"
               desc="Each player taps Dated or Ghosted and types their card total. The phone adds the bonuses and penalties, so nobody has to remember the fine print." />
             <MechanicCard icon="♛" name="FINAL TITLES" color={C.gold} tag="ENDGAME"
-              desc="After match 7 the highest total wins (ties go to whoever kept more hearts), and every player gets a title based on their score." />
+              desc="After match 7 the highest total wins (ties are shared), and every player gets a title based on their score." />
           </div>
         </Section>
 
