@@ -310,30 +310,41 @@ function MatchResultScreen({ state, dispatch }) {
         </>}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {state.players.map(p => {
-          const r = state.results[p.id]
-          const col = r.pts > 0 ? C.teal : r.pts < 0 ? C.accent : '#777'
-          return (
-            <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: 14, background: C.card, border: hairline, borderRadius: 6 }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, letterSpacing: '0.03em' }}>{p.name.toUpperCase()}</div>
-                <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: '#999', marginTop: 3 }}>
-                  {r.action === 'date' ? `Dated · cards ${signed(r.raw)}` : 'Ghosted'}
-                  {r.notes.length > 0 && <span style={{ color: '#777' }}> · {r.notes.join(' · ')}</span>}
-                </div>
-              </div>
-              <div style={{ fontFamily: ANTON, fontSize: 28, color: col, flexShrink: 0 }}>{signed(r.pts)}</div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div style={{ marginTop: 22 }}>
-        <Label>Leaderboard</Label>
-        <Leaderboard players={state.players} />
-      </div>
+      {/* One list: this match + running standings (sorted), so nothing repeats */}
+      <Standings players={state.players} results={state.results} />
     </Screen>
+  )
+}
+
+// Each row: rank, name, what happened this match, and the running total.
+function Standings({ players, results }) {
+  const ranked = rankPlayers(players)
+  const soleLeader = ranked.length > 1 && (ranked[0].score !== ranked[1].score || ranked[0].hearts !== ranked[1].hearts)
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {ranked.map((p, rank) => {
+        const r = results[p.id]
+        const col = r.pts > 0 ? C.teal : r.pts < 0 ? C.accent : '#888'
+        const lead = rank === 0 && soleLeader
+        const what = [r.action === 'date' ? `Dated, cards ${signed(r.raw)}` : 'Ghosted', ...r.notes].join(' · ')
+        return (
+          <div key={p.id} style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', alignItems: 'center', gap: 12, padding: '12px 14px', background: C.card, border: lead ? `1px solid ${C.gold}66` : hairline, borderRadius: 6 }}>
+            <span style={{ fontFamily: ANTON, fontSize: 20, color: lead ? C.gold : '#555', textAlign: 'center' }}>{rank + 1}</span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: ANTON, fontSize: 19, color: C.cream, letterSpacing: '0.03em', lineHeight: 1.1 }}>{p.name.toUpperCase()}</div>
+              <div style={{ fontFamily: WS, fontSize: 12, lineHeight: 1.45, marginTop: 3 }}>
+                <span style={{ fontWeight: 700, color: col }}>{signed(r.pts)} this match</span>
+                <span style={{ color: '#888' }}> · {what}</span>
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: p.score >= 0 ? C.cream : C.accent }}>{signed(p.score)}</div>
+              <div style={{ fontSize: 11, marginTop: 3 }}><Hearts n={p.hearts} /></div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
