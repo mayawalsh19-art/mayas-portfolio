@@ -59,10 +59,12 @@ function Small({ children, style = {} }) {
 }
 
 // A phone: the real screenshot in a simple rounded frame
-function Phone({ src, alt, width = 250 }) {
+function Phone({ src, alt, width = 250, children }) {
   return (
-    <div style={{ width, maxWidth: '100%', padding: 7, borderRadius: 34, background: '#08060a', border: line, boxShadow: '0 30px 60px rgba(0,0,0,0.45)', flexShrink: 0 }}>
-      <img src={src} alt={alt} style={{ display: 'block', width: '100%', aspectRatio: '393 / 852', objectFit: 'cover', borderRadius: 27 }} />
+    <div style={{ width, maxWidth: '100%', padding: 7, borderRadius: 34, background: '#08060a', border: line, boxShadow: '0 30px 60px rgba(0,0,0,0.45)', flexShrink: 0, boxSizing: 'border-box' }}>
+      {children
+        ? <div style={{ width: '100%', aspectRatio: '393 / 852', borderRadius: 27, background: '#0e0b12', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>{children}</div>
+        : <img src={src} alt={alt} style={{ display: 'block', width: '100%', aspectRatio: '393 / 852', objectFit: 'cover', borderRadius: 27 }} />}
     </div>
   )
 }
@@ -93,9 +95,9 @@ function OnlineHand() {
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, lineHeight: 1, marginBottom: 2 }}>RIVER, 26</div>
         <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.gold, letterSpacing: '0.18em', marginBottom: 12 }}>THE SOFT LAUNCH</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 7 }}>
-          {up.map(t => <TraitCardFront key={t.no} compact no={t.no} text={t.text} value={t.value} />)}
+          {up.map(t => <TraitCardFront key={t.no} compact text={t.text} value={t.value} />)}
           <div style={{ position: 'relative', outline: `2px solid ${C.gold}`, outlineOffset: 2, borderRadius: 2 }}>
-            <TraitCardFront compact no={peeked.no} text={peeked.text} value={peeked.value} />
+            <TraitCardFront compact text={peeked.text} value={peeked.value} />
           </div>
           <TraitCardBack compact /><TraitCardBack compact />
         </div>
@@ -177,7 +179,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 420 }}>
             <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width={230} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginLeft: -26, marginBottom: 24, zIndex: 2 }}>
-              <div style={{ width: 128, transform: 'rotate(5deg)' }}><TraitCardFront no={17} text={card(17).text} value={card(17).value} /></div>
+              <div style={{ width: 128, transform: 'rotate(5deg)' }}><TraitCardFront text={card(17).text} value={card(17).value} /></div>
               <div style={{ width: 128, transform: 'rotate(-3deg)', marginLeft: 18 }}><TraitCardBack /></div>
             </div>
           </div>
@@ -230,51 +232,50 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           {[
             ['1', 'Meet them', 'The phone shows who’s on the market: name, age, archetype and an illustrated avatar.', <Phone key="p" src="/thecatch/screens/profile.jpg" alt="Profile card" width={210} />],
             ['2', 'Deal and stalk', 'Deal six trait cards, two face-up and four face-down. Spend a chip to secretly peek at one.', (
-              <div key="d" style={{ width: 210, aspectRatio: '393 / 852', borderRadius: 30, background: C.card, border: line, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '88px 88px', gap: 8 }}>
-                  <TraitCardFront compact no={17} text={card(17).text} value={card(17).value} />
+              <Phone key="d" width={210}>
+                <div style={{ display: 'grid', gridTemplateColumns: '80px 80px', gap: 8 }}>
+                  <TraitCardFront compact text={card(17).text} value={card(17).value} />
                   <TraitCardBack compact />
                 </div>
                 <StalkChip size={72} />
-              </div>
+              </Phone>
             )],
             ['3', 'Decide and enter', 'On three, everyone says Date or Ghost. Daters add up their six cards and type in one number.', <Phone key="w" src="/thecatch/screens/whodated.jpg" alt="Who dated screen" width={210} />],
             ['4', 'See where you stand', 'The phone adds the bonuses, reveals any catfish, and ranks everyone.', <Phone key="s" src="/thecatch/screens/standings.jpg" alt="Standings screen" width={210} />],
           ].map(([n, t, d, visual]) => (
             <div key={n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
               {visual}
-              <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, marginTop: 20 }}><span style={{ color: C.accent }}>{n}</span>  {t.toUpperCase()}</div>
-              <Small style={{ marginTop: 6, maxWidth: 240, fontSize: 14 }}>{d}</Small>
+              <Small style={{ marginTop: 22, color: C.accent, fontWeight: 600 }}>Step {n}</Small>
+              <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, marginTop: 2 }}>{t.toUpperCase()}</div>
+              <Small style={{ marginTop: 6, maxWidth: 230, fontSize: 14 }}>{d}</Small>
             </div>
           ))}
         </div>
         <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '90px 0 12px' }}>IT ALL COMES DOWN TO POINTS</div>
         <P>Every date adds your six cards to your total. Your player type changes what each card is worth to you, so the same stranger can be a great date for one player and a disaster for another.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 40, marginTop: 30 }}>
-          <div>
-            <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 12 }}>PLAYER TYPES</div>
-            {PLAYER_TYPES.map(t => (
-              <div key={t.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, padding: '12px 0', borderBottom: hair }}>
-                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, whiteSpace: 'nowrap' }}>{TYPE_NAME[t.id]}</span>
-                <span style={{ fontFamily: WS, fontSize: 14, color: muted, textAlign: 'right' }}>{t.rule}</span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, marginBottom: 12 }}>THE TWISTS</div>
-            {[
-              ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
-              ['Chemistry', '+2', 'Total 7 or more as the only one who dated them.', C.teal],
-              ['The catfish', '−4 / +1', 'One secret profile per game. Date it and lose 4, ghost it and gain 1.', C.gold],
-              ['Ghosts', '3 each', 'Pass on a match for ±0. When they’re gone, you have to date.', '#aaa'],
-            ].map(([n, v, d, col]) => (
-              <div key={n} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2px 16px', padding: '12px 0', borderBottom: hair }}>
-                <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream }}>{n}</span>
-                <span style={{ fontFamily: ANTON, fontSize: 18, color: col }}>{v}</span>
-                <span style={{ fontFamily: WS, fontSize: 14, color: muted, gridColumn: '1 / -1' }}>{d}</span>
-              </div>
-            ))}
-          </div>
+        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '34px 0 14px' }}>PLAYER TYPES</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
+          {PLAYER_TYPES.map(t => (
+            <div key={t.id} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream }}>{TYPE_NAME[t.id]}</div>
+              <div style={{ fontFamily: WS, fontSize: 14, color: muted, marginTop: 4, lineHeight: 1.5 }}>{t.rule}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '40px 0 14px' }}>THE TWISTS</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+          {[
+            ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
+            ['Chemistry', '+2', 'Total 7 or more as the only one who dated them.', C.teal],
+            ['The catfish', '−4 / +1', 'One secret profile per game. Date it and lose 4, ghost it and gain 1.', C.gold],
+            ['Ghosts', '3 each', 'Pass on a match for ±0. When they’re gone, you have to date.', C.cream],
+          ].map(([n, v, d, col]) => (
+            <div key={n} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
+              <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: col }}>{v}</div>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginTop: 12 }}>{n}</div>
+              <div style={{ fontFamily: WS, fontSize: 14, color: muted, marginTop: 4, lineHeight: 1.5 }}>{d}</div>
+            </div>
+          ))}
         </div>
         <div style={{ marginTop: 90, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center' }}><Phone src="/thecatch/screens/final.jpg" alt="Final titles screen" width={250} /></div>
@@ -311,9 +312,9 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
             <TraitCardBack />
-            <TraitCardFront no={10} text={card(10).text} value={card(10).value} />
-            <TraitCardFront no={40} text={card(40).text} value={card(40).value} />
-            <TraitCardFront no={48} text={card(48).text} value={card(48).value} />
+            <TraitCardFront text={card(10).text} value={card(10).value} />
+            <TraitCardFront text={card(40).text} value={card(40).value} />
+            <TraitCardFront text={card(48).text} value={card(48).value} />
             <TraitCardFront blank green />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><StalkChip size={92} /></div>
           </div>

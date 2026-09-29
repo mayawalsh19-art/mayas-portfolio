@@ -208,12 +208,12 @@ function Hand({ profile, peeked = [], revealAll = false, onStalk }) {
   const cell = (key, node, extra = {}) => <div key={key} style={{ position: 'relative', ...extra }}>{node}</div>
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-      {faceUp.map((t, i) => cell(`u${i}`, <TraitCardFront compact no={t.card} text={t.text} value={t.value} />))}
+      {faceUp.map((t, i) => cell(`u${i}`, <TraitCardFront compact text={t.text} value={t.value} />))}
       {faceDown.map((t, i) => {
         const open = revealAll || peeked.includes(i)
         if (open) {
           return cell(`d${i}`, <>
-            <TraitCardFront compact no={t.card} text={t.text} value={t.value} />
+            <TraitCardFront compact text={t.text} value={t.value} />
             {peeked.includes(i) && (
               <span style={{ position: 'absolute', top: -6, right: -4, fontFamily: WS, fontWeight: 700, fontSize: 7, letterSpacing: '0.12em', color: '#131011', background: C.gold, padding: '2px 5px', borderRadius: 2 }}>🔍 STALKED</span>
             )}

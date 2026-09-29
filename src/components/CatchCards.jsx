@@ -15,16 +15,15 @@ function flagOf(v) {
 }
 
 // `compact` shrinks the type for cards ~110px wide (three across a phone).
-export function TraitCardFront({ no, text, value, blank = false, green = true, compact = false }) {
+export function TraitCardFront({ text, value, blank = false, green = true, compact = false }) {
   const [label, col] = blank ? (green ? ['GREEN FLAG', C.teal] : ['RED FLAG', C.accent]) : flagOf(value)
   const val = blank ? (green ? '+2' : '−2') : value > 0 ? `+${value}` : value === 0 ? '±0' : `−${Math.abs(value)}`
   const s = compact ? { pad: '8px 7px 7px 9px', no: 9, tag: 5, text: 9.5, mark: 5.5, val: 19, border: 4 }
                     : { pad: '12px 12px 11px 14px', no: 11, tag: 6, text: 11.5, mark: 7, val: 26, border: 5 }
-  const numLabel = blank ? 'WRITE YOUR OWN' : typeof no === 'number' ? `№ ${String(no).padStart(2, '0')}` : (no ?? '')
   return (
     <div style={{ aspectRatio: '5 / 7', background: C.card, borderLeft: `${s.border}px solid ${col}`, padding: s.pad, display: 'flex', flexDirection: 'column', boxShadow: '0 16px 32px rgba(0,0,0,0.5)', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 4 }}>
-        <span style={{ fontFamily: ANTON, fontSize: blank ? s.no - 2 : s.no, letterSpacing: '0.08em', color: 'rgba(239,230,220,0.55)', whiteSpace: 'nowrap' }}>{numLabel}</span>
+        {blank && <span style={{ fontFamily: ANTON, fontSize: s.no - 2, letterSpacing: '0.08em', color: 'rgba(239,230,220,0.55)', whiteSpace: 'nowrap' }}>WRITE YOUR OWN</span>}
         <span style={{ fontFamily: WS, fontWeight: 700, fontSize: s.tag, letterSpacing: '0.14em', color: col, border: `1px solid ${col}`, padding: '2px 3px', whiteSpace: 'nowrap' }}>{label}</span>
       </div>
       {blank
