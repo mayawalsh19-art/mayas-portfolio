@@ -179,14 +179,30 @@ const NAME_POOL = [
 ]
 
 const EMOJIS  = ['💫','⚡','🌙','🔥','💀','🌊','🎯','🦋','🌻','🃏','🎭','🌟','🍂','🖤','🌹']
-const DOLLS   = ['rell', 'bibi', 'ada', 'dax', 'kip', 'suki']
+// Illustrated characters by who you're looking for. Cass reads as neither, so
+// only appears for "everyone".
+export const LOOKING_FOR = [
+  { id: 'girls',    label: 'GIRLS',    dolls: ['bibi', 'ada', 'suki', 'petra'] },
+  { id: 'guys',     label: 'GUYS',     dolls: ['kip', 'dax', 'rell', 'milo'] },
+  { id: 'everyone', label: 'EVERYONE', dolls: ['bibi', 'ada', 'suki', 'petra', 'kip', 'dax', 'rell', 'milo', 'cass'] },
+]
 const AGES    = [22, 23, 24, 25, 26, 27, 28, 29, 30]
 
 // ─── Profile generator — called fresh every game ──────────────────────────────
 // The printed card number for a pool trait: its 1-based position in TRAIT_POOL.
 const CARD_POOL = TRAIT_POOL.map((t, i) => ({ ...t, card: i + 1 }))
 
-export function generateProfiles(count = 7, customTraits = [], customProfiles = []) {
+export function generateProfiles(count = 7, customTraits = [], customProfiles = [], lookingFor = 'everyone') {
+  const dollPool = (LOOKING_FOR.find(l => l.id === lookingFor) ?? LOOKING_FOR[2]).dolls
+  let dollBag = [], lastDoll = null
+  const nextDoll = () => {            // shuffled bag so characters don't repeat back-to-back
+    if (!dollBag.length) {
+      dollBag = shuffle([...dollPool])
+      if (dollBag.length > 1 && dollBag[dollBag.length - 1] === lastDoll) dollBag.unshift(dollBag.pop())
+    }
+    lastDoll = dollBag.pop()
+    return lastDoll
+  }
   const names      = shuffle([...NAME_POOL])
   const archetypes = shuffle([...ARCHETYPE_POOL])
 
@@ -223,7 +239,7 @@ export function generateProfiles(count = 7, customTraits = [], customProfiles = 
       name:      names[i % names.length],
       age:       AGES[Math.floor(Math.random() * AGES.length)],
       emoji:     EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
-      doll:      DOLLS[Math.floor(Math.random() * DOLLS.length)],
+      doll:      nextDoll(),
       archetype: archetypes[i % archetypes.length].archetype,
       tags:      archetypes[i % archetypes.length].tags,
       bio:       archetypes[i % archetypes.length].bio,
@@ -241,12 +257,15 @@ export function generateProfiles(count = 7, customTraits = [], customProfiles = 
   ]
   // The catfish wears an ordinary archetype so nothing on the card gives it away
   const disguise = archetypes[count % archetypes.length]
+  // the catfish slots in between two profiles: give it a character neither neighbour has
+  const around = [profiles[catfishPos - 1]?.doll, profiles[catfishPos]?.doll]
+  const catfishDoll = shuffle(dollPool.filter(d => !around.includes(d)))[0] ?? nextDoll()
   profiles.splice(catfishPos, 0, {
     id:        'catfish',
     name:      names[count % names.length] || 'Alex',
     age:       AGES[Math.floor(Math.random() * AGES.length)],
     emoji:     EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
-    doll:      DOLLS[Math.floor(Math.random() * DOLLS.length)],
+    doll:      catfishDoll,
     archetype: disguise.archetype,
     tags:      disguise.tags,
     bio:       'Everything checks out. So why does something feel off?',

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { generateProfiles, PLAYER_TYPES, getTitle } from '../data/catchProfiles'
+import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle } from '../data/catchProfiles'
 import { ROUNDS, HEARTS, GHOSTS, STALKS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { useGameRoom } from '../hooks/useGameRoom'
 import { CatchWordmark, CatchHero } from './CatchBrand'
@@ -46,8 +46,8 @@ function cardTotal(profile, typeId) {
 }
 
 // ─── Host-side game logic (pure: state in, state out) ────────────────────────
-function newGame(players) {
-  return { phase: 'deciding', round: 0, profiles: generateProfiles(ROUNDS).slice(0, ROUNDS), players, decisions: {}, peeks: {}, results: null }
+function newGame(players, lookingFor) {
+  return { phase: 'deciding', round: 0, profiles: generateProfiles(ROUNDS, [], [], lookingFor).slice(0, ROUNDS), players, decisions: {}, peeks: {}, results: null }
 }
 
 function scoreRound(st) {
@@ -313,6 +313,7 @@ function HostGame({ onClose }) {
   const [screen, setScreen]       = useState('setup')    // setup | lobby | game
   const [myName, setMyName]       = useState('')
   const [myType, setMyType]       = useState(PLAYER_TYPES[0].id)
+  const [lookingFor, setLookingFor] = useState('everyone')
   const [roomCode]                = useState(genCode)
   const [gameState, setGameState] = useState(null)
   const [lobbyPlayers, setLobbyPlayers] = useState([])
@@ -343,7 +344,7 @@ function HostGame({ onClose }) {
   function startGame() {
     const host   = makePlayer('host', myName.trim(), myType)
     const others = lobbyPlayers.map(lp => makePlayer(lp.id, lp.name, lp.typeId))
-    setGameState(newGame([host, ...others]))
+    setGameState(newGame([host, ...others], lookingFor))
     setScreen('game')
   }
 
@@ -356,6 +357,17 @@ function HostGame({ onClose }) {
             <Input value={myName} onChange={setMyName} placeholder="Enter your name" style={{ marginBottom: 20 }} />
             <SectionLabel>Your Player Type</SectionLabel>
             <TypePicker value={myType} onChange={setMyType} />
+            <div style={{ marginTop: 20 }}>
+              <SectionLabel>Looking for (the whole room)</SectionLabel>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {LOOKING_FOR.map(l => (
+                  <button key={l.id} onClick={() => setLookingFor(l.id)}
+                    style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', minHeight: 42, borderRadius: 6, cursor: 'pointer', background: lookingFor === l.id ? C.accent : 'transparent', color: lookingFor === l.id ? '#fff' : '#999', border: `1px solid ${lookingFor === l.id ? C.accent : '#3a3535'}` }}>
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </Scroll>
         <Footer><Btn onClick={() => myName.trim() && setScreen('lobby')} disabled={!myName.trim()}>CREATE ROOM →</Btn></Footer>

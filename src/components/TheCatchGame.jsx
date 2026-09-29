@@ -1,5 +1,5 @@
 import { useReducer, useState } from 'react'
-import { generateProfiles, PLAYER_TYPES, getTitle } from '../data/catchProfiles'
+import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle } from '../data/catchProfiles'
 import { ROUNDS, HEARTS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { CatchWordmark } from './CatchBrand'
@@ -41,7 +41,7 @@ const INIT = { screen: 'setup', players: [], profiles: [], round: 0, results: nu
 function reducer(state, { type, ...p }) {
   switch (type) {
     case 'START':
-      return { ...INIT, screen: 'round', players: p.players, profiles: generateProfiles(ROUNDS).slice(0, ROUNDS) }
+      return { ...INIT, screen: 'round', players: p.players, profiles: generateProfiles(ROUNDS, [], [], p.lookingFor).slice(0, ROUNDS) }
     case 'ENTER_SCORES':
       return { ...state, screen: 'score' }
     case 'BACK_TO_PROFILE':
@@ -70,11 +70,13 @@ const primaryBtn = enabled => ({
   boxShadow: enabled ? '0 0 20px rgba(255,77,109,0.35)' : 'none',
 })
 
-function Screen({ children, footer }) {
+function Screen({ children, footer, center = false }) {
+  // center: content sits in the middle of the screen when it's short, and
+  // scrolls normally when it's long (margin auto never clips the top).
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: C.screen, minHeight: 0 }}>
-      <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: '0 20px 20px' }}>{children}</div>
+      <div style={{ flex: 1, overflowY: 'auto', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ width: '100%', maxWidth: 400, margin: center ? 'auto' : '0 auto', padding: center ? '20px' : '0 20px 20px', boxSizing: 'border-box' }}>{children}</div>
       </div>
       {footer && (
         <div style={{ flexShrink: 0, padding: '10px 20px 16px', background: C.screen, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -106,15 +108,36 @@ function Hearts({ n }) {
 function signed(n) { return n > 0 ? `+${n}` : n === 0 ? '±0' : `${n}` }
 
 // ─── SETUP ────────────────────────────────────────────────────────────────────
+// Who the table wants to date: decides which characters show up this game.
+function LookingFor({ value, onChange }) {
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: '#777', letterSpacing: '0.2em', marginBottom: 8 }}>LOOKING FOR</div>
+      <div style={{ display: 'flex', gap: 6 }}>
+        {LOOKING_FOR.map(l => {
+          const sel = value === l.id
+          return (
+            <button key={l.id} onClick={() => onChange(l.id)}
+              style={{ flex: 1, fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', minHeight: 42, borderRadius: 6, cursor: 'pointer', background: sel ? C.accent : 'transparent', color: sel ? '#fff' : '#999', border: `1px solid ${sel ? C.accent : '#3a3535'}` }}>
+              {l.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 function SetupScreen({ dispatch }) {
   const [slots, setSlots] = useState(() => Array.from({ length: MIN_PLAYERS }, () => ({ name: '', playerType: PLAYER_TYPES[0] })))
   const update   = (i, key, val) => setSlots(s => s.map((sl, idx) => idx === i ? { ...sl, [key]: val } : sl))
+  const [lookingFor, setLookingFor] = useState('everyone')
   const canStart = slots.every(s => s.name.trim().length > 0)
-  const start    = () => dispatch({ type: 'START', players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.playerType)) })
+  const start    = () => dispatch({ type: 'START', lookingFor, players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.playerType)) })
 
   return (
     <Screen footer={<button onClick={start} disabled={!canStart} style={primaryBtn(canStart)}>START THE GAME →</button>}>
       <Hero top="WHO'S" bottom="PLAYING?" sub="Rules are on the direction sheet in the box." />
+      <LookingFor value={lookingFor} onChange={setLookingFor} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {slots.map((sl, i) => (
           <div key={i} style={{ padding: 14, background: C.card, border: hairline, borderRadius: 6 }}>
@@ -206,14 +229,17 @@ function ScoreScreen({ state, dispatch }) {
   const ready = state.players.every(p => dec[p.id]?.action)
 
   return (
-    <Screen footer={
+    <Screen center footer={
       <div style={{ display: 'flex', gap: 8 }}>
         <button onClick={() => dispatch({ type: 'BACK_TO_PROFILE' })}
           style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 13, color: '#888', background: 'transparent', border: hairline, borderRadius: 6, padding: '0 16px', cursor: 'pointer' }}>← PROFILE</button>
         <button onClick={() => dispatch({ type: 'SCORE', decisions: dec })} disabled={!ready} style={primaryBtn(ready)}>SCORE THE MATCH →</button>
       </div>
     }>
-      <Hero top="WHO DATED" bottom={`${profile.name.toUpperCase()}?`}  />
+      <div style={{ textAlign: 'center', marginBottom: 18 }}>
+        <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95 }}>WHO DATED</div>
+        <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95 }}>{profile.name.toUpperCase()}?</div>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {state.players.map(p => {
           const d = dec[p.id] ?? {}
