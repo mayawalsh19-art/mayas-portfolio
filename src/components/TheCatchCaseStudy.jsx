@@ -168,12 +168,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       {/* ── The problem ── */}
       <Section wide>
-        <Head kicker="The problem">Dating games are either long or shallow.</Head>
-        <P>Two tabletop games anchor the space. One is a deep two-player roleplay; the other is a party game about guessing. Neither has real hidden information that a whole group can play with.</P>
+        <Head kicker="The problem">Dating games are either for two, or for fans.</Head>
+        <P>Two tabletop games anchor the space. One is a deep roleplay for exactly two people; the other is a party game built on a TV show. Neither is built around a whole group reading secret cards.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 10 }}>
           {[
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min · $50', good: 'Rich relationship roleplay with deep emotional mechanics.', gap: 'Exactly two players, long sessions, and a heavy rulebook.', img: '/competitors/fog-of-love.jpg' },
-            { name: 'The Bachelor Board Game', meta: '2018 · Imagination Games', stats: '3+ players · 18+ · Party game', good: 'Familiar show, built for groups, easy to pick up.', gap: 'Mostly guessing about friends, with no real scoring or strategy.' },
+            { name: 'The Bachelor Board Game', meta: '2018', stats: '3+ players · 18+ · Party game', good: 'A familiar show, built for groups.', gap: 'Most fun if you already watch the show, and no phone keeping score or hiding bonuses.' },
           ].map(g => (
             <div key={g.name} style={{ background: C.card, border: hair, borderRadius: 10, overflow: 'hidden' }}>
               {g.img
