@@ -480,20 +480,21 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
         {/* Bottom bar */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: C.accent, animation: 'catch-bar-glow 3s ease-in-out infinite' }} />
 
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', padding: '0 16px' }}>
           <CatchHero style={{ marginBottom: 36 }} />
 
           {/* Meta row */}
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
             {[
-              ['TYPE', 'Game Design'],
-              ['PLATFORM', 'Web / Mobile'],
-              ['MODES', 'Table + Online'],
-              ['YEAR', '2025'],
+              ['Type', 'Card game + companion app'],
+              ['Platform', 'Printed deck + phone'],
+              ['Modes', 'In person + Online'],
+              ['Year', '2026'],
             ].map(([k, v]) => (
-              <div key={k} style={{ padding: '6px 14px', border: hair, background: C.card }}>
-                <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: '#555', letterSpacing: '0.18em' }}>{k}: </span>
-                <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, color: C.cream, letterSpacing: '0.1em' }}>{v}</span>
+              // same look as the in-game choice buttons: rounded, sentence case, readable
+              <div key={k} style={{ padding: '9px 14px', border: '1px solid #3a3535', borderRadius: 6, background: 'transparent', fontFamily: WS, fontSize: 13 }}>
+                <span style={{ fontWeight: 500, color: '#888' }}>{k} </span>
+                <span style={{ fontWeight: 600, color: C.cream }}>{v}</span>
               </div>
             ))}
           </div>
