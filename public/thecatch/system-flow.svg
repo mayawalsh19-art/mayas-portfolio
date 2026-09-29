@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="860" height="1575" viewBox="0 0 860 1575" style="font-family: sans-serif;">
-<rect id="Background" width="860" height="1575" fill="#131011"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="1485" viewBox="0 0 860 1485" style="font-family: sans-serif;">
+<rect id="Background" width="860" height="1485" fill="#131011"/>
 <defs><pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(239,230,220,0.055)"/></pattern></defs>
-<rect width="860" height="1575" fill="url(#dots)"/>
+<rect width="860" height="1485" fill="url(#dots)"/>
 <g id="Title">
 <text x="430" y="52" font-family="'Anton', Impact, sans-serif" font-size="22" font-weight="400" fill="#FF4D6D" text-anchor="middle" letter-spacing="5">THE CATCH</text>
 <text x="430" y="76" font-family="'Work Sans', Arial, sans-serif" font-size="11" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="4">SYSTEM FLOW — THE APP + THE TRAIT CARDS</text>
@@ -133,13 +133,7 @@
 <text x="760" y="693" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">PLAY</text>
 <text x="760" y="705" font-family="'Work Sans', Arial, sans-serif" font-size="8" font-weight="700" fill="#666" text-anchor="middle" letter-spacing="1.2">AGAIN</text>
 </g>
-<g id="OnlineMode">
-<rect x="150" y="1200" width="560" height="64" fill="#1A1617" stroke="#7CE0A8" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="170" y="1222" font-family="'Work Sans', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#7CE0A8" text-anchor="start" letter-spacing="1.8">ONLINE MODE — SAME LOOP, NO DECK</text>
-<text x="170" y="1242" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#8a8080" text-anchor="start" letter-spacing="0">Each phone is dealt the profile&#x27;s 6 cards on screen · tap a face-down card to stalk it (only you see it)</text>
-<text x="170" y="1256" font-family="'Work Sans', Arial, sans-serif" font-size="9" font-weight="300" fill="#8a8080" text-anchor="start" letter-spacing="0">DATE / GHOST in secret · the host phone adds up every total with each type · then SCORED as above</text>
-</g>
-<g id="Legend" transform="translate(100, 1310)">
+<g id="Legend" transform="translate(100, 1220)">
 <text x="0" y="0" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="700" fill="#444" text-anchor="start" letter-spacing="3">LEGEND</text>
 <line x1="0" y1="10" x2="660" y2="10" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
 <rect x="0" y="24" width="110" height="30" fill="#1E1A1B" stroke="rgba(239,230,220,0.25)" stroke-width="1"/>
@@ -157,6 +151,6 @@
 <text x="30.5" y="179" font-family="'Work Sans', Arial, sans-serif" font-size="7.5" font-weight="700" fill="#E4C46A" text-anchor="middle" letter-spacing="1.2">TABLE</text>
 <text x="124" y="180" font-family="'Work Sans', Arial, sans-serif" font-size="10" font-weight="300" fill="#555" text-anchor="start" letter-spacing="0">= happens with the physical trait cards / chips</text>
 </g>
-<line x1="100" y1="1515" x2="760" y2="1515" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
-<text x="430" y="1539" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#3a3535" text-anchor="middle" letter-spacing="3">THE CATCH · MAYA WALSH · SYSTEM FLOW</text>
+<line x1="100" y1="1425" x2="760" y2="1425" stroke="rgba(239,230,220,0.06)" stroke-width="1"/>
+<text x="430" y="1449" font-family="'Anton', Impact, sans-serif" font-size="11" font-weight="400" fill="#3a3535" text-anchor="middle" letter-spacing="3">THE CATCH · MAYA WALSH · SYSTEM FLOW</text>
 </svg>
