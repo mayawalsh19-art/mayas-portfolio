@@ -107,13 +107,15 @@ function Hero({ top, bottom, sub }) {
   )
 }
 
-function Label({ children, color = '#555' }) {
-  return <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, letterSpacing: '0.2em', color, marginBottom: 8 }}>{children}</div>
+function Label({ children, color = '#888' }) {
+  return <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color, marginBottom: 8 }}>{children}</div>
 }
 
 function Hearts({ n }) {
   return <span>{Array.from({ length: HEARTS }, (_, i) => <span key={i} style={{ color: C.accent, opacity: i < n ? 1 : 0.18 }}>♥</span>)}</span>
 }
+
+function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) }
 
 function signed(n) { return n > 0 ? `+${n}` : n === 0 ? '±0' : `${n}` }
 
@@ -147,7 +149,7 @@ function SetupScreen({ dispatch }) {
   const start    = () => dispatch({ type: 'START', lookingFor, players: slots.map((sl, i) => makePlayer(`p${i}`, sl.name.trim(), sl.playerType)) })
 
   return (
-    <Screen footer={<button onClick={start} disabled={!canStart} style={primaryBtn(canStart)}>START THE GAME →</button>}>
+    <Screen footer={<button onClick={start} disabled={!canStart} style={primaryBtn(canStart)}>START THE GAME</button>}>
       <Hero top="WHO'S" bottom="PLAYING?" sub="Rules are on the direction sheet in the box." />
       <LookingFor value={lookingFor} onChange={setLookingFor} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -224,7 +226,7 @@ function RoundScreen({ state, dispatch }) {
       </div>
       <div style={{ flexShrink: 0, padding: '10px 20px 16px', background: C.screen, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ maxWidth: 400, margin: '0 auto' }}>
-          <button onClick={() => dispatch({ type: 'ENTER_SCORES' })} style={primaryBtn(true)}>ENTER SCORES →</button>
+          <button onClick={() => dispatch({ type: 'ENTER_SCORES' })} style={primaryBtn(true)}>ENTER SCORES</button>
         </div>
       </div>
     </div>
@@ -244,8 +246,8 @@ function ScoreScreen({ state, dispatch }) {
     <Screen center footer={
       <div style={{ display: 'flex', gap: 8 }}>
         <button onClick={() => dispatch({ type: 'BACK_TO_PROFILE' })}
-          style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 13, color: '#888', background: 'transparent', border: hairline, borderRadius: 6, padding: '0 16px', cursor: 'pointer' }}>← PROFILE</button>
-        <button onClick={() => dispatch({ type: 'SCORE', decisions: dec })} disabled={!ready} style={primaryBtn(ready)}>SCORE THE MATCH →</button>
+          style={{ flex: '0 0 auto', fontFamily: WS, fontWeight: 700, fontSize: 13, color: '#888', background: 'transparent', border: hairline, borderRadius: 6, padding: '0 16px', cursor: 'pointer' }}>PROFILE</button>
+        <button onClick={() => dispatch({ type: 'SCORE', decisions: dec })} disabled={!ready} style={primaryBtn(ready)}>SCORE THE MATCH</button>
       </div>
     }>
       <div style={{ textAlign: 'center', marginBottom: 18 }}>
@@ -296,37 +298,39 @@ function MatchResultScreen({ state, dispatch }) {
   const isCatfish = profile.isCatfish === true
   const last      = state.round >= ROUNDS - 1
   return (
-    <Screen footer={<button onClick={() => dispatch({ type: 'NEXT' })} style={primaryBtn(true)}>{last ? 'SEE FINAL TITLES →' : 'NEXT MATCH →'}</button>}>
-      {isCatfish
-        ? <div style={{ margin: '0 -20px 16px', padding: '18px 20px', textAlign: 'center', background: '#0d1a10', borderBottom: `1px solid ${C.teal}44` }}>
-            <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 26, letterSpacing: '0.08em' }}>🎣 {profile.name.toUpperCase()} WAS THE CATFISH</div>
-            <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#9ab', marginTop: 4 }}>Dated them: −4 and a heart. Ghosted them: +1.</div>
-          </div>
-        : <div style={{ padding: '18px 0 12px' }}>
-            <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.22em' }}>MATCH {String(state.round + 1).padStart(2, '0')} RESULTS</div>
-            <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 30, lineHeight: 1.05, marginTop: 4 }}>{profile.name.toUpperCase()}, {profile.age}</div>
-          </div>}
+    <Screen center footer={<button onClick={() => dispatch({ type: 'NEXT' })} style={primaryBtn(true)}>{last ? 'SEE FINAL TITLES' : 'NEXT MATCH'}</button>}>
+      <div style={{ textAlign: 'center', marginBottom: 18 }}>
+        <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: '#888' }}>Match {state.round + 1} of {ROUNDS}</div>
+        <div style={{ fontFamily: ANTON, color: isCatfish ? C.teal : C.cream, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95, marginTop: 6 }}>
+          {profile.name.toUpperCase()}{isCatfish ? '' : `, ${profile.age}`}
+        </div>
+        {isCatfish && <>
+          <div style={{ fontFamily: ANTON, color: C.teal, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95 }}>WAS THE CATFISH</div>
+          <div style={{ fontFamily: WS, fontSize: 13, color: '#999', marginTop: 8 }}>Dated: −4 and a heart · Ghosted: +1</div>
+        </>}
+      </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {state.players.map(p => {
           const r = state.results[p.id]
-          const col = r.pts > 0 ? C.teal : r.pts < 0 ? C.accent : '#666'
+          const col = r.pts > 0 ? C.teal : r.pts < 0 ? C.accent : '#777'
           return (
-            <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '10px 14px', background: C.card, border: `1px solid ${col}33`, borderRadius: 6 }}>
+            <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: 14, background: C.card, border: hairline, borderRadius: 6 }}>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 13, color: C.cream }}>
-                  {p.name} <span style={{ fontWeight: 400, color: '#666' }}>— {r.action === 'date' ? `♥ dated (cards ${signed(r.raw)})` : '◌ ghosted'}</span>
+                <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, letterSpacing: '0.03em' }}>{p.name.toUpperCase()}</div>
+                <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 12, color: '#999', marginTop: 3 }}>
+                  {r.action === 'date' ? `Dated · cards ${signed(r.raw)}` : 'Ghosted'}
+                  {r.notes.length > 0 && <span style={{ color: '#777' }}> · {r.notes.join(' · ')}</span>}
                 </div>
-                {r.notes.length > 0 && <div style={{ fontFamily: WS, fontWeight: 400, fontSize: 11, color: '#999', marginTop: 3 }}>{r.notes.join(' · ')}</div>}
               </div>
-              <div style={{ fontFamily: ANTON, fontSize: 24, color: col, flexShrink: 0 }}>{signed(r.pts)}</div>
+              <div style={{ fontFamily: ANTON, fontSize: 28, color: col, flexShrink: 0 }}>{signed(r.pts)}</div>
             </div>
           )
         })}
       </div>
 
       <div style={{ marginTop: 22 }}>
-        <Label>LEADERBOARD</Label>
+        <Label>Leaderboard</Label>
         <Leaderboard players={state.players} />
       </div>
     </Screen>
@@ -335,21 +339,21 @@ function MatchResultScreen({ state, dispatch }) {
 
 function Leaderboard({ players, withTitles = false }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {rankPlayers(players).map((p, rank) => {
         const t = getTitle(p.score)
         return (
-          <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', background: rank === 0 ? `${C.gold}12` : C.card, border: rank === 0 ? `1px solid ${C.gold}55` : hairline, borderRadius: 6 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-              <span style={{ fontFamily: ANTON, fontSize: 13, color: rank === 0 ? C.gold : '#444', minWidth: 20 }}>#{rank + 1}</span>
+          <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: 14, background: C.card, border: rank === 0 ? `1px solid ${C.gold}66` : hairline, borderRadius: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+              <span style={{ fontFamily: ANTON, fontSize: 18, color: rank === 0 ? C.gold : '#555', minWidth: 14 }}>{rank + 1}</span>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 14, color: C.cream }}>{p.name}</div>
-                {withTitles && <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.12em', marginTop: 2 }}>{t.title}</div>}
+                <div style={{ fontFamily: ANTON, fontSize: 18, color: C.cream, letterSpacing: '0.03em' }}>{p.name.toUpperCase()}</div>
+                {withTitles && <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: C.accent, marginTop: 2 }}>{titleCase(t.title)}</div>}
               </div>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
               <div style={{ fontFamily: ANTON, fontSize: 22, color: p.score >= 0 ? C.teal : C.accent }}>{signed(p.score)}</div>
-              <div style={{ fontSize: 10 }}><Hearts n={p.hearts} /></div>
+              <div style={{ fontSize: 11 }}><Hearts n={p.hearts} /></div>
             </div>
           </div>
         )
@@ -366,26 +370,25 @@ function FinalScreen({ state, dispatch, onClose }) {
   const title   = getTitle(top.score)
 
   return (
-    <Screen footer={
-      <div style={{ display: 'flex', gap: 8 }}>
+    <Screen center footer={
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
         <button onClick={() => dispatch({ type: 'PLAY_AGAIN' })}
-          style={{ flex: 1, fontFamily: WS, fontWeight: 700, background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 14, letterSpacing: '0.1em', border: hairline, minHeight: 52, borderRadius: 6, cursor: 'pointer' }}>PLAY AGAIN</button>
-        <button onClick={onClose} style={{ ...primaryBtn(true), flex: 1, fontSize: 14 }}>EXIT</button>
+          style={{ fontFamily: WS, fontWeight: 700, background: 'transparent', color: C.cream, fontSize: 15, letterSpacing: '0.12em', border: '1px solid #3a3535', minHeight: 52, borderRadius: 6, cursor: 'pointer' }}>PLAY AGAIN</button>
+        <button onClick={onClose} style={primaryBtn(true)}>EXIT</button>
       </div>
     }>
-      <div style={{ textAlign: 'center', margin: '22px 0 22px', padding: 22, background: 'rgba(228,196,106,0.08)', border: `1px solid ${C.gold}88`, borderRadius: 12 }}>
-        <img src="/thecatch/brand/hook-heart.png" alt="" style={{ width: 30, marginBottom: 10 }} />
-        <div style={{ fontFamily: ANTON, color: C.gold, fontSize: 11, letterSpacing: '0.2em' }}>♛ {winners.length > 1 ? 'IT\'S A TIE' : 'WINNER'}</div>
-        <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 28, lineHeight: 1.05, marginTop: 8 }}>{winners.map(w => w.name.toUpperCase()).join(' & ')}</div>
-        <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, lineHeight: 1.1, marginTop: 2 }}>{title.title}</div>
-        <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 13, color: '#999', margin: '10px 0 0' }}>{title.desc}</p>
-        <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, color: C.teal, marginTop: 10 }}>{top.score} LOVE POINTS · <Hearts n={top.hearts} /></div>
+      <div style={{ textAlign: 'center', marginBottom: 20, padding: '22px 18px', background: C.card, border: `1px solid ${C.gold}66`, borderRadius: 10 }}>
+        <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.gold }}>{winners.length > 1 ? "It's a tie" : 'Winner'}</div>
+        <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 'clamp(30px,9vw,40px)', lineHeight: 0.95, marginTop: 6 }}>{winners.map(w => w.name.toUpperCase()).join(' & ')}</div>
+        <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 26, lineHeight: 1.1, marginTop: 4 }}>{title.title}</div>
+        <p style={{ fontFamily: WS, fontSize: 13, color: '#999', margin: '10px 0 0' }}>{title.desc}</p>
+        <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>{top.score} points · <Hearts n={top.hearts} /></div>
       </div>
 
-      <Label>EVERYONE'S TITLE</Label>
+      <Label>Everyone's title</Label>
       <Leaderboard players={state.players} withTitles />
-      <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 11, color: '#555', lineHeight: 1.6, marginTop: 14 }}>
-        18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet. Ties go to whoever kept more hearts.
+      <p style={{ fontFamily: WS, fontSize: 12, color: '#666', lineHeight: 1.6, marginTop: 14, textAlign: 'center' }}>
+        18+ The Catch · 10–17 The Romantic · 1–9 The Situationship · 0 or less The Red Flag Magnet · Ties go to whoever kept more hearts
       </p>
     </Screen>
   )

@@ -17,7 +17,7 @@ export function scoreMatch(players, decisions, isCatfish) {
     const d = decisions[p.id] ?? { action: 'ghost' }
     if (d.action === 'ghost') {
       const pts = isCatfish ? 1 : 0
-      results[p.id] = { action: 'ghost', pts, notes: isCatfish ? ['🎣 Dodged the catfish +1'] : [] }
+      results[p.id] = { action: 'ghost', pts, notes: isCatfish ? ['Dodged the catfish +1'] : [] }
       return { ...p, score: p.score + pts, ghosts: Math.max(0, p.ghosts - 1) }
     }
     const raw = d.total
@@ -25,14 +25,14 @@ export function scoreMatch(players, decisions, isCatfish) {
     const notes = []
     if (isCatfish) {
       pts -= 4; heartsLost = 1
-      notes.push('🎣 Catfished −4')
+      notes.push('Catfished −4')
     } else {
       if (raw < 0) heartsLost = 1
-      if (raw <= -5) { pts -= 2; redFlag = true; notes.push('🚩 Red flag −2') }
-      if (raw >= 7 && daters.length === 1) { pts += 2; notes.push('💘 Chemistry +2') }
+      if (raw <= -5) { pts -= 2; redFlag = true; notes.push('Red flag −2') }
+      if (raw >= 7 && daters.length === 1) { pts += 2; notes.push('Chemistry +2') }
     }
-    if (p.hearts === 0 && pts > 0) { pts = Math.floor(pts / 2); notes.push('½ Heartbroken') }
-    if (heartsLost) notes.push('♥ −1')
+    if (p.hearts === 0 && pts > 0) { pts = Math.floor(pts / 2); notes.push('Heartbroken: halved') }
+    if (heartsLost) notes.push('Lost a heart')
     results[p.id] = { action: 'date', raw, pts, notes }
     return { ...p, score: p.score + pts, hearts: Math.max(0, p.hearts - heartsLost), dates: p.dates + 1, redFlags: p.redFlags + (redFlag ? 1 : 0) }
   })
