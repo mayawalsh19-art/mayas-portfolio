@@ -160,7 +160,7 @@ function SetupScreen({ dispatch }) {
 
 // ─── PROFILE CARD ─────────────────────────────────────────────────────────────
 // Each match's profile is its own full-screen "card": the avatar fills the
-// space, with name, age, archetype, bio and tags along the bottom.
+// space, with name, age and archetype along the bottom.
 function ProfileCard({ profile, match }) {
   return (
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', borderRadius: 14, overflow: 'hidden', border: hairline, background: C.card, boxShadow: '0 18px 40px rgba(0,0,0,0.45)' }}>
@@ -175,16 +175,6 @@ function ProfileCard({ profile, match }) {
           <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 34, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
           {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 11, letterSpacing: '0.22em', marginTop: 5 }}>{profile.archetype.toUpperCase()}</div>}
         </div>
-      </div>
-      <div style={{ flexShrink: 0, padding: '14px 16px 16px' }}>
-        {profile.bio && <p style={{ fontFamily: WS, fontWeight: 300, fontStyle: 'italic', fontSize: 14, color: 'rgba(239,230,220,0.78)', margin: 0, lineHeight: 1.5 }}>"{profile.bio}"</p>}
-        {profile.tags?.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 10 }}>
-            {profile.tags.map(t => (
-              <span key={t} style={{ fontFamily: WS, fontWeight: 700, fontSize: 9, letterSpacing: '0.14em', color: '#999', border: '1px solid #3a3535', borderRadius: 3, padding: '3px 7px' }}>{t}</span>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )

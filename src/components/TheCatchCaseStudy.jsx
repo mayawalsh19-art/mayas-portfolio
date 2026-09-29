@@ -803,7 +803,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <Label color={C.accent}>07 — PROFILE GENERATION</Label>
           <Heading>No two games<br />play the same.</Heading>
           <p style={{ fontFamily: WS, fontWeight: 300, fontSize: 14, color: 'rgba(239,230,220,0.55)', lineHeight: 1.7, marginBottom: 40, maxWidth: 560 }}>
-            Every game lines up 7 fresh profiles — name, age, archetype, bio and an illustrated avatar. Their traits come from a pool of 64 real dating behaviors: at the table, six cards dealt off the deck; online, six digital cards. Two face-up, four face-down.
+            Every game lines up 7 fresh profiles — name, age, archetype and an illustrated avatar. Their traits come from a pool of 64 real dating behaviors: at the table, six cards dealt off the deck; online, six digital cards. Two face-up, four face-down.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 32 }}>

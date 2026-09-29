@@ -201,7 +201,6 @@ function ProfileHeader({ profile }) {
           {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 10, letterSpacing: '0.2em', marginTop: 3 }}>{profile.archetype.toUpperCase()}</div>}
         </div>
       </div>
-      {profile.bio && <div style={{ padding: '10px 14px', fontFamily: WS, fontWeight: 300, fontStyle: 'italic', fontSize: 12, color: 'rgba(239,230,220,0.7)', lineHeight: 1.45 }}>"{profile.bio}"</div>}
     </div>
   )
 }
