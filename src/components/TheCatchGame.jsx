@@ -160,21 +160,25 @@ function SetupScreen({ dispatch }) {
 }
 
 // ─── PROFILE CARD ─────────────────────────────────────────────────────────────
-// The digital "who's on the market" card: avatar, name, age, archetype, bio, tags.
-function ProfileCard({ profile }) {
+// Each match's profile is its own full-screen "card": the avatar fills the
+// space, with name, age, archetype, bio and tags along the bottom.
+function ProfileCard({ profile, match }) {
   return (
-    <div style={{ borderRadius: 10, overflow: 'hidden', border: hairline, background: C.card }}>
-      <div style={{ position: 'relative', height: 'clamp(190px, 28dvh, 250px)', overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : '#111', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', borderRadius: 14, overflow: 'hidden', border: hairline, background: C.card, boxShadow: '0 18px 40px rgba(0,0,0,0.45)' }}>
+      <div style={{ position: 'relative', flex: 1, minHeight: 220, overflow: 'hidden', background: profile.doll ? DOLL_BG[profile.doll] : '#111', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
         {profile.doll
-          ? <div style={{ transform: 'scale(1.5)', transformOrigin: 'top center', marginTop: -10 }}><Doll name={profile.doll} /></div>
-          : <span style={{ fontSize: 72, lineHeight: 1, display: 'flex', alignItems: 'center', height: '100%' }}>{profile.emoji}</span>}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '52px 14px 12px', background: 'linear-gradient(to top,rgba(0,0,0,0.96),transparent)' }}>
-          <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 28, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
-          {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 11, letterSpacing: '0.22em', marginTop: 4 }}>{profile.archetype.toUpperCase()}</div>}
+          ? <div style={{ transform: 'scale(1.9)', transformOrigin: 'top center', marginTop: 4 }}><Doll name={profile.doll} /></div>
+          : <span style={{ fontSize: 96, lineHeight: 1, display: 'flex', alignItems: 'center', height: '100%' }}>{profile.emoji}</span>}
+        {match && (
+          <div style={{ position: 'absolute', top: 12, left: 12, fontFamily: ANTON, fontSize: 12, letterSpacing: '0.12em', color: C.cream, background: 'rgba(19,16,17,0.72)', border: '1px solid rgba(239,230,220,0.15)', borderRadius: 4, padding: '4px 9px' }}>{match}</div>
+        )}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '70px 16px 14px', background: 'linear-gradient(to top,rgba(0,0,0,0.96),transparent)' }}>
+          <div style={{ fontFamily: ANTON, color: C.cream, fontSize: 34, lineHeight: 1 }}>{profile.name.toUpperCase()}, {profile.age}</div>
+          {profile.archetype && <div style={{ fontFamily: WS, fontWeight: 700, color: C.gold, fontSize: 11, letterSpacing: '0.22em', marginTop: 5 }}>{profile.archetype.toUpperCase()}</div>}
         </div>
       </div>
-      <div style={{ padding: '12px 14px 14px' }}>
-        {profile.bio && <p style={{ fontFamily: WS, fontWeight: 300, fontStyle: 'italic', fontSize: 13, color: 'rgba(239,230,220,0.75)', margin: 0, lineHeight: 1.5 }}>"{profile.bio}"</p>}
+      <div style={{ flexShrink: 0, padding: '14px 16px 16px' }}>
+        {profile.bio && <p style={{ fontFamily: WS, fontWeight: 300, fontStyle: 'italic', fontSize: 14, color: 'rgba(239,230,220,0.78)', margin: 0, lineHeight: 1.5 }}>"{profile.bio}"</p>}
         {profile.tags?.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 10 }}>
             {profile.tags.map(t => (
@@ -187,33 +191,19 @@ function ProfileCard({ profile }) {
   )
 }
 
-// ─── ROUND: just the profile — how to play lives on the direction sheet in the box
+// ─── ROUND: the profile card, full screen — how to play is on the sheet in the box
 function RoundScreen({ state, dispatch }) {
   const profile = state.profiles[state.round]
+  const match = `MATCH ${String(state.round + 1).padStart(2, '0')} / ${String(ROUNDS).padStart(2, '0')}`
   return (
-    <Screen footer={<button onClick={() => dispatch({ type: 'ENTER_SCORES' })} style={primaryBtn(true)}>ENTER SCORES →</button>}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0 12px' }}>
-        <div style={{ fontFamily: WS, fontWeight: 700, fontSize: 10, color: C.accent, letterSpacing: '0.22em' }}>NOW ON THE MARKET</div>
-        <div style={{ fontFamily: ANTON, color: C.accent, fontSize: 13, letterSpacing: '0.12em' }}>MATCH {String(state.round + 1).padStart(2, '0')} / {String(ROUNDS).padStart(2, '0')}</div>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: C.screen, minHeight: 0 }}>
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: 400, margin: '0 auto', padding: '14px 20px 12px', boxSizing: 'border-box' }}>
+        <ProfileCard profile={profile} match={match} />
       </div>
-      <ProfileCard profile={profile} />
-      <MiniBoard players={state.players} />
-    </Screen>
-  )
-}
-
-function MiniBoard({ players }) {
-  return (
-    <div style={{ marginTop: 18 }}>
-      <Label>SCORES SO FAR</Label>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-        {rankPlayers(players).map(p => (
-          <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: C.card, border: hairline, borderRadius: 4 }}>
-            <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, color: C.cream }}>{p.name}</span>
-            <span style={{ fontFamily: ANTON, fontSize: 14, color: p.score >= 0 ? C.teal : C.accent }}>{signed(p.score)}</span>
-            <span style={{ fontSize: 10 }}><Hearts n={p.hearts} /></span>
-          </div>
-        ))}
+      <div style={{ flexShrink: 0, padding: '10px 20px 16px', background: C.screen, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto' }}>
+          <button onClick={() => dispatch({ type: 'ENTER_SCORES' })} style={primaryBtn(true)}>ENTER SCORES →</button>
+        </div>
       </div>
     </div>
   )
