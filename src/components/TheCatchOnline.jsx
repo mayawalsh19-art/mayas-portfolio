@@ -138,10 +138,7 @@ function TypePicker({ value, onChange }) {
           }}
         >
           <span style={{ fontSize: 18 }}>{t.emoji}</span>
-          <div>
-            <div style={{ color: value === t.id ? C.cream : 'rgba(239,230,220,0.45)' }}>{t.label}</div>
-            <div style={{ fontWeight: 300, fontSize: 10, color: '#777', marginTop: 2 }}>{t.rule}</div>
-          </div>
+          <div style={{ color: value === t.id ? C.cream : 'rgba(239,230,220,0.45)' }}>{t.label}</div>
         </button>
       ))}
     </div>

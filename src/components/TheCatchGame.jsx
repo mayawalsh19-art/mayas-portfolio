@@ -144,7 +144,6 @@ function SetupScreen({ dispatch }) {
                   )
                 })}
               </div>
-              <div style={{ fontFamily: WS, fontWeight: 300, fontSize: 12, color: '#999', marginTop: 6 }}>{sl.playerType.desc}</div>
             </div>
           </div>
         ))}
