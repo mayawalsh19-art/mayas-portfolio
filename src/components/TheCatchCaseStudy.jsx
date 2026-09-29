@@ -304,11 +304,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay, onPlayOnline }) {
           <div>
             <Head kicker="The deck">The cards hold the secrets.</Head>
             <P>A printable deck made for this game: 64 trait cards in green, yellow and red flags, 6 blanks to write your own, 30 stalk chips, and a one-page how-to sheet that folds into the box. The rules live in the box, so the phone never has to explain itself.</P>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
-              <a href="/thecatch/trait-card-deck.pdf" target="_blank" rel="noopener noreferrer" style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream, border: line, borderRadius: 6, padding: '12px 18px', textDecoration: 'none' }}>Print-ready deck (PDF)</a>
-              <a href="/thecatch/rulebook.pdf" target="_blank" rel="noopener noreferrer" style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream, border: line, borderRadius: 6, padding: '12px 18px', textDecoration: 'none' }}>Rulebook (PDF)</a>
-            </div>
-            <Small style={{ marginTop: 12 }}>Poker size, 2.5 × 3.5 in. Print at 100% and cut on the dashed lines.</Small>
+            <Small style={{ marginTop: 12 }}>Poker-size cards, 2.5 × 3.5 in.</Small>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
             <TraitCardBack />
