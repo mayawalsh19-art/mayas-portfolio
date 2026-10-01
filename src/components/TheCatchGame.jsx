@@ -166,15 +166,15 @@ function TitleScreen({ dispatch }) {
 
   const t = TEASE[i]
   return (
-    // Its own layout instead of Screen: logo pinned to the top, the hand of
-    // cards centred in the space that's left, START along the bottom.
+    // Its own layout instead of Screen: logo, the hand of cards and the line
+    // sit together in the middle, START along the bottom.
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: C.screen }}>
       <style>{TITLE_CSS}</style>
-      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '34px 20px 20px' }}>
-        <div className="tc-rise" style={{ animationDelay: '0.1s', width: '100%' }}>
-          <CatchHero maxWidth={250} />
-        </div>
-        <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '28px 0 48px' }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '20px' }}>
+        <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 24 }}>
+          <div className="tc-rise" style={{ animationDelay: '0.1s', marginBottom: 30 }}>
+            <CatchHero maxWidth={250} />
+          </div>
           <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
             {FAN.map((f, n) => (
               <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.5 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
