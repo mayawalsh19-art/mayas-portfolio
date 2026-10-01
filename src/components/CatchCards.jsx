@@ -51,8 +51,8 @@ export function StalkChip({ size = 96 }) {
   return (
     <div style={{ width: size, height: size, borderRadius: '50%', background: C.card, border: `${Math.round(size * 0.045)}px solid ${C.gold}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 26px rgba(0,0,0,0.5)', flexShrink: 0, boxSizing: 'border-box' }}>
       <div style={{ width: '78%', height: '78%', borderRadius: '50%', border: `1px solid ${C.gold}55`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ fontFamily: ANTON, fontSize: size * 0.2, lineHeight: 1, letterSpacing: '0.1em', color: C.gold }}>STALK</div>
-        <div style={{ fontFamily: WS, fontWeight: 700, fontSize: Math.max(5, size * 0.055), letterSpacing: '0.12em', color: 'rgba(239,230,220,0.55)', marginTop: size * 0.05 }}>PEEK AT 1 CARD</div>
+        <div style={{ fontFamily: ANTON, fontSize: size * 0.2, lineHeight: 1, letterSpacing: '0.1em', paddingLeft: '0.1em', color: C.gold }}>STALK</div>
+        <div style={{ fontFamily: WS, fontWeight: 700, fontSize: size * 0.055, lineHeight: 1, letterSpacing: '0.12em', paddingLeft: '0.12em', whiteSpace: 'nowrap', color: 'rgba(239,230,220,0.55)', marginTop: size * 0.06 }}>PEEK AT 1 CARD</div>
       </div>
     </div>
   )
