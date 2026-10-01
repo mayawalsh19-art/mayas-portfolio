@@ -154,14 +154,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             </div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 1, marginTop: 56, background: 'rgba(239,230,220,0.08)', border: hair, borderRadius: 8, overflow: 'hidden' }}>
-          {[['Course', 'IXD 432, senior year'], ['Year', '2026'], ['Built with', 'React, Vite'], ['Made', 'Web app, printed deck, rulebook'], ['Players', '2–6, 20–40 minutes']].map(([k, v]) => (
-            <div key={k} style={{ background: C.bg, padding: '16px 18px' }}>
-              <Small>{k}</Small>
-              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginTop: 3 }}>{v}</div>
-            </div>
-          ))}
-        </div>
       </Section>
 
       <Gap />
