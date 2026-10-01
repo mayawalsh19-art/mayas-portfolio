@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react'
 import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle, TRAIT_POOL } from '../data/catchProfiles'
 import { ROUNDS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { Doll, DOLL_BG } from './DollCharacters'
@@ -164,6 +164,26 @@ function TitleScreen({ dispatch }) {
     return () => { clearInterval(loop); timers.forEach(clearTimeout) }
   }, [])
 
+  // Fit the logo + hand + line into whatever height the screen has left.
+  const areaRef  = useRef(null)
+  const groupRef = useRef(null)
+  const [natural, setNatural] = useState(0)
+  const [scale, setScale]     = useState(1)
+  useLayoutEffect(() => {
+    const area = areaRef.current, group = groupRef.current
+    if (!area || !group) return
+    const fit = () => {
+      const h = group.offsetHeight                 // layout height, ignores the transform
+      const room = area.clientHeight - 24 - 8      // minus the bottom padding and a little air
+      setNatural(h)
+      setScale(Math.min(1, Math.max(0.55, room / h)))
+    }
+    fit()
+    const ro = new ResizeObserver(fit)
+    ro.observe(area)
+    return () => ro.disconnect()
+  }, [])
+
   const t = TEASE[i]
   return (
     // Its own layout instead of Screen: logo, the hand of cards and the line
@@ -171,29 +191,34 @@ function TitleScreen({ dispatch }) {
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: C.screen }}>
       <style>{TITLE_CSS}</style>
       <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '20px' }}>
-        <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 24 }}>
-          <div className="tc-rise" style={{ animationDelay: '0.1s', marginBottom: 30 }}>
-            <CatchHero maxWidth={250} />
-          </div>
-          <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
-            {FAN.map((f, n) => (
-              <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.5 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
-                {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
-                  <div style={{ perspective: 800 }}>
-                    <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
-                      <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
-                        {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
-                      </div>
-                      <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                        <Mini><TraitCardBack /></Mini>
+        <div ref={areaRef} style={{ flex: 1, minHeight: 0, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 24 }}>
+          {/* Shrinks the whole group on short screens (Safari's bars, small laptop windows) */}
+          <div style={{ height: natural ? natural * scale : 'auto', flexShrink: 0 }}>
+            <div ref={groupRef} style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}>
+            <div className="tc-rise" style={{ animationDelay: '0.1s', marginBottom: 30 }}>
+              <CatchHero maxWidth={250} />
+            </div>
+            <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
+              {FAN.map((f, n) => (
+                <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.5 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
+                  {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
+                    <div style={{ perspective: 800 }}>
+                      <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
+                        <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                          {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
+                        </div>
+                        <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                          <Mini><TraitCardBack /></Mini>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="tc-rise" style={{ animationDelay: '1.5s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '40px 0 0' }}>Get out your deck.</p>
+            </div>
           </div>
-          <p className="tc-rise" style={{ animationDelay: '1.5s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '40px 0 0' }}>Get out your deck.</p>
         </div>
       </div>
       <div style={{ flexShrink: 0, padding: '10px 20px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
