@@ -156,7 +156,7 @@ function TitleScreen({ dispatch }) {
 
   // Flip the middle card face-up once the deal lands, then keep cycling traits.
   useEffect(() => {
-    const timers = [setTimeout(() => setUp(true), 1300)]
+    const timers = [setTimeout(() => setUp(true), 1700)]
     const loop = setInterval(() => {
       setUp(false)
       timers.push(setTimeout(() => { setI(n => (n + 1) % TEASE.length); setUp(true) }, 450))
@@ -166,33 +166,42 @@ function TitleScreen({ dispatch }) {
 
   const t = TEASE[i]
   return (
-    <Screen center footer={<button onClick={() => dispatch({ type: 'OPEN' })} style={primaryBtn(true)}>START</button>}>
+    // Its own layout instead of Screen: logo pinned to the top, the hand of
+    // cards centred in the space that's left, START along the bottom.
+    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: C.screen }}>
       <style>{TITLE_CSS}</style>
-      <div style={{ textAlign: 'center' }}>
-        <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
-          {FAN.map((f, n) => (
-            <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.1 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
-              {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
-                <div style={{ perspective: 800 }}>
-                  <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
-                    <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
-                      {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
-                    </div>
-                    <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                      <Mini><TraitCardBack /></Mini>
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '34px 20px 20px' }}>
+        <div className="tc-rise" style={{ animationDelay: '0.1s', width: '100%' }}>
+          <CatchHero maxWidth={250} />
+        </div>
+        <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '28px 0 48px' }}>
+          <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
+            {FAN.map((f, n) => (
+              <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.5 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
+                {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
+                  <div style={{ perspective: 800 }}>
+                    <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
+                      <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                        {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
+                      </div>
+                      <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                        <Mini><TraitCardBack /></Mini>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="tc-rise" style={{ animationDelay: '1.5s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '40px 0 0' }}>Get out your deck.</p>
         </div>
-        <div className="tc-rise" style={{ animationDelay: '0.9s', marginTop: 40 }}>
-          <CatchHero maxWidth={280} />
-        </div>
-        <p className="tc-rise" style={{ animationDelay: '1.2s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '22px 0 0' }}>Get out your deck.</p>
       </div>
-    </Screen>
+      <div style={{ flexShrink: 0, padding: '10px 20px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: 400, margin: '0 auto' }}>
+          <button onClick={() => dispatch({ type: 'OPEN' })} style={primaryBtn(true)}>START</button>
+        </div>
+      </div>
+    </div>
   )
 }
 
