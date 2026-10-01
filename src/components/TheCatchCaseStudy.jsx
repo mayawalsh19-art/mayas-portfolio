@@ -45,7 +45,7 @@ function Head({ kicker, children, center = false }) {
   return (
     <div style={{ textAlign: center ? 'center' : 'left', marginBottom: 22 }}>
       {kicker && <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.accent, marginBottom: 10 }}>{kicker}</div>}
-      <h2 style={{ fontFamily: ANTON, fontWeight: 400, color: C.cream, fontSize: 'clamp(34px,6vw,50px)', lineHeight: 0.98, margin: 0 }}>{children}</h2>
+      <h2 style={{ fontFamily: ANTON, fontWeight: 400, color: C.cream, fontSize: 'clamp(34px,6vw,50px)', lineHeight: 1.08, margin: 0 }}>{children}</h2>
     </div>
   )
 }
@@ -109,9 +109,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
 
+      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } }'}</style>
       {/* ── Nav ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 56, background: 'rgba(19,16,17,0.94)', backdropFilter: 'blur(8px)', borderBottom: hair }}>
-        <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 14, color: muted, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>← Back to work</button>
+        <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 14, color: muted, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>← Back<span className="cs-wide-only"> to work</span></button>
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }}><CatchWordmark size={14} accent={C.accent} cream={C.cream} /></div>
         <button onClick={onPlay} style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: '#fff', background: C.accent, border: 'none', borderRadius: 6, padding: '9px 18px', cursor: 'pointer' }}>PLAY</button>
       </nav>
@@ -149,10 +150,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 420 }}>
-            <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width={230} />
+            <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width="min(230px, 56vw)" />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginLeft: -26, marginBottom: 24, zIndex: 2 }}>
-              <div style={{ width: 128, transform: 'rotate(5deg)' }}><TraitCardFront text={card(17).text} value={card(17).value} /></div>
-              <div style={{ width: 128, transform: 'rotate(-3deg)', marginLeft: 18 }}><TraitCardBack /></div>
+              <div style={{ width: 'min(128px, 31vw)', transform: 'rotate(5deg)' }}><TraitCardFront text={card(17).text} value={card(17).value} /></div>
+              <div style={{ width: 'min(128px, 31vw)', transform: 'rotate(-3deg)', marginLeft: 'min(18px, 4vw)' }}><TraitCardBack /></div>
             </div>
           </div>
         </div>
@@ -384,7 +385,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       {/* ── Play it ── */}
       <Section style={{ textAlign: 'center' }}>
-        <h2 style={{ fontFamily: ANTON, fontWeight: 400, fontSize: 'clamp(48px,10vw,84px)', color: C.cream, lineHeight: 0.92, margin: '0 0 12px' }}>READY TO <span style={{ color: C.accent }}>PLAY?</span></h2>
+        <h2 style={{ fontFamily: ANTON, fontWeight: 400, fontSize: 'clamp(48px,10vw,84px)', color: C.cream, lineHeight: 1.02, margin: '0 0 12px' }}>READY TO <span style={{ color: C.accent }}>PLAY?</span></h2>
         <Small style={{ marginBottom: 28, fontSize: 15 }}>Grab the deck and one phone.</Small>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn primary onClick={onPlay}>PLAY</Btn>
