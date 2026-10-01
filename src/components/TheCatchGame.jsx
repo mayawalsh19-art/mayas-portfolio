@@ -2,7 +2,7 @@ import { useReducer, useState } from 'react'
 import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle } from '../data/catchProfiles'
 import { ROUNDS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { Doll, DOLL_BG } from './DollCharacters'
-import { CatchWordmark } from './CatchBrand'
+import { CatchWordmark, CatchHero } from './CatchBrand'
 
 // The Catch — table companion.
 //
@@ -36,10 +36,12 @@ function makePlayer(id, name, playerType) {
   return { id, name, playerType, score: 0, ghosts: GHOSTS, dates: 0, redFlags: 0 }
 }
 
-const INIT = { screen: 'setup', players: [], profiles: [], round: 0, results: null }
+const INIT = { screen: 'title', players: [], profiles: [], round: 0, results: null }
 
 function reducer(state, { type, ...p }) {
   switch (type) {
+    case 'OPEN':
+      return { ...state, screen: 'setup' }
     case 'START':
       return { ...INIT, screen: 'round', players: p.players, profiles: generateProfiles(ROUNDS, [], [], p.lookingFor).slice(0, ROUNDS) }
     case 'ENTER_SCORES':
@@ -55,7 +57,7 @@ function reducer(state, { type, ...p }) {
       if (state.round >= ROUNDS - 1) return { ...state, screen: 'final' }
       return { ...state, round: state.round + 1, results: null, screen: 'round' }
     case 'PLAY_AGAIN':
-      return { ...INIT }
+      return { ...INIT, screen: 'setup' }
     default:
       return state
   }
@@ -114,6 +116,21 @@ function Label({ children, color = '#888' }) {
 function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) }
 
 function signed(n) { return n > 0 ? `+${n}` : n === 0 ? '±0' : `${n}` }
+
+// ─── TITLE: the opening screen ───────────────────────────────────────────────
+function TitleScreen({ dispatch }) {
+  return (
+    <Screen center footer={<button onClick={() => dispatch({ type: 'OPEN' })} style={primaryBtn(true)}>START</button>}>
+      <div style={{ textAlign: 'center' }}>
+        <CatchHero maxWidth={300} />
+        <p style={{ fontFamily: WS, fontSize: 15, color: C.cream, lineHeight: 1.55, margin: '26px auto 0', maxWidth: 300 }}>
+          A dating card game for 2–6 players. Read the cards, decide out loud, and find out who you really went home with.
+        </p>
+        <p style={{ fontFamily: WS, fontSize: 13, color: '#888', margin: '14px 0 0' }}>You need the deck and this phone.</p>
+      </div>
+    </Screen>
+  )
+}
 
 // ─── SETUP ────────────────────────────────────────────────────────────────────
 // Short, sentence-case names for the type buttons.
@@ -407,12 +424,14 @@ export default function TheCatchGame({ onClose }) {
           ← Back
         </button>
         {/* Absolutely centred so the Back button's width doesn't push it off-centre */}
-        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }}>
+        {/* The opening screen shows the full logo, so the header stays plain there */}
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none', visibility: state.screen === 'title' ? 'hidden' : 'visible' }}>
           <CatchWordmark size={14} accent={C.accent} cream={C.cream} />
         </div>
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
+        {state.screen === 'title'        && <TitleScreen dispatch={dispatch} />}
         {state.screen === 'setup'        && <SetupScreen dispatch={dispatch} />}
         {state.screen === 'round'        && <RoundScreen state={state} dispatch={dispatch} />}
         {state.screen === 'score'        && <ScoreScreen key={state.round} state={state} dispatch={dispatch} />}
