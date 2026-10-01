@@ -123,10 +123,7 @@ function TitleScreen({ dispatch }) {
     <Screen center footer={<button onClick={() => dispatch({ type: 'OPEN' })} style={primaryBtn(true)}>START</button>}>
       <div style={{ textAlign: 'center' }}>
         <CatchHero maxWidth={300} />
-        <p style={{ fontFamily: WS, fontSize: 15, color: C.cream, lineHeight: 1.55, margin: '26px auto 0', maxWidth: 300 }}>
-          A dating card game for 2–6 players. Read the cards, decide out loud, and find out who you really went home with.
-        </p>
-        <p style={{ fontFamily: WS, fontSize: 13, color: '#888', margin: '14px 0 0' }}>You need the deck and this phone.</p>
+        <p style={{ fontFamily: WS, fontSize: 15, color: C.cream, margin: '26px 0 0' }}>Get out your deck.</p>
       </div>
     </Screen>
   )
