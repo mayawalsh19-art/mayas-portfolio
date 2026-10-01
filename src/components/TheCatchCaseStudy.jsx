@@ -69,6 +69,15 @@ function Phone({ src, alt, width = 250, children }) {
   )
 }
 
+// Draws a card at its normal width, then scales it down, so the type always fits the card
+function Scaled({ w, base, children }) {
+  return (
+    <div style={{ width: w, height: w * 1.4, position: 'relative', flexShrink: 0 }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: base, transform: `scale(${w / base})`, transformOrigin: 'top left' }}>{children}</div>
+    </div>
+  )
+}
+
 function Btn({ children, onClick, primary = false }) {
   return (
     <button onClick={onClick} style={{
@@ -195,11 +204,14 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             ['1', 'Meet them', 'The phone shows who’s on the market: name, age, archetype and an illustrated avatar.', <Phone key="p" src="/thecatch/screens/profile.jpg" alt="Profile card" width={210} />],
             ['2', 'Deal and stalk', 'Deal six trait cards, two face-up and four face-down. Spend a chip to secretly peek at one.', (
               <Phone key="d" width={210}>
-                <div style={{ display: 'grid', gridTemplateColumns: '80px 80px', gap: 8 }}>
-                  <TraitCardFront compact text={card(17).text} value={card(17).value} />
-                  <TraitCardBack compact />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Scaled w={80} base={110}><TraitCardFront compact text={card(17).text} value={card(17).value} /></Scaled>
+                  <Scaled w={80} base={110}><TraitCardFront compact text={card(48).text} value={card(48).value} /></Scaled>
                 </div>
-                <StalkChip size={72} />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {[0, 1, 2, 3].map(i => <Scaled key={i} w={36} base={110}><TraitCardBack compact /></Scaled>)}
+                </div>
+                <StalkChip size={64} />
               </Phone>
             )],
             ['3', 'Decide and enter', 'On three, everyone says Date or Ghost. Daters add up their six cards and type in one number.', <Phone key="w" src="/thecatch/screens/whodated.jpg" alt="Who dated screen" width={210} />],
