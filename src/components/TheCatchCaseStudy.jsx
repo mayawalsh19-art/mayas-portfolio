@@ -368,9 +368,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           </div>
         </div>
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '44px 0 14px' }}>THE CAST</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 8 }}>
-          {['bibi', 'ada', 'suki', 'petra', 'cass', 'kip', 'dax', 'rell', 'milo'].map(n => (
-            <div key={n} style={{ borderRadius: 8, overflow: 'hidden', border: hair }}>
+        {/* 13 characters: seven across on desktop (girls + Cass, then guys), wrapping and centred on phones */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
+          {['bibi', 'ada', 'suki', 'petra', 'nia', 'rory', 'cass', 'kip', 'dax', 'rell', 'milo', 'theo', 'jun'].map(n => (
+            <div key={n} style={{ width: 'calc((100% - 48px) / 7)', minWidth: 96, boxSizing: 'border-box', borderRadius: 8, overflow: 'hidden', border: hair }}>
               <div style={{ height: 150, background: DOLL_BG[n], display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
                 <div style={{ transform: 'scale(0.45)', transformOrigin: 'top center', marginTop: 8 }}><Doll name={n} /></div>
               </div>
