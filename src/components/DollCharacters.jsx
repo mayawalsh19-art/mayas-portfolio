@@ -261,7 +261,131 @@ const CASS_HTML = `
 <div style="position:absolute;right:44px;bottom:350px;width:28px;height:50px;border-radius:8px 20px 16px 8px;background:#2A1E18"></div>
 `
 
-const DOLL_HTML = { bibi: BIBI_HTML, kip: KIP_HTML, ada: ADA_HTML, dax: DAX_HTML, suki: SUKI_HTML, rell: RELL_HTML, milo: MILO_HTML, petra: PETRA_HTML, cass: CASS_HTML }
+const NIA_HTML = `
+<div style="position:absolute;left:30px;bottom:292px;width:140px;height:128px;border-radius:50%;background:#1E1310"></div>
+<div style="position:absolute;left:46px;bottom:0;width:108px;height:16px;border-radius:50%;background:rgba(242,179,61,.22)"></div>
+<div style="position:absolute;left:62px;bottom:8px;width:30px;height:16px;border-radius:4px 4px 9px 9px;background:#FFFDF9"></div>
+<div style="position:absolute;right:62px;bottom:8px;width:30px;height:16px;border-radius:4px 4px 9px 9px;background:#FFFDF9"></div>
+<div style="position:absolute;left:68px;bottom:20px;width:24px;height:156px;border-radius:12px;background:linear-gradient(100deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),#6B3F26"></div>
+<div style="position:absolute;right:68px;bottom:20px;width:24px;height:156px;border-radius:12px;background:linear-gradient(100deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),#6B3F26"></div>
+<div style="position:absolute;left:54px;bottom:160px;width:92px;height:124px;border-radius:12px 12px 30px 30px;background:linear-gradient(105deg,rgba(255,255,255,.45),rgba(255,255,255,0) 55%),#F2B33D"></div>
+<div style="position:absolute;left:54px;bottom:226px;width:92px;height:6px;background:#D9922A"></div>
+<div style="position:absolute;left:44px;bottom:212px;width:17px;height:76px;border-radius:9px;background:linear-gradient(100deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),#6B3F26;transform:rotate(6deg)"></div>
+<div style="position:absolute;right:44px;bottom:212px;width:17px;height:76px;border-radius:9px;background:linear-gradient(100deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),#6B3F26;transform:rotate(-6deg)"></div>
+<div style="position:absolute;left:92px;bottom:272px;width:16px;height:22px;border-radius:6px;background:#5E361F"></div>
+<div style="position:absolute;left:58px;bottom:286px;width:84px;height:96px;border-radius:38px;background:linear-gradient(150deg,#8A5434 0%,#6B3F26 52%)">
+  <div style="position:absolute;left:12px;top:14px;width:22px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);transform:rotate(-20deg)"></div>
+  <div style="position:absolute;left:16px;top:34px;width:16px;height:3px;border-radius:2px;background:#1A0E08;transform:rotate(-8deg)"></div>
+  <div style="position:absolute;right:16px;top:34px;width:16px;height:3px;border-radius:2px;background:#1A0E08;transform:rotate(8deg)"></div>
+  <div style="position:absolute;left:18px;top:43px;width:13px;height:15px;border-radius:7px;background:#1A0E08"></div>
+  <div style="position:absolute;right:18px;top:43px;width:13px;height:15px;border-radius:7px;background:#1A0E08"></div>
+  <div style="position:absolute;left:21px;top:46px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;right:21px;top:46px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;left:14px;top:64px;width:14px;height:7px;border-radius:50%;background:rgba(216,47,99,.2)"></div>
+  <div style="position:absolute;right:14px;top:64px;width:14px;height:7px;border-radius:50%;background:rgba(216,47,99,.2)"></div>
+  <div style="position:absolute;left:34px;top:68px;width:16px;height:10px;border-radius:50%;background:#8C2E3E"></div>
+</div>
+<div style="position:absolute;left:56px;bottom:360px;width:88px;height:10px;border-radius:5px;background:#2E9C93"></div>
+`
+
+const RORY_HTML = `
+<div style="position:absolute;left:48px;bottom:298px;width:104px;height:94px;border-radius:48px 48px 20px 20px;background:#C8562E"></div>
+<div style="position:absolute;left:46px;bottom:0;width:108px;height:16px;border-radius:50%;background:rgba(91,127,181,.2)"></div>
+<div style="position:absolute;left:60px;bottom:6px;width:34px;height:28px;border-radius:6px 6px 10px 10px;background:#B8323A"></div>
+<div style="position:absolute;right:60px;bottom:6px;width:34px;height:28px;border-radius:6px 6px 10px 10px;background:#B8323A"></div>
+<div style="position:absolute;left:68px;bottom:26px;width:24px;height:150px;border-radius:12px;background:linear-gradient(100deg,rgba(255,255,255,.45),rgba(255,255,255,0) 55%),#F6D5BE"></div>
+<div style="position:absolute;right:68px;bottom:26px;width:24px;height:150px;border-radius:12px;background:linear-gradient(100deg,rgba(255,255,255,.45),rgba(255,255,255,0) 55%),#F6D5BE"></div>
+<div style="position:absolute;left:60px;bottom:166px;width:80px;height:46px;border-radius:8px 8px 18px 18px;background:#2A1E24"></div>
+<div style="position:absolute;left:66px;bottom:204px;width:68px;height:76px;border-radius:20px 20px 12px 12px;background:#FFFDF9"></div>
+<div style="position:absolute;left:56px;bottom:200px;width:30px;height:86px;border-radius:16px 6px 8px 12px;background:linear-gradient(105deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),#5B7FB5"></div>
+<div style="position:absolute;right:56px;bottom:200px;width:30px;height:86px;border-radius:6px 16px 12px 8px;background:#5B7FB5"></div>
+<div style="position:absolute;left:42px;bottom:208px;width:19px;height:78px;border-radius:10px;background:linear-gradient(100deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),#5B7FB5;transform:rotate(6deg)"></div>
+<div style="position:absolute;right:42px;bottom:208px;width:19px;height:78px;border-radius:10px;background:linear-gradient(100deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),#5B7FB5;transform:rotate(-6deg)"></div>
+<div style="position:absolute;left:38px;bottom:196px;width:18px;height:18px;border-radius:9px;background:#F6D5BE"></div>
+<div style="position:absolute;right:38px;bottom:196px;width:18px;height:18px;border-radius:9px;background:#F6D5BE"></div>
+<div style="position:absolute;left:92px;bottom:270px;width:16px;height:22px;border-radius:6px;background:#EFC7AB"></div>
+<div style="position:absolute;left:58px;bottom:284px;width:84px;height:96px;border-radius:38px;background:linear-gradient(150deg,#FFE6D3 0%,#F6D5BE 52%)">
+  <div style="position:absolute;left:12px;top:14px;width:22px;height:30px;border-radius:50%;background:rgba(255,255,255,.32);transform:rotate(-20deg)"></div>
+  <div style="position:absolute;left:16px;top:35px;width:16px;height:3px;border-radius:2px;background:#9A4424;transform:rotate(-6deg)"></div>
+  <div style="position:absolute;right:16px;top:35px;width:16px;height:3px;border-radius:2px;background:#9A4424;transform:rotate(6deg)"></div>
+  <div style="position:absolute;left:18px;top:44px;width:13px;height:15px;border-radius:7px;background:#4E7B4A"></div>
+  <div style="position:absolute;right:18px;top:44px;width:13px;height:15px;border-radius:7px;background:#4E7B4A"></div>
+  <div style="position:absolute;left:21px;top:47px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;right:21px;top:47px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;left:14px;top:63px;width:3px;height:3px;border-radius:50%;background:rgba(176,96,60,.6)"></div>
+  <div style="position:absolute;left:20px;top:66px;width:3px;height:3px;border-radius:50%;background:rgba(176,96,60,.6)"></div>
+  <div style="position:absolute;left:24px;top:61px;width:3px;height:3px;border-radius:50%;background:rgba(176,96,60,.6)"></div>
+  <div style="position:absolute;right:14px;top:63px;width:3px;height:3px;border-radius:50%;background:rgba(176,96,60,.6)"></div>
+  <div style="position:absolute;right:20px;top:66px;width:3px;height:3px;border-radius:50%;background:rgba(176,96,60,.6)"></div>
+  <div style="position:absolute;right:24px;top:61px;width:3px;height:3px;border-radius:50%;background:rgba(176,96,60,.6)"></div>
+  <div style="position:absolute;left:34px;top:70px;width:16px;height:9px;border-radius:50%;background:#D0506A"></div>
+</div>
+<div style="position:absolute;left:56px;bottom:350px;width:88px;height:34px;border-radius:44px 44px 10px 10px;background:#C8562E"></div>
+`
+
+const THEO_HTML = `
+<div style="position:absolute;left:46px;bottom:0;width:108px;height:16px;border-radius:50%;background:rgba(154,134,200,.22)"></div>
+<div style="position:absolute;left:60px;bottom:8px;width:38px;height:16px;border-radius:6px 6px 9px 9px;background:#FFFDF9"></div>
+<div style="position:absolute;right:60px;bottom:8px;width:38px;height:16px;border-radius:6px 6px 9px 9px;background:#FFFDF9"></div>
+<div style="position:absolute;left:66px;bottom:20px;width:28px;height:158px;border-radius:14px;background:linear-gradient(100deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),#6E7280"></div>
+<div style="position:absolute;right:66px;bottom:20px;width:28px;height:158px;border-radius:14px;background:linear-gradient(100deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),#6E7280"></div>
+<div style="position:absolute;left:58px;bottom:170px;width:84px;height:46px;border-radius:10px 10px 20px 20px;background:#6E7280"></div>
+<div style="position:absolute;left:56px;bottom:196px;width:88px;height:92px;border-radius:18px 18px 12px 12px;background:linear-gradient(105deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),#9A86C8"></div>
+<div style="position:absolute;left:71px;bottom:200px;width:58px;height:22px;border-radius:5px 5px 9px 9px;background:rgba(0,0,0,.12)"></div>
+<div style="position:absolute;left:74px;bottom:264px;width:52px;height:20px;border-radius:0 0 26px 26px;background:#8672B8"></div>
+<div style="position:absolute;left:40px;bottom:208px;width:20px;height:80px;border-radius:10px;background:linear-gradient(100deg,rgba(255,255,255,.34),rgba(255,255,255,0) 55%),#9A86C8;transform:rotate(7deg)"></div>
+<div style="position:absolute;right:40px;bottom:208px;width:20px;height:80px;border-radius:10px;background:linear-gradient(100deg,rgba(255,255,255,.34),rgba(255,255,255,0) 55%),#9A86C8;transform:rotate(-7deg)"></div>
+<div style="position:absolute;left:36px;bottom:196px;width:18px;height:18px;border-radius:9px;background:#B98560"></div>
+<div style="position:absolute;right:36px;bottom:196px;width:18px;height:18px;border-radius:9px;background:#B98560"></div>
+<div style="position:absolute;left:92px;bottom:276px;width:16px;height:22px;border-radius:6px;background:#A87452"></div>
+<div style="position:absolute;left:58px;bottom:288px;width:84px;height:96px;border-radius:36px;background:linear-gradient(150deg,#CC9A74 0%,#B98560 52%)">
+  <div style="position:absolute;left:12px;top:14px;width:22px;height:30px;border-radius:50%;background:rgba(255,255,255,.24);transform:rotate(-20deg)"></div>
+  <div style="position:absolute;left:16px;top:34px;width:17px;height:4px;border-radius:2px;background:#2A1A10"></div>
+  <div style="position:absolute;right:16px;top:34px;width:17px;height:4px;border-radius:2px;background:#2A1A10"></div>
+  <div style="position:absolute;left:18px;top:44px;width:13px;height:14px;border-radius:7px;background:#3A2416"></div>
+  <div style="position:absolute;right:18px;top:44px;width:13px;height:14px;border-radius:7px;background:#3A2416"></div>
+  <div style="position:absolute;left:21px;top:47px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;right:21px;top:47px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;left:8px;top:58px;width:68px;height:38px;border-radius:8px 8px 34px 34px;background:#2A1A10"></div>
+  <div style="position:absolute;left:32px;top:69px;width:20px;height:7px;border-radius:4px;background:#C47A6A"></div>
+</div>
+<div style="position:absolute;left:54px;bottom:358px;width:92px;height:32px;border-radius:46px 46px 12px 12px;background:#2A1A10"></div>
+<div style="position:absolute;left:58px;bottom:376px;width:22px;height:22px;border-radius:50%;background:#2A1A10"></div>
+<div style="position:absolute;left:78px;bottom:382px;width:24px;height:22px;border-radius:50%;background:#2A1A10"></div>
+<div style="position:absolute;left:100px;bottom:380px;width:24px;height:22px;border-radius:50%;background:#2A1A10"></div>
+<div style="position:absolute;left:120px;bottom:372px;width:22px;height:22px;border-radius:50%;background:#2A1A10"></div>
+`
+
+const JUN_HTML = `
+<div style="position:absolute;left:46px;bottom:0;width:108px;height:16px;border-radius:50%;background:rgba(30,28,34,.16)"></div>
+<div style="position:absolute;left:60px;bottom:8px;width:38px;height:16px;border-radius:6px 6px 9px 9px;background:#FFFDF9"></div>
+<div style="position:absolute;right:60px;bottom:8px;width:38px;height:16px;border-radius:6px 6px 9px 9px;background:#FFFDF9"></div>
+<div style="position:absolute;left:66px;bottom:20px;width:28px;height:158px;border-radius:14px;background:linear-gradient(100deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),#8DB0D6"></div>
+<div style="position:absolute;right:66px;bottom:20px;width:28px;height:158px;border-radius:14px;background:linear-gradient(100deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),#8DB0D6"></div>
+<div style="position:absolute;left:58px;bottom:170px;width:84px;height:46px;border-radius:10px 10px 20px 20px;background:#8DB0D6"></div>
+<div style="position:absolute;left:58px;bottom:196px;width:84px;height:88px;border-radius:16px 16px 12px 12px;background:#FFFDF9"></div>
+<div style="position:absolute;left:54px;bottom:194px;width:30px;height:94px;border-radius:16px 6px 8px 12px;background:linear-gradient(105deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%),#1E1C22"></div>
+<div style="position:absolute;right:54px;bottom:194px;width:30px;height:94px;border-radius:6px 16px 12px 8px;background:#1E1C22"></div>
+<div style="position:absolute;left:40px;bottom:206px;width:20px;height:82px;border-radius:10px;background:linear-gradient(100deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%),#1E1C22;transform:rotate(6deg)"></div>
+<div style="position:absolute;right:40px;bottom:206px;width:20px;height:82px;border-radius:10px;background:linear-gradient(100deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%),#1E1C22;transform:rotate(-6deg)"></div>
+<div style="position:absolute;left:36px;bottom:194px;width:18px;height:18px;border-radius:9px;background:#F2D8BC"></div>
+<div style="position:absolute;right:36px;bottom:194px;width:18px;height:18px;border-radius:9px;background:#F2D8BC"></div>
+<div style="position:absolute;left:92px;bottom:274px;width:18px;height:22px;border-radius:6px;background:#E6C8A8"></div>
+<div style="position:absolute;left:58px;bottom:288px;width:84px;height:96px;border-radius:36px;background:linear-gradient(150deg,#FBE6D0 0%,#F2D8BC 52%)">
+  <div style="position:absolute;left:12px;top:14px;width:22px;height:30px;border-radius:50%;background:rgba(255,255,255,.32);transform:rotate(-20deg)"></div>
+  <div style="position:absolute;left:16px;top:36px;width:17px;height:4px;border-radius:2px;background:#1A1414"></div>
+  <div style="position:absolute;right:16px;top:36px;width:17px;height:4px;border-radius:2px;background:#1A1414"></div>
+  <div style="position:absolute;left:18px;top:46px;width:13px;height:12px;border-radius:7px;background:#1A1414"></div>
+  <div style="position:absolute;right:18px;top:46px;width:13px;height:12px;border-radius:7px;background:#1A1414"></div>
+  <div style="position:absolute;left:21px;top:48px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;right:21px;top:48px;width:5px;height:5px;border-radius:50%;background:#FFFFFF"></div>
+  <div style="position:absolute;left:34px;top:70px;width:16px;height:6px;border-radius:4px;background:#C4655C"></div>
+</div>
+<div style="position:absolute;left:52px;bottom:352px;width:96px;height:42px;border-radius:48px 48px 30px 10px;background:#16121A"></div>
+<div style="position:absolute;left:86px;bottom:352px;width:56px;height:20px;border-radius:4px 20px 22px 22px;background:#16121A;transform:rotate(-8deg)"></div>
+`
+
+const DOLL_HTML = { bibi: BIBI_HTML, kip: KIP_HTML, ada: ADA_HTML, dax: DAX_HTML, suki: SUKI_HTML, rell: RELL_HTML, milo: MILO_HTML, petra: PETRA_HTML, cass: CASS_HTML, nia: NIA_HTML, rory: RORY_HTML, theo: THEO_HTML, jun: JUN_HTML }
 
 // Background gradients matching each doll's original card
 export const DOLL_BG = {
@@ -274,6 +398,10 @@ export const DOLL_BG = {
   milo:  'linear-gradient(180deg,#FFFDF9 0%,#E8F5F2 100%)',
   petra: 'linear-gradient(180deg,#FFFDF9 0%,#EFE8F5 100%)',
   cass:  'linear-gradient(180deg,#FFFDF9 0%,#E8EEF5 100%)',
+  nia:   'linear-gradient(180deg,#FFFDF9 0%,#FFF4DC 100%)',
+  rory:  'linear-gradient(180deg,#FFFDF9 0%,#FDECE4 100%)',
+  theo:  'linear-gradient(180deg,#FFFDF9 0%,#EEEAFA 100%)',
+  jun:   'linear-gradient(180deg,#FFFDF9 0%,#ECEFF3 100%)',
 }
 
 export function Doll({ name }) {

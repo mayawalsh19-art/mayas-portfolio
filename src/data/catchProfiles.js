@@ -187,9 +187,9 @@ const EMOJIS  = ['💫','⚡','🌙','🔥','💀','🌊','🎯','🦋','🌻','
 // Illustrated characters by who you're looking for. Cass reads as neither, so
 // only appears for "everyone".
 export const LOOKING_FOR = [
-  { id: 'girls',    label: 'GIRLS',    dolls: ['bibi', 'ada', 'suki', 'petra'] },
-  { id: 'guys',     label: 'GUYS',     dolls: ['kip', 'dax', 'rell', 'milo'] },
-  { id: 'everyone', label: 'EVERYONE', dolls: ['bibi', 'ada', 'suki', 'petra', 'kip', 'dax', 'rell', 'milo', 'cass'] },
+  { id: 'girls',    label: 'GIRLS',    dolls: ['bibi', 'ada', 'suki', 'petra', 'nia', 'rory'] },
+  { id: 'guys',     label: 'GUYS',     dolls: ['kip', 'dax', 'rell', 'milo', 'theo', 'jun'] },
+  { id: 'everyone', label: 'EVERYONE', dolls: ['bibi', 'ada', 'suki', 'petra', 'nia', 'rory', 'kip', 'dax', 'rell', 'milo', 'theo', 'jun', 'cass'] },
 ]
 const AGES    = [22, 23, 24, 25, 26, 27, 28, 29, 30]
 
