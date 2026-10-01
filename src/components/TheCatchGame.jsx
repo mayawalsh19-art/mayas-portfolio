@@ -1,8 +1,9 @@
-import { useReducer, useState } from 'react'
-import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle } from '../data/catchProfiles'
+import { useEffect, useReducer, useState } from 'react'
+import { generateProfiles, PLAYER_TYPES, LOOKING_FOR, getTitle, TRAIT_POOL } from '../data/catchProfiles'
 import { ROUNDS, GHOSTS, scoreMatch, rankPlayers } from '../data/catchRules'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { CatchWordmark, CatchHero } from './CatchBrand'
+import { TraitCardFront, TraitCardBack } from './CatchCards'
 
 // The Catch — table companion.
 //
@@ -118,12 +119,78 @@ function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpp
 function signed(n) { return n > 0 ? `+${n}` : n === 0 ? '±0' : `${n}` }
 
 // ─── TITLE: the opening screen ───────────────────────────────────────────────
+// A hand of trait cards deals in and fans out behind the logo. The middle card
+// keeps flipping to a new trait, a quick taste of what's in the deck.
+const TEASE = [
+  'Celebrates your wins like they are their own',
+  'Posts everything on their story the moment it happens',
+  'Remembers small things you mentioned weeks ago',
+  'Love bombs hard then slowly disappears',
+  'Is secretly still married',
+].map(text => TRAIT_POOL.find(t => t.text === text)).filter(Boolean)
+
+const FAN = [{ r: -18, dx: -84, dy: 18 }, { r: -9, dx: -43, dy: 5 }, { r: 0, dx: 0, dy: 0 }, { r: 9, dx: 43, dy: 5 }, { r: 18, dx: 84, dy: 18 }]
+const CARD_W = 100   // drawn at 128 and scaled, so the type matches the printed card
+
+const TITLE_CSS = `
+@keyframes tc-deal { from { opacity: 0; transform: translate(-50%, 140px) rotate(0deg) } to { opacity: 1; transform: translate(calc(-50% + var(--dx)), var(--dy)) rotate(var(--r)) } }
+@keyframes tc-rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes tc-bob  { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+.tc-card { position: absolute; left: 50%; bottom: 0; transform-origin: 50% 100%; opacity: 0; animation: tc-deal 0.7s cubic-bezier(.2,.8,.2,1) forwards; }
+.tc-rise { opacity: 0; animation: tc-rise 0.7s ease-out forwards; }
+.tc-bob  { animation: tc-bob 3.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .tc-card, .tc-rise { animation-duration: 0.01s !important; animation-delay: 0s !important } .tc-bob { animation: none } }
+`
+
+function Mini({ children }) {
+  return (
+    <div style={{ width: CARD_W, height: CARD_W * 1.4, position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 128, transform: `scale(${CARD_W / 128})`, transformOrigin: 'top left' }}>{children}</div>
+    </div>
+  )
+}
+
 function TitleScreen({ dispatch }) {
+  const [i, setI]       = useState(0)
+  const [up, setUp]     = useState(false)
+
+  // Flip the middle card face-up once the deal lands, then keep cycling traits.
+  useEffect(() => {
+    const timers = [setTimeout(() => setUp(true), 1300)]
+    const loop = setInterval(() => {
+      setUp(false)
+      timers.push(setTimeout(() => { setI(n => (n + 1) % TEASE.length); setUp(true) }, 450))
+    }, 2600)
+    return () => { clearInterval(loop); timers.forEach(clearTimeout) }
+  }, [])
+
+  const t = TEASE[i]
   return (
     <Screen center footer={<button onClick={() => dispatch({ type: 'OPEN' })} style={primaryBtn(true)}>START</button>}>
+      <style>{TITLE_CSS}</style>
       <div style={{ textAlign: 'center' }}>
-        <CatchHero maxWidth={300} />
-        <p style={{ fontFamily: WS, fontSize: 15, color: C.cream, margin: '26px 0 0' }}>Get out your deck.</p>
+        <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
+          {FAN.map((f, n) => (
+            <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.1 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
+              {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
+                <div style={{ perspective: 800 }}>
+                  <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
+                    <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                      {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
+                    </div>
+                    <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                      <Mini><TraitCardBack /></Mini>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="tc-rise" style={{ animationDelay: '0.9s', marginTop: 40 }}>
+          <CatchHero maxWidth={280} />
+        </div>
+        <p className="tc-rise" style={{ animationDelay: '1.2s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '22px 0 0' }}>Get out your deck.</p>
       </div>
     </Screen>
   )
