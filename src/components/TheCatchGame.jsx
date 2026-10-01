@@ -195,28 +195,28 @@ function TitleScreen({ dispatch }) {
           {/* Shrinks the whole group on short screens (Safari's bars, small laptop windows) */}
           <div style={{ height: natural ? natural * scale : 'auto', flexShrink: 0 }}>
             <div ref={groupRef} style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}>
-            <div className="tc-rise" style={{ animationDelay: '0.1s', marginBottom: 30 }}>
-              <CatchHero maxWidth={250} />
-            </div>
-            <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
-              {FAN.map((f, n) => (
-                <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.5 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
-                  {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
-                    <div style={{ perspective: 800 }}>
-                      <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
-                        <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
-                          {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
-                        </div>
-                        <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                          <Mini><TraitCardBack /></Mini>
+              <div className="tc-rise" style={{ animationDelay: '0.1s', marginBottom: 30 }}>
+                <CatchHero maxWidth={250} />
+              </div>
+              <div className="tc-bob" style={{ position: 'relative', height: CARD_W * 1.4 + 34, margin: '0 auto', maxWidth: 340 }}>
+                {FAN.map((f, n) => (
+                  <div key={n} className="tc-card" style={{ '--r': `${f.r}deg`, '--dx': `${f.dx}px`, '--dy': `${f.dy}px`, animationDelay: `${0.5 + Math.abs(n - 2) * 0.12 + (n === 2 ? 0.3 : 0)}s`, zIndex: n === 2 ? 2 : 1 }}>
+                    {n !== 2 ? <Mini><TraitCardBack /></Mini> : (
+                      <div style={{ perspective: 800 }}>
+                        <div style={{ position: 'relative', transformStyle: 'preserve-3d', transition: 'transform 0.45s ease', transform: up ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
+                          <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                            {t && <Mini><TraitCardFront text={t.text} value={t.value} /></Mini>}
+                          </div>
+                          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                            <Mini><TraitCardBack /></Mini>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <p className="tc-rise" style={{ animationDelay: '1.5s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '40px 0 0' }}>Get out your deck.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="tc-rise" style={{ animationDelay: '1.5s', fontFamily: WS, fontSize: 15, color: C.cream, margin: '40px 0 0' }}>Get out your deck.</p>
             </div>
           </div>
         </div>
