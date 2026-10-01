@@ -119,16 +119,9 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── Hero ── */}
       <header style={{ textAlign: 'center', padding: '88px 16px 96px', borderBottom: hair }}>
         <CatchHero maxWidth={460} style={{ marginBottom: 30 }} />
-        <p style={{ fontFamily: WS, fontSize: 'clamp(15px,2vw,18px)', color: C.cream, lineHeight: 1.55, maxWidth: 500, margin: '0 auto 30px' }}>
+        <p style={{ fontFamily: WS, fontSize: 'clamp(15px,2vw,18px)', color: C.cream, lineHeight: 1.55, maxWidth: 500, margin: '0 auto 34px' }}>
           A dating card game with a phone for a matchmaker. Read the flags, bluff the table, and find out who you really went home with.
         </p>
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 34 }}>
-          {[['Type', 'Card game + companion app'], ['Platform', 'Printed deck + phone'], ['Players', '2–6'], ['Year', '2026']].map(([k, v]) => (
-            <div key={k} style={{ padding: '9px 14px', border: line, borderRadius: 6, fontFamily: WS, fontSize: 13 }}>
-              <span style={{ fontWeight: 500, color: '#888' }}>{k} </span><span style={{ fontWeight: 600, color: C.cream }}>{v}</span>
-            </div>
-          ))}
-        </div>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn primary onClick={onPlay}>PLAY</Btn>
         </div>
