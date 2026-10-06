@@ -153,18 +153,6 @@ export default function WeirdMirrorModal({ onClose }) {
         </div>
       </Section>
 
-      {/* In the room */}
-      <div style={{ background: '#f7f9fc' }}>
-        <Section kicker="In the room" title="Strangers meet the mirror." wide>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Slot label="Photo: someone swiping at the live demo" ratio="66%" />
-            <Slot label="Photo: the setup (screen, camera, space)" ratio="66%" />
-            <Slot label="Photo: someone turned into the Jayhawk" ratio="66%" />
-            <Slot label="Photo: reactions" ratio="66%" />
-          </div>
-        </Section>
-      </div>
-
       {/* Details */}
       <div className="max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
         {[['Type', 'Interactive installation'], ['Year', '2026'], ['Tools', 'TouchDesigner, Python, MediaPipe, OpenCV, GLSL']].map(([k, v]) => (
