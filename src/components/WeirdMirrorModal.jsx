@@ -1,0 +1,183 @@
+import { useEffect } from 'react'
+
+// Weird Mirror — case study for the interactive TouchDesigner piece.
+// Photos/videos marked with <Slot> are placeholders until Maya's documentation
+// media is added (public/weirdmirror/).
+
+const INK = '#334e6f'          // site text colour
+const KU = '#0051BA'           // KU blue
+const NIGHT = '#0b0d14'
+
+function Slot({ label, ratio = '56.25%' }) {
+  // placeholder for a photo or video that's still to come
+  return (
+    <div className="relative w-full rounded-2xl overflow-hidden" style={{ paddingBottom: ratio, background: '#eef1f6', border: '1.5px dashed rgba(51,78,111,0.3)' }}>
+      <div className="absolute inset-0 flex items-center justify-center p-6 text-center font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.6)' }}>{label}</div>
+    </div>
+  )
+}
+
+function Section({ kicker, title, children, wide = false }) {
+  return (
+    <section className={`${wide ? 'max-w-5xl' : 'max-w-3xl'} mx-auto px-6 md:px-12 py-12 md:py-16`}>
+      {kicker && <p className="font-lexend font-semibold text-sm mb-3" style={{ color: KU }}>{kicker}</p>}
+      {title && <h2 className="font-lexend font-black text-[28px] md:text-[40px] leading-[1.1] mb-6" style={{ color: INK }}>{title}</h2>}
+      {children}
+    </section>
+  )
+}
+
+const P = ({ children }) => <p className="font-lexend text-base md:text-lg leading-relaxed mb-4" style={{ color: 'rgba(51,78,111,0.85)' }}>{children}</p>
+
+const STEPS = [
+  ['/weirdmirror/stills/1-mirror.png', 'You, in sequins', 'Walk up and the screen is a mirror made of 20,000 tiny sequins. Move fast and your pixels lag and break apart.'],
+  ['/weirdmirror/stills/2-half.png', 'Swipe to flip', 'Sweep a hand to the right and every sequin it passes flips over. Sweep back and you return.'],
+  ['/weirdmirror/stills/3-full.png', 'Become the Jayhawk', 'Underneath is the Jayhawk in Allen Fieldhouse, sized and lined up to your face.'],
+  [null, 'Fill it and it comes alive', 'Flip the whole screen and the KU fight song plays. The Jayhawk dances, and when you move its pixels break apart like yours did.'],
+]
+
+const HOOD = [
+  ['A mirror made of sequins', 'The webcam is mirrored and reduced to a 192 × 108 grid. A shader with feedback remembers which side each sequin shows, and dips it dark mid-flip, like a real sequin turning edge-on.'],
+  ['Hands, not bodies', 'Hand and body tracking (MediaPipe) runs in a separate Python program and sends positions to TouchDesigner. Only a hand moving sideways flips sequins; your face never can.'],
+  ['Works close up and far away', 'Up close the hand tracker finds open hands. From across the room, a raised wrist from the body tracker stands in. A hand holding a phone doesn’t count.'],
+  ['The Jayhawk fits you', 'The body tracker measures your head and shoulders, so the Jayhawk grows as you walk closer, shrinks as you step back, and its eye sits on yours.'],
+  ['The payoff', 'At 95% the last gaps flip in by themselves, so the face area never blocks the ending. Then the song plays, a light sweeps the sequins and the Jayhawk dances to the music.'],
+  ['Ready for the next stranger', 'After 20 seconds with nobody in front of it, every sequin flips back to the plain mirror.'],
+]
+
+const PROCESS = [
+  ['Face into fruit', 'The first experiment drew a peach over any face OpenCV found. Fun, but it didn’t ask anything of the person.'],
+  ['The sequin swipe', 'The idea that stuck came from flip-sequin shirts: brush one way and a picture appears, brush back and it’s gone.'],
+  ['Only hands', 'Motion and skin-colour detection let bodies, heads and tank tops flip sequins. Real hand tracking fixed it, but MediaPipe froze TouchDesigner, so it moved into its own program.'],
+  ['Less is more', 'A run of extra rules (deliberate-swipe checks, auto-wipes, thresholds) each tested fine but together made it feel finicky. I rolled back to the simple swipe and changed one thing at a time.'],
+  ['A place for the Jayhawk', 'The Jayhawk (from my KU Prints poster) moved into Allen Fieldhouse, learned to dance to the fight song and started fitting itself to whoever is in front of it.'],
+]
+
+export default function WeirdMirrorModal({ onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const onKey = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+
+      {/* Sticky nav */}
+      <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm flex items-center justify-between px-6 md:px-16 h-[60px] shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+        <button onClick={onClose} className="font-lexend text-sm text-[#334e6f] flex items-center gap-2 hover:opacity-60 transition-opacity">
+          ← Back to Work
+        </button>
+        <span className="font-lexend font-bold text-[#334e6f] text-sm">Maya Walsh</span>
+      </nav>
+
+      {/* Hero */}
+      <div className="relative overflow-hidden" style={{ background: NIGHT }}>
+        <img src="/weirdmirror/card.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated', opacity: 0.35 }} />
+        <div className="relative flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center">
+          <h1 className="font-lexend font-black text-white leading-none mb-4" style={{ fontSize: 'clamp(40px, 8vw, 92px)' }}>Weird Mirror</h1>
+          <p className="font-lexend text-white/80 text-base md:text-lg leading-relaxed max-w-xl mb-8">
+            An interactive mirror made of sequins. Swipe your hand across your reflection and turn into the Jayhawk.
+          </p>
+          <div className="flex gap-2 flex-wrap justify-center">
+            {['Interactive Installation', 'TouchDesigner', 'Computer Vision'].map(tag => (
+              <span key={tag} className="font-lexend text-xs font-semibold px-3 py-1 rounded-full bg-white" style={{ color: KU }}>{tag}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Documentation video */}
+      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-12 md:pt-16">
+        <Slot label="Documentation video (60–90 s, someone using the mirror) — coming soon" />
+      </div>
+
+      <Section kicker="The brief" title="Build a mirror a stranger can’t walk past.">
+        <P>The assignment was an interactive installation where a stranger’s presence changes the piece, with no explanation on screen and nobody there to help. It had to run for three minutes straight without crashing or anyone touching it.</P>
+      </Section>
+
+      <Section kicker="The idea" title="Brush it one way and it changes.">
+        <P>Flip-sequin shirts show one picture brushed one way and another brushed back. Weird Mirror does that with your reflection: the screen is you, made of sequins, and a swipe flips them to reveal the Jayhawk underneath. Swipe back and you return.</P>
+        <P>The Jayhawk comes from my own KU Prints poster, and it stands in Allen Fieldhouse, so revealing it feels like walking onto the court.</P>
+      </Section>
+
+      {/* How it works */}
+      <Section kicker="How it works" title="Four moments, no instructions." wide>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {STEPS.map(([src, t, d], i) => (
+            <div key={t}>
+              {src
+                ? <img src={src} alt={t} className="w-full rounded-2xl block shadow-[0_4px_24px_rgba(0,0,0,0.12)]" style={{ imageRendering: 'pixelated', aspectRatio: '16 / 9', objectFit: 'cover' }} />
+                : <Slot label="Clip: the Jayhawk dancing to the fight song" />}
+              <p className="font-lexend font-semibold text-sm mt-4" style={{ color: KU }}>Step {i + 1}</p>
+              <h3 className="font-lexend font-bold text-xl mt-1" style={{ color: INK }}>{t}</h3>
+              <p className="font-lexend text-base leading-relaxed mt-2" style={{ color: 'rgba(51,78,111,0.75)' }}>{d}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Under the hood */}
+      <div style={{ background: '#f7f9fc' }}>
+        <Section kicker="Under the hood" title="How it’s built." wide>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            {HOOD.map(([t, d]) => (
+              <div key={t}>
+                <h3 className="font-lexend font-bold text-lg" style={{ color: INK }}>{t}</h3>
+                <p className="font-lexend text-base leading-relaxed mt-2" style={{ color: 'rgba(51,78,111,0.75)' }}>{d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10">
+            <Slot label="Screenshot: the TouchDesigner network" />
+          </div>
+        </Section>
+      </div>
+
+      {/* Process */}
+      <Section kicker="Process" title="What changed along the way.">
+        <div className="flex flex-col">
+          {PROCESS.map(([t, d], i) => (
+            <div key={t} className="grid gap-4 py-6" style={{ gridTemplateColumns: '40px 1fr', borderTop: '1px solid rgba(51,78,111,0.12)' }}>
+              <span className="font-lexend font-black text-2xl" style={{ color: KU }}>{i + 1}</span>
+              <div>
+                <h3 className="font-lexend font-bold text-lg" style={{ color: INK }}>{t}</h3>
+                <p className="font-lexend text-base leading-relaxed mt-1" style={{ color: 'rgba(51,78,111,0.75)' }}>{d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* In the room */}
+      <div style={{ background: '#f7f9fc' }}>
+        <Section kicker="In the room" title="Strangers meet the mirror." wide>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Slot label="Photo: someone swiping at the live demo" ratio="66%" />
+            <Slot label="Photo: the setup (screen, camera, space)" ratio="66%" />
+            <Slot label="Photo: someone turned into the Jayhawk" ratio="66%" />
+            <Slot label="Photo: reactions" ratio="66%" />
+          </div>
+        </Section>
+      </div>
+
+      {/* Details */}
+      <div className="max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[['Type', 'Interactive installation'], ['Year', '2026'], ['Tools', 'TouchDesigner, Python, MediaPipe, OpenCV, GLSL']].map(([k, v]) => (
+          <div key={k}>
+            <p className="font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.55)' }}>{k}</p>
+            <p className="font-lexend font-semibold text-base mt-1" style={{ color: INK }}>{v}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center pb-16">
+        <button onClick={onClose} className="font-lexend text-sm text-[#334e6f] hover:opacity-60 transition-opacity">← Back to Work</button>
+      </div>
+    </div>
+  )
+}

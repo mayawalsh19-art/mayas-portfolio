@@ -7,6 +7,7 @@ import WildFireModal from './WildFireModal'
 import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
 import TheCatchModal from './TheCatchModal'
+import WeirdMirrorModal from './WeirdMirrorModal'
 
 
 function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick, children }) {
@@ -180,6 +181,7 @@ export default function FeaturedWork() {
   const [showHellgrim, setShowHellgrim] = useState(false)
   const [showFanFormation, setShowFanFormation] = useState(false)
   const [showTheCatch, setShowTheCatch] = useState(false)
+  const [showWeirdMirror, setShowWeirdMirror] = useState(false)
 
   return (
     <>
@@ -191,6 +193,7 @@ export default function FeaturedWork() {
     {showHellgrim && <HellgrimModal onClose={() => setShowHellgrim(false)} />}
     {showFanFormation && <FanFormationModal onClose={() => setShowFanFormation(false)} />}
     {showTheCatch && <TheCatchModal onClose={() => setShowTheCatch(false)} />}
+    {showWeirdMirror && <WeirdMirrorModal onClose={() => setShowWeirdMirror(false)} />}
     <section id="work" className="bg-[#f2e9da] w-full py-12 md:py-24 px-6 md:px-[74.5px]">
       <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
         Featured Work
@@ -265,6 +268,15 @@ export default function FeaturedWork() {
 
         {/* The Catch */}
         <TheCatchCard onClick={() => setShowTheCatch(true)} />
+
+        {/* Weird Mirror */}
+        <Card title="Weird Mirror" bg="bg-black" link={false}
+          onClick={() => setShowWeirdMirror(true)}
+          desc="An interactive installation: a mirror made of sequins that turns you into the Jayhawk when you swipe your hand across it.">
+          <div className="self-stretch w-full overflow-hidden">
+            <img src="/weirdmirror/card.png" alt="Weird Mirror: a pixelated Jayhawk in Allen Fieldhouse" className="w-full h-full object-cover" style={{ imageRendering: 'pixelated' }} />
+          </div>
+        </Card>
 
       </div>
     </section>
