@@ -78,7 +78,9 @@ export default function WeirdMirrorModal({ onClose }) {
 
       {/* Hero */}
       <div className="relative overflow-hidden" style={{ background: NIGHT }}>
-        <img src="/weirdmirror/card.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated', opacity: 0.35 }} />
+        {/* Allen Fieldhouse fills the hero; the whole Jayhawk always fits on top (dimmed behind the title) */}
+        <img src="/weirdmirror/card-fieldhouse.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated', opacity: 0.35 }} />
+        <img src="/weirdmirror/card-jayhawk.png" alt="" aria-hidden="true" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-auto" style={{ height: '92%', imageRendering: 'pixelated', opacity: 0.45 }} />
         <div className="relative flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center">
           <p className="font-lexend text-white/60 text-sm mb-5">IXD 415</p>
           <h1 className="font-lexend font-black text-white leading-none mb-4" style={{ fontSize: 'clamp(40px, 8vw, 92px)' }}>Weird Mirror</h1>
