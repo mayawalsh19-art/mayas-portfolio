@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Weird Mirror — case study for the interactive TouchDesigner piece.
 // Photos/videos marked with <Slot> are placeholders until Maya's documentation
@@ -15,6 +15,21 @@ function Slot({ label, ratio = '56.25%' }) {
     <div className="relative w-full rounded-2xl overflow-hidden" style={{ paddingBottom: ratio, background: '#eef1f6', border: '1.5px dashed rgba(51,78,111,0.3)' }}>
       <div className="absolute inset-0 flex items-center justify-center p-6 text-center font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.6)' }}>{label}</div>
     </div>
+  )
+}
+
+// A muted, looping clip that only downloads once it scrolls into view (shows a still until then)
+function LazyVideo({ src, poster, label }) {
+  const ref = useRef(null)
+  const [show, setShow] = useState(false)
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShow(true); obs.disconnect() } }, { rootMargin: '200px' })
+    if (ref.current) obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [])
+  return (
+    <video ref={ref} poster={poster} src={show ? src : undefined} autoPlay muted loop playsInline aria-label={label}
+      className="w-full rounded-2xl block shadow-[0_4px_24px_rgba(0,0,0,0.12)]" style={{ aspectRatio: '16 / 9', objectFit: 'cover', background: '#0b0d14' }} />
   )
 }
 
@@ -121,7 +136,7 @@ export default function WeirdMirrorModal({ onClose }) {
             <div key={t}>
               {src
                 ? <img src={src} alt={t} className="w-full rounded-2xl block shadow-[0_4px_24px_rgba(0,0,0,0.12)]" style={{ imageRendering: 'pixelated', aspectRatio: '16 / 9', objectFit: 'cover' }} />
-                : <Slot label="Clip: the Jayhawk dancing to the fight song" />}
+                : <LazyVideo src="/weirdmirror/video/jayhawk-dance.mp4" poster="/weirdmirror/video/jayhawk-dance-poster.jpg" label="The Jayhawk dancing once the screen is full" />}
               <p className="font-lexend font-semibold text-sm mt-4" style={{ color: KU }}>Step {i + 1}</p>
               <h3 className="font-lexend font-bold text-xl mt-1" style={{ color: INK }}>{t}</h3>
               <p className="font-lexend text-base leading-relaxed mt-2" style={{ color: 'rgba(51,78,111,0.75)' }}>{d}</p>
