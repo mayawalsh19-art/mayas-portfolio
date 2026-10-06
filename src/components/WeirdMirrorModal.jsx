@@ -157,7 +157,7 @@ export default function WeirdMirrorModal({ onClose }) {
             ))}
           </div>
           <div className="mt-10">
-            <Slot label="Screenshot: the TouchDesigner network" />
+            <img src="/weirdmirror/td-network.png" alt="The Weird Mirror TouchDesigner network" className="w-full rounded-2xl block shadow-[0_4px_24px_rgba(0,0,0,0.12)]" />
             <p className="font-lexend text-sm leading-relaxed mt-3" style={{ color: 'rgba(51,78,111,0.65)' }}>
               The TouchDesigner network. I built it together with Claude, an AI assistant connected live to TouchDesigner, which created and wired nodes from my descriptions while I tested every change on camera.
             </p>
