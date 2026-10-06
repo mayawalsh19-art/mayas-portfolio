@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 const INK = '#334e6f'          // site text colour
 const KU = '#0051BA'           // KU blue
 const NIGHT = '#0b0d14'
+const REPO = 'https://github.com/mayawalsh19-art/Walsh-Weird-Mirror-Project'
 
 function Slot({ label, ratio = '56.25%' }) {
   // placeholder for a photo or video that's still to come
@@ -79,6 +80,7 @@ export default function WeirdMirrorModal({ onClose }) {
       <div className="relative overflow-hidden" style={{ background: NIGHT }}>
         <img src="/weirdmirror/card.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated', opacity: 0.35 }} />
         <div className="relative flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center">
+          <p className="font-lexend text-white/60 text-sm mb-5">IXD 415</p>
           <h1 className="font-lexend font-black text-white leading-none mb-4" style={{ fontSize: 'clamp(40px, 8vw, 92px)' }}>Weird Mirror</h1>
           <p className="font-lexend text-white/80 text-base md:text-lg leading-relaxed max-w-xl mb-8">
             An interactive mirror made of sequins. Swipe your hand across your reflection and turn into the Jayhawk.
@@ -88,6 +90,11 @@ export default function WeirdMirrorModal({ onClose }) {
               <span key={tag} className="font-lexend text-xs font-semibold px-3 py-1 rounded-full bg-white" style={{ color: KU }}>{tag}</span>
             ))}
           </div>
+          <a href={REPO} target="_blank" rel="noopener noreferrer"
+            className="font-lexend font-semibold text-sm text-white mt-8 px-5 py-2.5 rounded-full hover:bg-white/10 transition-colors"
+            style={{ border: '1px solid rgba(255,255,255,0.5)' }}>
+            View the project on GitHub ↗
+          </a>
         </div>
       </div>
 
@@ -134,6 +141,9 @@ export default function WeirdMirrorModal({ onClose }) {
           </div>
           <div className="mt-10">
             <Slot label="Screenshot: the TouchDesigner network" />
+            <p className="font-lexend text-sm leading-relaxed mt-3" style={{ color: 'rgba(51,78,111,0.65)' }}>
+              The TouchDesigner network. I built it together with Claude, an AI assistant connected live to TouchDesigner, which created and wired nodes from my descriptions while I tested every change on camera.
+            </p>
           </div>
         </Section>
       </div>
@@ -154,13 +164,17 @@ export default function WeirdMirrorModal({ onClose }) {
       </Section>
 
       {/* Details */}
-      <div className="max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[['Type', 'Interactive installation'], ['Year', '2026'], ['Tools', 'TouchDesigner, Python, MediaPipe, OpenCV, GLSL']].map(([k, v]) => (
+      <div className="max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-2 md:grid-cols-3 gap-8">
+        {[['Course', 'IXD 415'], ['Type', 'Interactive installation'], ['Year', '2026'], ['Tools', 'TouchDesigner, Python, MediaPipe, OpenCV, GLSL']].map(([k, v]) => (
           <div key={k}>
             <p className="font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.55)' }}>{k}</p>
             <p className="font-lexend font-semibold text-base mt-1" style={{ color: INK }}>{v}</p>
           </div>
         ))}
+        <div>
+          <p className="font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.55)' }}>Code and build log</p>
+          <a href={REPO} target="_blank" rel="noopener noreferrer" className="font-lexend font-semibold text-base mt-1 inline-block underline underline-offset-4 hover:opacity-70" style={{ color: KU }}>GitHub ↗</a>
+        </div>
       </div>
 
       <div className="text-center pb-16">

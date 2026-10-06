@@ -273,8 +273,10 @@ export default function FeaturedWork() {
         <Card title="Weird Mirror" bg="bg-black" link={false}
           onClick={() => setShowWeirdMirror(true)}
           desc="An interactive installation: a mirror made of sequins that turns you into the Jayhawk when you swipe your hand across it.">
-          <div className="self-stretch w-full overflow-hidden">
-            <img src="/weirdmirror/card.png" alt="Weird Mirror: a pixelated Jayhawk in Allen Fieldhouse" className="w-full h-full object-cover" style={{ imageRendering: 'pixelated' }} />
+          {/* Allen Fieldhouse fills the card; the whole Jayhawk always fits on top */}
+          <div className="self-stretch w-full relative overflow-hidden">
+            <img src="/weirdmirror/card-fieldhouse.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated' }} />
+            <img src="/weirdmirror/card-jayhawk.png" alt="Weird Mirror: a pixelated Jayhawk in Allen Fieldhouse" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-auto" style={{ height: '88%', imageRendering: 'pixelated' }} />
           </div>
         </Card>
 
