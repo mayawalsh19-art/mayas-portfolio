@@ -1,22 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
 // Weird Mirror — case study for the interactive TouchDesigner piece.
-// Photos/videos marked with <Slot> are placeholders until Maya's documentation
-// media is added (public/weirdmirror/).
 
 const INK = '#334e6f'          // site text colour
 const KU = '#0051BA'           // KU blue
 const NIGHT = '#0b0d14'
 const REPO = 'https://github.com/mayawalsh19-art/Walsh-Weird-Mirror-Project'
-
-function Slot({ label, ratio = '56.25%' }) {
-  // placeholder for a photo or video that's still to come
-  return (
-    <div className="relative w-full rounded-2xl overflow-hidden" style={{ paddingBottom: ratio, background: '#eef1f6', border: '1.5px dashed rgba(51,78,111,0.3)' }}>
-      <div className="absolute inset-0 flex items-center justify-center p-6 text-center font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.6)' }}>{label}</div>
-    </div>
-  )
-}
 
 // A muted, looping clip that only downloads once it scrolls into view (shows a still until then)
 function LazyVideo({ src, poster, label }) {
@@ -117,7 +106,14 @@ export default function WeirdMirrorModal({ onClose }) {
 
       {/* Documentation video */}
       <div className="max-w-5xl mx-auto px-6 md:px-12 pt-12 md:pt-16">
-        <Slot label="Documentation video (60–90 s, someone using the mirror) — coming soon" />
+        {/* Final demo: vertical phone video with sound; only downloads when played */}
+        <div className="flex flex-col items-center">
+          <video src="/weirdmirror/video/weird-mirror-demo.mp4" poster="/weirdmirror/video/weird-mirror-demo-poster.jpg"
+            controls playsInline preload="none" aria-label="Weird Mirror final demo"
+            className="block rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.18)] bg-black"
+            style={{ height: 'min(78vh, 760px)', aspectRatio: '9 / 16', maxWidth: '100%', objectFit: 'contain' }} />
+          <p className="font-lexend text-sm mt-4" style={{ color: 'rgba(51,78,111,0.65)' }}>The final demo (sound on).</p>
+        </div>
       </div>
 
       <Section kicker="The brief" title="Build a mirror a stranger can’t walk past.">
