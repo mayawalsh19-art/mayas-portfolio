@@ -114,6 +114,11 @@ export default function WeirdMirrorModal({ onClose }) {
             style={{ height: 'min(78vh, 760px)', aspectRatio: '9 / 16', maxWidth: '100%', objectFit: 'contain' }} />
           <p className="font-lexend text-sm mt-4" style={{ color: 'rgba(51,78,111,0.65)' }}>The final demo (sound on).</p>
         </div>
+        {/* What the screen shows during the demo */}
+        <div className="mt-12">
+          <LazyVideo src="/weirdmirror/video/screen-view.mp4" poster="/weirdmirror/video/screen-view-poster.jpg" label="The Weird Mirror screen during the demo" />
+          <p className="font-lexend text-sm mt-4 text-center" style={{ color: 'rgba(51,78,111,0.65)' }}>The screen view: what the mirror shows during the demo.</p>
+        </div>
       </div>
 
       <Section kicker="The brief" title="Build a mirror a stranger can’t walk past.">
