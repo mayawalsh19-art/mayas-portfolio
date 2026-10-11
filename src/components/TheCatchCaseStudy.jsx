@@ -155,7 +155,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="Overview">Every date is a gamble.</Head>
-            <P>The Catch is a dating card game for 2–6 friends. Each round you meet a stranger, deal six of their traits (two face-up, four face-down) and decide out loud whether to date or ghost them. I made it because dating games are either for couples or for fans of a TV show, and I wanted one my whole group could play together. The fun is the bluffing: you can secretly peek at one card, nobody knows what you saw, and one profile is a catfish.</P>
+            <P>The Catch is a dating card game for 2–6 friends. Each round you meet a stranger, deal six of their traits (two face-up, four face-down) and decide out loud whether to date or ghost them. I wanted the fun of sleepover games like Dream Phone and Mystery Date, made for a whole group of friends. The fun is the bluffing: you can secretly peek at one card, nobody knows what you saw, and one profile is a catfish.</P>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 420 }}>
             <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width="min(230px, 56vw)" />
@@ -169,30 +169,34 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       <Gap />
 
-      {/* ── The problem ── */}
+      {/* ── Inspiration ── */}
       <Section>
-        <Head kicker="The problem">Dating games are either for two, or for fans.</Head>
-        <P>The two best-known dating games are a long roleplay for exactly two people and a party game based on a TV show. Neither lets a whole group read secret cards together.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 10 }}>
+        <Head kicker="Inspiration">Sleepover games, for grown-ups.</Head>
+        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for two or a game tied to a TV show. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
+        {/* Each game: what it inspired, and the gap it leaves. Drop a photo into
+            public/competitors/ and set img to show the real box instead of the title tile. */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
           {[
-            { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min · $50', good: 'Rich relationship roleplay with deep emotional mechanics.', gap: 'Exactly two players, long sessions, and a heavy rulebook.', img: '/competitors/fog-of-love.jpg' },
-            { name: 'The Bachelor Board Game', meta: '2018', stats: '3+ players · 18+ · Party game', good: 'A familiar show, built for groups.', gap: 'Most fun if you already watch the show, and no phone keeping score or hiding bonuses.' },
+            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: null, tint: '#2a1830' },
+            { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: null, tint: '#2d1026' },
+            { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
+            { name: 'The Bachelor Board Game', meta: '2018', stats: '3+ players · 18+', good: 'A party game about dating drama, built for groups.', gap: 'Most fun if you already watch the show.', img: null, tint: '#2d0e18' },
           ].map(g => (
             <div key={g.name} style={{ background: C.card, border: hair, borderRadius: 10, overflow: 'hidden' }}>
               {g.img
                 ? <img src={g.img} alt={`${g.name} box art`} style={{ width: '100%', height: 170, objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
-                : <div style={{ height: 170, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#1a0a0f,#2d0e18)' }}><span style={{ fontFamily: ANTON, fontSize: 24, color: '#e8c4c4', letterSpacing: '0.12em' }}>THE BACHELOR</span></div>}
+                : <div style={{ height: 170, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px', textAlign: 'center', background: `linear-gradient(135deg, #140a0e, ${g.tint})` }}><span style={{ fontFamily: ANTON, fontSize: 24, color: '#e8c4c4', letterSpacing: '0.1em', lineHeight: 1.1 }}>{g.name.toUpperCase()}</span></div>}
               <div style={{ padding: '18px 20px 20px' }}>
-                <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream }}>{g.name.toUpperCase()}</div>
+                <div style={{ fontFamily: ANTON, fontSize: 21, color: C.cream }}>{g.name.toUpperCase()}</div>
                 <Small style={{ marginTop: 2 }}>{g.meta} · {g.stats}</Small>
-                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 12 }}><span style={{ color: C.teal, fontWeight: 600 }}>Strength </span>{g.good}</div>
-                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 6 }}><span style={{ color: C.accent, fontWeight: 600 }}>Gap </span>{g.gap}</div>
+                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 12 }}><span style={{ color: C.teal, fontWeight: 600 }}>Inspired </span>{tie(g.good)}</div>
+                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 6 }}><span style={{ color: C.accent, fontWeight: 600 }}>Gap </span>{tie(g.gap)}</div>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE OPPORTUNITY</div>
-        <P>The Catch keeps the energy of a party game and adds secrets: face-down cards, a hidden catfish and players who each score cards differently. It's free to print, and all you need is the deck and one phone.</P>
+        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE EXPERIENCE I WANTED</div>
+        <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, bluffs about what they peeked at, and finds out together who the catfish was.</P>
       </Section>
 
       <Gap />
