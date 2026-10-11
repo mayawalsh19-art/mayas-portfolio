@@ -177,7 +177,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             public/competitors/ and set img to show the real box instead of the title tile. */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
           {[
-            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: null, tint: '#2a1830' },
+            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
             { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: null, tint: '#2d1026' },
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
             { name: 'The Bachelor Board Game', meta: '2018', stats: '3+ players · 18+', good: 'A party game about dating drama, built for groups.', gap: 'Most fun if you already watch the show.', img: null, tint: '#2d0e18' },
@@ -195,6 +195,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             </div>
           ))}
         </div>
+        <Small style={{ marginTop: 10, fontSize: 12 }}>Game images belong to their publishers.</Small>
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE EXPERIENCE I WANTED</div>
         <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, bluffs about what they peeked at, and finds out together who the catfish was.</P>
       </Section>
