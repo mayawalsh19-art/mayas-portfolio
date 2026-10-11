@@ -172,7 +172,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── Inspiration ── */}
       <Section>
         <Head kicker="Inspiration">Sleepover games, for grown-ups.</Head>
-        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for two or a game tied to a TV show. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
+        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for just two people. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
         {/* Each game: what it inspired, and the gap it leaves. Drop a photo into
             public/competitors/ and set img to show the real box instead of the title tile. */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
@@ -180,7 +180,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
             { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: null, tint: '#2d1026' },
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
-            { name: 'The Bachelor Board Game', meta: '2018', stats: '3+ players · 18+', good: 'A party game about dating drama, built for groups.', gap: 'Most fun if you already watch the show.', img: null, tint: '#2d0e18' },
           ].map(g => (
             <div key={g.name} style={{ background: C.card, border: hair, borderRadius: 10, overflow: 'hidden' }}>
               {g.img
