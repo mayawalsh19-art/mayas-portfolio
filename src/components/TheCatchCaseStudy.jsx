@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { CatchHero, CatchWordmark } from './CatchBrand'
+import { useEffect, useRef, useState } from 'react'
+import { CatchHero } from './CatchBrand'
 import { TraitCardFront, TraitCardBack, StalkChip } from './CatchCards'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { TRAIT_POOL, SCORE_TITLES, PLAYER_TYPES } from '../data/catchProfiles'
@@ -39,9 +39,9 @@ const TYPE_NAME = { romantic: 'Romantic', selective: 'Selective', chaotic: 'Chao
 //  · dividing lines span the full width of whatever they divide
 const CONTENT = 1080
 const TEXT_SOLO = 760
-function Section({ children, style = {} }) {
+function Section({ children, id, style = {} }) {
   return (
-    <section style={{ maxWidth: CONTENT, margin: '0 auto', padding: '0 24px', ...style }}>
+    <section id={id} style={{ maxWidth: CONTENT, margin: '0 auto', padding: '0 24px', ...style }}>
       {children}
     </section>
   )
@@ -60,12 +60,8 @@ function Head({ kicker, children, center = false }) {
 // Keep the last two words together so no line ends with a single word on its own
 // (works in every browser; text-wrap: pretty below is a bonus where supported)
 function tie(c) {
-  if (typeof c === 'string') return c.replace(/ (\S+)\s*$/, '\u00A0$1')
-  if (Array.isArray(c)) {
-    const a = [...c]
-    for (let i = a.length - 1; i >= 0; i--) if (typeof a[i] === 'string') { a[i] = tie(a[i]); break }
-    return a
-  }
+  if (typeof c === 'string') return c.replace(/ (\S+)$/, '\u00A0$1')
+  if (Array.isArray(c) && typeof c[c.length - 1] === 'string') return [...c.slice(0, -1), tie(c[c.length - 1])]
   return c
 }
 
@@ -111,29 +107,138 @@ function Btn({ children, onClick, primary = false }) {
 const Gap = ({ h = 120 }) => <div style={{ height: h }} />
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
+// ─── How to play: a step-by-step carousel built from the game's own pieces ───
+const dl = { fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream, textDecoration: 'none', padding: '10px 16px', borderRadius: 6, border: '1px solid rgba(239,230,220,0.3)' }
+const BAND = '#211928'   // dark velvet: sets the instructions apart from the rest of the case study
+
+function ProfileCardMini() {
+  return (
+    <div style={{ width: 210, borderRadius: 14, overflow: 'hidden', border: hair, background: C.card, boxShadow: '0 20px 40px rgba(0,0,0,0.45)' }}>
+      <div style={{ height: 230, background: DOLL_BG.nia, display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
+        <div style={{ transform: 'scale(1.05)', transformOrigin: 'top center', marginTop: 6 }}><Doll name="nia" /></div>
+      </div>
+      <div style={{ padding: '12px 14px' }}>
+        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream }}>NIA, 26</div>
+        <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 12, color: C.gold }}>The Romantic</div>
+      </div>
+    </div>
+  )
+}
+
+const choice = (on) => ({ fontFamily: WS, fontWeight: 700, fontSize: 18, letterSpacing: '0.12em', padding: '16px 34px', borderRadius: 8, color: on ? '#fff' : C.cream, background: on ? C.accent : 'transparent', border: `1px solid ${on ? C.accent : 'rgba(239,230,220,0.35)'}` })
+
+const HAND = [17, 10, 40, 48, 5, 7]     // the example hand: totals +7 (the −3 is the card peeked at in Stalk)
+
+const STEPS = [
+  ['Meet them', 'A new stranger is on the market. The phone shows who they are.', () => <ProfileCardMini />],
+  ['Deal six cards', 'Two face-up, four face-down. Those six cards are this person.', () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 10 }}>
+        {HAND.slice(0, 2).map(n => <div key={n} style={{ width: 118 }}><TraitCardFront text={card(n).text} value={card(n).value} /></div>)}
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        {[0, 1, 2, 3].map(i => <div key={i} style={{ width: 62 }}><TraitCardBack compact /></div>)}
+      </div>
+    </div>
+  )],
+  ['Stalk', 'Spend a chip to secretly peek at one face-down card. Put it back. Tell no one.', () => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 26 }}>
+      <StalkChip size={110} />
+      <div style={{ position: 'relative', width: 150, height: 210 }}>
+        <div style={{ position: 'absolute', width: 130, left: 0, top: 10, transform: 'rotate(-6deg)' }}><TraitCardBack /></div>
+        <div style={{ position: 'absolute', width: 130, left: 26, top: 0, transform: 'rotate(7deg)' }}><TraitCardFront text={card(48).text} value={card(48).value} /></div>
+      </div>
+    </div>
+  )],
+  ['Date or ghost', 'On three, everyone says it out loud at the same time. Out of ghosts? You have to date.', () => (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontFamily: ANTON, fontSize: 44, color: 'rgba(239,230,220,0.35)', letterSpacing: '0.3em', marginBottom: 22 }}>3 · 2 · 1</div>
+      <div style={{ display: 'flex', gap: 14, justifyContent: 'center' }}>
+        <span style={choice(true)}>DATE</span><span style={choice(false)}>GHOST</span>
+      </div>
+    </div>
+  )],
+  ['Flip and add up', 'Flip all six. If you dated, add them up using your player type and enter your total.', () => (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 84px)', gap: 8 }}>
+        {HAND.map(n => <div key={n}><Scaled w={84} base={118}><TraitCardFront text={card(n).text} value={card(n).value} /></Scaled></div>)}
+      </div>
+      <div style={{ fontFamily: ANTON, fontSize: 30, color: C.teal, marginTop: 14 }}>
+        = {(() => { const t = HAND.reduce((a, n) => a + card(n).value, 0); return t > 0 ? `+${t}` : t })()}
+      </div>
+    </div>
+  )],
+  ['See where you stand', 'The phone adds the bonuses, reveals any catfish and ranks everyone. Then the next stranger.', () => (
+    <div style={{ width: 280 }}>
+      {[['Maya', '+9', 'Dated alone: +7, Chemistry +2', C.gold], ['Lanie', '±0', 'Ghosted', C.cream], ['Jo', '±0', 'Ghosted', C.cream]].map(([name, pts, note, col], i) => (
+        <div key={name} style={{ display: 'grid', gridTemplateColumns: '24px 1fr auto', alignItems: 'center', gap: 10, padding: '12px 14px', marginBottom: 8, background: C.card, borderRadius: 8, border: i === 0 ? `1px solid ${C.gold}88` : hair }}>
+          <span style={{ fontFamily: ANTON, fontSize: 18, color: i === 0 ? C.gold : '#777' }}>{i + 1}</span>
+          <div><div style={{ fontFamily: ANTON, fontSize: 18, color: col }}>{name.toUpperCase()}</div><div style={{ fontFamily: WS, fontSize: 11, color: muted }}>{note}</div></div>
+          <span style={{ fontFamily: ANTON, fontSize: 22, color: pts.startsWith('+') ? C.teal : pts.startsWith('±') ? muted : C.accent }}>{pts}</span>
+        </div>
+      ))}
+    </div>
+  )],
+]
+
+function StepCarousel() {
+  const [i, setI] = useState(0)
+  const touch = useRef(null)
+  const go = (d) => setI(n => Math.min(STEPS.length - 1, Math.max(0, n + d)))
+  const [title, text, Visual] = STEPS[i]
+  const btn = (enabled) => ({ fontFamily: WS, fontWeight: 600, fontSize: 14, padding: '10px 18px', borderRadius: 6, cursor: enabled ? 'pointer' : 'default', color: enabled ? C.cream : '#555', background: 'transparent', border: `1px solid ${enabled ? 'rgba(239,230,220,0.3)' : 'rgba(239,230,220,0.1)'}` })
+  return (
+    <div tabIndex={0} aria-roledescription="carousel" aria-label="How a match works"
+      onKeyDown={e => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1) }}
+      onTouchStart={e => { touch.current = e.touches[0].clientX }}
+      onTouchEnd={e => { if (touch.current == null) return; const dx = e.changedTouches[0].clientX - touch.current; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); touch.current = null }}
+      style={{ outline: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 40, alignItems: 'center', background: 'rgba(0,0,0,0.22)', border: hair, borderRadius: 16, padding: 'clamp(24px, 4vw, 44px)' }}>
+      <div style={{ minHeight: 330, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Visual /></div>
+      <div>
+        <Small style={{ color: C.accent, fontWeight: 600, fontSize: 14 }}>{`Step ${i + 1} of ${STEPS.length}`}</Small>
+        <div style={{ fontFamily: ANTON, fontSize: 'clamp(32px,5vw,44px)', color: C.cream, lineHeight: 1.05, margin: '6px 0 14px' }}>{title.toUpperCase()}</div>
+        <P style={{ minHeight: 88 }}>{text}</P>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 18, flexWrap: 'wrap' }}>
+          <button onClick={() => go(-1)} disabled={i === 0} style={btn(i > 0)}>← Back</button>
+          <button onClick={() => go(1)} disabled={i === STEPS.length - 1} style={btn(i < STEPS.length - 1)}>Next →</button>
+          <div style={{ display: 'flex', gap: 8, marginLeft: 6 }}>
+            {STEPS.map((s, n) => (
+              <button key={s[0]} onClick={() => setI(n)} aria-label={`Step ${n + 1}: ${s[0]}`}
+                style={{ width: n === i ? 22 : 8, height: 8, borderRadius: 4, border: 'none', padding: 0, cursor: 'pointer', background: n === i ? C.accent : 'rgba(239,230,220,0.25)', transition: 'width 0.2s' }} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function TheCatchCaseStudy({ onClose, onPlay }) {
-  const [enlarged, setEnlarged] = useState(null)   // image shown full size, or null
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    // Esc closes the enlarged image first; only then the whole case study
-    const onKey = e => { if (e.key === 'Escape') { if (enlarged) setEnlarged(null); else onClose() } }
+    const onKey = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
     }
-  }, [onClose, enlarged])
+  }, [onClose])
 
   return (
     <div className="catch-cs" style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
 
       {/* no lone word on the last line: balance headings, "pretty" wrapping for everything else */}
-      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
+      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } @media (max-width: 420px) { .cs-nav-links { gap: 16px !important } .cs-nav-links button { font-size: 13px !important } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
       {/* ── Nav ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 56, background: 'rgba(19,16,17,0.94)', backdropFilter: 'blur(8px)', borderBottom: hair }}>
         <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 14, color: muted, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>← Back<span className="cs-wide-only"> to work</span></button>
-        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }}><CatchWordmark size={14} accent={C.accent} cream={C.cream} /></div>
+        <div className="cs-nav-links" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 28 }}>
+          {[['How to play', 'how-to-play'], ['Process', 'process']].map(([label, id]) => (
+            <button key={id} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })}
+              style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>{label}</button>
+          ))}
+        </div>
         <button onClick={onPlay} style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: '#fff', background: C.accent, border: 'none', borderRadius: 6, padding: '9px 18px', cursor: 'pointer' }}>PLAY</button>
       </nav>
 
@@ -201,80 +306,72 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       <Gap />
 
-      {/* ── The game ── */}
-      <Section>
-        <Head kicker="The game">Seven matches. Four moments each.</Head>
-        <P>Each match is a new stranger, and every match goes the same way.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28, marginTop: 30, alignItems: 'start' }}>
-          {[
-            ['1', 'Meet them', 'The phone shows who’s on the market: name, age, archetype and an illustrated avatar.', <Phone key="p" src="/thecatch/screens/profile.jpg" alt="Profile card" width={210} />],
-            ['2', 'Deal and stalk', 'Deal six trait cards, two face-up and four face-down. Spend a chip to secretly peek at one.', (
-              <Phone key="d" width={210}>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Scaled w={80} base={110}><TraitCardFront compact text={card(17).text} value={card(17).value} /></Scaled>
-                  <Scaled w={80} base={110}><TraitCardFront compact text={card(48).text} value={card(48).value} /></Scaled>
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {[0, 1, 2, 3].map(i => <Scaled key={i} w={36} base={110}><TraitCardBack compact /></Scaled>)}
-                </div>
-                <StalkChip size={64} />
-              </Phone>
-            )],
-            ['3', 'Decide and enter', 'On three, everyone says Date or Ghost. Daters add up their six cards and type in one number.', <Phone key="w" src="/thecatch/screens/whodated.jpg" alt="Who dated screen" width={210} />],
-            ['4', 'See where you stand', 'The phone adds the bonuses, reveals any catfish, and ranks everyone.', <Phone key="s" src="/thecatch/screens/standings.jpg" alt="Standings screen" width={210} />],
-          ].map(([n, t, d, visual]) => (
-            <div key={n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-              {visual}
-              <Small style={{ marginTop: 22, color: C.accent, fontWeight: 600 }}>Step {n}</Small>
-              <div style={{ fontFamily: ANTON, fontSize: 20, color: C.cream, marginTop: 2 }}>{t.toUpperCase()}</div>
-              <Small style={{ marginTop: 6, maxWidth: 230, fontSize: 14 }}>{d}</Small>
+      {/* ── How to play (its own band, so the instructions stand apart) ── */}
+      <div id="how-to-play" style={{ background: BAND, borderTop: hair, borderBottom: hair, padding: '100px 0 110px', scrollMarginTop: 56 }}>
+        <Section>
+          <Head kicker="How to play">Seven matches. Six steps each.</Head>
+          <P>2–6 players, 20–40 minutes, the deck and one phone. Every match is a new stranger and goes like this:</P>
+          <div style={{ marginTop: 30 }}><StepCarousel /></div>
+
+          <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '80px 0 12px' }}>IT ALL COMES DOWN TO POINTS</div>
+          <P>When you date, the six cards go on your score. Your player type changes what each card is worth, so one stranger can be a great date for you and a disaster for your friend.</P>
+          <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '34px 0 14px' }}>PLAYER TYPES</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
+            {PLAYER_TYPES.map(t => (
+              <div key={t.id} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
+                <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream }}>{TYPE_NAME[t.id]}</div>
+                <div style={{ fontFamily: WS, fontSize: 14, color: muted, marginTop: 4, lineHeight: 1.5 }}>{tie(t.rule)}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '40px 0 14px' }}>THE TWISTS</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+            {[
+              ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
+              ['Chemistry', '+2', 'Total 7 or more as the only one who dated them.', C.teal],
+              ['The catfish', '−4 / +1', 'One secret profile per game. Date it and lose 4, ghost it and gain 1.', C.gold],
+              ['Ghosts', '3 each', 'Pass on a match for ±0. When they’re gone, you have to date.', C.cream],
+            ].map(([n, v, d, col]) => (
+              <div key={n} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
+                <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: col }}>{v}</div>
+                <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginTop: 12 }}>{n}</div>
+                <div style={{ fontFamily: WS, fontSize: 14, color: muted, marginTop: 4, lineHeight: 1.5 }}>{tie(d)}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 80, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
+            {/* the winner card, as it appears in the game */}
+            <div style={{ justifySelf: 'center', width: '100%', maxWidth: 340, textAlign: 'center', padding: '30px 24px', background: C.card, border: `1px solid ${C.gold}66`, borderRadius: 12 }}>
+              <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.gold }}>Winner</div>
+              <div style={{ fontFamily: ANTON, fontSize: 44, color: C.cream, lineHeight: 1, marginTop: 6 }}>MAYA</div>
+              <div style={{ fontFamily: ANTON, fontSize: 28, color: C.accent, marginTop: 4 }}>THE CATCH</div>
+              <div style={{ fontFamily: WS, fontSize: 13, color: muted, marginTop: 10 }}>{tie(SCORE_TITLES[0].desc)}</div>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>23 points</div>
             </div>
-          ))}
-        </div>
-        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '90px 0 12px' }}>IT ALL COMES DOWN TO POINTS</div>
-        <P>When you date, the six cards go on your score. Your player type changes what each card is worth, so one stranger can be a great date for you and a disaster for your friend.</P>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '34px 0 14px' }}>PLAYER TYPES</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
-          {PLAYER_TYPES.map(t => (
-            <div key={t.id} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
-              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream }}>{TYPE_NAME[t.id]}</div>
-              <div style={{ fontFamily: WS, fontSize: 14, color: muted, marginTop: 4, lineHeight: 1.5 }}>{t.rule}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '40px 0 14px' }}>THE TWISTS</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
-          {[
-            ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
-            ['Chemistry', '+2', 'Total 7 or more as the only one who dated them.', C.teal],
-            ['The catfish', '−4 / +1', 'One secret profile per game. Date it and lose 4, ghost it and gain 1.', C.gold],
-            ['Ghosts', '3 each', 'Pass on a match for ±0. When they’re gone, you have to date.', C.cream],
-          ].map(([n, v, d, col]) => (
-            <div key={n} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
-              <div style={{ fontFamily: ANTON, fontSize: 28, lineHeight: 1, color: col }}>{v}</div>
-              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginTop: 12 }}>{n}</div>
-              <div style={{ fontFamily: WS, fontSize: 14, color: muted, marginTop: 4, lineHeight: 1.5 }}>{d}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 90, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center' }}><Phone src="/thecatch/screens/final.jpg" alt="Final titles screen" width={250} /></div>
-          <div>
-            <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 12 }}>EVERYONE LEAVES WITH A TITLE</div>
-            <P>After seven matches the highest score wins, and everyone gets a title to brag about (or screenshot).</P>
-            <div style={{ marginTop: 10, borderTop: hair }}>
-              {SCORE_TITLES.map((t, i) => (
-                <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
-                  <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
-                    {i === 0 ? `${t.min}+` : t.min === -Infinity ? `${SCORE_TITLES[i - 1].min - 1} or less` : `${t.min}–${SCORE_TITLES[i - 1].min - 1}`}
-                  </span>
-                  <span style={{ fontFamily: ANTON, fontSize: 18, color: C.accent }}>{t.title}</span>
-                </div>
-              ))}
+            <div>
+              <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 12 }}>EVERYONE LEAVES WITH A TITLE</div>
+              <P>After seven matches the highest score wins, and everyone gets a title to brag about (or screenshot).</P>
+              <div style={{ marginTop: 10, borderTop: hair }}>
+                {SCORE_TITLES.map((t, i) => (
+                  <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
+                    <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
+                      {i === 0 ? `${t.min}+` : t.min === -Infinity ? `${SCORE_TITLES[i - 1].min - 1} or less` : `${t.min}–${SCORE_TITLES[i - 1].min - 1}`}
+                    </span>
+                    <span style={{ fontFamily: ANTON, fontSize: 18, color: C.accent }}>{t.title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </Section>
+
+          {/* printable copies */}
+          <div style={{ marginTop: 70, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14 }}>
+            <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginRight: 6 }}>Print it yourself:</span>
+            <a href="/thecatch/how-to-play.pdf" download style={dl}>How-to sheet (PDF)</a>
+            <a href="/thecatch/the-catch-print-deck-11x17.pdf" download style={dl}>Print-and-play deck (PDF, 11 × 17)</a>
+          </div>
+        </Section>
+      </div>
 
       <Gap />
 
@@ -283,10 +380,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="The deck">The cards hold the secrets.</Head>
-            <P>68 trait cards (green, yellow and red flags, plus 4 dealbreakers worth −10), 6 blanks to write your own, 30 stalk chips and a one-page how-to sheet. Print it at home and play.</P>
+            <P>68 trait cards (green, yellow and red flags, plus 4 dealbreakers worth −10), 6 blanks to write your own, 30 stalk chips and a one-page how-to sheet that lives in the box. Print it at home and play.</P>
             <Small style={{ marginTop: 12 }}>Poker-size cards, 2.5 × 3.5 in.</Small>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
+          <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
+            {/* the how-to sheet that comes in the box, tucked behind the cards */}
+            <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet in the box" style={{ position: 'absolute', width: '62%', right: '-6%', top: '-14%', transform: 'rotate(8deg)', borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.5)', opacity: 0.9, zIndex: -1 }} />
             <TraitCardBack />
             <TraitCardFront text={card(10).text} value={card(10).value} />
             <TraitCardFront text={card(40).text} value={card(40).value} />
@@ -295,24 +394,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><StalkChip size={92} /></div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center', marginTop: 70 }}>
-          <button onClick={() => setEnlarged({ src: '/thecatch/screens/howto.jpg', alt: 'The one-page how-to sheet' })}
-            aria-label="Enlarge the how-to sheet"
-            style={{ all: 'unset', justifySelf: 'center', width: '100%', maxWidth: 440, cursor: 'zoom-in', textAlign: 'center' }}>
-            <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet" style={{ display: 'block', width: '100%', borderRadius: 6, boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }} />
-            <Small style={{ marginTop: 12 }}>Click to enlarge</Small>
-          </button>
-          <div>
-            <div style={{ fontFamily: ANTON, fontSize: 28, color: C.cream, marginBottom: 12 }}>THE HOW-TO SHEET</div>
-            <P>Everything a new group needs on one page. It folds up and lives in the box.</P>
-          </div>
-        </div>
       </Section>
 
       <Gap />
 
       {/* ── Process ── */}
-      <Section>
+      <Section id="process" style={{ scrollMarginTop: 70 }}>
         <Head kicker="Process">How it evolved.</Head>
         <P>Every round of playtesting pushed it the same way: less phone, more cards.</P>
         <div style={{ margin: '28px 0 0' }}>
@@ -392,16 +479,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       </Section>
 
       <Gap h={110} />
-
-      {/* ── Enlarged image ── */}
-      {enlarged && (
-        <div onClick={() => setEnlarged(null)} role="dialog" aria-label={enlarged.alt}
-          style={{ position: 'fixed', inset: 0, zIndex: 60, background: 'rgba(8,6,10,0.92)', overflowY: 'auto', cursor: 'zoom-out', padding: '64px 16px 40px', boxSizing: 'border-box' }}>
-          <button onClick={() => setEnlarged(null)} aria-label="Close"
-            style={{ position: 'fixed', top: 14, right: 16, width: 40, height: 40, borderRadius: 6, border: line, background: C.bg, color: C.cream, fontFamily: WS, fontSize: 18, cursor: 'pointer' }}>✕</button>
-          <img src={enlarged.src} alt={enlarged.alt} style={{ display: 'block', width: '100%', maxWidth: 900, margin: '0 auto', borderRadius: 6, boxShadow: '0 30px 80px rgba(0,0,0,0.6)' }} />
-        </div>
-      )}
 
       {/* ── Footer ── */}
       <footer style={{ borderTop: hair, padding: '26px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
