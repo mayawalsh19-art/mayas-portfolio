@@ -147,19 +147,8 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Section wide>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
-            <Head kicker="Overview">A dating game played with cards and one phone.</Head>
-            <P>Deal a stranger's traits, peek where you can, and say Date or Ghost out loud. The phone shows who's on the market, keeps score, and hands out titles at the end.</P>
-            <div style={{ marginTop: 10 }}>
-            {[
-              ['The challenge', 'Show interaction, identity and systems in one playable piece.'],
-              ['The approach', 'A full game: printed deck, phone companion, its own look.'],
-              ['The constraint', 'Runs in the browser. No servers or accounts.'],
-            ].map(([t, d]) => (
-              <div key={t} style={{ fontFamily: WS, fontSize: 15, color: body, lineHeight: 1.6, padding: '10px 0', borderTop: hair }}>
-                <span style={{ fontWeight: 600, color: C.cream }}>{t}. </span>{d}
-              </div>
-            ))}
-            </div>
+            <Head kicker="Overview">Every date is a gamble.</Head>
+            <P>The Catch is a dating card game for 2–6 friends. Each round you meet a stranger, deal six of their traits (two face-up, four face-down) and decide out loud whether to date or ghost them. I made it because dating games are either for couples or for fans of a TV show, and I wanted one my whole group could play together. The fun is the bluffing: you can secretly peek at one card, nobody knows what you saw, and one profile is a catfish.</P>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 420 }}>
             <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width="min(230px, 56vw)" />
@@ -176,7 +165,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── The problem ── */}
       <Section wide>
         <Head kicker="The problem">Dating games are either for two, or for fans.</Head>
-        <P>Two tabletop games anchor the space. One is a deep roleplay for exactly two people; the other is a party game built on a TV show. Neither is built around a whole group reading secret cards.</P>
+        <P>The two best-known dating games are a long roleplay for exactly two people and a party game based on a TV show. Neither lets a whole group read secret cards together.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 10 }}>
           {[
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min · $50', good: 'Rich relationship roleplay with deep emotional mechanics.', gap: 'Exactly two players, long sessions, and a heavy rulebook.', img: '/competitors/fog-of-love.jpg' },
@@ -196,7 +185,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           ))}
         </div>
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE OPPORTUNITY</div>
-        <P style={{ maxWidth: 760 }}>The Catch takes the group energy of a party game and adds real hidden information: face-down cards, a secret catfish, stalk chips, and player types that change the math. It's free to print, and all it needs besides the deck is one phone.</P>
+        <P>The Catch keeps the energy of a party game and adds secrets: face-down cards, a hidden catfish and players who each score cards differently. It's free to print, and all you need is the deck and one phone.</P>
       </Section>
 
       <Gap />
@@ -204,7 +193,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── The game ── */}
       <Section wide>
         <Head kicker="The game">Seven matches. Four moments each.</Head>
-        <P>The table does the playing and the phone keeps up. Each match is a new stranger, and each one follows the same rhythm.</P>
+        <P>Each match is a new stranger, and every match goes the same way.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28, marginTop: 30, alignItems: 'start' }}>
           {[
             ['1', 'Meet them', 'The phone shows who’s on the market: name, age, archetype and an illustrated avatar.', <Phone key="p" src="/thecatch/screens/profile.jpg" alt="Profile card" width={210} />],
@@ -232,7 +221,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           ))}
         </div>
         <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '90px 0 12px' }}>IT ALL COMES DOWN TO POINTS</div>
-        <P>Every date adds your six cards to your total. Your player type changes what each card is worth to you, so the same stranger can be a great date for one player and a disaster for another.</P>
+        <P>When you date, the six cards go on your score. Your player type changes what each card is worth, so one stranger can be a great date for you and a disaster for your friend.</P>
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '34px 0 14px' }}>PLAYER TYPES</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
           {PLAYER_TYPES.map(t => (
@@ -261,7 +250,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           <div style={{ display: 'flex', justifyContent: 'center' }}><Phone src="/thecatch/screens/final.jpg" alt="Final titles screen" width={250} /></div>
           <div>
             <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 12 }}>EVERYONE LEAVES WITH A TITLE</div>
-            <P>After seven matches the highest total wins, and ties are shared. Then every player gets a title from their score, which is easy to explain at the table and easy to screenshot after.</P>
+            <P>After seven matches the highest score wins, and everyone gets a title to brag about (or screenshot).</P>
             <div style={{ marginTop: 10 }}>
               {SCORE_TITLES.map((t, i) => (
                 <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
@@ -283,7 +272,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="The deck">The cards hold the secrets.</Head>
-            <P>A printable deck made for this game: 68 trait cards in green, yellow and red flags, including 4 dealbreakers worth −10, 6 blanks to write your own, 30 stalk chips, and a one-page how-to sheet that folds into the box. The rules live in the box, so the phone never has to explain itself.</P>
+            <P>68 trait cards (green, yellow and red flags, plus 4 dealbreakers worth −10), 6 blanks to write your own, 30 stalk chips and a one-page how-to sheet. Print it at home and play.</P>
             <Small style={{ marginTop: 12 }}>Poker-size cards, 2.5 × 3.5 in.</Small>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
@@ -304,7 +293,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           </button>
           <div>
             <div style={{ fontFamily: ANTON, fontSize: 28, color: C.cream, marginBottom: 12 }}>THE HOW-TO SHEET</div>
-            <P>Everything a new table needs on one page: setup, the five steps of a match, card values, the six player types, what the phone adds for you, and the final titles. It folds into quarters and lives in the box.</P>
+            <P>Everything a new group needs on one page. It folds up and lives in the box.</P>
           </div>
         </div>
       </Section>
@@ -312,16 +301,16 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap />
 
       {/* ── Process ── */}
-      <Section>
+      <Section wide>
         <Head kicker="Process">How it evolved.</Head>
-        <P>The Catch changed a lot between the first playable version and this one. Each round of playtesting pushed it the same direction: fewer rules on the screen, more of the game in people's hands.</P>
-        <div style={{ margin: '28px 0 70px' }}>
+        <P>Every round of playtesting pushed it the same way: less phone, more cards.</P>
+        <div style={{ margin: '28px 0 0' }}>
           {[
-            ['Version 1', 'An app game', 'The phone ran everything: solo play against AI rivals, private decisions passed around the phone, photo reveals, a bonus final round, achievements and online power-ups.'],
-            ['Version 2', 'Multiplayer only', 'Solo mode came out. The phone told the table which numbered cards to deal, and players still decided in private on the phone.'],
-            ['Version 3', 'The cards are the game', 'The deck took over: deal, peek and say Date or Ghost out loud. The phone became a matchmaker that shows the profile and keeps score, and the rules moved onto a printed sheet in the box.'],
-            ['Version 4', 'Points only', 'Hearts, the bonus round and achievements were cut so everything comes down to one total. The interface lost its emoji, bios and extra labels, and every choice now shares one button style.'],
-            ['Version 5', 'One mode', 'Online mode was cut. The game is the deck and one phone at the table, so every rule lives in one place and the cards stay at the centre.'],
+            ['Version 1', 'An app game', 'The phone did everything, and everyone stared at it.'],
+            ['Version 2', 'Multiplayer only', 'Friends played together, but still passed the phone around.'],
+            ['Version 3', 'The cards are the game', 'Dealing, peeking and saying Date or Ghost moved to the table.'],
+            ['Version 4', 'Points only', 'One score instead of hearts, bonuses and badges.'],
+            ['Version 5', 'One mode', 'The deck and one phone. Nothing else to learn.'],
           ].map(([v, t, d], i, arr) => (
             <div key={v} style={{ display: 'grid', gridTemplateColumns: '18px 1fr', gap: 18 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -331,25 +320,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
               <div style={{ paddingBottom: 28 }}>
                 <Small style={{ color: C.accent, fontWeight: 600 }}>{v}</Small>
                 <div style={{ fontFamily: ANTON, fontSize: 24, color: C.cream, margin: '2px 0 6px' }}>{t.toUpperCase()}</div>
-                <P style={{ marginBottom: 0, fontSize: 15 }}>{d}</P>
+                <P style={{ marginBottom: 0 }}>{d}</P>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 6 }}>KEY DECISIONS</div>
-        {[
-          ['Why let the cards run the game?', "Earlier versions had the app call out card numbers, collect private decisions by passing the phone around, and do all the math. The phone kept pulling everyone's attention away from the table. Now the table does the playing, dealing and peeking and saying Date or Ghost out loud, and the phone only does what people are bad at: remembering the fine print and keeping score."],
-          ['Why phone-sized on a computer?', 'The game is built to feel like a phone app. On a computer it opens as an iPhone-sized screen, so it always feels like something in your hand, not something filling a monitor.'],
-          ['Why cut online mode?', 'Online mode dealt the cards onto every phone, which made the phone the game again. It also meant every rule change had to be built twice, and it needed an internet connection to demo. One mode keeps the cards at the centre of the table.'],
-        ].map(([q, a], i) => (
-          <div key={q} style={{ display: 'grid', gridTemplateColumns: '44px 1fr', gap: 12, padding: '24px 0', borderTop: hair }}>
-            <span style={{ fontFamily: ANTON, fontSize: 28, color: C.accent, lineHeight: 1 }}>{i + 1}</span>
-            <div>
-              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 18, color: C.cream, marginBottom: 8 }}>{q}</div>
-              <P style={{ marginBottom: 0 }}>{a}</P>
-            </div>
-          </div>
-        ))}
       </Section>
 
       <Gap />
@@ -357,7 +332,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── Look and feel ── */}
       <Section wide>
         <Head kicker="Look and feel">After hours.</Head>
-        <P>The identity is built around late-night tension: dark backgrounds, one hot pink, and loud condensed type. Color always means something, from pink for a date to mint for a good sign and gold for anything earned.</P>
+        <P>It should feel like a night out: dark backgrounds, one hot pink and loud type. Pink means a date, mint means a good sign and gold means you earned something.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 28 }}>
           {[[C.bg, 'Midnight', 'Background'], [C.accent, 'Hot pink', 'Dates, actions'], [C.teal, 'Mint', 'Green flags'], [C.gold, 'Gold', 'Titles, stalk'], [C.cream, 'Cream', 'Text'], [C.velvet, 'Velvet', 'Accents']].map(([hex, name, role]) => (
             <div key={name} style={{ border: hair, borderRadius: 8, overflow: 'hidden' }}>
