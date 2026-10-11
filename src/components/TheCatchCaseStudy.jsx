@@ -32,9 +32,16 @@ const card = n => ({ no: n, ...TRAIT_POOL[n - 1] })
 const TYPE_NAME = { romantic: 'Romantic', selective: 'Selective', chaotic: 'Chaotic', overthinker: 'Overthinker', avoidant: 'Avoidant', gold_digger: 'Gold Digger' }
 
 // ─── Building blocks ──────────────────────────────────────────────────────────
-function Section({ children, wide = false, style = {} }) {
+// Layout rule for the whole case study:
+//  · every section is the same width (CONTENT), so everything shares one left edge
+//  · text beside an image fills its half of a two-column row (TwoCol)
+//  · text on its own runs to TEXT_SOLO (wider, but still a comfortable line length)
+//  · dividing lines span the full width of whatever they divide
+const CONTENT = 1080
+const TEXT_SOLO = 760
+function Section({ children, style = {} }) {
   return (
-    <section style={{ maxWidth: wide ? 1080 : 760, margin: '0 auto', padding: '0 24px', ...style }}>
+    <section style={{ maxWidth: CONTENT, margin: '0 auto', padding: '0 24px', ...style }}>
       {children}
     </section>
   )
@@ -63,7 +70,7 @@ function tie(c) {
 }
 
 function P({ children, style = {} }) {
-  return <p style={{ fontFamily: WS, fontSize: 'clamp(15px,1.8vw,17px)', color: body, lineHeight: 1.7, margin: '0 0 16px', maxWidth: 620, ...style }}>{tie(children)}</p>
+  return <p style={{ fontFamily: WS, fontSize: 'clamp(15px,1.8vw,17px)', color: body, lineHeight: 1.7, margin: '0 0 16px', maxWidth: TEXT_SOLO, ...style }}>{tie(children)}</p>
 }
 
 function Small({ children, style = {} }) {
@@ -144,7 +151,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap h={110} />
 
       {/* ── Overview ── */}
-      <Section wide>
+      <Section>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="Overview">Every date is a gamble.</Head>
@@ -163,7 +170,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap />
 
       {/* ── The problem ── */}
-      <Section wide>
+      <Section>
         <Head kicker="The problem">Dating games are either for two, or for fans.</Head>
         <P>The two best-known dating games are a long roleplay for exactly two people and a party game based on a TV show. Neither lets a whole group read secret cards together.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 10 }}>
@@ -191,7 +198,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap />
 
       {/* ── The game ── */}
-      <Section wide>
+      <Section>
         <Head kicker="The game">Seven matches. Four moments each.</Head>
         <P>Each match is a new stranger, and every match goes the same way.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28, marginTop: 30, alignItems: 'start' }}>
@@ -251,7 +258,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           <div>
             <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 12 }}>EVERYONE LEAVES WITH A TITLE</div>
             <P>After seven matches the highest score wins, and everyone gets a title to brag about (or screenshot).</P>
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 10, borderTop: hair }}>
               {SCORE_TITLES.map((t, i) => (
                 <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
                   <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
@@ -268,7 +275,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap />
 
       {/* ── The deck ── */}
-      <Section wide>
+      <Section>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="The deck">The cards hold the secrets.</Head>
@@ -301,7 +308,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap />
 
       {/* ── Process ── */}
-      <Section wide>
+      <Section>
         <Head kicker="Process">How it evolved.</Head>
         <P>Every round of playtesting pushed it the same way: less phone, more cards.</P>
         <div style={{ margin: '28px 0 0' }}>
@@ -330,7 +337,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Gap />
 
       {/* ── Look and feel ── */}
-      <Section wide>
+      <Section>
         <Head kicker="Look and feel">After hours.</Head>
         <P>It should feel like a night out: dark backgrounds, one hot pink and loud type. Pink means a date, mint means a good sign and gold means you earned something.</P>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 28 }}>
