@@ -28,7 +28,7 @@ export function TraitCardFront({ text, value, blank = false, green = true, compa
       </div>
       {blank
         ? <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16 }}>{[0, 1, 2].map(i => <div key={i} style={{ borderBottom: '1px solid rgba(239,230,220,0.22)' }} />)}</div>
-        : <div style={{ flex: 1, display: 'flex', alignItems: 'center', fontFamily: WS, fontWeight: 500, fontSize: s.text, lineHeight: 1.3, color: C.cream }}>{text}</div>}
+        : <div style={{ flex: 1, display: 'flex', alignItems: 'center', fontFamily: WS, fontWeight: 500, fontSize: s.text, lineHeight: 1.3, color: C.cream, textWrap: 'balance' }}>{typeof text === 'string' ? text.replace(/ (\S+)\s*$/, '\u00A0$1') : text}</div>}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <CatchWordmark size={s.mark} accent={C.accent} cream="rgba(239,230,220,0.6)" />
         <span style={{ fontFamily: ANTON, fontSize: s.val, lineHeight: 0.9, color: col }}>{val}</span>

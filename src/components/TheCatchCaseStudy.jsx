@@ -50,12 +50,24 @@ function Head({ kicker, children, center = false }) {
   )
 }
 
+// Keep the last two words together so no line ends with a single word on its own
+// (works in every browser; text-wrap: pretty below is a bonus where supported)
+function tie(c) {
+  if (typeof c === 'string') return c.replace(/ (\S+)\s*$/, '\u00A0$1')
+  if (Array.isArray(c)) {
+    const a = [...c]
+    for (let i = a.length - 1; i >= 0; i--) if (typeof a[i] === 'string') { a[i] = tie(a[i]); break }
+    return a
+  }
+  return c
+}
+
 function P({ children, style = {} }) {
-  return <p style={{ fontFamily: WS, fontSize: 'clamp(15px,1.8vw,17px)', color: body, lineHeight: 1.7, margin: '0 0 16px', maxWidth: 620, ...style }}>{children}</p>
+  return <p style={{ fontFamily: WS, fontSize: 'clamp(15px,1.8vw,17px)', color: body, lineHeight: 1.7, margin: '0 0 16px', maxWidth: 620, ...style }}>{tie(children)}</p>
 }
 
 function Small({ children, style = {} }) {
-  return <div style={{ fontFamily: WS, fontSize: 13, color: muted, lineHeight: 1.55, ...style }}>{children}</div>
+  return <div style={{ fontFamily: WS, fontSize: 13, color: muted, lineHeight: 1.55, ...style }}>{tie(children)}</div>
 }
 
 // A phone: the real screenshot in a simple rounded frame
@@ -107,9 +119,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
   }, [onClose, enlarged])
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
+    <div className="catch-cs" style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
 
-      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } }'}</style>
+      {/* no lone word on the last line: balance headings, "pretty" wrapping for everything else */}
+      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
       {/* ── Nav ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 56, background: 'rgba(19,16,17,0.94)', backdropFilter: 'blur(8px)', borderBottom: hair }}>
         <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 14, color: muted, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>← Back<span className="cs-wide-only"> to work</span></button>
@@ -134,14 +147,13 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Section wide>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
-            <Head kicker="Overview">What if the portfolio piece was the thing itself?</Head>
-            <P>The Catch started as a question: could one project be both the design work and the thing it shows off? It became a finished, playable dating game you can pick up right from my portfolio.</P>
-            <P>The cards are the game. You deal a stranger's traits face-up and face-down, peek where you can, and decide out loud whether to date or ghost. One phone sits in the middle of the table as the matchmaker: it shows who's on the market, keeps score, and hands everyone a title at the end.</P>
+            <Head kicker="Overview">A dating game played with cards and one phone.</Head>
+            <P>Deal a stranger's traits, peek where you can, and say Date or Ghost out loud. The phone shows who's on the market, keeps score, and hands out titles at the end.</P>
             <div style={{ marginTop: 10 }}>
             {[
-              ['The challenge', 'Show interaction design, visual identity and systems thinking at once, as a live, playable artifact instead of mockups.'],
-              ['The approach', 'A complete game with its own identity, a printed deck, and enough depth to replay.'],
-              ['The constraint', 'Everything runs in the browser, with no servers, accounts or database.'],
+              ['The challenge', 'Show interaction, identity and systems in one playable piece.'],
+              ['The approach', 'A full game: printed deck, phone companion, its own look.'],
+              ['The constraint', 'Runs in the browser. No servers or accounts.'],
             ].map(([t, d]) => (
               <div key={t} style={{ fontFamily: WS, fontSize: 15, color: body, lineHeight: 1.6, padding: '10px 0', borderTop: hair }}>
                 <span style={{ fontWeight: 600, color: C.cream }}>{t}. </span>{d}
