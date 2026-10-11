@@ -178,7 +178,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
           {[
             { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
-            { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: null, tint: '#2d1026' },
+            { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: '/competitors/dream-phone.jpg' },
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
           ].map(g => (
             <div key={g.name} style={{ background: C.card, border: hair, borderRadius: 10, overflow: 'hidden' }}>
