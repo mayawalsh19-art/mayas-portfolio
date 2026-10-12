@@ -280,38 +280,6 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       <Gap />
 
-      {/* ── Inspiration ── */}
-      <Section>
-        <Head kicker="Inspiration">Sleepover games, for grown-ups.</Head>
-        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for just two people. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
-        {/* Each game: what it inspired, and the gap it leaves. Drop a photo into
-            public/competitors/ and set img to show the real box instead of the title tile. */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
-          {[
-            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
-            { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: '/competitors/dream-phone.jpg' },
-            { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
-          ].map(g => (
-            <div key={g.name} style={{ background: C.card, border: hair, borderRadius: 10, overflow: 'hidden' }}>
-              {g.img
-                ? <img src={g.img} alt={`${g.name} box art`} style={{ width: '100%', height: 170, objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
-                : <div style={{ height: 170, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px', textAlign: 'center', background: `linear-gradient(135deg, #140a0e, ${g.tint})` }}><span style={{ fontFamily: ANTON, fontSize: 24, color: '#e8c4c4', letterSpacing: '0.1em', lineHeight: 1.1 }}>{g.name.toUpperCase()}</span></div>}
-              <div style={{ padding: '18px 20px 20px' }}>
-                <div style={{ fontFamily: ANTON, fontSize: 21, color: C.cream }}>{g.name.toUpperCase()}</div>
-                <Small style={{ marginTop: 2 }}>{g.meta} · {g.stats}</Small>
-                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 12 }}><span style={{ color: C.teal, fontWeight: 600 }}>Inspired </span>{tie(g.good)}</div>
-                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 6 }}><span style={{ color: C.accent, fontWeight: 600 }}>Gap </span>{tie(g.gap)}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <Small style={{ marginTop: 10, fontSize: 12 }}>Game images belong to their publishers.</Small>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE EXPERIENCE I WANTED</div>
-        <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, bluffs about what they peeked at, and finds out together who the catfish was.</P>
-      </Section>
-
-      <Gap />
-
       {/* ── How to play (its own band, so the instructions stand apart) ── */}
       <div id="how-to-play" style={{ background: BAND, borderTop: hair, borderBottom: hair, padding: '100px 0 110px', scrollMarginTop: 56 }}>
         <Section>
@@ -406,10 +374,38 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       {/* ── Process ── */}
       <Section id="process" style={{ scrollMarginTop: 70 }}>
-        <Head kicker="Process">How it evolved.</Head>
+        <Head kicker="Process">From sleepover games to a deck and one phone.</Head>
+        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '18px 0 12px' }}>WHERE IT STARTED: SLEEPOVER GAMES, FOR GROWN-UPS</div>
+        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for just two people. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
+        {/* Each game: what it inspired, and the gap it leaves. Drop a photo into
+            public/competitors/ and set img to show the real box instead of the title tile. */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
+          {[
+            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
+            { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: '/competitors/dream-phone.jpg' },
+            { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
+          ].map(g => (
+            <div key={g.name} style={{ background: C.card, border: hair, borderRadius: 10, overflow: 'hidden' }}>
+              {g.img
+                ? <img src={g.img} alt={`${g.name} box art`} style={{ width: '100%', height: 170, objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
+                : <div style={{ height: 170, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px', textAlign: 'center', background: `linear-gradient(135deg, #140a0e, ${g.tint})` }}><span style={{ fontFamily: ANTON, fontSize: 24, color: '#e8c4c4', letterSpacing: '0.1em', lineHeight: 1.1 }}>{g.name.toUpperCase()}</span></div>}
+              <div style={{ padding: '18px 20px 20px' }}>
+                <div style={{ fontFamily: ANTON, fontSize: 21, color: C.cream }}>{g.name.toUpperCase()}</div>
+                <Small style={{ marginTop: 2 }}>{g.meta} · {g.stats}</Small>
+                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 12 }}><span style={{ color: C.teal, fontWeight: 600 }}>Inspired </span>{tie(g.good)}</div>
+                <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 6 }}><span style={{ color: C.accent, fontWeight: 600 }}>Gap </span>{tie(g.gap)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Small style={{ marginTop: 10, fontSize: 12 }}>Game images belong to their publishers.</Small>
+        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE EXPERIENCE I WANTED</div>
+        <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, bluffs about what they peeked at, and finds out together who the catfish was.</P>
+        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '70px 0 12px' }}>HOW IT EVOLVED</div>
         <P>Every round of playtesting pushed it the same way: less phone, more cards.</P>
         <div style={{ margin: '28px 0 0' }}>
           {[
+            ['The start', 'Inspiration: sleepover games', 'Dream Phone and Mystery Date, for a whole group of friends.'],
             ['Version 1', 'An app game', 'The phone did everything, and everyone stared at it.'],
             ['Version 2', 'Multiplayer only', 'Friends played together, but still passed the phone around.'],
             ['Version 3', 'The cards are the game', 'Dealing, peeking and saying Date or Ghost moved to the table.'],
