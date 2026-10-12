@@ -269,7 +269,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <header style={{ textAlign: 'center', padding: '88px 16px 96px', borderBottom: hair }}>
         <CatchHero maxWidth={460} style={{ marginBottom: 30 }} />
         <p style={{ fontFamily: WS, fontSize: 'clamp(15px,2vw,18px)', color: C.cream, lineHeight: 1.55, maxWidth: 500, margin: '0 auto 34px' }}>
-          A dating card game with a phone for a matchmaker. Read the flags, bluff the table, and find out who you really went home with.
+          A dating card game with a phone for a matchmaker. Read the flags, outplay the table, and find out who you really went home with.
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn primary onClick={onPlay}>GRAB YOUR CARDS &amp; KEEP SCORE</Btn>
@@ -286,7 +286,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
           <div>
             <Head kicker="Overview">Every date is a gamble.</Head>
-            <P>The Catch is a dating card game for 2–6 friends. Each round you meet a stranger, deal six of their traits (two face-up, four face-down) and decide out loud whether to date or ghost them. I wanted the fun of sleepover games like Dream Phone and Mystery Date, made for a whole group of friends. The fun is the bluffing: you can secretly peek at one card, nobody knows what you saw, and one profile is a catfish.</P>
+            <P>The Catch is a dating card game for 2–6 friends. Each round you meet a stranger, deal six of their traits (two face-up, four face-down) and decide out loud whether to date or ghost them. I wanted the fun of sleepover games like Dream Phone and Mystery Date, made for a whole group of friends. The fun is the secrets: you can secretly peek at one card, nobody knows what you saw, and one profile is a catfish.</P>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: 420 }}>
             <Phone src="/thecatch/screens/profile.jpg" alt="The profile card screen" width="min(230px, 56vw)" />
@@ -396,12 +396,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Section id="process" style={{ scrollMarginTop: 70 }}>
         <Head kicker="Process">From sleepover games to a deck and one phone.</Head>
         <div style={subLg(0)}>WHERE IT STARTED: SLEEPOVER GAMES, FOR GROWN-UPS</div>
-        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for just two people. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
+        <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for just two people. I wanted that loud, together feeling back, with real secrets to keep.</P>
         {/* Each game: what it inspired, and the gap it leaves. Drop a photo into
             public/competitors/ and set img to show the real box instead of the title tile. */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 32 }}>
           {[
-            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
+            { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or hide.', img: '/competitors/mystery-date.jpg' },
             { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: '/competitors/dream-phone.jpg' },
             { name: 'Fog of Love', meta: '2017 · Hush Hush Projects', stats: '2 players · 60–120 min', good: 'Hidden traits and real choices about a partner.', gap: 'Only two players, and a long, heavy session.', img: '/competitors/fog-of-love.jpg' },
           ].map(g => (
@@ -420,7 +420,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         </div>
         <Small style={{ marginTop: 14, fontSize: 12 }}>Game images belong to their publishers.</Small>
         <div style={subSm()}>THE EXPERIENCE I WANTED</div>
-        <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, bluffs about what they peeked at, and finds out together who the catfish was.</P>
+        <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, keeps a straight face about what they peeked at, and finds out together who the catfish was.</P>
         <div style={subLg()}>HOW IT EVOLVED</div>
         <P>Every round of playtesting pushed it the same way: less phone, more cards.</P>
         <div style={{ margin: '36px 0 0' }}>
