@@ -456,9 +456,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           {/* palette at the proportions it's used */}
           <div style={{ gridColumn: 'span 6', display: 'flex', flexWrap: 'wrap', borderRadius: 12, overflow: 'hidden', border: hair }}>
             {[['Midnight', C.bg, 'Background', 5, C.cream], ['Velvet', C.velvet, 'Accents', 2, C.cream], ['Hot pink', C.accent, 'Dates and actions', 1.6, '#fff'], ['Cream', C.cream, 'Text', 1.3, C.bg], ['Mint', C.teal, 'Good signs', 1, C.bg], ['Gold', C.gold, 'Earned', 1, C.bg]].map(([name, hex, role, weight, ink]) => (
-              <div key={name} style={{ flex: `${weight} 1 110px`, minHeight: 150, background: hex, padding: '16px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: ink }}>
-                <div style={{ fontFamily: ANTON, fontSize: 20, letterSpacing: '0.04em' }}>{name.toUpperCase()}</div>
-                <div style={{ fontFamily: WS, fontSize: 12, opacity: 0.75 }}>{hex} · {tie(role)}</div>
+              <div key={name} style={{ flex: `${weight} 1 120px`, minHeight: 150, background: hex, padding: '16px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: ink }}>
+                {/* name, hex and role each on one line, so every swatch's labels line up */}
+                <div style={{ fontFamily: ANTON, fontSize: 20, lineHeight: 1.2, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{name.toUpperCase()}</div>
+                <div style={{ fontFamily: WS, fontSize: 12, lineHeight: 1.5, opacity: 0.75, whiteSpace: 'nowrap', marginTop: 2 }}>{hex}</div>
+                <div style={{ fontFamily: WS, fontSize: 12, lineHeight: 1.5, opacity: 0.75, whiteSpace: 'nowrap' }}>{role}</div>
               </div>
             ))}
           </div>
