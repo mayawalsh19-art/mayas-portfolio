@@ -50,8 +50,8 @@ function Section({ children, id, style = {} }) {
 // Small sentence-case kicker + big Anton headline
 function Head({ kicker, children, center = false }) {
   return (
-    <div style={{ textAlign: center ? 'center' : 'left', marginBottom: 22 }}>
-      {kicker && <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.accent, marginBottom: 10 }}>{kicker}</div>}
+    <div style={{ textAlign: center ? 'center' : 'left', marginBottom: 36 }}>
+      {kicker && <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.accent, marginBottom: 14 }}>{kicker}</div>}
       <h2 style={{ fontFamily: ANTON, fontWeight: 400, color: C.cream, fontSize: 'clamp(34px,6vw,50px)', lineHeight: 1.08, margin: 0 }}>{children}</h2>
     </div>
   )
@@ -66,7 +66,7 @@ function tie(c) {
 }
 
 function P({ children, style = {} }) {
-  return <p style={{ fontFamily: WS, fontSize: 'clamp(15px,1.8vw,17px)', color: body, lineHeight: 1.7, margin: '0 0 16px', maxWidth: TEXT_SOLO, ...style }}>{tie(children)}</p>
+  return <p style={{ fontFamily: WS, fontSize: 'clamp(15px,1.8vw,17px)', color: body, lineHeight: 1.7, margin: '0 0 20px', maxWidth: TEXT_SOLO, ...style }}>{tie(children)}</p>
 }
 
 function Small({ children, style = {} }) {
@@ -104,7 +104,12 @@ function Btn({ children, onClick, href, primary = false }) {
   return href ? <a href={href} download style={style}>{children}</a> : <button onClick={onClick} style={style}>{children}</button>
 }
 
-const Gap = ({ h = 120 }) => <div style={{ height: h }} />
+const Gap = ({ h = 170 }) => <div style={{ height: h }} />
+
+// Spacing scale: section gap 170 · under a section heading 36 · large subheading 96 above / 18 below ·
+// small subheading 56 above / 18 below · paragraph 20 · paragraph → cards 32–40
+const subLg = (top = 96) => ({ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: `${top}px 0 18px` })
+const subSm = (top = 56) => ({ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: `${top}px 0 18px` })
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 // ─── How to play: a step-by-step carousel built from the game's own pieces ───
@@ -259,7 +264,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         </Small>
       </header>
 
-      <Gap h={110} />
+      <Gap h={150} />
 
       {/* ── Overview ── */}
       <Section>
@@ -285,11 +290,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <Section>
           <Head kicker="How to play">Seven matches. Six steps each.</Head>
           <P>2–6 players, 20–40 minutes, the deck and one phone. Every match is a new stranger and goes like this:</P>
-          <div style={{ marginTop: 30 }}><StepCarousel /></div>
+          <div style={{ marginTop: 36 }}><StepCarousel /></div>
 
-          <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '80px 0 12px' }}>IT ALL COMES DOWN TO POINTS</div>
+          <div style={subLg()}>IT ALL COMES DOWN TO POINTS</div>
           <P>When you date, the six cards go on your score. Your player type changes what each card is worth, so one stranger can be a great date for you and a disaster for your friend.</P>
-          <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '34px 0 14px' }}>PLAYER TYPES</div>
+          <div style={subSm(40)}>PLAYER TYPES</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
             {PLAYER_TYPES.map(t => (
               <div key={t.id} style={{ background: C.card, border: hair, borderRadius: 10, padding: '18px 20px' }}>
@@ -298,7 +303,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
               </div>
             ))}
           </div>
-          <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '40px 0 14px' }}>THE TWISTS</div>
+          <div style={subSm()}>THE TWISTS</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
             {[
               ['Red flag', '−2', 'A date that totals −5 or worse costs 2 more.', C.accent],
@@ -313,7 +318,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 80, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
+          <div style={{ marginTop: 96, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
             {/* the winner card, as it appears in the game */}
             <div style={{ justifySelf: 'center', width: '100%', maxWidth: 340, textAlign: 'center', padding: '30px 24px', background: C.card, border: `1px solid ${C.gold}66`, borderRadius: 12 }}>
               <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.gold }}>Winner</div>
@@ -323,9 +328,9 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
               <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>23 points</div>
             </div>
             <div>
-              <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, marginBottom: 12 }}>EVERYONE LEAVES WITH A TITLE</div>
+              <div style={subLg(0)}>EVERYONE LEAVES WITH A TITLE</div>
               <P>After seven matches the highest score wins, and everyone gets a title to brag about (or screenshot).</P>
-              <div style={{ marginTop: 10, borderTop: hair }}>
+              <div style={{ marginTop: 16, borderTop: hair }}>
                 {SCORE_TITLES.map((t, i) => (
                   <div key={t.title} style={{ display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, padding: '11px 0', borderBottom: hair, alignItems: 'baseline' }}>
                     <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
@@ -339,7 +344,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           </div>
 
           {/* printable copies */}
-          <div style={{ marginTop: 70, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14 }}>
+          <div style={{ marginTop: 96, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14 }}>
             <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 15, color: C.cream, marginRight: 6 }}>Print it yourself:</span>
             <a href="/thecatch/how-to-play.pdf" download style={dl}>How-to sheet (PDF)</a>
             <a href="/thecatch/the-catch-print-deck-11x17.pdf" download style={dl}>Print-and-play deck (PDF, 11 × 17)</a>
@@ -375,11 +380,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── Process ── */}
       <Section id="process" style={{ scrollMarginTop: 70 }}>
         <Head kicker="Process">From sleepover games to a deck and one phone.</Head>
-        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '18px 0 12px' }}>WHERE IT STARTED: SLEEPOVER GAMES, FOR GROWN-UPS</div>
+        <div style={subLg(0)}>WHERE IT STARTED: SLEEPOVER GAMES, FOR GROWN-UPS</div>
         <P>Dream Phone and Mystery Date made dating into a party: friends crowded around one game, guessing who they'd end up with and laughing at the reveal. Newer dating games went another way, into long roleplay for just two people. I wanted that loud, together feeling back, with real secrets to bluff about.</P>
         {/* Each game: what it inspired, and the gap it leaves. Drop a photo into
             public/competitors/ and set img to show the real box instead of the title tile. */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginTop: 32 }}>
           {[
             { name: 'Mystery Date', meta: '1965 · Milton Bradley', stats: '2–4 players', good: 'The reveal: open the door and see who your date is, or get the dud.', gap: 'All luck. Nothing to read or bluff about.', img: '/competitors/mystery-date.jpg' },
             { name: 'Dream Phone', meta: '1991 · Milton Bradley', stats: 'Electronic phone', good: 'Calling for clues to work out who has a crush on you, with friends listening in.', gap: 'One right answer, and the phone runs the whole game.', img: '/competitors/dream-phone.jpg' },
@@ -398,12 +403,12 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             </div>
           ))}
         </div>
-        <Small style={{ marginTop: 10, fontSize: 12 }}>Game images belong to their publishers.</Small>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '32px 0 10px' }}>THE EXPERIENCE I WANTED</div>
+        <Small style={{ marginTop: 14, fontSize: 12 }}>Game images belong to their publishers.</Small>
+        <div style={subSm()}>THE EXPERIENCE I WANTED</div>
         <P>The reveal of Mystery Date, the guessing of Dream Phone and the hidden traits of Fog of Love, for a whole group at once. Everyone reads the same stranger, bluffs about what they peeked at, and finds out together who the catfish was.</P>
-        <div style={{ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: '70px 0 12px' }}>HOW IT EVOLVED</div>
+        <div style={subLg()}>HOW IT EVOLVED</div>
         <P>Every round of playtesting pushed it the same way: less phone, more cards.</P>
-        <div style={{ margin: '28px 0 0' }}>
+        <div style={{ margin: '36px 0 0' }}>
           {[
             ['The start', 'Inspiration: sleepover games', 'Dream Phone and Mystery Date, for a whole group of friends.'],
             ['Version 1', 'An app game', 'The phone did everything, and everyone stared at it.'],
@@ -417,7 +422,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
                 <span style={{ width: 12, height: 12, borderRadius: '50%', background: i === arr.length - 1 ? C.accent : C.bg, border: `2px solid ${C.accent}`, marginTop: 6 }} />
                 {i < arr.length - 1 && <span style={{ flex: 1, width: 2, background: 'rgba(255,77,109,0.3)' }} />}
               </div>
-              <div style={{ paddingBottom: 28 }}>
+              <div style={{ paddingBottom: 40 }}>
                 <Small style={{ color: C.accent, fontWeight: 600 }}>{v}</Small>
                 <div style={{ fontFamily: ANTON, fontSize: 24, color: C.cream, margin: '2px 0 6px' }}>{t.toUpperCase()}</div>
                 <P style={{ marginBottom: 0 }}>{d}</P>
@@ -436,7 +441,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         {/* Brand board: a designed layout instead of a row of swatches.
             Desktop: 6-column grid (logo 4 + flags 2, palette strip, two type specimens, "in use").
             Phones: every tile full width (see .brand-grid in the style tag). */}
-        <div className="brand-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 14, marginTop: 34 }}>
+        <div className="brand-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 14, marginTop: 40 }}>
           {/* logo */}
           <div style={{ gridColumn: 'span 4', ...tile, minHeight: 340, padding: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundImage: 'radial-gradient(circle, rgba(239,230,220,0.07) 1px, transparent 1px)', backgroundSize: '12px 12px' }}>
             <img src="/thecatch/brand/logo-full.svg" alt="The Catch logo" style={{ width: 'min(400px, 80%)' }} />
@@ -495,7 +500,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             </div>
           </div>
         </div>
-        <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '44px 0 14px' }}>THE CAST</div>
+        <div style={subSm(96)}>THE CAST</div>
         {/* 13 characters: seven across on desktop (girls + Cass, then guys), wrapping and centred on phones */}
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
           {['bibi', 'ada', 'suki', 'petra', 'nia', 'rory', 'cass', 'kip', 'dax', 'rell', 'milo', 'theo', 'jun'].map(n => (
@@ -510,7 +515,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         <Small style={{ marginTop: 12 }}>Players choose who they’re looking for at the start: girls, guys or everyone.</Small>
       </Section>
 
-      <Gap h={130} />
+      <Gap h={170} />
 
       {/* ── Play it ── */}
       <Section style={{ textAlign: 'center' }}>
@@ -522,7 +527,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
         </div>
       </Section>
 
-      <Gap h={110} />
+      <Gap h={150} />
 
       {/* ── Footer ── */}
       <footer style={{ borderTop: hair, padding: '26px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
