@@ -93,15 +93,15 @@ function Scaled({ w, base, children }) {
   )
 }
 
-function Btn({ children, onClick, primary = false }) {
-  return (
-    <button onClick={onClick} style={{
-      fontFamily: WS, fontWeight: 700, fontSize: 14, letterSpacing: '0.12em',
-      minHeight: 50, padding: '0 34px', borderRadius: 6, cursor: 'pointer',
-      color: primary ? '#fff' : C.cream, background: primary ? C.accent : 'transparent',
-      border: primary ? `1px solid ${C.accent}` : line,
-    }}>{children}</button>
-  )
+function Btn({ children, onClick, href, primary = false }) {
+  const style = {
+    fontFamily: WS, fontWeight: 700, fontSize: 14, letterSpacing: '0.12em', lineHeight: 1.3,
+    minHeight: 50, padding: '12px 30px', borderRadius: 6, cursor: 'pointer', maxWidth: '100%', boxSizing: 'border-box',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', textDecoration: 'none',
+    color: primary ? '#fff' : C.cream, background: primary ? C.accent : 'transparent',
+    border: primary ? `1px solid ${C.accent}` : line,
+  }
+  return href ? <a href={href} download style={style}>{children}</a> : <button onClick={onClick} style={style}>{children}</button>
 }
 
 const Gap = ({ h = 120 }) => <div style={{ height: h }} />
@@ -232,7 +232,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
     <div className="catch-cs" style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
 
       {/* no lone word on the last line: balance headings, "pretty" wrapping for everything else */}
-      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } @media (max-width: 760px) { .brand-grid > * { grid-column: 1 / -1 !important } } @media (max-width: 420px) { .cs-nav-links { gap: 16px !important } .cs-nav-links button { font-size: 13px !important } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
+      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } @media (max-width: 760px) { .brand-grid > * { grid-column: 1 / -1 !important } } @media (max-width: 480px) { .cs-nav-links { position: static !important; transform: none !important; gap: 14px !important } .cs-nav-links button { font-size: 13px !important } .catch-cs nav { gap: 10px } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
       {/* ── Nav ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 56, background: 'rgba(19,16,17,0.94)', backdropFilter: 'blur(8px)', borderBottom: hair }}>
         <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 14, color: muted, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>← Back<span className="cs-wide-only"> to work</span></button>
@@ -242,7 +242,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
               style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>{label}</button>
           ))}
         </div>
-        <button onClick={onPlay} style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: '#fff', background: C.accent, border: 'none', borderRadius: 6, padding: '9px 18px', cursor: 'pointer' }}>PLAY</button>
+        <button onClick={onPlay} style={{ fontFamily: WS, fontWeight: 700, fontSize: 12, letterSpacing: '0.12em', color: '#fff', background: C.accent, border: 'none', borderRadius: 6, padding: '9px 16px', cursor: 'pointer', whiteSpace: 'nowrap' }}>KEEP SCORE</button>
       </nav>
 
       {/* ── Hero ── */}
@@ -252,8 +252,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           A dating card game with a phone for a matchmaker. Read the flags, bluff the table, and find out who you really went home with.
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Btn primary onClick={onPlay}>PLAY</Btn>
+          <Btn primary onClick={onPlay}>GRAB YOUR CARDS &amp; KEEP SCORE</Btn>
         </div>
+        <Small style={{ marginTop: 16, fontSize: 14 }}>
+          You play with the printed deck. The website keeps score. <a href="/thecatch/the-catch-print-deck-11x17.pdf" download style={{ color: C.cream }}>Print the&nbsp;deck</a>
+        </Small>
       </header>
 
       <Gap h={110} />
@@ -516,9 +519,10 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       {/* ── Play it ── */}
       <Section style={{ textAlign: 'center' }}>
         <h2 style={{ fontFamily: ANTON, fontWeight: 400, fontSize: 'clamp(48px,10vw,84px)', color: C.cream, lineHeight: 1.02, margin: '0 0 12px' }}>READY TO <span style={{ color: C.accent }}>PLAY?</span></h2>
-        <Small style={{ marginBottom: 28, fontSize: 15 }}>Grab the deck and one phone.</Small>
+        <Small style={{ marginBottom: 28, fontSize: 15 }}>Deal from the printed deck, and let one phone keep score.</Small>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Btn primary onClick={onPlay}>PLAY</Btn>
+          <Btn primary onClick={onPlay}>GRAB YOUR CARDS &amp; KEEP SCORE</Btn>
+          <Btn href="/thecatch/the-catch-print-deck-11x17.pdf">PRINT THE DECK</Btn>
         </div>
       </Section>
 

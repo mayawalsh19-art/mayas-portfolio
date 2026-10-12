@@ -145,7 +145,7 @@ function TheCatchCard({ onClick }) {
           transition: 'opacity 0.4s ease',
         }} />
 
-        {/* PLAY chip — appears on hover, top-right */}
+        {/* KEEP SCORE chip — appears on hover, top-right (the site is the scorekeeper; you play with the cards) */}
         <div style={{
           position: 'absolute', top: 14, right: 14,
           padding: '4px 10px',
@@ -160,7 +160,7 @@ function TheCatchCard({ onClick }) {
           opacity: hov ? 1 : 0,
           transform: hov ? 'translateY(0)' : 'translateY(-6px)',
           transition: 'opacity 0.3s ease 0.1s, transform 0.35s cubic-bezier(0.22,1,0.36,1) 0.1s',
-        }}>▶ PLAY</div>
+        }}>KEEP SCORE</div>
       </div>
 
       {/* ── Label area — matches standard Card style ── */}
