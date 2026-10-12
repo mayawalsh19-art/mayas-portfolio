@@ -95,7 +95,7 @@ function Scaled({ w, base, children }) {
 
 function Btn({ children, onClick, href, primary = false }) {
   const style = {
-    fontFamily: WS, fontWeight: 700, fontSize: 14, letterSpacing: '0.12em', lineHeight: 1.3,
+    fontFamily: WS, fontWeight: 700, fontSize: 'clamp(12px, 3.4vw, 14px)', letterSpacing: 'clamp(0.04em, 0.6vw, 0.12em)', lineHeight: 1.3,
     minHeight: 50, padding: '12px 30px', borderRadius: 6, cursor: 'pointer', maxWidth: '100%', boxSizing: 'border-box',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', textDecoration: 'none',
     color: primary ? '#fff' : C.cream, background: primary ? C.accent : 'transparent',
@@ -108,8 +108,8 @@ const Gap = ({ h = 170 }) => <div style={{ height: h }} />
 
 // Spacing scale: section gap 170 · under a section heading 36 · large subheading 96 above / 18 below ·
 // small subheading 56 above / 18 below · paragraph 20 · paragraph → cards 32–40
-const subLg = (top = 96) => ({ fontFamily: ANTON, fontSize: 30, color: C.cream, margin: `${top}px 0 18px` })
-const subSm = (top = 56) => ({ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: `${top}px 0 18px` })
+const subLg = (top = 96) => ({ fontFamily: ANTON, lineHeight: 1.12, fontSize: 'clamp(24px, 6.5vw, 30px)', color: C.cream, margin: `${top}px 0 18px` })
+const subSm = (top = 56) => ({ fontFamily: ANTON, lineHeight: 1.12, fontSize: 'clamp(19px, 5vw, 22px)', color: C.cream, margin: `${top}px 0 18px` })
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 // ─── How to play: a step-by-step carousel built from the game's own pieces ───
@@ -161,7 +161,7 @@ const STEPS = [
   )],
   ['Date or ghost', 'On three, everyone says it out loud at the same time. Out of ghosts? You have to date.', () => (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ fontFamily: ANTON, fontSize: 40, color: 'rgba(239,230,220,0.35)', letterSpacing: '0.3em', marginBottom: 18 }}>3 · 2 · 1</div>
+      <div style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 40, color: 'rgba(239,230,220,0.35)', letterSpacing: '0.3em', marginBottom: 18 }}>3 · 2 · 1</div>
       {/* said out loud at the table, so shown as speech, not as buttons */}
       <div style={{ display: 'flex', gap: 22, justifyContent: 'center', alignItems: 'baseline' }}>
         <span style={{ fontFamily: ANTON, fontSize: 64, lineHeight: 1, color: C.accent, transform: 'rotate(-4deg)', display: 'inline-block' }}>“DATE!”</span>
@@ -174,12 +174,12 @@ const STEPS = [
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 84px)', gap: 8 }}>
         {HAND.map(n => <div key={n}><Scaled w={84} base={118}><TraitCardFront text={card(n).text} value={card(n).value} /></Scaled></div>)}
       </div>
-      <div style={{ fontFamily: ANTON, fontSize: 30, color: C.teal, marginTop: 12 }}>
+      <div style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 30, color: C.teal, marginTop: 12 }}>
         = {(() => { const t = HAND.reduce((a, n) => a + card(n).value, 0); return t > 0 ? `+${t}` : t })()}
       </div>
       {/* the score row from the game's "Who dated?" screen */}
       <div style={{ marginTop: 12, padding: '10px 12px', background: C.card, border: hair, borderRadius: 8, textAlign: 'left' }}>
-        <div style={{ fontFamily: ANTON, fontSize: 15, color: C.cream, marginBottom: 6 }}>MAYA</div>
+        <div style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 15, color: C.cream, marginBottom: 6 }}>MAYA</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}><span style={gameChoice(true)}>Dated</span><span style={gameChoice(false)}>Ghosted (3 left)</span></div>
       </div>
     </div>
@@ -189,7 +189,7 @@ const STEPS = [
     <div style={{ width: 300 }}>
       {[['Maya', 9, 'Dated, cards +7 · Chemistry +2'], ['Lanie', 0, 'Ghosted'], ['Jo', 0, 'Ghosted']].map(([name, pts, what], i) => (
         <div key={name} style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', alignItems: 'center', gap: 12, padding: '12px 14px', marginBottom: 8, background: C.card, borderRadius: 6, border: i === 0 ? `1px solid ${C.gold}66` : hair }}>
-          <span style={{ fontFamily: ANTON, fontSize: 20, color: i === 0 ? C.gold : '#555', textAlign: 'center' }}>{i + 1}</span>
+          <span style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 20, color: i === 0 ? C.gold : '#555', textAlign: 'center' }}>{i + 1}</span>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: ANTON, fontSize: 19, color: C.cream, letterSpacing: '0.03em', lineHeight: 1.1 }}>{name.toUpperCase()}</div>
             <div style={{ fontFamily: WS, fontSize: 11, lineHeight: 1.45, marginTop: 3 }}>
@@ -338,7 +338,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             <div style={{ justifySelf: 'center', width: '100%', maxWidth: 340, textAlign: 'center', padding: '30px 24px', background: C.card, border: `1px solid ${C.gold}66`, borderRadius: 12 }}>
               <div style={{ fontFamily: WS, fontWeight: 500, fontSize: 13, color: C.gold }}>Winner</div>
               <div style={{ fontFamily: ANTON, fontSize: 44, color: C.cream, lineHeight: 1, marginTop: 6 }}>MAYA</div>
-              <div style={{ fontFamily: ANTON, fontSize: 28, color: C.accent, marginTop: 4 }}>THE CATCH</div>
+              <div style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 28, color: C.accent, marginTop: 4 }}>THE CATCH</div>
               <div style={{ fontFamily: WS, fontSize: 13, color: muted, marginTop: 10 }}>{tie(SCORE_TITLES[0].desc)}</div>
               <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.teal, marginTop: 10 }}>23 points</div>
             </div>
@@ -351,7 +351,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
                     <span style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: i === 0 ? C.gold : '#888' }}>
                       {i === 0 ? `${t.min}+` : t.min === -Infinity ? `${SCORE_TITLES[i - 1].min - 1} or less` : `${t.min}–${SCORE_TITLES[i - 1].min - 1}`}
                     </span>
-                    <span style={{ fontFamily: ANTON, fontSize: 18, color: C.accent }}>{t.title}</span>
+                    <span style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 18, color: C.accent }}>{t.title}</span>
                   </div>
                 ))}
               </div>
@@ -410,7 +410,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
                 ? <img src={g.img} alt={`${g.name} box art`} style={{ width: '100%', height: 170, objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
                 : <div style={{ height: 170, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px', textAlign: 'center', background: `linear-gradient(135deg, #140a0e, ${g.tint})` }}><span style={{ fontFamily: ANTON, fontSize: 24, color: '#e8c4c4', letterSpacing: '0.1em', lineHeight: 1.1 }}>{g.name.toUpperCase()}</span></div>}
               <div style={{ padding: '18px 20px 20px' }}>
-                <div style={{ fontFamily: ANTON, fontSize: 21, color: C.cream }}>{g.name.toUpperCase()}</div>
+                <div style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 21, color: C.cream }}>{g.name.toUpperCase()}</div>
                 <Small style={{ marginTop: 2 }}>{g.meta} · {g.stats}</Small>
                 <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 12 }}><span style={{ color: C.teal, fontWeight: 600 }}>Inspired </span>{tie(g.good)}</div>
                 <div style={{ fontFamily: WS, fontSize: 14, color: body, lineHeight: 1.6, marginTop: 6 }}><span style={{ color: C.accent, fontWeight: 600 }}>Gap </span>{tie(g.gap)}</div>
@@ -439,7 +439,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
               </div>
               <div style={{ paddingBottom: 40 }}>
                 <Small style={{ color: C.accent, fontWeight: 600 }}>{v}</Small>
-                <div style={{ fontFamily: ANTON, fontSize: 24, color: C.cream, margin: '2px 0 6px' }}>{t.toUpperCase()}</div>
+                <div style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 24, color: C.cream, margin: '2px 0 6px' }}>{t.toUpperCase()}</div>
                 <P style={{ marginBottom: 0 }}>{d}</P>
               </div>
             </div>
@@ -468,7 +468,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
             {[['GREEN FLAG', '+1 to +3', C.teal, false], ['YELLOW FLAG', '0 to −1', C.gold, false], ['RED FLAG', '−2 to −3', C.accent, false], ['DEALBREAKER', '−10', C.accent, true]].map(([t, v, col, solid]) => (
               <div key={t} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                 <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.14em', padding: '5px 9px', border: `1px solid ${col}`, color: solid ? C.bg : col, background: solid ? col : 'transparent' }}>{t}</span>
-                <span style={{ fontFamily: ANTON, fontSize: 26, color: col }}>{v}</span>
+                <span style={{ fontFamily: ANTON, lineHeight: 1.12, fontSize: 26, color: col }}>{v}</span>
               </div>
             ))}
           </div>
