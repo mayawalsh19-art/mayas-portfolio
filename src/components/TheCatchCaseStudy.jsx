@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CatchHero } from './CatchBrand'
+import { CatchHero, CatchWordmark } from './CatchBrand'
 import { TraitCardFront, TraitCardBack, StalkChip } from './CatchCards'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { TRAIT_POOL, SCORE_TITLES, PLAYER_TYPES } from '../data/catchProfiles'
@@ -109,7 +109,10 @@ const Gap = ({ h = 120 }) => <div style={{ height: h }} />
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 // ─── How to play: a step-by-step carousel built from the game's own pieces ───
 const dl = { fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream, textDecoration: 'none', padding: '10px 16px', borderRadius: 6, border: '1px solid rgba(239,230,220,0.3)' }
-const BAND = '#211928'   // dark velvet: sets the instructions apart from the rest of the case study
+const BAND = '#211928'
+const tile = { background: C.card, border: hair, borderRadius: 12 }
+const label = { fontFamily: WS, fontWeight: 600, fontSize: 13, color: C.accent }
+const brandBtn = { fontFamily: WS, fontWeight: 700, fontSize: 14, letterSpacing: '0.12em', padding: '12px 30px', borderRadius: 6, textAlign: 'center' }   // dark velvet: sets the instructions apart from the rest of the case study
 
 function ProfileCardMini() {
   return (
@@ -229,7 +232,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
     <div className="catch-cs" style={{ position: 'fixed', inset: 0, zIndex: 50, overflowY: 'auto', background: C.bg, fontFamily: WS }}>
 
       {/* no lone word on the last line: balance headings, "pretty" wrapping for everything else */}
-      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } @media (max-width: 420px) { .cs-nav-links { gap: 16px !important } .cs-nav-links button { font-size: 13px !important } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
+      <style>{'@media (max-width: 420px) { .cs-wide-only { display: none } } @media (max-width: 760px) { .brand-grid > * { grid-column: 1 / -1 !important } } @media (max-width: 420px) { .cs-nav-links { gap: 16px !important } .cs-nav-links button { font-size: 13px !important } } .catch-cs h1, .catch-cs h2 { text-wrap: balance } .catch-cs p, .catch-cs div { text-wrap: pretty }'}</style>
       {/* ── Nav ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 56, background: 'rgba(19,16,17,0.94)', backdropFilter: 'blur(8px)', borderBottom: hair }}>
         <button onClick={onClose} style={{ fontFamily: WS, fontWeight: 500, fontSize: 14, color: muted, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>← Back<span className="cs-wide-only"> to work</span></button>
@@ -385,7 +388,7 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
           </div>
           <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
             {/* the how-to sheet that comes in the box, tucked behind the cards */}
-            <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet in the box" style={{ position: 'absolute', width: '62%', right: '-6%', top: '-14%', transform: 'rotate(8deg)', borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.5)', opacity: 0.9, zIndex: -1 }} />
+            <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet in the box" style={{ position: 'absolute', width: '58%', right: '1%', top: '-14%', transform: 'rotate(8deg)', borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.5)', opacity: 0.9, zIndex: -1 }} />
             <TraitCardBack />
             <TraitCardFront text={card(10).text} value={card(10).value} />
             <TraitCardFront text={card(40).text} value={card(40).value} />
@@ -431,25 +434,64 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
       <Section>
         <Head kicker="Look and feel">After hours.</Head>
         <P>It should feel like a night out: dark backgrounds, one hot pink and loud type. Pink means a date, mint means a good sign and gold means you earned something.</P>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 28 }}>
-          {[[C.bg, 'Midnight', 'Background'], [C.accent, 'Hot pink', 'Dates, actions'], [C.teal, 'Mint', 'Green flags'], [C.gold, 'Gold', 'Titles, stalk'], [C.cream, 'Cream', 'Text'], [C.velvet, 'Velvet', 'Accents']].map(([hex, name, role]) => (
-            <div key={name} style={{ border: hair, borderRadius: 8, overflow: 'hidden' }}>
-              <div style={{ height: 70, background: hex }} />
-              <div style={{ padding: '10px 12px' }}>
-                <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 14, color: C.cream }}>{name}</div>
-                <Small>{hex} · {role}</Small>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12, marginTop: 12 }}>
-          <div style={{ border: hair, borderRadius: 8, padding: '20px 22px' }}>
-            <div style={{ fontFamily: ANTON, fontSize: 46, color: C.cream, lineHeight: 1 }}>WHO DATED?</div>
-            <Small style={{ marginTop: 8 }}>Anton · headlines, names and scores</Small>
+        {/* Brand board: a designed layout instead of a row of swatches.
+            Desktop: 6-column grid (logo 4 + flags 2, palette strip, two type specimens, "in use").
+            Phones: every tile full width (see .brand-grid in the style tag). */}
+        <div className="brand-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 14, marginTop: 34 }}>
+          {/* logo */}
+          <div style={{ gridColumn: 'span 4', ...tile, minHeight: 340, padding: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundImage: 'radial-gradient(circle, rgba(239,230,220,0.07) 1px, transparent 1px)', backgroundSize: '12px 12px' }}>
+            <img src="/thecatch/brand/logo-full.svg" alt="The Catch logo" style={{ width: 'min(400px, 80%)' }} />
+            <Small style={{ marginTop: 18 }}>The logo. A fishing hook through the A, because every date is a catch.</Small>
           </div>
-          <div style={{ border: hair, borderRadius: 8, padding: '20px 22px' }}>
-            <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 24, color: C.cream, lineHeight: 1.2 }}>Every green flag is worth 1 more.</div>
-            <Small style={{ marginTop: 8 }}>Work Sans · buttons, rules and everything you read</Small>
+          {/* colour meaning, applied */}
+          <div style={{ gridColumn: 'span 2', ...tile, padding: '24px 22px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14 }}>
+            <div style={label}>Color means something</div>
+            {[['GREEN FLAG', '+1 to +3', C.teal, false], ['YELLOW FLAG', '0 to −1', C.gold, false], ['RED FLAG', '−2 to −3', C.accent, false], ['DEALBREAKER', '−10', C.accent, true]].map(([t, v, col, solid]) => (
+              <div key={t} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                <span style={{ fontFamily: WS, fontWeight: 700, fontSize: 11, letterSpacing: '0.14em', padding: '5px 9px', border: `1px solid ${col}`, color: solid ? C.bg : col, background: solid ? col : 'transparent' }}>{t}</span>
+                <span style={{ fontFamily: ANTON, fontSize: 26, color: col }}>{v}</span>
+              </div>
+            ))}
+          </div>
+          {/* palette at the proportions it's used */}
+          <div style={{ gridColumn: 'span 6', display: 'flex', flexWrap: 'wrap', borderRadius: 12, overflow: 'hidden', border: hair }}>
+            {[['Midnight', C.bg, 'Background', 5, C.cream], ['Velvet', C.velvet, 'Accents', 2, C.cream], ['Hot pink', C.accent, 'Dates and actions', 1.6, '#fff'], ['Cream', C.cream, 'Text', 1.3, C.bg], ['Mint', C.teal, 'Good signs', 1, C.bg], ['Gold', C.gold, 'Earned', 1, C.bg]].map(([name, hex, role, weight, ink]) => (
+              <div key={name} style={{ flex: `${weight} 1 110px`, minHeight: 150, background: hex, padding: '16px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: ink }}>
+                <div style={{ fontFamily: ANTON, fontSize: 20, letterSpacing: '0.04em' }}>{name.toUpperCase()}</div>
+                <div style={{ fontFamily: WS, fontSize: 12, opacity: 0.75 }}>{hex} · {tie(role)}</div>
+              </div>
+            ))}
+          </div>
+          {/* type specimens */}
+          <div style={{ gridColumn: 'span 3', ...tile, padding: 'clamp(20px, 3vw, 28px)', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 'clamp(14px, 2vw, 24px)', alignItems: 'center' }}>
+            <div style={{ fontFamily: ANTON, fontSize: 'clamp(80px, 11vw, 120px)', lineHeight: 0.9, color: C.accent }}>Aa</div>
+            <div>
+              <div style={label}>Anton</div>
+              <div style={{ fontFamily: ANTON, fontSize: 40, color: C.cream, lineHeight: 1, margin: '6px 0 8px' }}>WHO DATED?</div>
+              <Small>Headlines, names and scores. Loud on purpose.</Small>
+            </div>
+          </div>
+          <div style={{ gridColumn: 'span 3', ...tile, padding: 'clamp(20px, 3vw, 28px)', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 'clamp(14px, 2vw, 24px)', alignItems: 'center' }}>
+            <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 'clamp(72px, 10vw, 110px)', lineHeight: 0.9, color: C.cream }}>Aa</div>
+            <div>
+              <div style={label}>Work Sans</div>
+              <div style={{ fontFamily: WS, fontWeight: 600, fontSize: 20, color: C.cream, lineHeight: 1.3, margin: '6px 0 8px' }}>Every green flag is worth 1&nbsp;more.</div>
+              <Small>Buttons, rules and everything you read.</Small>
+            </div>
+          </div>
+          {/* the system in use */}
+          <div style={{ gridColumn: 'span 6', ...tile, padding: '30px 28px' }}>
+            <div style={label}>In use</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-around', gap: 28, marginTop: 18 }}>
+              <div style={{ width: 120, transform: 'rotate(-5deg)' }}><TraitCardBack /></div>
+              <div style={{ width: 120, transform: 'rotate(4deg)' }}><TraitCardFront text={card(65).text} value={card(65).value} /></div>
+              <StalkChip size={110} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <span style={{ ...brandBtn, color: '#fff', background: C.accent, border: `1px solid ${C.accent}` }}>DATE</span>
+                <span style={{ ...brandBtn, color: C.cream, background: 'transparent', border: '1px solid rgba(239,230,220,0.35)' }}>GHOST</span>
+              </div>
+              <CatchWordmark size={26} accent={C.accent} cream={C.cream} />
+            </div>
           </div>
         </div>
         <div style={{ fontFamily: ANTON, fontSize: 22, color: C.cream, margin: '44px 0 14px' }}>THE CAST</div>
