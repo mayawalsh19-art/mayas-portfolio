@@ -111,3 +111,9 @@ code {
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
   }
 }
+
+/* Portfolio layout rule (same numbers as The Catch case study):
+   every project page uses one content width, text on its own stops at 760px,
+   text beside an image fills its half of the row. */
+.cs-container { width: 100%; max-width: 1080px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; box-sizing: border-box; }
+.cs-solo { max-width: 760px; }

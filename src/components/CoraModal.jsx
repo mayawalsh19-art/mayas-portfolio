@@ -146,14 +146,14 @@ export default function CoraModal({ onClose }) {
       </div>
 
       {/* Body */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 flex flex-col gap-20">
+      <div className="cs-container py-16 flex flex-col gap-20">
 
         {/* Problem Statement */}
         <section className="rounded-2xl p-8 md:p-14" style={{ backgroundColor: PRIMARY }}>
           <h2 className="font-lexend font-black text-white text-2xl md:text-[36px] leading-none mb-6">
             Problem Statement
           </h2>
-          <p className="font-lexend text-white/90 text-base md:text-lg leading-relaxed">
+          <p className="font-lexend text-white/90 text-base md:text-lg leading-relaxed cs-solo">
             How can we help first time young mothers not just throughout pregnancy but with mental health postpartum.
           </p>
         </section>

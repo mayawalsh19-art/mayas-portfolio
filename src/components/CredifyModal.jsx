@@ -116,7 +116,7 @@ export default function CredifyModal({ onClose }) {
       </div>
 
       {/* Body */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 flex flex-col gap-20">
+      <div className="cs-container py-16 flex flex-col gap-20">
 
         {/* Secondary Research */}
         <section>
@@ -132,7 +132,7 @@ export default function CredifyModal({ onClose }) {
               </div>
             ))}
           </div>
-          <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.8)] leading-relaxed">
+          <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.8)] leading-relaxed cs-solo">
             Secondary research revealed a significant gap in financial literacy among young adults. Most apps prioritise data density over emotional engagement, leaving users feeling overwhelmed rather than empowered. Understanding this gap shaped Credify's core design philosophy: make credit simple, visual, and rewarding.
           </p>
         </section>
@@ -182,7 +182,7 @@ export default function CredifyModal({ onClose }) {
           <h2 className="font-lexend font-black text-white text-2xl md:text-[36px] leading-none mb-6">
             Problem Statement
           </h2>
-          <p className="font-lexend text-white/95 text-base md:text-lg leading-relaxed">
+          <p className="font-lexend text-white/95 text-base md:text-lg leading-relaxed cs-solo">
             Young professionals lack accessible, emotionally engaging tools to help them understand and manage their credit. Current fragmented, data-heavy credit apps create an experience that leaves users overwhelmed and uncertain about how their actions affect their scores. This complex topic is so expansive, inconsistent, and intrusive — badly shaping financial anxiety and instability.
           </p>
         </section>

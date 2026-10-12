@@ -30,14 +30,14 @@ export default function SelfPortraitModal({ onClose }) {
       </nav>
 
       {/* Title section */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-16">
+      <div className="cs-container py-12 md:py-16">
         <h1
           className="font-lexend font-black leading-none mb-4"
           style={{ fontSize: 'clamp(36px, 6vw, 72px)', color: GREEN }}
         >
           Self Portrait
         </h1>
-        <p className="font-lexend text-base text-[rgba(51,78,111,0.75)] leading-relaxed max-w-xl mb-6">
+        <p className="font-lexend text-base text-[rgba(51,78,111,0.75)] leading-relaxed cs-solo mb-6">
           A self portrait designed in the image and likeness of yours truly, using expressive iconography.
         </p>
         <div className="flex gap-2 flex-wrap">
@@ -59,7 +59,7 @@ export default function SelfPortraitModal({ onClose }) {
       </div>
 
       {/* Project details */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="cs-container py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
 
         {/* Left: project details */}
         <div>

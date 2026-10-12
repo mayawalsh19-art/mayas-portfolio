@@ -36,11 +36,11 @@ export default function WildFireModal({ onClose }) {
       </nav>
 
       {/* Title section */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-10 md:py-14">
+      <div className="cs-container py-10 md:py-14">
         <h1 className="font-lexend font-black text-[#111] leading-none mb-3" style={{ fontSize: 'clamp(36px, 6vw, 72px)' }}>
           Wild Fire
         </h1>
-        <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.7)] leading-relaxed max-w-2xl mb-5">
+        <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.7)] leading-relaxed cs-solo mb-5">
           An editorial design exploration examining the intersection of nature, destruction, and resilience through compelling photography and typography.
         </p>
         <div className="flex gap-2 flex-wrap">
@@ -65,7 +65,7 @@ export default function WildFireModal({ onClose }) {
       </div>
 
       {/* Project details */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="cs-container py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
 
         {/* Left */}
         <div>

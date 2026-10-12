@@ -64,8 +64,8 @@ export default function FanFormationModal({ onClose }) {
       </div>
 
       {/* Research poster */}
-      <div className="w-full bg-white py-10 md:py-14 px-4 md:px-10">
-        <div className="max-w-5xl mx-auto shadow-[0_4px_32px_rgba(0,0,0,0.12)] rounded-2xl overflow-hidden">
+      <div className="w-full bg-white py-10 md:py-14 px-6">
+        <div className="max-w-[1032px] mx-auto shadow-[0_4px_32px_rgba(0,0,0,0.12)] rounded-2xl overflow-hidden">
           <img
             src="/fanformation/poster1.png"
             alt="Fan Formation research, competitive analysis, and user testing"
@@ -76,8 +76,8 @@ export default function FanFormationModal({ onClose }) {
       </div>
 
       {/* User flow + design system poster */}
-      <div className="w-full bg-white pb-10 md:pb-14 px-4 md:px-10">
-        <div className="max-w-5xl mx-auto shadow-[0_4px_32px_rgba(0,0,0,0.12)] rounded-2xl overflow-hidden">
+      <div className="w-full bg-white pb-10 md:pb-14 px-6">
+        <div className="max-w-[1032px] mx-auto shadow-[0_4px_32px_rgba(0,0,0,0.12)] rounded-2xl overflow-hidden">
           <img
             src="/fanformation/poster2.png"
             alt="Fan Formation user flow and design system"
@@ -88,7 +88,7 @@ export default function FanFormationModal({ onClose }) {
       </div>
 
       {/* Video + Prototype */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-16 flex flex-col gap-16">
+      <div className="cs-container py-12 md:py-16 flex flex-col gap-16">
 
         {/* Marketing Video */}
         <section>
@@ -131,7 +131,7 @@ export default function FanFormationModal({ onClose }) {
 
       {/* Project details */}
       <div style={{ backgroundColor: '#f7f9fc' }}>
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="cs-container py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
 
           <div>
             <h2 className="font-lexend font-bold text-xs uppercase tracking-widest mb-6" style={{ color: NAVY }}>

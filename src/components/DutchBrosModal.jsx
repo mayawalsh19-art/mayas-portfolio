@@ -105,14 +105,14 @@ export default function DutchBrosModal({ onClose }) {
       </div>
 
       {/* Body */}
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 flex flex-col gap-20">
+      <div className="cs-container py-16 flex flex-col gap-20">
 
         {/* Key Problems */}
         <section>
           <h2 className="font-lexend font-black text-[#334e6f] text-2xl md:text-[36px] leading-none mb-2">
             Key Problems Identified
           </h2>
-          <p className="font-lexend text-sm text-[rgba(51,78,111,0.6)] mb-8 leading-relaxed">
+          <p className="font-lexend text-sm text-[rgba(51,78,111,0.6)] mb-8 leading-relaxed cs-solo">
             A heuristic evaluation of the existing Dutch Bros app surfaced the following usability issues.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -294,7 +294,7 @@ export default function DutchBrosModal({ onClose }) {
               </div>
             ))}
           </div>
-          <p className="font-lexend text-white/85 text-sm md:text-base leading-relaxed">
+          <p className="font-lexend text-white/85 text-sm md:text-base leading-relaxed cs-solo">
             This heuristic evaluation reinforced how small friction points compound into a frustrating experience.
             A missing reset button, static calorie counts, and unclear feedback each seem minor in isolation — together
             they erode user trust. The redesign focused on three principles: give users the feedback they need, the

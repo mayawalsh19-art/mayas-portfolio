@@ -22,9 +22,9 @@ function LazyVideo({ src, poster, label }) {
   )
 }
 
-function Section({ kicker, title, children, wide = false }) {
+function Section({ kicker, title, children }) {
   return (
-    <section className={`${wide ? 'max-w-5xl' : 'max-w-3xl'} mx-auto px-6 md:px-12 py-12 md:py-16`}>
+    <section className="cs-container py-12 md:py-16">
       {kicker && <p className="font-lexend font-semibold text-sm mb-3" style={{ color: KU }}>{kicker}</p>}
       {title && <h2 className="font-lexend font-black text-[28px] md:text-[40px] leading-[1.1] mb-6" style={{ color: INK }}>{title}</h2>}
       {children}
@@ -32,7 +32,7 @@ function Section({ kicker, title, children, wide = false }) {
   )
 }
 
-const P = ({ children }) => <p className="font-lexend text-base md:text-lg leading-relaxed mb-4" style={{ color: 'rgba(51,78,111,0.85)' }}>{children}</p>
+const P = ({ children }) => <p className="font-lexend text-base md:text-lg leading-relaxed mb-4 cs-solo" style={{ color: 'rgba(51,78,111,0.85)' }}>{children}</p>
 
 const STEPS = [
   ['/weirdmirror/stills/1-mirror.png', 'You, in sequins', 'Walk up and the screen is a mirror made of 20,000 tiny sequins. Move fast and your pixels lag and break apart.'],
@@ -105,7 +105,7 @@ export default function WeirdMirrorModal({ onClose }) {
       </div>
 
       {/* Documentation video */}
-      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-12 md:pt-16">
+      <div className="cs-container pt-12 md:pt-16">
         {/* Final demo: vertical phone video with sound; only downloads when played */}
         <div className="flex flex-col items-center">
           <video src="/weirdmirror/video/weird-mirror-demo.mp4" poster="/weirdmirror/video/weird-mirror-demo-poster.jpg"
@@ -131,7 +131,7 @@ export default function WeirdMirrorModal({ onClose }) {
       </Section>
 
       {/* How it works */}
-      <Section kicker="How it works" title="Four moments, no instructions." wide>
+      <Section kicker="How it works" title="Four moments, no instructions.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {STEPS.map(([src, t, d], i) => (
             <div key={t}>
@@ -148,7 +148,7 @@ export default function WeirdMirrorModal({ onClose }) {
 
       {/* Under the hood */}
       <div style={{ background: '#f7f9fc' }}>
-        <Section kicker="Under the hood" title="How it’s built." wide>
+        <Section kicker="Under the hood" title="How it’s built.">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
             {HOOD.map(([t, d]) => (
               <div key={t}>
@@ -159,7 +159,7 @@ export default function WeirdMirrorModal({ onClose }) {
           </div>
           <div className="mt-10">
             <img src="/weirdmirror/td-network.png" alt="The Weird Mirror TouchDesigner network" className="w-full rounded-2xl block shadow-[0_4px_24px_rgba(0,0,0,0.12)]" />
-            <p className="font-lexend text-sm leading-relaxed mt-3" style={{ color: 'rgba(51,78,111,0.65)' }}>
+            <p className="font-lexend text-sm leading-relaxed mt-3 cs-solo" style={{ color: 'rgba(51,78,111,0.65)' }}>
               The TouchDesigner network. I built it together with Claude, an AI assistant connected live to TouchDesigner, which created and wired nodes from my descriptions while I tested every change on camera.
             </p>
           </div>
@@ -174,7 +174,7 @@ export default function WeirdMirrorModal({ onClose }) {
               <span className="font-lexend font-black text-2xl" style={{ color: KU }}>{i + 1}</span>
               <div>
                 <h3 className="font-lexend font-bold text-lg" style={{ color: INK }}>{t}</h3>
-                <p className="font-lexend text-base leading-relaxed mt-1" style={{ color: 'rgba(51,78,111,0.75)' }}>{d}</p>
+                <p className="font-lexend text-base leading-relaxed mt-1 cs-solo" style={{ color: 'rgba(51,78,111,0.75)' }}>{d}</p>
               </div>
             </div>
           ))}
@@ -182,7 +182,7 @@ export default function WeirdMirrorModal({ onClose }) {
       </Section>
 
       {/* Details */}
-      <div className="max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-2 md:grid-cols-3 gap-8">
+      <div className="cs-container py-12 md:py-16 grid grid-cols-2 md:grid-cols-3 gap-8">
         {[['Course', 'IXD 415'], ['Type', 'Interactive installation'], ['Year', '2026'], ['Tools', 'TouchDesigner, Python, MediaPipe, OpenCV, GLSL']].map(([k, v]) => (
           <div key={k}>
             <p className="font-lexend text-sm" style={{ color: 'rgba(51,78,111,0.55)' }}>{k}</p>

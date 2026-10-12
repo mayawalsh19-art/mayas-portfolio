@@ -29,11 +29,11 @@ export default function HellgrimModal({ onClose }) {
 
       {/* Title section */}
       <div className="bg-white w-full">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-10 md:py-14">
+        <div className="cs-container py-10 md:py-14">
           <h1 className="font-lexend font-black leading-none mb-3" style={{ fontSize: 'clamp(36px, 6vw, 72px)', color: ORANGE }}>
             Hellgrim
           </h1>
-          <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.7)] leading-relaxed max-w-2xl mb-5">
+          <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.7)] leading-relaxed cs-solo mb-5">
             A modular typeface built on a strict geometric rule system — every letterform constructed from the same set of triangular and rectangular components.
           </p>
           <div className="flex gap-2 flex-wrap">
@@ -58,7 +58,7 @@ export default function HellgrimModal({ onClose }) {
 
       {/* Project details */}
       <div className="bg-white">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="cs-container py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
 
           {/* Left */}
           <div>
