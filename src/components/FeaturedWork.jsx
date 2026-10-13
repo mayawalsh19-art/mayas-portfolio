@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import CredifyModal from './CredifyModal'
 import CoraModal from './CoraModal'
 import DutchBrosModal from './DutchBrosModal'
@@ -6,8 +6,23 @@ import SelfPortraitModal from './SelfPortraitModal'
 import WildFireModal from './WildFireModal'
 import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
-import TheCatchModal, { CATCH_PATH, isCatchPath } from './TheCatchModal'
+import TheCatchModal from './TheCatchModal'
 import WeirdMirrorModal from './WeirdMirrorModal'
+
+// Every project has its own shareable link (bymayawalsh.design/<slug>).
+// vercel.json rewrites each path to index.html. The Catch also uses /the-catch/play.
+const PROJECTS = {
+  'credify': CredifyModal,
+  'cora': CoraModal,
+  'dutch-bros': DutchBrosModal,
+  'self-portrait': SelfPortraitModal,
+  'wild-fire': WildFireModal,
+  'hellgrim': HellgrimModal,
+  'fan-formation': FanFormationModal,
+  'the-catch': TheCatchModal,
+  'weird-mirror': WeirdMirrorModal,
+}
+const slugFromPath = () => window.location.pathname.split('/')[1] || ''
 
 
 function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick, children }) {
@@ -173,36 +188,21 @@ function TheCatchCard({ onClick }) {
 }
 
 export default function FeaturedWork() {
-  const [showCredify, setShowCredify] = useState(false)
-  const [showCora, setShowCora] = useState(false)
-  const [showDutchBros, setShowDutchBros] = useState(false)
-  const [showSelfPortrait, setShowSelfPortrait] = useState(false)
-  const [showWildFire, setShowWildFire] = useState(false)
-  const [showHellgrim, setShowHellgrim] = useState(false)
-  const [showFanFormation, setShowFanFormation] = useState(false)
-  const [showTheCatch, setShowTheCatch] = useState(isCatchPath)
-  const [showWeirdMirror, setShowWeirdMirror] = useState(false)
+  const [slug, setSlug] = useState(slugFromPath)
 
-  // The Catch has its own URL so it can be shared; keep the modal in sync with back/forward
+  // Keep the open project in sync with browser back/forward
   useEffect(() => {
-    const sync = () => setShowTheCatch(isCatchPath())
+    const sync = () => setSlug(slugFromPath())
     window.addEventListener('popstate', sync)
     return () => window.removeEventListener('popstate', sync)
   }, [])
-  const openTheCatch = () => { window.history.pushState(null, '', CATCH_PATH); setShowTheCatch(true) }
-  const closeTheCatch = () => { window.history.pushState(null, '', '/'); setShowTheCatch(false) }
+  const open = next => () => { window.history.pushState(null, '', `/${next}`); setSlug(next) }
+  const close = useCallback(() => { window.history.pushState(null, '', '/'); setSlug('') }, [])
+  const Project = PROJECTS[slug]
 
   return (
     <>
-    {showCredify && <CredifyModal onClose={() => setShowCredify(false)} />}
-    {showCora && <CoraModal onClose={() => setShowCora(false)} />}
-    {showDutchBros && <DutchBrosModal onClose={() => setShowDutchBros(false)} />}
-    {showSelfPortrait && <SelfPortraitModal onClose={() => setShowSelfPortrait(false)} />}
-    {showWildFire && <WildFireModal onClose={() => setShowWildFire(false)} />}
-    {showHellgrim && <HellgrimModal onClose={() => setShowHellgrim(false)} />}
-    {showFanFormation && <FanFormationModal onClose={() => setShowFanFormation(false)} />}
-    {showTheCatch && <TheCatchModal onClose={closeTheCatch} />}
-    {showWeirdMirror && <WeirdMirrorModal onClose={() => setShowWeirdMirror(false)} />}
+    {Project && <Project onClose={close} />}
     <section id="work" className="bg-[#f2e9da] w-full py-12 md:py-24 px-6 md:px-[74.5px]">
       <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
         Featured Work
@@ -212,14 +212,14 @@ export default function FeaturedWork() {
 
         {/* Credify */}
         <Card title="Credify" bg="bg-[#ff6900]" link={false}
-          onClick={() => setShowCredify(true)}
+          onClick={open('credify')}
           desc="A credit app that helps young professionals build credit and reach their personal financial goals.">
           <span className="font-lexend font-black text-white text-[32px] md:text-[48px] leading-none">Credify</span>
         </Card>
 
         {/* Cora */}
         <Card title="Cora" bg="bg-[#fff6e8]" link={false}
-          onClick={() => setShowCora(true)}
+          onClick={open('cora')}
           desc="A health app, revolving around a happy heart that helps new and pregnant moms connect with one another.">
           <span
             className="text-[#d85050] leading-none select-none"
@@ -231,7 +231,7 @@ export default function FeaturedWork() {
 
         {/* Dutch Bros */}
         <Card title="Dutch Bros App Redesign" bg="bg-white" link={false}
-          onClick={() => setShowDutchBros(true)}
+          onClick={open('dutch-bros')}
           desc="Redesigned app to make it more user-friendly for loyal customers.">
           <span className="font-black text-center leading-tight" style={{ fontFamily: "'Futura', 'Century Gothic', sans-serif", color: '#00629c', fontSize: 'clamp(28px, 4vw, 52px)' }}>
             Dutch Bros<br />App Redesign
@@ -240,7 +240,7 @@ export default function FeaturedWork() {
 
         {/* Self Portrait */}
         <Card title="Self Portrait" bg="bg-[#fad1e3]" link={false}
-          onClick={() => setShowSelfPortrait(true)}
+          onClick={open('self-portrait')}
           desc="A self portrait icon showing vectorized skills and personality.">
           <div className="self-stretch w-full overflow-hidden">
             <img src="/selfportrait/icon_single.png" alt="Self Portrait" className="w-full h-full object-cover" />
@@ -249,7 +249,7 @@ export default function FeaturedWork() {
 
         {/* Wild Fire */}
         <Card title="Wild Fire" bg="bg-white" link={false}
-          onClick={() => setShowWildFire(true)}
+          onClick={open('wild-fire')}
           desc="Wild Fire explores editorial and publication design through the translation of a long-form NYT Magazine article.">
           <div className="flex flex-col items-center leading-none select-none" style={{ gap: '0.05em' }}>
             <span style={{ fontFamily: "'Bely Display', serif", fontSize: 'clamp(52px, 9vw, 108px)', color: '#111', lineHeight: 1 }}>WILD</span>
@@ -259,7 +259,7 @@ export default function FeaturedWork() {
 
         {/* Hellgrim */}
         <Card title="Hellgrim" bg="bg-black" link={false}
-          onClick={() => setShowHellgrim(true)}
+          onClick={open('hellgrim')}
           desc="Hellgrim explores modular typography through the design of a rule-based typeface.">
           <span className="font-lexend font-black text-white leading-none select-none" style={{ fontSize: 'clamp(36px, 6vw, 80px)' }}>
             hellgrim
@@ -268,7 +268,7 @@ export default function FeaturedWork() {
 
         {/* Fan Formation — full width on desktop */}
         <Card title="Fan Formation" bg="bg-white" link={false}
-          onClick={() => setShowFanFormation(true)}
+          onClick={open('fan-formation')}
           desc="Fan Formation is a wearable system that synchronizes crowd energy into a coordinated and inclusive stadium experience.">
           <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 'clamp(32px, 6vw, 72px)', color: '#334e6f', letterSpacing: '-0.02em' }}>
             Fan Formation
@@ -276,11 +276,11 @@ export default function FeaturedWork() {
         </Card>
 
         {/* The Catch */}
-        <TheCatchCard onClick={openTheCatch} />
+        <TheCatchCard onClick={open('the-catch')} />
 
         {/* Weird Mirror */}
         <Card title="Weird Mirror" bg="bg-black" link={false}
-          onClick={() => setShowWeirdMirror(true)}
+          onClick={open('weird-mirror')}
           desc="An interactive installation: a mirror made of sequins that turns you into the Jayhawk when you swipe your hand across it.">
           {/* Allen Fieldhouse fills the card; the whole Jayhawk always fits on top */}
           <div className="self-stretch w-full relative overflow-hidden">

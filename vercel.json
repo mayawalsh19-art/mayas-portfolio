@@ -1,6 +1,44 @@
 {
   "rewrites": [
-    { "source": "/the-catch", "destination": "/index.html" },
-    { "source": "/the-catch/play", "destination": "/index.html" }
+    {
+      "source": "/credify",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cora",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/dutch-bros",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/self-portrait",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/wild-fire",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/hellgrim",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fan-formation",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/the-catch",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/the-catch/play",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/weird-mirror",
+      "destination": "/index.html"
+    }
   ]
 }

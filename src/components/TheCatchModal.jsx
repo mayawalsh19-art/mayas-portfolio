@@ -4,10 +4,9 @@ import TheCatchCaseStudy from './TheCatchCaseStudy'
 
 // Shareable links: /the-catch opens the case study, /the-catch/play opens the scorekeeper.
 // vercel.json rewrites both paths to index.html.
-export const CATCH_PATH = '/the-catch'
-export const CATCH_PLAY_PATH = '/the-catch/play'
+const CATCH_PATH = '/the-catch'
+const CATCH_PLAY_PATH = '/the-catch/play'
 const currentPath = () => window.location.pathname.replace(/\/+$/, '')
-export const isCatchPath = () => currentPath().startsWith(CATCH_PATH)
 const viewFromPath = () => (currentPath() === CATCH_PLAY_PATH ? 'game' : 'case_study')
 
 export default function TheCatchModal({ onClose }) {
