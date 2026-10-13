@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/the-catch", "destination": "/index.html" },
+    { "source": "/the-catch/play", "destination": "/index.html" }
+  ]
+}

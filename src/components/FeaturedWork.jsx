@@ -6,7 +6,7 @@ import SelfPortraitModal from './SelfPortraitModal'
 import WildFireModal from './WildFireModal'
 import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
-import TheCatchModal from './TheCatchModal'
+import TheCatchModal, { CATCH_PATH, isCatchPath } from './TheCatchModal'
 import WeirdMirrorModal from './WeirdMirrorModal'
 
 
@@ -180,8 +180,17 @@ export default function FeaturedWork() {
   const [showWildFire, setShowWildFire] = useState(false)
   const [showHellgrim, setShowHellgrim] = useState(false)
   const [showFanFormation, setShowFanFormation] = useState(false)
-  const [showTheCatch, setShowTheCatch] = useState(false)
+  const [showTheCatch, setShowTheCatch] = useState(isCatchPath)
   const [showWeirdMirror, setShowWeirdMirror] = useState(false)
+
+  // The Catch has its own URL so it can be shared; keep the modal in sync with back/forward
+  useEffect(() => {
+    const sync = () => setShowTheCatch(isCatchPath())
+    window.addEventListener('popstate', sync)
+    return () => window.removeEventListener('popstate', sync)
+  }, [])
+  const openTheCatch = () => { window.history.pushState(null, '', CATCH_PATH); setShowTheCatch(true) }
+  const closeTheCatch = () => { window.history.pushState(null, '', '/'); setShowTheCatch(false) }
 
   return (
     <>
@@ -192,7 +201,7 @@ export default function FeaturedWork() {
     {showWildFire && <WildFireModal onClose={() => setShowWildFire(false)} />}
     {showHellgrim && <HellgrimModal onClose={() => setShowHellgrim(false)} />}
     {showFanFormation && <FanFormationModal onClose={() => setShowFanFormation(false)} />}
-    {showTheCatch && <TheCatchModal onClose={() => setShowTheCatch(false)} />}
+    {showTheCatch && <TheCatchModal onClose={closeTheCatch} />}
     {showWeirdMirror && <WeirdMirrorModal onClose={() => setShowWeirdMirror(false)} />}
     <section id="work" className="bg-[#f2e9da] w-full py-12 md:py-24 px-6 md:px-[74.5px]">
       <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
@@ -267,7 +276,7 @@ export default function FeaturedWork() {
         </Card>
 
         {/* The Catch */}
-        <TheCatchCard onClick={() => setShowTheCatch(true)} />
+        <TheCatchCard onClick={openTheCatch} />
 
         {/* Weird Mirror */}
         <Card title="Weird Mirror" bg="bg-black" link={false}
