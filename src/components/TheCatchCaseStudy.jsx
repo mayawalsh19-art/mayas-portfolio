@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CatchHero, CatchWordmark } from './CatchBrand'
 import { TraitCardFront, TraitCardBack, StalkChip } from './CatchCards'
+import CatchTable from './CatchTable'
 import { Doll, DOLL_BG } from './DollCharacters'
 import { TRAIT_POOL, SCORE_TITLES, PLAYER_TYPES } from '../data/catchProfiles'
 
@@ -371,24 +372,11 @@ export default function TheCatchCaseStudy({ onClose, onPlay }) {
 
       {/* ── The deck ── */}
       <Section>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center' }}>
-          <div>
-            <Head kicker="The deck">The cards hold the secrets.</Head>
-            <P>76 cards: 68 trait cards (green, yellow and red flags, plus 4 dealbreakers worth −10), 6 blanks to write your own and 2 rules cards. Plus 30 stalk chips and a one-page how-to sheet that lives in the box. Print it at home and play.</P>
-            <Small style={{ marginTop: 12 }}>Poker-size cards, 2.5 × 3.5 in.</Small>
-          </div>
-          <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
-            {/* the how-to sheet that comes in the box, tucked behind the cards */}
-            <img src="/thecatch/screens/howto.jpg" alt="The one-page how-to sheet in the box" style={{ position: 'absolute', width: '58%', right: '1%', top: '-14%', transform: 'rotate(8deg)', borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.5)', opacity: 0.9, zIndex: -1 }} />
-            <TraitCardBack />
-            <TraitCardFront text={card(10).text} value={card(10).value} />
-            <TraitCardFront text={card(40).text} value={card(40).value} />
-            <TraitCardFront text={card(48).text} value={card(48).value} />
-            <TraitCardFront text={card(65).text} value={card(65).value} />
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><StalkChip size={92} /></div>
-          </div>
-        </div>
+        <Head kicker="The deck">The cards hold the secrets.</Head>
+        <P>76 cards: 68 trait cards (green, yellow and red flags, plus 4 dealbreakers worth −10), 6 blanks to write your own and 2 rules cards. Plus 30 stalk chips and a one-page how-to sheet that lives in the box. Print it at home and play.</P>
+        <Small style={{ marginTop: 12 }}>Poker-size cards, 2.5 × 3.5 in.</Small>
       </Section>
+      <div style={{ marginTop: 40 }}><CatchTable /></div>
 
       <Gap />
 
