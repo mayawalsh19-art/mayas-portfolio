@@ -8,6 +8,7 @@ import HellgrimModal from './HellgrimModal'
 import FanFormationModal from './FanFormationModal'
 import TheCatchModal from './TheCatchModal'
 import WeirdMirrorModal from './WeirdMirrorModal'
+import RefDropModal from './RefDropModal'
 
 // Every project has its own shareable link (bymayawalsh.design/<slug>).
 // vercel.json rewrites each path to index.html. The Catch also uses /the-catch/play.
@@ -21,6 +22,7 @@ const PROJECTS = {
   'fan-formation': FanFormationModal,
   'the-catch': TheCatchModal,
   'weird-mirror': WeirdMirrorModal,
+  'ref-drop': RefDropModal,
 }
 const slugFromPath = () => window.location.pathname.split('/')[1] || ''
 
@@ -287,6 +289,13 @@ export default function FeaturedWork() {
             <img src="/weirdmirror/card-fieldhouse.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated' }} />
             <img src="/weirdmirror/card-jayhawk.png" alt="Weird Mirror: a pixelated Jayhawk in Allen Fieldhouse" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-auto" style={{ height: '88%', imageRendering: 'pixelated' }} />
           </div>
+        </Card>
+
+        {/* Ref Drop */}
+        <Card title="Ref Drop" bg="bg-[#EEF1F3]" link={false}
+          onClick={open('ref-drop')}
+          desc="A Chrome extension that saves any image with its source, then turns your collection into a moodboard and a credits list.">
+          <img src="/refdrop/lockup.svg" alt="Ref Drop" className="h-auto" style={{ width: 'min(62%, 340px)' }} />
         </Card>
 
       </div>

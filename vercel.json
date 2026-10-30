@@ -39,6 +39,10 @@
     {
       "source": "/weird-mirror",
       "destination": "/index.html"
+    },
+    {
+      "source": "/ref-drop",
+      "destination": "/index.html"
     }
   ]
 }
