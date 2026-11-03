@@ -46,7 +46,7 @@ const Kicker = ({ children, light }) => (
 )
 
 const H2 = ({ children, light }) => (
-  <h2 className="text-[30px] md:text-[46px] leading-[1.06] mb-5" style={{ fontFamily: MONO, fontWeight: 700, color: light ? ON_FOLDER : INK, letterSpacing: '-0.01em', textWrap: 'balance' }}>
+  <h2 className="text-[28px] md:text-[40px] leading-[1.1] mb-6" style={{ fontFamily: MONO, fontWeight: 700, color: light ? ON_FOLDER : INK, letterSpacing: '-0.01em', textWrap: 'balance' }}>
     {children}
   </h2>
 )
@@ -71,7 +71,7 @@ function Drop({ color = WATER, size = 12 }) {
 function Section({ id, bg = PAPER, children, className = '' }) {
   return (
     <div id={id} style={{ background: bg }}>
-      <section className={`cs-container py-14 md:py-20 ${className}`}>{children}</section>
+      <section className={`cs-container py-12 md:py-16 ${className}`}>{children}</section>
     </div>
   )
 }
@@ -97,24 +97,25 @@ function OutlineLink({ href, onClick, children, light }) {
   )
 }
 
-function Nav({ onBack, backLabel, right }) {
+// Same sticky nav as every other case study
+function Nav({ onBack, backLabel }) {
   return (
-    <nav className="sticky top-0 z-10 backdrop-blur-sm flex items-center justify-between px-6 md:px-16 h-[60px]"
-      style={{ background: 'rgba(238,241,243,0.88)', borderBottom: `1px solid ${LINE}` }}>
-      <button onClick={onBack} className="text-sm flex items-center gap-2 hover:opacity-60 transition-opacity" style={{ fontFamily: UI, color: INK }}>
+    <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm flex items-center justify-between px-6 md:px-16 h-[60px] shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+      <button onClick={onBack} className="font-lexend text-sm text-[#334e6f] flex items-center gap-2 hover:opacity-60 transition-opacity">
         ← {backLabel}
       </button>
-      {right}
+      <span className="font-lexend font-bold text-[#334e6f] text-sm">Maya Walsh</span>
     </nav>
   )
 }
 
 /* ---------- Case study content ---------- */
 
-const META = [
+const DETAILS = [
+  ['Project', 'Project 2: The 1% Fix'],
+  ['Type', 'Chrome extension and brand'],
+  ['Year', '2026'],
   ['Role', 'Design, brand and code'],
-  ['Type', 'Chrome extension'],
-  ['Timeline', 'Oct – Nov 2026'],
   ['Built with', 'JavaScript (Manifest V3), IndexedDB, Figma, Claude Code'],
 ]
 
@@ -303,8 +304,7 @@ function InstallGuide({ onBack, onClose }) {
   }
   return (
     <>
-      <Nav onBack={onBack} backLabel="Ref Drop case study"
-        right={<button onClick={onClose} className="text-sm hover:opacity-60 transition-opacity" style={{ fontFamily: UI, color: MUTED }}>Maya Walsh</button>} />
+      <Nav onBack={onBack} backLabel="Ref Drop case study" />
 
       <Section>
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
@@ -396,38 +396,36 @@ function CaseStudy({ onClose, onInstall }) {
   const toInstall = e => { e.preventDefault(); onInstall() }
   return (
     <>
-      <Nav onBack={onClose} backLabel="Back to Work"
-        right={<a href={INSTALL_PATH} onClick={toInstall} className="text-sm font-semibold hover:opacity-60 transition-opacity" style={{ fontFamily: UI, color: WATER }}>Install guide</a>} />
+      <Nav onBack={onClose} backLabel="Back to Work" />
 
       {/* Hero */}
       <div style={{ background: PAPER }}>
-        <div className="cs-container pt-14 md:pt-20 pb-10 flex flex-col items-center text-center">
-          <img src="/refdrop/lockup.svg" alt="Ref Drop" className="w-[240px] md:w-[340px] h-auto" />
-          <h1 className="mt-10 mb-2 text-[28px] md:text-[44px] leading-[1.02]" style={{ fontFamily: MONO, fontWeight: 700, color: INK, letterSpacing: '-0.015em', textWrap: 'balance' }}>
+        <div className="flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center">
+          <p className="text-sm mb-5" style={{ fontFamily: MONO, fontWeight: 700, color: MUTED }}>Project 2: The 1% Fix</p>
+          <img src="/refdrop/lockup.svg" alt="Ref Drop" className="w-[220px] md:w-[320px] h-auto mb-8" />
+          <h1 className="text-[28px] md:text-[44px] leading-[1.05] mb-4" style={{ fontFamily: MONO, fontWeight: 700, color: INK, letterSpacing: '-0.015em', textWrap: 'balance' }}>
             Save the image.<br />Keep the source.
           </h1>
-          <p className="mt-5 text-[15px] md:text-base leading-relaxed max-w-md" style={{ fontFamily: UI, color: MUTED }}>
+          <p className="text-[15px] md:text-base leading-relaxed max-w-lg mb-8" style={{ fontFamily: UI, color: MUTED }}>
             {tie('A Chrome extension that saves images with the page they came from, then makes the moodboard and the credits for you.')}
           </p>
+          <div className="flex gap-2 flex-wrap justify-center">
+            {['Chrome Extension', 'Branding', 'UX / UI'].map(tag => (
+              <span key={tag} className="text-xs font-semibold px-3 py-1 rounded-full" style={{ fontFamily: UI, background: SURFACE, color: FOLDER, border: `1px solid ${LINE}` }}>{tag}</span>
+            ))}
+          </div>
           <div className="flex gap-3 flex-wrap justify-center mt-8">
             <DownloadButton />
             <OutlineLink href={INSTALL_PATH} onClick={toInstall}>How to install</OutlineLink>
           </div>
           <p className="text-sm mt-5" style={{ fontFamily: MONO, color: MUTED }}>Free · Version {VERSION} · Google Chrome</p>
         </div>
-        <div className="cs-container pb-12 md:pb-16">
-          <img src="/refdrop/hero-browser.jpg" alt="Chrome with Ref Drop open in the side panel while collecting images from a page" className="w-full block" />
-        </div>
-        <div className="cs-container pb-14 md:pb-20">
-          <dl className="grid grid-cols-2 md:grid-cols-4 gap-px rounded-2xl overflow-hidden" style={{ background: LINE, border: `1px solid ${LINE}` }}>
-            {META.map(([k, v]) => (
-              <div key={k} className="p-5 md:p-6" style={{ background: SURFACE }}>
-                <dt className="text-[11px] font-semibold uppercase" style={{ fontFamily: UI, color: MUTED, letterSpacing: '0.08em' }}>{k}</dt>
-                <dd className="font-semibold text-[15px] mt-1.5 leading-snug" style={{ fontFamily: UI, color: INK }}>{v}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+      </div>
+
+      {/* Hero image, right under the hero like the other case studies */}
+      <div className="cs-container pt-12 md:pt-16">
+        <img src="/refdrop/hero-browser.jpg" alt="Chrome with Ref Drop open in the side panel while collecting images from a page" className="w-full block" />
+        <p className="text-sm mt-4 text-center" style={{ fontFamily: UI, color: MUTED }}>Collect mode: click an image and it lands on your board, source included.</p>
       </div>
 
       {/* Problem */}
@@ -498,7 +496,7 @@ function CaseStudy({ onClose, onInstall }) {
       <Section bg={SURFACE}>
         <Kicker>How it works</Kicker>
         <H2>Collect, keep, share.</H2>
-        <div className="flex flex-col gap-20 md:gap-28 mt-12">
+        <div className="flex flex-col gap-16 md:gap-20 mt-8">
           {FEATURES.map((f, i) => (
             <div key={f.t} className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
               <div className="md:col-span-4">
@@ -643,8 +641,22 @@ function CaseStudy({ onClose, onInstall }) {
         <p className="text-sm mt-6" style={{ fontFamily: MONO, color: CHROME }}>Version {VERSION} · {ZIP_SIZE}</p>
       </Section>
 
-      <div className="text-center py-12" style={{ background: PAPER }}>
-        <button onClick={onClose} className="text-sm hover:opacity-60 transition-opacity" style={{ fontFamily: UI, color: INK }}>← Back to Work</button>
+      {/* Details */}
+      <div className="cs-container py-12 md:py-16 grid grid-cols-2 md:grid-cols-3 gap-8">
+        {DETAILS.map(([k, v]) => (
+          <div key={k}>
+            <p className="text-sm" style={{ fontFamily: UI, color: MUTED }}>{k}</p>
+            <p className="font-semibold text-base mt-1" style={{ fontFamily: UI, color: INK }}>{v}</p>
+          </div>
+        ))}
+        <div>
+          <p className="text-sm" style={{ fontFamily: UI, color: MUTED }}>Install guide</p>
+          <a href={INSTALL_PATH} onClick={toInstall} className="font-semibold text-base mt-1 inline-block underline underline-offset-4 hover:opacity-70" style={{ fontFamily: UI, color: WATER }}>bymayawalsh.design/ref-drop/install</a>
+        </div>
+      </div>
+
+      <div className="text-center pb-16">
+        <button onClick={onClose} className="font-lexend text-sm text-[#334e6f] hover:opacity-60 transition-opacity">← Back to Work</button>
       </div>
     </>
   )
@@ -673,7 +685,7 @@ export default function RefDropModal({ onClose }) {
   }, [onClose])
 
   return (
-    <div id="refdrop-scroll" className="fixed inset-0 z-50 overflow-y-auto" style={{ background: PAPER }}>
+    <div id="refdrop-scroll" className="refdrop-cs fixed inset-0 z-50 overflow-y-auto" style={{ background: SURFACE }}>
       {view === 'install'
         ? <InstallGuide onBack={() => goTo('case')} onClose={onClose} />
         : <CaseStudy onClose={onClose} onInstall={() => goTo('install')} />}

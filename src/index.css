@@ -88,6 +88,12 @@ p {
   margin: 0;
 }
 
+/* Ref Drop case study: let Tailwind margin classes on <p> apply (the rule above would
+   otherwise override them). revert-layer falls back to Tailwind's own reset when a <p> has none. */
+.refdrop-cs p {
+  margin: revert-layer;
+}
+
 code,
 .counter {
   font-family: var(--mono);
