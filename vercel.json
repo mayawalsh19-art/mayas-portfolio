@@ -43,6 +43,10 @@
     {
       "source": "/ref-drop",
       "destination": "/index.html"
+    },
+    {
+      "source": "/ref-drop/install",
+      "destination": "/index.html"
     }
   ]
 }
