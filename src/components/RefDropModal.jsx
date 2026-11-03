@@ -651,7 +651,7 @@ function CaseStudy({ onClose, onInstall }) {
         ))}
         <div>
           <p className="text-sm" style={{ fontFamily: UI, color: MUTED }}>Install guide</p>
-          <a href={INSTALL_PATH} onClick={toInstall} className="font-semibold text-base mt-1 inline-block underline underline-offset-4 hover:opacity-70" style={{ fontFamily: UI, color: WATER }}>bymayawalsh.design/ref-drop/install</a>
+          <a href={INSTALL_PATH} onClick={toInstall} className="font-semibold text-base mt-1 inline-block break-words underline underline-offset-4 hover:opacity-70" style={{ fontFamily: UI, color: WATER }}>Read the guide</a>
         </div>
       </div>
 
