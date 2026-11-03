@@ -322,7 +322,7 @@ function InstallGuide({ onBack, onClose }) {
             {copied ? 'Link copied' : 'Copy link to this guide'}
           </button>
         </div>
-        <p className="text-sm mt-4" style={{ fontFamily: MONO, color: MUTED }}>Version {VERSION} · {ZIP_SIZE} · Google Chrome on Mac or Windows</p>
+        <p className="text-sm mt-6" style={{ fontFamily: MONO, color: MUTED }}>Version {VERSION} · {ZIP_SIZE} · Google Chrome on Mac or Windows</p>
         <p className="md:hidden text-sm mt-4 rounded-lg px-4 py-3" style={{ fontFamily: UI, background: ICE, color: INK }}>Ref Drop runs in Chrome on a computer. Open this page on your laptop to install it.</p>
       </Section>
 
@@ -640,7 +640,7 @@ function CaseStudy({ onClose, onInstall }) {
           <DownloadButton dark />
           <OutlineLink href={INSTALL_PATH} onClick={toInstall} light>Step-by-step install guide</OutlineLink>
         </div>
-        <p className="text-sm mt-4" style={{ fontFamily: MONO, color: CHROME }}>Version {VERSION} · {ZIP_SIZE}</p>
+        <p className="text-sm mt-6" style={{ fontFamily: MONO, color: CHROME }}>Version {VERSION} · {ZIP_SIZE}</p>
       </Section>
 
       <div className="text-center py-12" style={{ background: PAPER }}>
