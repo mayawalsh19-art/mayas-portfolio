@@ -403,7 +403,7 @@ function CaseStudy({ onClose, onInstall }) {
       <div style={{ background: PAPER }}>
         <div className="cs-container pt-14 md:pt-20 pb-10 flex flex-col items-center text-center">
           <img src="/refdrop/lockup.svg" alt="Ref Drop" className="w-[240px] md:w-[340px] h-auto" />
-          <h1 className="mt-10 mb-2 text-[34px] md:text-[60px] leading-[1.02]" style={{ fontFamily: MONO, fontWeight: 700, color: INK, letterSpacing: '-0.015em', textWrap: 'balance' }}>
+          <h1 className="mt-10 mb-2 text-[28px] md:text-[44px] leading-[1.02]" style={{ fontFamily: MONO, fontWeight: 700, color: INK, letterSpacing: '-0.015em', textWrap: 'balance' }}>
             Save the image.<br />Keep the source.
           </h1>
           <p className="mt-5 text-[15px] md:text-base leading-relaxed max-w-md" style={{ fontFamily: UI, color: MUTED }}>
