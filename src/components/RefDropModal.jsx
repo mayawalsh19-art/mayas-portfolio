@@ -406,7 +406,7 @@ function CaseStudy({ onClose, onInstall }) {
           <h1 className="mt-10 mb-2 text-[34px] md:text-[60px] leading-[1.02]" style={{ fontFamily: MONO, fontWeight: 700, color: INK, letterSpacing: '-0.015em', textWrap: 'balance' }}>
             Save the image.<br />Keep the source.
           </h1>
-          <p className="mt-5 text-base md:text-xl leading-relaxed max-w-xl" style={{ fontFamily: UI, color: MUTED }}>
+          <p className="mt-5 text-[15px] md:text-base leading-relaxed max-w-md" style={{ fontFamily: UI, color: MUTED }}>
             {tie('A Chrome extension that saves images with the page they came from, then makes the moodboard and the credits for you.')}
           </p>
           <div className="flex gap-3 flex-wrap justify-center mt-8">
