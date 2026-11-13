@@ -132,3 +132,35 @@ code {
 @keyframes gy-bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
 .gy-bob { animation: gy-bob 3.2s ease-in-out infinite }
 @media (prefers-reduced-motion: reduce) { .gy-bob { animation: none } }
+
+/* Subscription Graveyard case study: hover states, reveal, carousel and marquee */
+.gy-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.gy-reveal.gy-in { opacity: 1; transform: none; }
+.gy-lift { transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease; }
+.gy-lift:hover { transform: translate(-3px, -4px); box-shadow: 6px 7px 0 #1E1B2E; }
+@keyframes gy-wiggle { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-7deg) } 50% { transform: rotate(6deg) } 75% { transform: rotate(-3deg) } }
+.gy-card:hover .gy-wiggle { animation: gy-wiggle .7s ease-in-out; transform-origin: 50% 85%; }
+.gy-fan img { transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.gy-fan:hover .gy-fan-l { transform: rotate(-13deg) translate(-18px, 8px) !important; }
+.gy-fan:hover .gy-fan-r { transform: rotate(13deg) translate(18px, 8px) !important; }
+.gy-fan:hover .gy-fan-c { transform: translate(-50%, -10px) !important; }
+.gy-row { transition: background .2s ease; border-radius: 16px; }
+.gy-row:hover { background: #FFFFFF; }
+.gy-row:hover .gy-num { transform: scale(1.18) rotate(-6deg); }
+.gy-num { display: inline-block; transition: transform .25s cubic-bezier(.3,1.5,.5,1); }
+.gy-swatch { transition: transform .2s cubic-bezier(.3,1.5,.5,1); cursor: pointer; }
+.gy-swatch:hover { transform: translateY(-4px) rotate(-2deg); }
+.gy-track { display: flex; transition: transform .55s cubic-bezier(.2,.8,.2,1); }
+@keyframes gy-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+.gy-marquee { display: flex; width: max-content; animation: gy-marquee 45s linear infinite; }
+.gy-marquee:hover { animation-play-state: paused; }
+.gy-marquee img { transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+.gy-marquee img:hover { transform: translateY(-10px) rotate(-1.5deg); }
+.gy-btn { transition: transform .15s ease, box-shadow .2s ease, background .2s ease; }
+.gy-btn:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 #1E1B2E; }
+.gy-btn:active { transform: none; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .gy-reveal { opacity: 1; transform: none; transition: none; }
+  .gy-marquee, .gy-card:hover .gy-wiggle { animation: none; }
+  .gy-track, .gy-lift, .gy-fan img, .gy-num, .gy-swatch, .gy-btn { transition: none; }
+}
