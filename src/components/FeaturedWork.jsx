@@ -9,6 +9,7 @@ import FanFormationModal from './FanFormationModal'
 import TheCatchModal from './TheCatchModal'
 import WeirdMirrorModal from './WeirdMirrorModal'
 import RefDropModal from './RefDropModal'
+import SubscriptionGraveyardModal from './SubscriptionGraveyardModal'
 
 // Every project has its own shareable link (bymayawalsh.design/<slug>).
 // vercel.json rewrites each path to index.html. The Catch also uses /the-catch/play.
@@ -23,6 +24,7 @@ const PROJECTS = {
   'the-catch': TheCatchModal,
   'weird-mirror': WeirdMirrorModal,
   'ref-drop': RefDropModal,
+  'subscription-graveyard': SubscriptionGraveyardModal,
 }
 const slugFromPath = () => window.location.pathname.split('/')[1] || ''
 
@@ -296,6 +298,13 @@ export default function FeaturedWork() {
           onClick={open('ref-drop')}
           desc="A Chrome extension that saves any image with its source, then turns your collection into a moodboard and a credits list.">
           <img src="/refdrop/lockup.svg" alt="Ref Drop" className="h-auto" style={{ width: 'min(62%, 340px)' }} />
+        </Card>
+
+        {/* Subscription Graveyard */}
+        <Card title="Subscription Graveyard" bg="bg-[#3B2F5C]" link={false}
+          onClick={open('subscription-graveyard')}
+          desc="An app that finds your subscriptions, checks in once a month, and helps you cancel the ones you don’t use.">
+          <img src="/graveyard/logo-night.png" alt="Subscription Graveyard" className="h-auto" style={{ width: 'min(70%, 380px)' }} />
         </Card>
 
       </div>

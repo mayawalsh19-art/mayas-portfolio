@@ -93,6 +93,10 @@ p {
 .refdrop-cs p {
   margin: revert-layer;
 }
+/* Subscription Graveyard case study: same opt-out */
+.graveyard-cs p {
+  margin: revert-layer;
+}
 
 code,
 .counter {

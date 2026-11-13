@@ -47,6 +47,10 @@
     {
       "source": "/ref-drop/install",
       "destination": "/index.html"
+    },
+    {
+      "source": "/subscription-graveyard",
+      "destination": "/index.html"
     }
   ]
 }
