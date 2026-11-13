@@ -100,6 +100,8 @@ const PROCESS = [
 ]
 
 const APP_URL = '/graveyard-app/'
+// Clickable Figma prototype, starting at the "1. First launch" flow (Welcome screen)
+const FIGMA_PROTO = 'https://www.figma.com/proto/MbwRWqP6gzIjL62VtirKk7/Maya-Walsh-Subscription-Graveyard?node-id=45-380&starting-point-node-id=45%3A380&scaling=scale-down'
 
 const DETAILS = [
   ['Type', 'Mobile app'],
@@ -234,8 +236,10 @@ export default function SubscriptionGraveyardModal({ onClose }) {
             <div className="flex flex-wrap items-center gap-3 justify-center md:justify-start mt-8">
               <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="gy-btn text-sm font-medium px-5 py-2.5 rounded-full"
                 style={{ fontFamily: BODY, background: C.candle, color: C.ink, border: `2px solid ${C.ink}` }}>Try the app ↗</a>
-              <span className="text-xs" style={{ fontFamily: MONO, color: C.stone }}>Uses a pretend bank. No sign-up.</span>
+              <a href={FIGMA_PROTO} target="_blank" rel="noopener noreferrer" className="gy-btn text-sm font-medium px-5 py-2.5 rounded-full"
+                style={{ fontFamily: BODY, background: 'transparent', color: C.bone, border: `2px solid ${C.bone}` }}>Figma prototype ↗</a>
             </div>
+            <p className="text-xs mt-3" style={{ fontFamily: MONO, color: C.stone }}>The app uses a pretend bank. No sign-up.</p>
           </Reveal>
           {/* Three phones, fanned, sinking into the ground. Hover fans them out. */}
           <Reveal delay={150} className="gy-fan relative h-[360px] md:h-[560px]">
@@ -399,7 +403,7 @@ export default function SubscriptionGraveyardModal({ onClose }) {
 
       {/* Details */}
       <section style={{ background: C.ink }}>
-        <div className="cs-container py-12 md:py-16 grid grid-cols-2 md:grid-cols-[repeat(5,auto)] md:justify-between gap-8">
+        <div className="cs-container py-12 md:py-16 grid grid-cols-2 md:grid-cols-[repeat(6,auto)] md:justify-between gap-8">
           {DETAILS.map(([k, v]) => (
             <div key={k}>
               <p className="text-[12px] font-bold uppercase tracking-[0.08em]" style={{ fontFamily: MONO, color: C.candle }}>{k}</p>
@@ -409,6 +413,10 @@ export default function SubscriptionGraveyardModal({ onClose }) {
           <div>
             <p className="text-[12px] font-bold uppercase tracking-[0.08em]" style={{ fontFamily: MONO, color: C.candle }}>The app</p>
             <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="font-medium text-base mt-1 inline-block underline underline-offset-4 hover:opacity-75" style={{ fontFamily: BODY, color: C.bone }}>Try it ↗</a>
+          </div>
+          <div>
+            <p className="text-[12px] font-bold uppercase tracking-[0.08em]" style={{ fontFamily: MONO, color: C.candle }}>Prototype</p>
+            <a href={FIGMA_PROTO} target="_blank" rel="noopener noreferrer" className="font-medium text-base mt-1 inline-block underline underline-offset-4 hover:opacity-75" style={{ fontFamily: BODY, color: C.bone }}>Figma ↗</a>
           </div>
         </div>
         <div className="text-center pb-14">
