@@ -162,13 +162,16 @@ function StepsCarousel() {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-center md:justify-start gap-4 mt-10 md:mt-12">
+      <div className="flex items-center justify-center gap-4 mt-10 md:mt-12">
         <Arrow dir={-1} onClick={() => go(i - 1)} disabled={i === 0} />
         <div className="flex gap-2" aria-hidden="true">
           {STEPS.map((_, n) => <span key={n} className="h-2 rounded-full transition-all duration-300" style={{ width: n === i ? 28 : 8, background: n === i ? C.candle : 'rgba(201,196,214,0.45)' }} />)}
         </div>
-        <Arrow dir={1} onClick={() => go(i + 1)} disabled={i === STEPS.length - 1} />
-        <span className="text-sm ml-1" style={{ fontFamily: MONO, color: C.stone }}>{i + 1} / {STEPS.length}</span>
+        {/* The counter hangs off the right edge so the buttons and dots stay exactly centered */}
+        <div className="relative">
+          <Arrow dir={1} onClick={() => go(i + 1)} disabled={i === STEPS.length - 1} />
+          <span className="absolute left-full top-1/2 -translate-y-1/2 ml-4 text-sm whitespace-nowrap" style={{ fontFamily: MONO, color: C.stone }}>{i + 1} / {STEPS.length}</span>
+        </div>
       </div>
     </div>
   )
