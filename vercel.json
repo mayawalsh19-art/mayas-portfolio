@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/graveyard-app",
+      "destination": "/graveyard-app/index.html"
+    },
+    {
+      "source": "/graveyard-app/",
+      "destination": "/graveyard-app/index.html"
+    },
+    {
       "source": "/credify",
       "destination": "/index.html"
     },

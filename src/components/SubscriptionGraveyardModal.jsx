@@ -99,8 +99,9 @@ const PROCESS = [
   ['A working app', 'I turned the design into an app you can add to a phone’s home screen, built with Claude (an AI assistant). It connects to a demo bank through Plaid’s test mode, so no real bank data is used, and its cancel buttons open each service’s real account page.'],
 ]
 
+const APP_URL = '/graveyard-app/'
+
 const DETAILS = [
-  ['Project', 'Project 2, Part 2'],
   ['Type', 'Mobile app'],
   ['Year', '2026'],
   ['Tools', 'Figma, HTML, CSS, JavaScript, Plaid (test mode)'],
@@ -218,9 +219,8 @@ export default function SubscriptionGraveyardModal({ onClose }) {
 
       {/* Hero: the wordmark, and three screens planted in the dirt */}
       <header className="relative overflow-hidden" style={{ background: C.plum }}>
-        <div className="cs-container relative z-10 grid md:grid-cols-[1fr_1.05fr] items-center gap-10 md:gap-6 pt-16 md:pt-24 pb-0">
+        <div className="cs-container relative z-10 grid md:grid-cols-[1fr_1.05fr] items-center gap-10 md:gap-6 pt-16 md:pt-24 pb-6 md:pb-10">
           <Reveal className="text-center md:text-left">
-            <p className="text-[13px] font-bold uppercase tracking-[0.08em] mb-5" style={{ fontFamily: MONO, color: C.stone }}>Project 2, Part 2</p>
             <h1 className="leading-[0.92] mb-6" style={{ fontFamily: DISPLAY, fontWeight: 400 }}>
               <span className="block text-[44px] md:text-[64px]" style={{ color: C.blush }}>subscription</span>
               <span className="block text-[60px] md:text-[88px]" style={{ color: C.bone }}>graveyard</span>
@@ -231,7 +231,11 @@ export default function SubscriptionGraveyardModal({ onClose }) {
                 <span key={tag} className="gy-btn text-xs font-medium px-3 py-1 rounded-full cursor-default" style={{ fontFamily: BODY, background: bg, color: C.ink, border: `2px solid ${C.ink}` }}>{tag}</span>
               ))}
             </div>
-            <div className="hidden md:block mt-10 gy-bob" style={{ width: 120 }}><Plot mood="Content" size={120} /></div>
+            <div className="flex flex-wrap items-center gap-3 justify-center md:justify-start mt-8">
+              <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="gy-btn text-sm font-medium px-5 py-2.5 rounded-full"
+                style={{ fontFamily: BODY, background: C.candle, color: C.ink, border: `2px solid ${C.ink}` }}>Try the app ↗</a>
+              <span className="text-xs" style={{ fontFamily: MONO, color: C.stone }}>Uses a pretend bank. No sign-up.</span>
+            </div>
           </Reveal>
           {/* Three phones, fanned, sinking into the ground. Hover fans them out. */}
           <Reveal delay={150} className="gy-fan relative h-[360px] md:h-[560px]">
@@ -241,6 +245,8 @@ export default function SubscriptionGraveyardModal({ onClose }) {
           </Reveal>
         </div>
         <Ground />
+        {/* Plot, planted in the dirt */}
+        <div className="hidden md:block absolute z-30 gy-bob" style={{ left: '7%', bottom: 36, width: 110 }}><Plot mood="Content" size={110} /></div>
       </header>
 
       {/* The problem, with Plot's own deadpan */}
@@ -400,6 +406,10 @@ export default function SubscriptionGraveyardModal({ onClose }) {
               <p className="font-medium text-base mt-1 max-w-[220px]" style={{ fontFamily: BODY, color: C.bone }}>{v}</p>
             </div>
           ))}
+          <div>
+            <p className="text-[12px] font-bold uppercase tracking-[0.08em]" style={{ fontFamily: MONO, color: C.candle }}>The app</p>
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="font-medium text-base mt-1 inline-block underline underline-offset-4 hover:opacity-75" style={{ fontFamily: BODY, color: C.bone }}>Try it ↗</a>
+          </div>
         </div>
         <div className="text-center pb-14">
           <button onClick={onClose} className="gy-btn text-sm font-medium px-6 py-3 rounded-full" style={{ fontFamily: BODY, background: C.bone, color: C.ink, border: `2px solid ${C.bone}` }}>← Back to Work</button>
