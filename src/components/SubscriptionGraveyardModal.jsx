@@ -65,7 +65,7 @@ const GAP = [
 ]
 
 const STEPS = [
-  ['/graveyard/screen-spot-the-ghosts.png', 'Find them', 'Link a bank and Plot reads a year of charges, keeping only the ones that repeat. Free trials show up as ghosts, and add-ons sit under the subscription they’re billed through.'],
+  ['/graveyard/screen-spot-the-ghosts.png', 'Find them', 'Link a bank and Plot finds everything you pay for every month. Free trials show up as ghosts, and add-ons sit inside the subscription they belong to.'],
   ['/graveyard/screen-check-in-swipe.png', 'Check in once a month', 'On the 1st, swipe through each subscription and say how much you used it. It takes about two minutes.'],
   ['/graveyard/screen-verdict.png', 'Get the verdict', 'Plot sorts everything into worth it, on thin ice and shall we, and adds up what burying the last group would save.'],
   ['/graveyard/screen-shall-we-sheet.png', 'Bury the ones you don’t use', 'Plot opens the service’s own cancel page, then asks if it worked before it digs a grave.'],
@@ -82,7 +82,7 @@ const STRIP = [
 
 // Round two: what changed after using the working app every day
 const ROUND_TWO = [
-  ['/graveyard/screen-spot-the-ghosts.png', 'Free trials are ghosts', 'Toggles confused people, so trials became ghosts: tap anything that’s still free and it floats up with a countdown. Trials Plot spots in the bank, even ones inside another subscription, are already ghosts.'],
+  ['/graveyard/screen-spot-the-ghosts.png', 'Free trials are ghosts', 'Toggles confused people, so trials became ghosts: tap anything that’s still free and it floats up with a countdown. Trials Plot finds in your bank are already ghosts.'],
   ['/graveyard/screen-search-and-add.png', 'Search, plans and add-ons', 'Search 34 popular services, pick your actual plan, and add what you bought inside it, like a Starz channel in Amazon Prime. Anything else can still be added by hand.'],
   ['/graveyard/screen-cheaper-plans.png', 'Cheaper plans, switched in the app', 'Tell Plot you’re a student, teacher or in the military and it checks your list. Every deal has a Switch button: Plot hands you to the service, asks if it worked, then updates the bill and counts what you saved.'],
   ['/graveyard/screen-zombie-comeback.png', 'The undead', 'Burying sends bats out of the grave, each service with its own effect: music notes for Spotify, falling boxes for Prime. Bring one back and a zombie in that service’s colors claws its way out.'],
@@ -113,7 +113,7 @@ const PROCESS = [
   ['Wireframes', 'Ten grayscale screens to test the flow before any color, from the dashboard to the resurrection log.'],
   ['Branding', 'Plot, the tombstone mascot, sets the tone: a little morbid, deadpan, never shaming. Four moods cover every state in the app.'],
   ['Final screens and prototype', 'Screens in Figma built from a shared component set, linked into a clickable prototype.'],
-  ['A working app', 'I turned the design into an app you can add to a phone’s home screen, built with Claude (an AI assistant). It connects to a demo bank through Plaid’s test mode, so no real bank data is used, and its cancel buttons open each service’s real account page.'],
+  ['A working app', 'I turned the design into an app you can add to a phone’s home screen, built with Claude (an AI assistant). It links to a pretend bank, so no real bank data is used, and its cancel buttons open each service’s real account page.'],
   ['Round two', 'Living with the app led to a second pass: ghosts for free trials, add-ons, search, discounts, switching to cheaper plans, burial and comeback animations, and a simpler onboarding. Every change went back into Figma, which now has 38 screens and the new components.'],
 ]
 
