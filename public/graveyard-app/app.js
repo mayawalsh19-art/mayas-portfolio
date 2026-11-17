@@ -77,13 +77,34 @@ const CATALOG={
  'Crunchyroll':{home:'https://www.crunchyroll.com/'},
  'Max':{home:'https://www.max.com/'},
  'Headspace':{home:'https://www.headspace.com/'},
+ 'YouTube TV':{cancel:'https://tv.youtube.com/settings/membership',home:'https://tv.youtube.com/',addons:'https://tv.youtube.com/settings/membership'},
  'Amazon Prime':{cancel:'https://www.amazon.com/gp/primecentral',home:'https://www.amazon.com/amazonprime',addons:'https://www.amazon.com/gp/video/settings/channels'}
 };
+// Add-ons each service really sells, with typical US monthly prices (late 2026). Prices fill in
+// the form but stay editable, since promos and plan tiers vary. [] = the service sells no add-ons.
+const CH={hbo:['HBO Max',10.99],starz:['Starz',10.99],ppp:['Paramount+ Premium',13.99],amc:['AMC+',9.99],mgm:['MGM+',6.99],brit:['BritBox',8.99],acorn:['Acorn TV',8.99],shudder:['Shudder',8.99],cinemax:['Cinemax',9.99]};
+const ADDON_OPTIONS={
+ 'Amazon Prime':[['Prime Video Ultra (no ads)',4.99],CH.hbo,CH.starz,CH.ppp,['Paramount+ Essential',8.99],CH.amc,CH.mgm,['Apple TV',12.99],['Peacock Premium Plus',16.99],['Crunchyroll',7.99],CH.cinemax,CH.brit,CH.acorn,CH.shudder,['discovery+',4.99],['Hallmark+',7.99],['PBS Masterpiece',5.99]],
+ 'Hulu':[CH.hbo,CH.starz,CH.ppp,CH.cinemax,['Unlimited Screens',9.99]],
+ 'YouTube TV':[['4K Plus',9.99],['Sports Plus',10.99],['Spanish Plus',14.99],CH.hbo,CH.starz,CH.ppp,CH.cinemax,CH.amc],
+ 'YouTube Premium':[CH.hbo,CH.starz,CH.ppp,CH.amc,CH.mgm,CH.shudder],
+ 'Apple TV+':[CH.starz,CH.ppp,CH.amc,CH.mgm,CH.brit,CH.acorn,CH.shudder],
+ 'Netflix':[['Extra member (with ads)',7.99],['Extra member (no ads)',9.99]],
+ 'Disney+':[['Extra member (with ads)',6.99],['Extra member (no ads)',9.99]],
+ 'Max':[['Extra member',7.99]],
+ 'Spotify':[['Audiobooks+',11.99]],
+ 'Peacock':[],'Paramount+':[],'iCloud+':[],'Google One':[],'Audible':[],'Peloton App':[],'Duolingo':[],'Calm':[],'Crunchyroll':[],'Headspace':[]
+};
+// Match whatever the user typed ("prime video", "hbo max", "youtube tv") to a known service.
+const ALIAS=[[/amazon|prime video|^prime$/i,'Amazon Prime'],[/youtube ?tv/i,'YouTube TV'],[/youtube|yt premium/i,'YouTube Premium'],[/apple ?tv/i,'Apple TV+'],[/hbo|^max$/i,'Max'],[/netflix/i,'Netflix'],[/hulu/i,'Hulu'],[/disney/i,'Disney+'],[/spotify/i,'Spotify'],[/peacock/i,'Peacock'],[/paramount/i,'Paramount+'],[/icloud/i,'iCloud+'],[/google one/i,'Google One'],[/audible/i,'Audible'],[/peloton/i,'Peloton App'],[/duolingo/i,'Duolingo'],[/calm/i,'Calm'],[/crunchyroll/i,'Crunchyroll'],[/headspace/i,'Headspace']];
+const canon=n=>{const t=String(n||'').trim();for(const [re,name] of ALIAS)if(re.test(t))return name;return t;};
+const addonOptions=n=>ADDON_OPTIONS[canon(n)];
 const cancelUrl=n=>CATALOG[n]?.cancel||SEARCH(`how to cancel ${n} subscription`);
 const homeUrl=n=>CATALOG[n]?.home||SEARCH(`${n} subscribe`);
 const hasDirectCancel=n=>!!CATALOG[n]?.cancel;
 // Add-ons (a channel bought inside Prime, etc.) are cancelled from the parent's add-on page.
-const addonCancelUrl=(parent,name)=>CATALOG[parent]?.addons||SEARCH(`how to cancel ${name} add-on in ${parent}`);
+const ADDON_PAGES={'Hulu':'https://secure.hulu.com/account/addons','Apple TV+':APPLE_SUBS,'YouTube Premium':'https://www.youtube.com/paid_memberships','Netflix':'https://www.netflix.com/account/extra-member','Spotify':'https://www.spotify.com/account/','Disney+':'https://www.disneyplus.com/account','Max':'https://auth.max.com/subscription'};
+const addonCancelUrl=(parent,name)=>CATALOG[canon(parent)]?.addons||ADDON_PAGES[canon(parent)]||SEARCH(`how to cancel ${name} add-on in ${parent}`);
 
 /* =========================================================================
    Dates and money
@@ -270,11 +291,15 @@ byhand:{render:()=>`<div class="content">
   <form class="stack" id="manualForm" style="gap:16px" novalidate>
   <div class="field"><label for="fName">Name</label><input id="fName" placeholder="Netflix" autocomplete="off" required></div>
   <div class="row" style="gap:12px;align-items:flex-start"><div class="field grow"><label for="fPrice">Price</label><input id="fPrice" placeholder="15.99" inputmode="decimal" autocomplete="off" required></div><div class="field grow"><label for="fNext">Next charge</label><input id="fNext" type="date" value="${addDays(today(),9)}"></div></div>
+  <div class="field" id="hAddWrap" hidden><label id="hAddLbl">Any add-ons inside it?</label><div class="addon-opts" id="hAdd" role="group" aria-labelledby="hAddLbl"></div></div>
   <div class="field"><label id="cycLbl">Billing</label><div class="seg" role="group" aria-labelledby="cycLbl"><button type="button" aria-pressed="true" data-cycle="monthly">Monthly</button><button type="button" aria-pressed="false" data-cycle="yearly">Yearly</button></div></div>
   <div class="card row" style="flex-direction:row"><div class="stack-s grow" style="gap:2px"><span class="t-strong">This is a free trial</span><span class="t-cap c-plum">Plot will count down to the first charge.</span></div><button type="button" class="toggle" role="switch" aria-checked="false" aria-label="This is a free trial" id="fTrial"></button></div>
   </form>
   <div class="grow"></div><button class="btn primary" ${act('saveManual')}>Save</button><button class="btn ghost" ${act('saveManual','again')}>Save and add another</button></div>`,
-  mount(el){const tg=$('#fTrial',el);tg.addEventListener('click',()=>tg.setAttribute('aria-checked',tg.getAttribute('aria-checked')!=='true'));el.querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x===b))));$('#fName',el).focus({preventScroll:true});}},
+  mount(el){const tg=$('#fTrial',el);tg.addEventListener('click',()=>tg.setAttribute('aria-checked',tg.getAttribute('aria-checked')!=='true'));el.querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x===b))));$('#fName',el).focus({preventScroll:true});
+  const wrap=$('#hAddWrap',el),box=$('#hAdd',el);let shown='';
+  const upd=()=>{const svc=canon($('#fName',el).value);const opts=ADDON_OPTIONS[svc];if(svc===shown)return;shown=svc;wrap.hidden=!opts?.length;box.innerHTML=(opts||[]).map(([n,p])=>`<button type="button" class="optchip" aria-pressed="false" data-name="${esc(n)}" data-price="${p}">${esc(n)} <b>${m(p)}</b></button>`).join('');};
+  $('#fName',el).addEventListener('input',upd);box.addEventListener('click',e=>{const b=e.target.closest('.optchip');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');});}},
 found:{render:()=>{const r=S.scan;
   if(T.scanError) return `<div class="content mid"><div class="grow"></div>${plot('Alarmed',140)}<h2 class="t-m">Plot couldn’t read the bank.</h2><p class="t-body c-plum">${esc(T.scanError)}</p><div class="grow"></div><button class="btn primary" ${act('rescan')}>Try again</button><button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button></div>`;
   if(!r) return `<div class="content mid"><div class="grow"></div>${plot('Sleepy',120,'bob')}<h2 class="t-m">Plot is reading your statements.</h2><div class="loadbar"><i></i></div><p class="t-dp c-plum">${esc(T.scanMsg||'Waiting for the demo bank…')}</p><div class="grow"></div></div>`;
@@ -390,8 +415,9 @@ sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();cons
   const addonCard=`<div class="card thick" style="gap:12px"><span class="t-cap c-dirt">ADD-ONS INSIDE ${esc(s.name.toUpperCase())}</span>
   ${ads.length?ads.map(a=>`<div class="addon"><span class="logo-tile sm">${esc(letter(a.name))}</span><span class="stack-s grow" style="gap:2px;min-width:0"><span class="t-strong">${esc(a.name)}</span><span class="t-cap c-plum">${m(a.price)}/${a.cadence==='yearly'?'yr':'mo'} · billed through ${esc(s.name)}</span></span>${T.addonArmed===a.id?'':`<button class="btn ghost fit sm" ${act('armAddon',a.id)}>Bury</button>`}</div>
    ${T.addonArmed===a.id?`<div class="card dash" style="gap:8px"><span class="t-dp">Cancel ${esc(a.name)} on ${esc(s.name)}’s add-on page. ${esc(s.name)} itself stays.</span><a class="btn light sm" href="${esc(addonCancelUrl(s.name,a.name))}" target="_blank" rel="noopener noreferrer">Open ${esc(s.name)} add-ons ↗</a><div class="row" style="gap:8px"><button class="btn ghost sm" ${act('armAddon','')}>Never mind</button><button class="btn bury sm" ${act('buryAddon',a.id)}>I cancelled it</button></div></div>`:''}`).join('')
-   :`<span class="t-body c-plum">Bought a channel or extra inside ${esc(s.name)}? Add it so Plot counts it too.</span>`}
-  ${T.addonForm?`<div class="row" style="gap:8px;align-items:flex-end"><div class="field grow"><label for="aName">Add-on</label><input id="aName" placeholder="Starz" autocomplete="off"></div><div class="field" style="width:96px"><label for="aPrice">Price</label><input id="aPrice" placeholder="10.99" inputmode="decimal" autocomplete="off"></div></div><div class="row" style="gap:8px"><button class="btn ghost sm" ${act('toggleAddonForm')}>Cancel</button><button class="btn primary sm" ${act('saveAddon')}>Add it</button></div>`
+ :`<span class="t-body c-plum">${addonOptions(s.name)&&!addonOptions(s.name).length?`${esc(s.name)} doesn’t sell add-ons. If you pay for something extra inside it anyway, add it here.`:`Bought a channel or extra inside ${esc(s.name)}? Add it so Plot counts it too.`}</span>`}
+  ${T.addonForm&&addonOptions(s.name)?.length?`<div class="addon-opts" role="group" aria-label="${esc(s.name)} add-ons">${addonOptions(s.name).filter(([n])=>!ads.some(a=>a.name===n)).map(([n,p])=>`<button type="button" class="optchip" data-pick="${esc(n)}" data-price="${p}">${esc(n)} <b>${m(p)}</b></button>`).join('')}</div>`:''}
+  ${T.addonForm?`<div class="row" style="gap:8px;align-items:flex-end"><div class="field grow"><label for="aName">Add-on</label><input id="aName" placeholder="Or type your own" autocomplete="off"></div><div class="field" style="width:96px"><label for="aPrice">Price</label><input id="aPrice" placeholder="10.99" inputmode="decimal" autocomplete="off"></div></div><div class="row" style="gap:8px"><button class="btn ghost sm" ${act('toggleAddonForm')}>Cancel</button><button class="btn primary sm" ${act('saveAddon')}>Add it</button></div>`
    :`<button class="t-cap c-plum" style="align-self:flex-start" ${act('toggleAddonForm')}>+ Add an add-on</button>`}
   ${ads.length?`<span class="t-dp" style="border-top:1.5px dashed var(--stone);padding-top:10px">Altogether ${esc(s.name)} costs ${m(price)} a ${s.cadence==='yearly'?'year':'month'}.</span>`:''}</div>`;
   const meter=r?{barely:10,sometimes:40,constantly:95}[s.rating]:0;
@@ -402,7 +428,8 @@ sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();cons
   ${s.charges?.length?`<div class="card thick" style="gap:12px"><span class="t-cap c-dirt">CHARGES · LAST 6 MONTHS</span><div class="bars">${months.map(([mo,v,isNow],i)=>`<div><span class="b${isNow?' now':''}${v?'':' zero'}" style="height:${Math.max(6,v/mx*84)}px;animation-delay:${i*.07}s"></span><span class="t-cap c-plum">${mo}</span></div>`).join('')}</div></div>`:''}
   <div class="row" style="gap:8px;align-items:stretch"><div class="stat"><span class="t-cap c-plum">Paid in ${yr}</span><span class="t-title">${s.charges?.length?m(paid):'—'}</span></div><div class="stat"><span class="t-cap c-plum">Charges</span><span class="t-title">${s.charges?.length?count:'—'}</span></div><div class="stat"><span class="t-cap c-plum">Next charge</span><span class="t-title">${s.next?fmtDay(s.next):'—'}</span></div></div>
   ${r?`<div class="card dash"><span class="t-dp">“You paid ${m(price)} for ${esc(s.name)}${ads.length?' and its add-ons':''} and ${s.rating==='barely'?'barely touched it':s.rating==='sometimes'?'used it here and there':'used it constantly'}. That’s ${m(cpu)} a use.”</span></div>`:''}
-  <div class="grow"></div><div class="row" style="gap:8px"><button class="btn ghost" ${act('back','home')}>Keep it</button><button class="btn bury" ${act('buryOne',s.id)}>Bury it</button></div></div>`;}},
+  <div class="grow"></div><div class="row" style="gap:8px"><button class="btn ghost" ${act('back','home')}>Keep it</button><button class="btn bury" ${act('buryOne',s.id)}>Bury it</button></div></div>`;},
+  mount(el){el.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{$('#aName',el).value=b.dataset.pick;$('#aPrice',el).value=b.dataset.price;el.querySelectorAll('[data-pick]').forEach(x=>x.setAttribute('aria-pressed',x===b));}));}},
 
 /* ---------- check-in ---------- */
 intro:{tab:'checkin',render:()=>{const done=S.checkins[monthKey()];if(done&&S.subs.length){const n=new Date();const next=new Date(n.getFullYear(),n.getMonth()+1,1);const left=daysBetween(today(),isoOf(next));const FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -553,7 +580,8 @@ const ACT={
   if(!name){toast('Give it a name first.');$('#fName',el).focus();return;}if(!(price>0)){toast('Add the price, like 15.99.');$('#fPrice',el).focus();return;}
   const cadence=$('[data-cycle][aria-pressed="true"]',el).dataset.cycle;
   if($('#fTrial',el).getAttribute('aria-checked')==='true'){S.trials.push({id:uid(),name,price,ends:$('#fNext',el).value||addDays(today(),7),warn:'48',started:today(),source:'manual'});save();toast(`Plot is watching the ${name} trial.`);if(again==='again')rerender();else go(S.onboarded?'home':'trials');return;}
-  S.subs.push({id:uid(),name,price,cadence,next:$('#fNext',el).value||null,last:null,first:today(),charges:[],source:'manual',rating:null});save();
+  const addons=[...el.querySelectorAll('#hAdd .optchip[aria-pressed="true"]')].map(b=>({id:uid(),name:b.dataset.name,price:+b.dataset.price,cadence:'monthly',first:today(),charges:[],source:'manual'}));
+  S.subs.push({id:uid(),name:canon(name),price,cadence,next:$('#fNext',el).value||null,last:null,first:today(),charges:[],addons,source:'manual',rating:null});save();
   if(again==='again'){toast(`Saved ${name}. Add another.`);rerender();}else{toast(`Saved ${name}.`);go(S.onboarded?'home':'trials');}},
  removeTrial(id){S.trials=S.trials.filter(t=>t.id!==id);save();rerender();},
  saveTrial(){const el=cur.el;const name=$('#tName',el).value.trim();const ends=$('#tEnds',el).value;const price=parseFloat($('#tPrice',el).value.replace(/[^0-9.]/g,''));

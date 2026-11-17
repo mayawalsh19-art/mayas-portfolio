@@ -2,7 +2,7 @@
 // schedule for about the same amount. Streams that stopped are returned separately.
 const KNOWN = [
   [/netflix/i, 'Netflix'], [/hulu/i, 'Hulu'], [/spotify/i, 'Spotify'], [/peloton/i, 'Peloton App'],
-  [/disney/i, 'Disney+'], [/youtube/i, 'YouTube Premium'], [/icloud/i, 'iCloud+'], [/duolingo/i, 'Duolingo'],
+  [/disney/i, 'Disney+'], [/youtube ?tv/i, 'YouTube TV'], [/youtube/i, 'YouTube Premium'], [/icloud/i, 'iCloud+'], [/duolingo/i, 'Duolingo'],
   [/google \*?google one|google one/i, 'Google One'], [/paramount/i, 'Paramount+'], [/audible/i, 'Audible'],
   [/calm\.com/i, 'Calm'], [/crunchyroll/i, 'Crunchyroll'], [/peacock/i, 'Peacock'], [/\bmax\.com|hbo ?max/i, 'Max'],
   [/headspace/i, 'Headspace'], [/apple tv/i, 'Apple TV+'], [/amazon prime|prime video/i, 'Amazon Prime'],
@@ -11,17 +11,27 @@ const KNOWN = [
 // Add-ons billed *through* another subscription, e.g. a Starz channel bought inside Amazon Prime.
 // Each entry: [pattern, parent subscription, add-on name]. Checked before KNOWN so the
 // channel name (Starz, Max, Paramount+…) doesn't get mistaken for its own subscription.
-const ADDONS = [
-  [/(amazon|amzn|prime video) channels?\b.*\bstarz/i, 'Amazon Prime', 'Starz'],
-  [/(amazon|amzn|prime video) channels?\b.*\b(hbo|max)\b/i, 'Amazon Prime', 'Max'],
-  [/(amazon|amzn|prime video) channels?\b.*\bparamount/i, 'Amazon Prime', 'Paramount+'],
-  [/(amazon|amzn|prime video) channels?\b.*\bamc/i, 'Amazon Prime', 'AMC+'],
-  [/(amazon|amzn|prime video) channels?\b.*\bmgm/i, 'Amazon Prime', 'MGM+'],
-  [/(amazon|amzn|prime video) channels?\b.*\bbritbox/i, 'Amazon Prime', 'BritBox'],
-  [/(amazon|amzn|prime video) channels?/i, 'Amazon Prime', 'Prime Video Channel'],
-  [/apple tv channels?\b.*\bstarz/i, 'Apple TV+', 'Starz'],
-  [/youtube ?tv\b.*\b(nfl|sunday ticket)/i, 'YouTube TV', 'NFL Sunday Ticket'],
-];
+const CH = 'channels?|channel subscriptions?';
+const ADDONS = [];
+const chan = (prefix, parent) => [
+  ['starz', 'Starz'], ['hbo|\\bmax\\b', 'HBO Max'], ['paramount', 'Paramount+ Premium'], ['amc', 'AMC+'], ['mgm', 'MGM+'],
+  ['britbox', 'BritBox'], ['acorn', 'Acorn TV'], ['shudder', 'Shudder'], ['cinemax', 'Cinemax'], ['discovery', 'discovery+'],
+  ['hallmark', 'Hallmark+'], ['masterpiece|pbs', 'PBS Masterpiece'], ['crunchyroll', 'Crunchyroll'], ['apple ?tv', 'Apple TV'],
+  ['peacock', 'Peacock Premium Plus'],
+].forEach(([word, name]) => ADDONS.push([new RegExp(`${prefix}.*\\b(${word})`, 'i'), parent, name]));
+// Channels billed separately through a parent subscription.
+chan(`(amazon|amzn|prime video) (${CH})\\b`, 'Amazon Prime');
+chan(`apple tv (${CH})\\b`, 'Apple TV+');
+chan(`youtube (primetime )?(${CH})\\b`, 'YouTube Premium');
+chan(`youtube ?tv\\b`, 'YouTube TV');
+ADDONS.push(
+  [new RegExp(`(amazon|amzn|prime video) (${CH})`, 'i'), 'Amazon Prime', 'Prime Video Channel'],
+  [/prime video (ad[- ]?free|ultra)/i, 'Amazon Prime', 'Prime Video Ultra (no ads)'],
+  [/youtube ?tv\b.*4k/i, 'YouTube TV', '4K Plus'],
+  [/youtube ?tv\b.*sports/i, 'YouTube TV', 'Sports Plus'],
+  [/netflix.*extra member/i, 'Netflix', 'Extra member (no ads)'],
+  [/spotify.*audiobooks/i, 'Spotify', 'Audiobooks+'],
+);
 
 const DAY = 864e5;
 const days = (a, b) => Math.round((new Date(b) - new Date(a)) / DAY);

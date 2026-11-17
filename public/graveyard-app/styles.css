@@ -96,6 +96,10 @@ h1,h2,p{margin:0}
 .logo-tile{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-weight:700;font-size:20px;background:var(--ink);color:var(--bone)}
 .logo-tile.dim{background:var(--stone);color:var(--ink)}
 .logo-tile.sm{width:36px;height:36px;border-radius:11px;font-size:16px}
+.addon-opts{display:flex;flex-wrap:wrap;gap:6px}
+.optchip{padding:7px 12px;border:1.5px solid var(--stone);border-radius:999px;background:var(--paper);font-size:13px;line-height:1.2;text-align:left;transition:background .15s,color .15s,border-color .15s}
+.optchip b{font-weight:500;color:var(--plum);margin-left:2px}
+.optchip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bone)}.optchip[aria-pressed="true"] b{color:var(--stone)}
 .addon{display:flex;align-items:center;gap:12px}
 .addon .t-strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .subrow .info{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
