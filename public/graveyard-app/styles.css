@@ -131,6 +131,30 @@ h1,h2,p{margin:0}
 .spotted .linkbtn{color:var(--candle);font-size:13px;padding:4px;white-space:nowrap;flex:none}
 .dealrow{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;background:var(--bone);border-radius:16px}
 .bg-ink{background:var(--ink);color:var(--bone)}
+.nightsky{position:relative;overflow:hidden;flex-shrink:0}
+.nightsky .sky{position:absolute;top:6px;right:8px;width:130px;height:76px;pointer-events:none}
+.nightsky>span{position:relative}
+.sky .tw{animation:twinkle 2.8s ease-in-out infinite}.sky .d2{animation-delay:-.9s}.sky .d3{animation-delay:-1.7s}.sky .d4{animation-delay:-2.3s}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.25}}
+.logo-tile{position:relative}
+.cobweb{position:absolute;top:-2px;right:-2px;width:26px;height:26px;color:var(--plum);opacity:.75;pointer-events:none}
+.logo-tile.dim .cobweb{color:var(--ink);opacity:.55}
+.btn.bury::before,.btn.res::before{content:'';width:18px;height:18px;flex:none;background:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
+.btn.bury{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg transform='rotate(40 12 12)'%3E%3Cpath d='M9.5 1h5v2.2h-1.4V12h2.2c.9 0 1.7.8 1.7 1.7v3.1a5 5 0 0 1-10 0v-3.1c0-.9.8-1.7 1.7-1.7h2.2V3.2H9.5z'/%3E%3C/g%3E%3C/svg%3E")}
+.btn.res{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1c.8 5.4 2.6 8.2 8 10-5.4 1.8-7.2 4.6-8 10-.8-5.4-2.6-8.2-8-10 5.4-1.8 7.2-4.6 8-10zM20 1l.7 2.3L23 4l-2.3.7L20 7l-.7-2.3L17 4l2.3-.7z'/%3E%3C/svg%3E")}
+.btn.sm.bury::before,.btn.sm.res::before{width:15px;height:15px}
+.dig{position:relative;width:200px;height:150px;display:flex;justify-content:center;align-items:flex-end}
+.dig .plot{position:relative;z-index:1;margin-right:40px}
+.dig .shovel{position:absolute;right:34px;bottom:18px;width:30px;height:60px;transform-origin:50% 10%;animation:digging 1.1s ease-in-out infinite;z-index:2}
+@keyframes digging{0%,100%{transform:rotate(18deg) translateY(0)}45%{transform:rotate(-8deg) translateY(10px)}70%{transform:rotate(30deg) translateY(-4px)}}
+.dig .mound{position:absolute;bottom:4px;left:20px;right:10px;height:20px;border-radius:50% 50% 8px 8px;background:var(--dirt);border:2.5px solid var(--ink);z-index:0}
+.dig .clod{position:absolute;right:46px;bottom:30px;width:8px;height:8px;border-radius:50%;background:var(--dirt);animation:clod 1.1s ease-out infinite;opacity:0}
+.dig .c2{animation-delay:.15s;width:6px;height:6px}.dig .c3{animation-delay:.3s;width:5px;height:5px}
+@keyframes clod{0%,55%{opacity:0;transform:translate(0,0)}60%{opacity:1}100%{opacity:0;transform:translate(34px,-40px)}}
+.dig .c2{--x:44px}.dig .c3{--x:20px}
+.fence{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px}
+.fence svg{width:100%;height:34px;display:block}
+.toast{display:flex;align-items:center;gap:10px}.toast .plot{flex:none}
 .slimrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 16px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;font-size:14px;font-weight:500;margin-top:-6px}
 .ghostrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--paper);border:2px dashed var(--plum);border-radius:20px}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
