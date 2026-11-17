@@ -507,7 +507,7 @@ add:{render:()=>`<div class="content">
 banksetup:{render:()=>{const local=['localhost','127.0.0.1'].includes(location.hostname);const open=T.showPlaid;
   return `<div class="content">
   <button class="backlink" ${act('back',S.onboarded?'settings':'add')}>←&nbsp; ${S.onboarded?'Settings':'Back'}</button>
-  <h2 class="t-l">Link a bank</h2>
+  <div class="row between" style="align-items:flex-end"><h2 class="t-l">Link a bank</h2>${plot('Sleepy',56)}</div>
   <p class="t-body c-plum">Both options are pretend banks. Neither one can see your real accounts.</p>
 
   <div class="set-sec"><span class="set-h">Choose a demo bank</span><div class="set-group">
@@ -521,7 +521,7 @@ banksetup:{render:()=>{const local=['localhost','127.0.0.1'].includes(location.h
    ${srow({icon:'scan',bg:'candle',label:'Save and connect',a:'savePlaidKeys'})}
   </div><span class="set-note">Get both from a free account at <a href="https://dashboard.plaid.com/signup" target="_blank" rel="noopener">dashboard.plaid.com</a> → <a href="https://dashboard.plaid.com/developers/keys" target="_blank" rel="noopener">Developers → Keys</a>. Use the Sandbox secret. Plot checks them with Plaid and saves them on this computer only.</span></div>`
    :`<div class="set-sec"><span class="set-h">Plaid keys</span><div class="set-group">${srow({icon:'info',bg:'stone',label:'Add keys in Vercel',sub:'Project → Settings → Environment Variables'})}</div></div>`):''}
-  </div>`;}},
+  <div class="grow"></div>${fence('Pretend banks only. Plot promises.')}</div>`;}},
 search:{render:()=>`<div class="content">
   <button class="backlink" ${act('back',S.onboarded?'home':'add')}>←&nbsp; ${S.onboarded?'Dashboard':'Back'}</button>
   <h2 class="t-l">Add a subscription</h2>
@@ -530,7 +530,7 @@ search:{render:()=>`<div class="content">
   ${fence('Not here? Search it and add it by hand.')}</div>`,
   mount(el){const q=$('#q',el),res=$('#svcRes',el);q.addEventListener('input',()=>{T.q=q.value;res.innerHTML=svcResults(T.q);});}},
 byhand:{render:()=>`<div class="content">
-  <button class="backlink" ${act('back','search')}>←&nbsp; Search</button><h2 class="t-l">${T.prefill?esc(T.prefill.alt||T.prefill.name):'Add one'}</h2>
+  <button class="backlink" ${act('back','search')}>←&nbsp; Search</button><div class="row between" style="align-items:flex-end"><h2 class="t-l">${T.prefill?esc(T.prefill.alt||T.prefill.name):'Add one'}</h2>${T.prefill?`<span class="logo-tile big" style="background:${svcColor(T.prefill.name)};color:${svcInk(T.prefill.name)}">${esc(letter(T.prefill.alt||T.prefill.name))}</span>`:plot('Content',52)}</div>
   <form class="stack" id="manualForm" style="gap:16px" novalidate>
   <div class="field"${T.prefill?' hidden':''}><label for="fName">Name</label><input id="fName" placeholder="Netflix" autocomplete="off" required value="${esc(T.prefill?.name||T.customName||'')}"></div>
   ${T.prefill?`<div class="field"><label id="planLbl">Which plan?</label><div class="addon-opts" role="group" aria-labelledby="planLbl">${T.prefill.plans.map(([p,pr,cad],i)=>`<button type="button" class="optchip" data-plan="${esc(p)}" data-price="${pr}" data-cad="${cad||'monthly'}" aria-pressed="${i===0}">${esc(p)} <b>${m(pr)}${cad==='yearly'?'/yr':''}</b></button>`).join('')}</div><span class="t-cap c-plum">Typical prices. Change it below if your bill says otherwise.</span></div>`:''}
@@ -539,6 +539,7 @@ byhand:{render:()=>`<div class="content">
   <div class="field"><label id="cycLbl">Billing</label><div class="seg" role="group" aria-labelledby="cycLbl"><button type="button" aria-pressed="${T.prefill?.plans[0][2]!=='yearly'}" data-cycle="monthly">Monthly</button><button type="button" aria-pressed="${T.prefill?.plans[0][2]==='yearly'}" data-cycle="yearly">Yearly</button></div></div>
   <div class="card row" style="flex-direction:row"><div class="stack-s grow" style="gap:2px"><span class="t-strong">This is a free trial</span><span class="t-cap c-plum">Plot will count down to the first charge.</span></div><button type="button" class="toggle" role="switch" aria-checked="false" aria-label="This is a free trial" id="fTrial"></button></div>
   </form>
+  ${fence('Plot will keep an eye on it.')}
   <div class="grow"></div><button class="btn primary" ${act('saveManual')}>Save</button><button class="btn ghost" ${act('saveManual','again')}>Save and add another</button></div>`,
   mount(el){const tg=$('#fTrial',el);tg.addEventListener('click',()=>tg.setAttribute('aria-checked',tg.getAttribute('aria-checked')!=='true'));el.querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x===b))));if(!T.prefill)$('#fName',el).focus({preventScroll:true});
   el.querySelectorAll('[data-plan]').forEach(b=>b.addEventListener('click',()=>{el.querySelectorAll('[data-plan]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#fPrice',el).value=(+b.dataset.price).toFixed(2);el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.cycle===b.dataset.cad));}));
@@ -584,7 +585,7 @@ addtrial:{render:()=>`<div class="content">
 
 discounts:{render:()=>{const edit=S.onboarded;const who=myWho();const save=yearlySavings(who);
   return `<div class="content">${edit?`<button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button>`:`<span class="t-cap c-dirt">STEP 3 OF 3</span>`}
-  <h2 class="t-l">${edit?'Discounts':'Any of these you?'}</h2>
+  <div class="row between" style="align-items:flex-end"><h2 class="t-l">${edit?'Discounts':'Any of these you?'}</h2>${plot(who.length?'Resurrected':'Content',56)}</div>
   <p class="t-body c-plum">Some services charge students, teachers and the military less. Tap what fits and Plot will check your list for a cheaper plan.</p>
   <div class="stack" style="gap:8px">${Object.entries(WHO).map(([k,w])=>`<button class="whochip${who.includes(k)?' on':''}" ${act('toggleWho',k)} aria-pressed="${who.includes(k)}"><span class="stack-s grow" style="gap:2px;text-align:left"><span class="t-strong">${w.label}</span><span class="t-cap">${w.sub}</span></span><span class="tick" aria-hidden="true"></span></button>`).join('')}</div>
   ${!edit?(()=>{const top=allTips().filter(t=>t.sw).sort((a,b)=>(b.save||0)-(a.save||0)).slice(0,3);const {total}=tipsTotal();if(!top.length)return '';
@@ -594,10 +595,10 @@ discounts:{render:()=>{const edit=S.onboarded;const who=myWho();const save=yearl
 savings:{render:()=>{const tips=allTips().sort((a,b)=>(b.save||0)-(a.save||0));const {total}=tipsTotal(tips);const groups=Object.keys(KIND).map(k=>[k,tips.filter(t=>t.kind===k)]).filter(([,l])=>l.length);
   return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; Dashboard</button>
   <h2 class="t-l">Cheaper plans</h2>
-  <div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:4px"><span class="t-cap c-blush">UP TO, EVERY YEAR</span><span class="t-l c-moss">${m(total)}</span><span class="t-dp c-stone">Same subscriptions. Smaller bill. Plot never counts one subscription twice.</span>${(S.switches||[]).length?`<span class="t-cap c-moss" style="margin-top:6px">Already saving ${m(switchedTotal())} a year from ${(S.switches||[]).length} switch${(S.switches||[]).length>1?'es':''}.</span>`:''}</div>
+  <div class="card nightsky" style="background:var(--ink);border:0;color:var(--bone);gap:4px">${NIGHT}<span class="t-cap c-blush">UP TO, EVERY YEAR</span><span class="t-l c-moss">${m(total)}</span><span class="t-dp c-stone">Same subscriptions. Smaller bill. Plot never counts one subscription twice.</span>${(S.switches||[]).length?`<span class="t-cap c-moss" style="margin-top:6px">Already saving ${m(switchedTotal())} a year from ${(S.switches||[]).length} switch${(S.switches||[]).length>1?'es':''}.</span>`:''}</div>
   ${groups.length?groups.map(([k,l])=>`<span class="section-label">${KIND[k].label} (${l.length})</span><div class="stack" style="gap:10px">${l.map(t=>tipCard(t,true)).join('')}</div>`).join(''):`<div class="card dash" style="align-items:center;text-align:center;gap:8px">${plot('Content',80)}<span class="t-title">Already the cheapest</span><span class="t-body c-plum">Plot checked every plan. Nothing to switch.</span></div>`}
   ${myWho().length?'':`<button class="card dash hint" style="text-align:left;gap:4px" ${act('go','discounts')}><span class="t-strong">Student, teacher or military?</span><span class="t-cap c-plum">Tell Plot and it checks for discounts too.</span></button>`}
-  <p class="t-cap c-plum center">Prices are typical US prices. The service’s own page has the final word.</p></div>`;}},
+  ${fence('Prices are typical US prices. The service’s page has the final word.')}</div>`;}},
 switchto:{render:()=>{const t=T.sw;if(!t)return SCREENS.home.render();const sw=t.sw;const s=getSub(sw.subId);if(!s)return SCREENS.home.render();
   const who=sw.merge?sw.merge.map(getSub).filter(Boolean).map(x=>x.name).join(' + '):s.name;const site=sw.merge?'the bundle page':s.name;
   if(!T.pendingReturn) return `<div class="content mid"><div style="height:8px"></div>${plot('Content',130,'bob')}
@@ -613,7 +614,7 @@ switched:{render:()=>{const r=T.swDone;if(!r)return SCREENS.home.render();return
   <div class="card" style="width:100%;background:var(--ink);border:0;color:var(--bone);gap:2px"><span class="t-cap c-blush">SAVED BY SWITCHING</span><span class="t-l c-moss">+${m(r.save)} a year</span><span class="t-dp c-stone">${m(switchedTotal())} a year so far. Same stuff, smaller bill.</span></div>
   <div class="grow"></div>${r.next?`<button class="btn bury" ${act('buryOne',r.next)}>Now bury ${esc(getSub(r.next)?.name||'')}</button>`:''}<button class="btn ${r.next?'ghost':'primary'}" ${act('switchBack')}>${T.swReturn==='deals'||T.swReturn==='discounts'?'Back':'Done'}</button></div>`;}},
 deals:{render:()=>{const tips=allTips().sort((a,b)=>(b.save||0)-(a.save||0));const {total}=tipsTotal(tips);const done=S.switches||[];
-  return `<div class="content"><span class="t-cap c-dirt">STEP 4 OF 4</span><h2 class="t-l">${tips.length?'Plot found cheaper plans.':'You’re already on the cheapest plans.'}</h2>
+  return `<div class="content"><div class="row between" style="align-items:flex-end"><h2 class="t-l">${tips.length?'Plot found cheaper plans.':'You’re already on the cheapest plans.'}</h2>${plot('Resurrected',56)}</div>
   <p class="t-body c-plum">${tips.length?`Same subscriptions, up to ${m(total)} a year less. Tap Switch and Plot walks you through it.`:'Plot checked every plan. Nothing to switch.'}</p>
   ${done.length?`<div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:2px"><span class="t-cap c-blush">SWITCHED (${done.length})</span><span class="t-strong c-moss">+${m(switchedTotal())} a year</span><span class="t-cap c-stone">${done.map(x=>esc(x.name)+' → '+esc(x.plan)).join(' · ')}</span></div>`:''}
   <div class="stack" style="gap:10px">${tips.map(t=>tipCard(t,true)).join('')}</div>
@@ -694,17 +695,17 @@ settings:{render:()=>{const name=S.profile.name;const due=S.checkins[monthKey()]
   <div class="stack-s" style="align-items:center;padding:8px 0 4px">${plot('Sleepy',44)}<span class="t-cap c-plum">Subscription Graveyard · made by Maya Walsh</span></div>
   </div>`;}},
 editName:{render:()=>`<div class="content">
-  <button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button><h2 class="t-l">Your name</h2>
-  <p class="t-body c-plum">Plot uses it to say hello on the Dashboard.</p>
+  <button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button><div class="center" style="align-self:center">${plot('Content',110,'bob')}</div><h2 class="t-l center">What should Plot call you?</h2>
+  <p class="t-body c-plum center" style="margin-top:-6px">Plot uses it to say hello on the Dashboard.</p>
   <div class="field"><label for="nm">Name</label><input id="nm" value="${esc(S.profile.name)}" placeholder="Maya" autocomplete="given-name" maxlength="30"></div>
   <div class="grow"></div><button class="btn primary" ${act('saveName')}>Save</button></div>`,
   mount(el){const i=$('#nm',el);i.focus({preventScroll:true});i.addEventListener('keydown',e=>{if(e.key==='Enter')ACT.saveName();});}},
 privacy:{render:()=>`<div class="content">
-  <button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button><h2 class="t-l">Privacy</h2>
+  <button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button><div class="row between" style="align-items:flex-end"><h2 class="t-l">Privacy</h2>${plot('Sleepy',56)}</div>
   <div class="card stack" style="gap:12px"><span class="t-title">What Plot keeps</span><span class="t-body">Your subscriptions, ratings, burials and settings. They stay in this phone’s storage and are never uploaded.</span></div>
   <div class="card stack" style="gap:12px"><span class="t-title">The bank connection</span><span class="t-body">This demo only connects to pretend banks: Plot’s demo bank or Plaid’s test mode. Real bank accounts can’t be linked.</span></div>
   <div class="card stack" style="gap:12px"><span class="t-title">Cancel links</span><span class="t-body">“Open Netflix” and similar buttons go straight to that company’s website. Plot never sees your logins there.</span></div>
-  </div>`},
+  <div class="grow"></div>${fence('Your secrets rest in peace on this phone.')}</div>`},
 sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();const r=s.rating?RATE[s.rating]:null;const ads=addonsOf(s);const price=s.price+ads.reduce((a,x)=>a+x.price,0);const cpu=r?price/r.uses:null;
   const charges=[...(s.charges||[]),...ads.flatMap(a=>a.charges||[])];
   const now=new Date();const months=[];for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);const key=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;const amt=charges.filter(c=>c.date.startsWith(key)).reduce((a,c)=>a+c.amount,0);months.push([MONS[d.getMonth()].toUpperCase(),amt,i===0]);}
@@ -720,7 +721,7 @@ sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();cons
    :`<button class="t-cap c-plum" style="align-self:flex-start" ${act('toggleAddonForm')}>+ Add an add-on</button>`}
   ${ads.length?`<span class="t-dp" style="border-top:1.5px dashed var(--stone);padding-top:10px">Altogether ${esc(s.name)} costs ${m(price)} a ${s.cadence==='yearly'?'year':'month'}.</span>`:''}</div>`;
   const meter=r?{barely:10,sometimes:40,constantly:95}[s.rating]:0;
-  return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; ${esc(s.name)}</button>${s.plan||s.members?`<span class="t-cap c-plum" style="margin-top:-10px">${s.plan?esc(s.plan)+(s.was?` · was ${m(s.was.price)}`:''):''}${s.members?' · includes '+s.members.map(esc).join(', '):''}</span>`:''}
+  return `<div class="content"><div class="row between"><button class="backlink" ${act('back','home')}>←&nbsp; ${esc(s.name)}</button><span class="logo-tile big" style="background:${svcColor(s.name)};color:${svcInk(s.name)}">${esc(letter(s.name))}${s.rating==='barely'?COBWEB:''}</span></div>${s.plan||s.members?`<span class="t-cap c-plum" style="margin-top:-10px">${s.plan?esc(s.plan)+(s.was?` · was ${m(s.was.price)}`:''):''}${s.members?' · includes '+s.members.map(esc).join(', '):''}</span>`:''}
   ${r?`<div class="card thick" style="padding:22px 24px;gap:8px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-dl">${m(cpu)} / use</span><span class="t-dp c-plum">${m(price)} a month${ads.length?' with add-ons':''} ÷ about ${r.uses} use${r.uses>1?'s':''} (you said “${r.said}”).</span><div class="meter"><i style="width:${meter}%"></i></div><span class="t-cap c-dirt">Worth-it meter: ${meter<35?'low':meter<70?'meh':'high'}</span></div>`
   :`<div class="card thick" style="gap:10px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-body">How much did you use ${esc(s.name)} this month? Plot will do the math.</span>${['barely','sometimes','constantly'].map(k=>`<button class="ratechip" ${act('rateOne',k)}><i class="${RATE[k].cls}"></i>${k==='barely'?'Barely touched it':k==='sometimes'?'Here and there':'Couldn’t live without it'}</button>`).join('')}</div>`}
   ${ads.length||tAds.length||T.addonForm?addonCard:''}
@@ -747,12 +748,13 @@ intro:{render:()=>{const done=S.checkins[monthKey()];if(done&&S.subs.length){con
 swipe:{render:()=>`<div class="content" style="gap:14px">
   <div class="row"><button aria-label="Close check-in" ${act('back','home')} style="font-size:26px;font-weight:700;line-height:1;padding:4px">×</button><div class="progress"><i id="prog" style="width:${T.deckIndex/T.deck.length*100}%"></i></div><span class="t-cap" style="font-weight:700;font-size:13px" id="progTxt">${Math.min(T.deckIndex+1,T.deck.length)} of ${T.deck.length}</span></div>
   <div class="deck" id="deck"><div class="ghostcard g2"></div><div class="ghostcard g1"></div></div>
+  <div class="watch">${plot('Content',44,'bob')}<span class="t-cap c-plum">Plot is taking notes. Be honest.</span></div>
   <div class="hints"><span>← Barely</span><span>↑ Can’t live without</span><span>Here and there →</span></div>
   <span class="t-cap c-plum center">or tap</span>
   <div class="stack" style="gap:10px">${[['barely','Barely touched it','var(--pumpkin)'],['sometimes','Here and there','var(--candle)'],['constantly','Couldn’t live without it','var(--moss)']].map(([k,l,c])=>`<button class="ratechip" ${act('rate',k)}><i style="background:${c}"></i>${l}</button>`).join('')}</div></div>`,
   mount(el){drawCard(el);}},
 verdict:{render:()=>{const worth=S.subs.filter(s=>s.rating==='constantly'),thin=S.subs.filter(s=>s.rating==='sometimes'),shall=S.subs.filter(s=>s.rating==='barely');const save=shall.reduce((a,s)=>a+monthly(s)*12,0);
-  return `<div class="content"><h2 class="t-l">The verdict.</h2><p class="t-body c-plum" style="margin-top:-8px">${S.subs.length} rated. Here’s what Plot thinks.</p>
+  return `<div class="content"><div class="row between" style="align-items:flex-end"><h2 class="t-l">The verdict.</h2>${plot(shall.length?'Alarmed':'Resurrected',60)}</div><p class="t-body c-plum" style="margin-top:-8px">${S.subs.length} rated. Here’s what Plot thinks.</p>
   <div class="stack stagger">
   <div class="card thick" style="background:var(--moss)"><span class="t-title">Worth it (${worth.length})</span><span class="t-cap" style="font-size:13px">${worth.map(s=>esc(s.name)).join(' · ')||'None this month.'}</span></div>
   <div class="card thick" style="background:var(--candle)"><span class="t-title">On thin ice (${thin.length})</span><span class="t-cap" style="font-size:13px">${thin.map(s=>`${esc(s.name)} ${m(s.price/4)}/use`).join(' · ')||'None this month.'}</span></div>

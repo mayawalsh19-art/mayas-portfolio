@@ -217,6 +217,8 @@ h1,h2,p{margin:0}
 .trow .tr-tag{flex:none;padding:5px 10px;border-radius:999px;background:var(--candle);color:var(--ink);font-size:12px;font-weight:700}
 .trow.just.on .tr-ic .ghosty{animation:ghostIn .6s cubic-bezier(.3,1.5,.5,1) both,bob 2.6s ease-in-out .6s infinite}
 .trow.just:not(.on) .logo-tile{animation:thud .45s cubic-bezier(.3,1.6,.5,1) both}
+.logo-tile.big{width:52px;height:52px;border-radius:16px;font-family:var(--display);font-weight:400;font-size:26px;border:3px solid var(--ink)}
+.watch{display:flex;align-items:center;justify-content:center;gap:8px;margin:-4px 0}
 .slimrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 16px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;font-size:14px;font-weight:500;margin-top:-6px}
 .ghostrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--paper);border:2px dashed var(--plum);border-radius:20px}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
