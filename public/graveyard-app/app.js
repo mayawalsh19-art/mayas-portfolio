@@ -121,7 +121,7 @@ const DISCOUNTS={
 };
 const myWho=()=>S.profile.discounts||[];
 // Best discount for this subscription given who the user said they are.
-function cheaperFor(s,who=myWho()){const opts=(DISCOUNTS[canon(s.name)]||[]).filter(d=>who.includes(d.who));let best=null;
+function cheaperFor(s,who=myWho()){if(s.bundle)return null;const opts=(DISCOUNTS[canon(s.name)]||[]).filter(d=>who.includes(d.who));let best=null;
  for(const d of opts){const now=monthly(s);const p=d.price!=null?d.price:(d.pct!=null?Math.round(now*(1-d.pct)*100)/100:null);if(p!=null&&p>=now)continue;const save=p==null?null:Math.round((now-p)*12*100)/100;if(!best||(save??0)>(best.save??0))best={...d,newPrice:p,save};}
  return best;}
 const yearlySavings=(who=myWho())=>S.subs.reduce((a,s)=>a+(cheaperFor(s,who)?.save||0),0);
@@ -130,40 +130,53 @@ const yearlySavings=(who=myWho())=>S.subs.reduce((a,s)=>a+(cheaperFor(s,who)?.sa
 const AD_PLANS={'Netflix':{plan:'Standard with ads',price:8.99},'Max':{plan:'Basic with ads',price:10.99},'Disney+':{plan:'Disney+ with ads',price:11.99},'Spotify':{plan:'Spotify Free',price:0,note:'It has ads and shuffle, but costs nothing'}};
 const YEARLY={'Amazon Prime':{monthly:14.99,yearly:139},'Apple TV+':{monthly:14.99,yearly:119},'Calm':{monthly:14.99,yearly:69.99},'Headspace':{monthly:12.99,yearly:69.99},'Audible':{monthly:14.95,yearly:149.50}};
 const BUNDLES=[
- {name:'Disney+, Hulu and HBO Max bundle (with ads)',has:['Disney+','Hulu','Max'],price:19.99,min:2,url:SEARCH('Disney+ Hulu HBO Max bundle')},
- {name:'Disney+ and Hulu bundle (with ads)',has:['Disney+','Hulu'],price:12.99,min:2,url:SEARCH('Disney+ Hulu bundle Duo Basic')},
- {name:'Apple One Individual',has:['Apple TV+','iCloud+'],price:21.95,min:2,note:'and it adds Apple Music and Arcade',url:'https://www.apple.com/apple-one/'}];
+ {name:'Disney+, Hulu and HBO Max bundle (with ads)',short:'Disney+/Hulu/HBO Max bundle',has:['Disney+','Hulu','Max'],price:19.99,min:2,url:SEARCH('Disney+ Hulu HBO Max bundle')},
+ {name:'Disney+ and Hulu bundle (with ads)',short:'Disney+/Hulu bundle',has:['Disney+','Hulu'],price:12.99,min:2,url:SEARCH('Disney+ Hulu bundle Duo Basic')},
+ {name:'Apple One Individual',short:'Apple One',has:['Apple TV+','iCloud+'],price:21.95,min:2,note:'and it adds Apple Music and Arcade',url:'https://www.apple.com/apple-one/'}];
 const KIND={discount:{label:'Discount',cls:'k-discount'},overlap:{label:'Paying twice',cls:'k-overlap'},yearly:{label:'Pay yearly',cls:'k-yearly'},ads:{label:'Plan with ads',cls:'k-ads'},bundle:{label:'Bundle',cls:'k-bundle'}};
 const r2=n=>Math.round(n*100)/100;
-function allTips(){const tips=[];const subs=S.subs;const by=n=>subs.find(s=>canon(s.name)===n);const who=myWho();
+function allTips(){const tips=[];const subs=S.subs.filter(x=>!x.bundle);const by=n=>subs.find(s=>canon(s.name)===n);const who=myWho();
  // 1. discounts for who you are
  for(const s of subs){const d=cheaperFor(s,who);if(!d)continue;const w=WHO[d.who].short;
-  tips.push({id:'disc:'+s.id,kind:'discount',subs:[s.name],save:d.save,url:d.url,cta:`Get the ${w} price`,
+  tips.push({id:'disc:'+s.id,kind:'discount',subs:[s.name],save:d.save,url:d.url,cta:`Get the ${w} price`,sw:{subId:s.id,plan:d.plan,price:d.newPrice,verify:w},
    title:`${d.plan}`,text:`You pay ${m(monthly(s))}. ${esc(d.plan)} is ${d.newPrice===0?'free for you':d.newPrice!=null?m(d.newPrice)+'/mo':'cheaper'}${d.note?' '+esc(d.note):''}.${d.save?` That’s ${m(d.save)} a year back.`:' Check the price on their page.'}`});}
  // 2. paying twice
  const sp=by('Spotify'),hu=by('Hulu');
- if(who.includes('student')&&sp&&hu)tips.push({id:'ov:spotify-hulu',kind:'overlap',subs:[sp.name,hu.name],save:r2(monthly(hu)*12),url:'https://www.spotify.com/us/student/',cta:'See Spotify Student',
+ if(sp&&hu&&sp.plan==='Spotify Premium Student')tips.push({id:'ov:spotify-hulu-done',kind:'overlap',subs:[sp.name,hu.name],save:r2(monthly(hu)*12),bury:hu.id,title:'Hulu already comes with your Spotify',text:`Spotify Premium Student includes Hulu (with ads). The separate Hulu is ${m(monthly(hu)*12)} a year you don’t need.`});
+ else if(who.includes('student')&&sp&&hu)tips.push({id:'ov:spotify-hulu',kind:'overlap',subs:[sp.name,hu.name],save:r2(monthly(hu)*12),url:'https://www.spotify.com/us/student/',cta:'See Spotify Student',sw:{subId:sp.id,plan:'Spotify Premium Student',price:6.99,verify:'student',thenBury:hu.id},
   title:'Hulu comes with Spotify Student',text:`Spotify Premium Student includes Hulu (with ads). Switch Spotify to Student and you can bury Hulu: ${m(monthly(hu)*12)} a year.`});
- for(const s of subs)for(const a of addonsOf(s)){const twin=subs.find(x=>x!==s&&canon(x.name)===canon(a.name));if(twin)tips.push({id:'ov:addon:'+s.id+a.id,kind:'overlap',subs:[s.name,twin.name],save:r2(Math.min(a.price,monthly(twin))*12),act:['openSub',s.id],cta:`Open ${s.name}`,
+ for(const s of subs)for(const a of addonsOf(s)){const twin=subs.find(x=>x!==s&&canon(x.name)===canon(a.name));if(twin)tips.push({id:'ov:addon:'+s.id+a.id,kind:'overlap',subs:[s.name,twin.name],save:r2(Math.min(a.price,monthly(twin))*12),act:['openSub',s.id],cta:`Open ${s.name}`,bury:twin.id,
   title:`You pay for ${a.name} twice`,text:`${esc(a.name)} is an add-on inside ${esc(s.name)} and its own subscription too. Keep one: ${m(Math.min(a.price,monthly(twin))*12)} a year.`});}
  const ic=by('iCloud+'),go=by('Google One');
- if(ic&&go){const low=monthly(ic)<monthly(go)?ic:go;tips.push({id:'ov:storage',kind:'overlap',subs:[ic.name,go.name],save:r2(monthly(low)*12),act:['openSub',low.id],cta:`Open ${low.name}`,title:'Two cloud storage plans',text:`You pay for iCloud+ and Google One. If one is enough, that’s ${m(monthly(low)*12)} a year.`});}
+ if(ic&&go){const low=monthly(ic)<monthly(go)?ic:go;tips.push({id:'ov:storage',kind:'overlap',subs:[ic.name,go.name],save:r2(monthly(low)*12),act:['openSub',low.id],bury:low.id,cta:`Open ${low.name}`,title:'Two cloud storage plans',text:`You pay for iCloud+ and Google One. If one is enough, that’s ${m(monthly(low)*12)} a year.`});}
  const yt=by('YouTube Premium');
- if(yt&&sp&&!(who.includes('student')))tips.push({id:'ov:ytmusic',kind:'overlap',subs:[yt.name,sp.name],save:r2(monthly(sp)*12),act:['openSub',sp.id],cta:'Open Spotify',title:'YouTube Premium includes YouTube Music',text:`If YouTube Music works for you, Spotify is ${m(monthly(sp)*12)} a year you don’t need.`});
+ if(yt&&sp&&!(who.includes('student')))tips.push({id:'ov:ytmusic',kind:'overlap',subs:[yt.name,sp.name],save:r2(monthly(sp)*12),act:['openSub',sp.id],bury:sp.id,cta:'Open Spotify',title:'YouTube Premium includes YouTube Music',text:`If YouTube Music works for you, Spotify is ${m(monthly(sp)*12)} a year you don’t need.`});
  // 3. pay yearly
  for(const s of subs){const y=YEARLY[canon(s.name)];if(!y||s.cadence==='yearly'||Math.abs(s.price-y.monthly)>y.monthly*.1)continue;const save=r2(s.price*12-y.yearly);if(save<5)continue;
-  tips.push({id:'yr:'+s.id,kind:'yearly',subs:[s.name],save,url:cancelUrl(s.name),cta:`Switch on ${s.name}`,title:`${s.name}, paid yearly`,text:`Monthly costs ${m(s.price*12)} a year. The yearly plan is ${m(y.yearly)}. Same thing, ${m(save)} less.`});}
+  tips.push({id:'yr:'+s.id,kind:'yearly',subs:[s.name],save,url:cancelUrl(s.name),cta:`Switch on ${s.name}`,sw:{subId:s.id,plan:'Yearly plan',price:y.yearly,cadence:'yearly'},title:`${s.name}, paid yearly`,text:`Monthly costs ${m(s.price*12)} a year. The yearly plan is ${m(y.yearly)}. Same thing, ${m(save)} less.`});}
  // 4. plans with ads, only for things you barely use
  for(const s of subs){const a=AD_PLANS[canon(s.name)];if(!a||!(s.rating==='barely'||s.rating==='sometimes')||monthly(s)-a.price<1)continue;const save=r2((monthly(s)-a.price)*12);
-  tips.push({id:'ads:'+s.id,kind:'ads',subs:[s.name],save,url:cancelUrl(s.name),cta:`Change plan on ${s.name}`,title:`${s.name}: ${a.plan}`,text:`You ${s.rating==='barely'?'barely use':'only sometimes use'} ${esc(s.name)}. ${esc(a.plan)} is ${a.price?m(a.price)+'/mo':'free'}${a.note?'. '+esc(a.note):''}. That’s ${m(save)} a year.`});}
+  tips.push({id:'ads:'+s.id,kind:'ads',subs:[s.name],save,url:cancelUrl(s.name),cta:`Change plan on ${s.name}`,sw:{subId:s.id,plan:a.plan,price:a.price},title:`${s.name}: ${a.plan}`,text:`You ${s.rating==='barely'?'barely use':'only sometimes use'} ${esc(s.name)}. ${esc(a.plan)} is ${a.price?m(a.price)+'/mo':'free'}${a.note?'. '+esc(a.note):''}. That’s ${m(save)} a year.`});}
  // 5. bundles: the biggest one you qualify for that beats what you pay now
  for(const b of BUNDLES){const mine=b.has.map(by).filter(Boolean);if(mine.length<b.min)continue;const now=mine.reduce((t,s)=>t+monthly(s),0);if(now<=b.price)continue;
   if(tips.some(t=>t.kind==='bundle'&&mine.every(s=>t.subs.includes(s.name))))continue;const save=r2((now-b.price)*12);
-  tips.push({id:'bn:'+b.name,kind:'bundle',subs:mine.map(s=>s.name),save,url:b.url,cta:'See the bundle',title:b.name,text:`${mine.map(s=>esc(s.name)).join(' + ')} cost you ${m(now)} a month. The ${esc(b.name)} is ${m(b.price)}${b.note?' '+esc(b.note):''}. That’s ${m(save)} a year.`});}
+  tips.push({id:'bn:'+b.name,kind:'bundle',subs:mine.map(s=>s.name),save,url:b.url,cta:'See the bundle',sw:{subId:mine[0].id,merge:mine.map(s=>s.id),plan:b.name,price:b.price,bundleName:b.short},title:b.name,text:`${mine.map(s=>esc(s.name)).join(' + ')} cost you ${m(now)} a month. The ${esc(b.name)} is ${m(b.price)}${b.note?' '+esc(b.note):''}. That’s ${m(save)} a year.`});}
  return tips.filter(t=>t.save==null||t.save>0);}
+// ---------- Switching to a cheaper plan ----------
+// Plot can't change a plan for you: it hands you to the service, then asks if it worked and updates the bill.
+function switchedTotal(){return r2((S.switches||[]).reduce((a,x)=>a+(x.save||0),0));}
+function applySwitch(t,price){const sw=t.sw;const s=getSub(sw.subId);if(!s)return null;const before=sw.merge?sw.merge.map(getSub).filter(Boolean):[s];
+ const oldMonthly=before.reduce((a,x)=>a+monthly(x),0);let target=s;
+ if(sw.merge){const b={id:uid(),name:sw.bundleName,plan:sw.plan,price,cadence:'monthly',next:s.next||null,last:null,first:today(),charges:[],addons:before.flatMap(addonsOf),members:before.map(x=>x.name),bundle:true,source:'switch',rating:null};
+  S.subs=S.subs.filter(x=>!sw.merge.includes(x.id));S.subs.push(b);target=b;}
+ else{s.was={plan:s.plan||null,price:s.price,cadence:s.cadence};s.plan=sw.plan;s.price=price;if(sw.cadence)s.cadence=sw.cadence;}
+ const newMonthly=sw.cadence==='yearly'?price/12:price;const saving=r2(Math.max(0,(oldMonthly-newMonthly)*12));
+ (S.switches||=[]).push({at:new Date().toISOString(),name:target.name,plan:sw.plan,save:saving});S.log.unshift({at:new Date().toISOString(),type:'switched',name:target.name,plan:sw.plan});
+ delete target.switchRemind;save();return {target,save:saving};}
 // A total that never counts the same subscription twice: take the biggest wins first.
 function tipsTotal(tips=allTips()){const used=new Set();let total=0,n=0;for(const t of [...tips].sort((a,b)=>(b.save||0)-(a.save||0))){if(t.subs.some(x=>used.has(x)))continue;t.subs.forEach(x=>used.add(x));total+=t.save||0;n++;}return {total:r2(total),n};}
-function tipCard(t,showSubs){const k=KIND[t.kind];const btn=t.url?`<a class="btn light sm" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${esc(t.cta)} ↗</a>`:t.act?`<button class="btn light sm" ${act(t.act[0],t.act[1])}>${esc(t.cta)}</button>`:'';
+function tipCard(t,showSubs){const k=KIND[t.kind];const bs=t.bury&&getSub(t.bury);
+ const btn=t.sw?`<button class="btn primary sm" ${act('startSwitch',t.id)}>Switch${t.sw.merge?' to the bundle':t.sw.cadence==='yearly'?' to yearly':''}</button>`:bs?`<button class="btn bury sm" ${act('buryOne',bs.id)}>Bury ${esc(bs.name)}</button>`:t.url?`<a class="btn light sm" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${esc(t.cta)} ↗</a>`:t.act?`<button class="btn light sm" ${act(t.act[0],t.act[1])}>${esc(t.cta)}</button>`:'';
  return `<div class="card thick tip ${k.cls}" style="gap:8px"><span class="row between" style="gap:8px"><span class="t-cap c-dirt">${k.label.toUpperCase()}${showSubs?' · '+t.subs.map(x=>esc(x.toUpperCase())).join(' + '):''}</span>${t.save?`<span class="chip bg-paper">${m(t.save)}/yr</span>`:''}</span><span class="t-strong">${esc(t.title)}</span><span class="t-dp">${t.text}</span>${btn}</div>`;}
 const cancelUrl=n=>CATALOG[n]?.cancel||SEARCH(`how to cancel ${n} subscription`);
 const homeUrl=n=>CATALOG[n]?.home||SEARCH(`${n} subscribe`);
@@ -409,7 +422,7 @@ meet:{render:()=>`<div class="content mid"><div style="height:8px"></div>
   <div class="card stagger" style="width:100%;gap:12px">${[['Content','A 2-minute check-in, once a month'],['Sleepy','Bury what you don’t use'],['Resurrected','Bring anything back, no judgment']].map(([md,t])=>`<div class="row">${plot(md,36)}<span class="t-strong">${t}</span></div>`).join('')}</div>
   <div class="grow"></div><button class="btn primary" ${S.onboarded?act('back','settings'):act('go','add')}>${S.onboarded?'Back to Settings':'Nice to meet you'}</button></div>`},
 add:{render:()=>{const b=T.method==='bank';return `<div class="content">
-  <span class="t-cap c-dirt">STEP 1 OF 3</span><h2 class="t-l">Add your subscriptions</h2>
+  <span class="t-cap c-dirt">STEP 1 OF 4</span><h2 class="t-l">Add your subscriptions</h2>
   <p class="t-body c-plum">Plot needs to know what you pay for before it can judge any of it.</p>
   <button class="card option" aria-pressed="${b}" ${act('method','bank')}><span class="row"><span class="t-title">Link your bank</span><span class="chip bg-moss">Recommended</span></span><span class="t-body c-plum">Plot finds recurring charges for you.</span></button>
   <button class="card option" aria-pressed="${!b}" ${act('method','hand')}><span class="t-title">Add them by hand</span><span class="t-body c-plum">Type in each one. Slower, but very private.</span></button>
@@ -451,7 +464,7 @@ found:{render:()=>{const r=S.scan;
   if(T.scanError) return `<div class="content mid"><div class="grow"></div>${plot('Alarmed',140)}<h2 class="t-m">Plot couldn’t read the bank.</h2><p class="t-body c-plum">${esc(T.scanError)}</p><div class="grow"></div><button class="btn primary" ${act('rescan')}>Try again</button><button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button></div>`;
   if(!r) return `<div class="content mid"><div class="grow"></div>${plot('Sleepy',120,'bob')}<h2 class="t-m">Plot is reading your statements.</h2><div class="loadbar"><i></i></div><p class="t-dp c-plum">${esc(T.scanMsg||'Waiting for the demo bank…')}</p><div class="grow"></div></div>`;
   const subs=r.subscriptions,stopped=r.stopped||[];
-  return `<div class="content"><span class="t-cap c-dirt">STEP 1 OF 3 · ${esc(S.bank?.name||'Demo bank')}${S.bank?.mask?' ••'+esc(S.bank.mask):''}</span>
+  return `<div class="content"><span class="t-cap c-dirt">STEP 1 OF 4 · ${esc(S.bank?.name||'Demo bank')}${S.bank?.mask?' ••'+esc(S.bank.mask):''}</span>
   <h2 class="t-l">Plot found ${subs.length}.</h2>
   <p class="t-body c-plum">Plot read ${r.scanned} transactions and kept the ones that repeat. Tap anything that isn’t a subscription to remove it.</p>
   <div class="stack stagger" style="gap:8px">${subs.map(x=>`<button class="subrow${S.removed[x.name]?' off':''}" ${act('toggleFound',x.name)} aria-pressed="${!S.removed[x.name]}"><span class="logo-tile">${esc(letter(x.name))}</span><span class="info"><span class="t-strong">${esc(x.name)}</span><span class="chip ${x.isNew?'bg-blush':'bg-stone'}">${S.removed[x.name]?'Removed':x.isNew?'Just started':`${x.charges.length} charges · ${x.cadence}`}</span>${(x.addons||[]).map(a=>`<span class="t-cap c-plum">+ ${esc(a.name)} ${m(a.price)}/mo add-on</span>`).join('')}</span><span class="price"><span class="t-strong">${m(x.price+(x.addons||[]).reduce((t,a)=>t+a.price,0))}</span><span class="t-cap c-dirt">next: ${fmtDay(x.next)}</span></span></button>`).join('')}</div>
@@ -459,7 +472,7 @@ found:{render:()=>{const r=S.scan;
   ${stopped.length?`<span class="section-label" style="margin-top:6px">Already cancelled (${stopped.length})</span><div class="card dash" style="gap:8px"><span class="t-dp">These stopped charging a while ago. Plot will give them a proper burial in your Graveyard.</span>${stopped.map(x=>`<span class="row between"><span class="t-strong">${esc(x.name)}</span><span class="t-cap c-dirt">last charge ${fmtDay(x.last)}</span></span>`).join('')}</div>`:''}
   <div class="grow"></div><button class="btn primary" ${act('acceptScan')}>Looks right</button></div>`;}},
 trials:{render:()=>`<div class="content">
-  <span class="t-cap c-dirt">STEP 2 OF 3</span><h2 class="t-l">Any free trials?</h2>
+  <span class="t-cap c-dirt">STEP 2 OF 4</span><h2 class="t-l">Any free trials?</h2>
   <p class="t-body c-plum">Plot counts down and warns you before a trial turns into a charge.</p>
   <div class="stack stagger">${S.subs.slice(0,8).map(s=>`<div class="card row" style="flex-direction:row"><div class="stack-s grow" style="gap:2px"><span class="t-strong">${esc(s.name)}</span><span class="t-cap c-plum">Not a trial</span></div><button class="toggle" role="switch" aria-checked="false" aria-label="${esc(s.name)} is a free trial" ${act('markTrial',s.id)}></button></div>`).join('')}${S.trials.map(t=>`<div class="card row" style="flex-direction:row;background:var(--pumpkin);border-width:3px">${plot('Alarmed',40)}<div class="stack-s grow" style="gap:2px"><span class="t-strong">${esc(tName(t))}</span><span class="t-dp">Ends ${fmtDay(t.ends)} · then ${m(t.price)}/mo${t.source==='bank'?' · spotted in your bank':''}</span></div><button class="toggle" role="switch" aria-checked="true" aria-label="Stop watching ${esc(t.name)}" ${act('removeTrial',t.id)}></button></div>`).join('')}${!S.trials.length&&!S.subs.length?`<div class="card"><span class="t-body c-plum">No trials yet.</span></div>`:''}</div>
   <button class="card dash" style="align-items:center" ${act('go','addtrial')}><span class="t-strong">+&nbsp; Add a trial Plot missed</span></button>
@@ -480,19 +493,39 @@ addtrial:{render:()=>`<div class="content">
    el.querySelectorAll('input').forEach(i=>i.addEventListener('input',upd));el.querySelectorAll('[data-warn]').forEach(b=>b.addEventListener('click',()=>{el.querySelectorAll('[data-warn]').forEach(x=>x.setAttribute('aria-pressed',x===b));upd();}));upd();}},
 
 discounts:{render:()=>{const edit=S.onboarded;const who=myWho();const save=yearlySavings(who);
-  return `<div class="content">${edit?`<button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button>`:`<span class="t-cap c-dirt">STEP 3 OF 3</span>`}
+  return `<div class="content">${edit?`<button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button>`:`<span class="t-cap c-dirt">STEP 3 OF 4</span>`}
   <h2 class="t-l">${edit?'Discounts':'Any of these you?'}</h2>
   <p class="t-body c-plum">Some services charge students, teachers and the military less. Tap what fits and Plot will check your list for a cheaper plan.</p>
   <div class="stack" style="gap:8px">${Object.entries(WHO).map(([k,w])=>`<button class="whochip${who.includes(k)?' on':''}" ${act('toggleWho',k)} aria-pressed="${who.includes(k)}"><span class="stack-s grow" style="gap:2px;text-align:left"><span class="t-strong">${w.label}</span><span class="t-cap">${w.sub}</span></span><span class="tick" aria-hidden="true"></span></button>`).join('')}</div>
   <div class="card dash" style="gap:6px">${who.length?(save>0?`<span class="t-title">Plot found ${m(save)} a year in cheaper plans.</span><span class="t-cap c-plum">${S.subs.filter(x=>cheaperFor(x)).map(x=>esc(x.name)).join(', ')}. Each one’s page shows how to switch.</span>`:`<span class="t-dp">Nothing on your list has a cheaper plan for that yet. Plot will keep checking.</span>`):`<span class="t-dp">Plot doesn’t need proof. The services will ask for that. This stays on your phone.</span>`}</div>
-  <div class="grow"></div>${edit?`<button class="btn primary" ${act('back','settings')}>Done</button>`:`<button class="btn primary" ${act('go','nudge')}>${who.length?'Continue':'None of these'}</button>`}</div>`;}},
+  <div class="grow"></div>${edit?`<button class="btn primary" ${act('back','settings')}>Done</button>`:`<button class="btn primary" ${act('go',allTips().length?'deals':'nudge')}>${who.length?'Continue':'None of these'}</button>`}</div>`;}},
 savings:{render:()=>{const tips=allTips().sort((a,b)=>(b.save||0)-(a.save||0));const {total}=tipsTotal(tips);const groups=Object.keys(KIND).map(k=>[k,tips.filter(t=>t.kind===k)]).filter(([,l])=>l.length);
   return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; Dashboard</button>
   <h2 class="t-l">Cheaper plans</h2>
-  <div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:4px"><span class="t-cap c-blush">UP TO, EVERY YEAR</span><span class="t-l c-moss">${m(total)}</span><span class="t-dp c-stone">Same subscriptions. Smaller bill. Plot never counts one subscription twice.</span></div>
+  <div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:4px"><span class="t-cap c-blush">UP TO, EVERY YEAR</span><span class="t-l c-moss">${m(total)}</span><span class="t-dp c-stone">Same subscriptions. Smaller bill. Plot never counts one subscription twice.</span>${(S.switches||[]).length?`<span class="t-cap c-moss" style="margin-top:6px">Already saving ${m(switchedTotal())} a year from ${(S.switches||[]).length} switch${(S.switches||[]).length>1?'es':''}.</span>`:''}</div>
   ${groups.length?groups.map(([k,l])=>`<span class="section-label">${KIND[k].label} (${l.length})</span><div class="stack" style="gap:10px">${l.map(t=>tipCard(t,true)).join('')}</div>`).join(''):`<div class="card dash" style="align-items:center;text-align:center;gap:8px">${plot('Content',80)}<span class="t-title">Already the cheapest</span><span class="t-body c-plum">Plot checked every plan. Nothing to switch.</span></div>`}
   ${myWho().length?'':`<button class="card dash hint" style="text-align:left;gap:4px" ${act('go','discounts')}><span class="t-strong">Student, teacher or military?</span><span class="t-cap c-plum">Tell Plot and it checks for discounts too.</span></button>`}
   <p class="t-cap c-plum center">Prices are typical US prices. The service’s own page has the final word.</p></div>`;}},
+switchto:{render:()=>{const t=T.sw;if(!t)return SCREENS.home.render();const sw=t.sw;const s=getSub(sw.subId);if(!s)return SCREENS.home.render();
+  const who=sw.merge?sw.merge.map(getSub).filter(Boolean).map(x=>x.name).join(' + '):s.name;const site=sw.merge?'the bundle page':s.name;
+  if(!T.pendingReturn) return `<div class="content mid"><div style="height:8px"></div>${plot('Content',130,'bob')}
+  <h2 class="t-l">Off to ${esc(site)}.</h2><p class="t-body c-plum">${esc(who)} → ${esc(sw.plan)}${sw.price!=null?' · '+m(sw.price)+(sw.cadence==='yearly'?'/yr':'/mo'):''}. Plot will wait right here.</p>
+  <div class="card" style="width:100%;gap:10px"><span class="t-cap c-dirt">WHAT TO EXPECT</span>${sw.merge?`<span class="t-body">1&nbsp;&nbsp; Sign up for the bundle with the same email</span><span class="t-body">2&nbsp;&nbsp; It replaces the separate plans (cancel any that don’t merge)</span>`:`<span class="t-body">1&nbsp;&nbsp; Log in to ${esc(s.name)}</span><span class="t-body">2&nbsp;&nbsp; Account → Change plan → ${esc(sw.plan)}</span>`}${sw.verify?`<span class="t-body">3&nbsp;&nbsp; They’ll check you’re a ${esc(sw.verify)} (usually an email or ID)</span>`:''}${sw.thenBury?`<span class="t-body">${sw.verify?4:3}&nbsp;&nbsp; Then Plot helps you bury ${esc(getSub(sw.thenBury)?.name||'')}</span>`:''}</div>
+  <div class="grow"></div><a class="btn primary" href="${esc(t.url||cancelUrl(s.name))}" target="_blank" rel="noopener noreferrer" ${act('leftForSwitch')}>Open ${esc(site)} ↗</a><button class="btn ghost" ${act('switchNever')}>Never mind</button></div>`;
+  return `<div class="content mid"><div class="grow"></div>${plot('Alarmed',150)}
+  <h2 class="t-l">Did you switch?</h2><p class="t-body c-plum">Plot only changes your bill once ${esc(site)} has.</p>
+  <div class="field" style="width:100%"><label for="swPrice">New price${sw.cadence==='yearly'?' (per year)':' (per month)'}</label><input id="swPrice" inputmode="decimal" autocomplete="off" value="${sw.price!=null?sw.price.toFixed(2):''}" placeholder="0.00"></div>
+  <div class="grow"></div><button class="btn primary" ${act('confirmSwitch')}>Yes, I switched</button><button class="btn ghost" ${act('switchLater')}>Not yet, remind me in 3 days</button><button class="linkbtn" ${act('switchNever')}>I changed my mind</button></div>`;}},
+switched:{render:()=>{const r=T.swDone;if(!r)return SCREENS.home.render();return `<div class="content mid"><div class="grow"></div>${plot('Resurrected',150,'emerge')}
+  <h2 class="t-l">Switched.</h2><p class="t-body c-plum">${esc(r.target.name)} is now ${esc(r.target.plan)} at ${m(r.target.price)}${r.target.cadence==='yearly'?' a year':' a month'}.</p>
+  <div class="card" style="width:100%;background:var(--ink);border:0;color:var(--bone);gap:2px"><span class="t-cap c-blush">SAVED BY SWITCHING</span><span class="t-l c-moss">+${m(r.save)} a year</span><span class="t-dp c-stone">${m(switchedTotal())} a year so far. Same stuff, smaller bill.</span></div>
+  <div class="grow"></div>${r.next?`<button class="btn bury" ${act('buryOne',r.next)}>Now bury ${esc(getSub(r.next)?.name||'')}</button>`:''}<button class="btn ${r.next?'ghost':'primary'}" ${act('switchBack')}>${T.swReturn==='deals'?'Back to the deals':'Done'}</button></div>`;}},
+deals:{render:()=>{const tips=allTips().sort((a,b)=>(b.save||0)-(a.save||0));const {total}=tipsTotal(tips);const done=S.switches||[];
+  return `<div class="content"><span class="t-cap c-dirt">STEP 4 OF 4</span><h2 class="t-l">${tips.length?'Plot found cheaper plans.':'You’re already on the cheapest plans.'}</h2>
+  <p class="t-body c-plum">${tips.length?`Same subscriptions, up to ${m(total)} a year less. Tap Switch and Plot walks you through it.`:'Plot checked every plan. Nothing to switch.'}</p>
+  ${done.length?`<div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:2px"><span class="t-cap c-blush">SWITCHED (${done.length})</span><span class="t-strong c-moss">+${m(switchedTotal())} a year</span><span class="t-cap c-stone">${done.map(x=>esc(x.name)+' → '+esc(x.plan)).join(' · ')}</span></div>`:''}
+  <div class="stack" style="gap:10px">${tips.map(t=>tipCard(t,true)).join('')}</div>
+  <div class="grow"></div><button class="btn primary" ${act('go','nudge')}>${done.length||!tips.length?'Continue':'Maybe later'}</button></div>`;}},
 nudge:{night:true,render:()=>{const d=new Date();const first=new Date(d.getFullYear(),d.getMonth()+1,1);return `<div class="content mid"><div style="height:18px"></div>
   <span class="t-strong c-stone">${DOW[first.getDay()]}, ${['January','February','March','April','May','June','July','August','September','October','November','December'][first.getMonth()]} 1</span><span class="t-xl c-bone" style="font-size:84px">9:41</span>
   <p class="t-dp c-stone">This is how Plot will nudge you on the 1st of every month.</p><div class="grow"></div>
@@ -502,10 +535,11 @@ nudge:{night:true,render:()=>{const d=new Date();const first=new Date(d.getFullY
 /* ---------- everyday ---------- */
 home:{tab:'home',render:()=>{const h=new Date().getHours();const hi=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+(S.profile.name?`, ${esc(S.profile.name)}`:'');const sus=S.subs.filter(s=>s.rating==='barely'||s.rating==='sometimes').length;
   const list=[...S.subs].sort(S.prefs.sort==='price'?(a,b)=>b.price-a.price:(a,b)=>order[a.rating]-order[b.rating]||b.price-a.price);const due=!S.checkins[monthKey()];
-  const reminders=S.subs.filter(s=>s.remindAt&&parse(s.remindAt)<=parse(today()));
+  const reminders=S.subs.filter(s=>s.remindAt&&parse(s.remindAt)<=parse(today()));const swRem=S.subs.filter(s=>s.switchRemind&&parse(s.switchRemind.at)<=parse(today()));
   return `<div class="content tabs">
   <div class="row between"><div class="stack-s" style="gap:2px"><span class="t-cap c-plum" style="font-size:13px">${hi}</span><h1 class="t-m">Your subscriptions</h1></div><button aria-label="Settings" ${act('go','settings')}>${plot('Content',56)}</button></div>
   <div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:4px"><span class="t-cap c-blush">THIS MONTH</span><span class="t-l" id="dashTotal">${m(total())}</span><span class="t-dp c-stone">${S.subs.length} active${S.subs.length?` · ${sus} look suspicious`:''}</span></div>
+  ${swRem.map(s=>`<button class="card thick row" style="flex-direction:row;background:var(--moss)" ${act('checkSwitch',s.id)}>${plot('Content',40)}<span class="stack-s grow" style="gap:2px"><span class="t-strong">Did you switch ${esc(s.name)}?</span><span class="t-cap">Plot said it would check back today.</span></span></button>`).join('')}
   ${reminders.map(s=>`<button class="card thick row" style="flex-direction:row;background:var(--candle)" ${act('checkReminder',s.id)}>${plot('Sleepy',40)}<span class="stack-s grow" style="gap:2px"><span class="t-strong">Did ${esc(s.name)} let you go?</span><span class="t-cap">Plot said it would check back today.</span></span></button>`).join('')}
   ${S.subs.length?(due?`<div class="card thick row" style="flex-direction:row;padding:14px 14px 14px 18px"><div class="stack-s grow" style="gap:2px"><span class="t-strong">Monthly check-in is ready</span><span class="t-cap c-plum">${S.subs.length} subs · about 2 minutes</span></div><button class="btn primary fit sm" ${act('go','intro')}>Start</button></div>`:`<div class="card thick row" style="flex-direction:row"><div class="stack-s grow"><span class="t-strong">Check-in done</span><span class="t-cap c-plum">Plot will ask again on ${MONS[(new Date().getMonth()+1)%12]} 1.</span></div>${plot('Content',40)}</div>`):''}
   ${(()=>{const {total,n}=tipsTotal();return total>0?`<button class="card thick savecard" ${act('go','savings')}><span class="stack-s grow" style="gap:2px;text-align:left"><span class="t-strong">Plot found ${m(total)} a year in cheaper plans</span><span class="t-cap">${n} ${n===1?'swap':'swaps'} · same subscriptions, smaller bill</span></span>${chev}</button>`:'';})()}
@@ -519,7 +553,7 @@ settings:{render:()=>{const name=S.profile.name;const due=S.checkins[monthKey()]
   return `<div class="content">
   <div class="row between"><button class="backlink" ${act('back','home')}>←&nbsp; Dashboard</button></div>
   <h2 class="t-l">Settings</h2>
-  <button class="set-profile" ${act('go','editName')}>${plot('Content',64)}<span class="stack-s" style="gap:2px;flex:1;min-width:0;text-align:left"><span class="t-title">${name?esc(name):'Add your name'}</span><span class="t-cap c-plum">${S.subs.length} watched · ${S.graves.length} buried · ${m(graveTotal())} saved</span></span>${chev}</button>
+  <button class="set-profile" ${act('go','editName')}>${plot('Content',64)}<span class="stack-s" style="gap:2px;flex:1;min-width:0;text-align:left"><span class="t-title">${name?esc(name):'Add your name'}</span><span class="t-cap c-plum">${S.subs.length} watched · ${S.graves.length} buried · ${m(graveTotal())} saved${switchedTotal()?` · ${m(switchedTotal())}/yr switched`:''}</span></span>${chev}</button>
 
   <div class="set-sec"><span class="set-h">Bank</span><div class="set-group">
    ${S.bank?srow({icon:'bank',bg:'moss',label:esc(S.bank.name),sub:`${S.bank.mask?'••'+esc(S.bank.mask)+' · ':''}${S.bank.demo?'Demo bank':'Plaid test mode'} · linked ${fmtDay(S.bank.connectedAt.slice(0,10))}`})
@@ -590,7 +624,7 @@ sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();cons
    :`<button class="t-cap c-plum" style="align-self:flex-start" ${act('toggleAddonForm')}>+ Add an add-on</button>`}
   ${ads.length?`<span class="t-dp" style="border-top:1.5px dashed var(--stone);padding-top:10px">Altogether ${esc(s.name)} costs ${m(price)} a ${s.cadence==='yearly'?'year':'month'}.</span>`:''}</div>`;
   const meter=r?{barely:10,sometimes:40,constantly:95}[s.rating]:0;
-  return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; ${esc(s.name)}</button>
+  return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; ${esc(s.name)}</button>${s.plan||s.members?`<span class="t-cap c-plum" style="margin-top:-10px">${s.plan?esc(s.plan)+(s.was?` · was ${m(s.was.price)}`:''):''}${s.members?' · includes '+s.members.map(esc).join(', '):''}</span>`:''}
   ${r?`<div class="card thick" style="padding:22px 24px;gap:8px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-dl">${m(cpu)} / use</span><span class="t-dp c-plum">${m(price)} a month${ads.length?' with add-ons':''} ÷ about ${r.uses} use${r.uses>1?'s':''} (you said “${r.said}”).</span><div class="meter"><i style="width:${meter}%"></i></div><span class="t-cap c-dirt">Worth-it meter: ${meter<35?'low':meter<70?'meh':'high'}</span></div>`
   :`<div class="card thick" style="gap:10px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-body">How much did you use ${esc(s.name)} this month? Plot will do the math.</span>${['barely','sometimes','constantly'].map(k=>`<button class="ratechip" ${act('rateOne',k)}><i class="${RATE[k].cls}"></i>${k==='barely'?'Barely touched it':k==='sometimes'?'Here and there':'Couldn’t live without it'}</button>`).join('')}</div>`}
   ${addonCard}
@@ -693,10 +727,10 @@ const fx=fxFor(g.name);
   <div class="grow"></div><a class="btn res" href="${esc(homeUrl(g.name))}" target="_blank" rel="noopener noreferrer">Re-subscribe on ${esc(g.name)} ↗</a><button class="btn ghost" ${act('back','home')}>Back to active list</button></div>`;},
   mount(el){const n=T.revived?.name;const a=dirtFx($('#dirtBack',el),{delay:350,n:8,spread:70}),b=dirtFx($('#dirtBack',el),{delay:1000,n:14}),c=burstFx($('#fxBack',el),n,{delay:1500});return()=>{clearTimeout(a);clearTimeout(b);clearTimeout(c);};}},
 log:{tab:'log',render:()=>{const names=[...new Set(S.log.map(e=>e.name))];const top=Object.entries(S.bounces).filter(([,b])=>b.res).sort((a,b)=>b[1].res-a[1].res)[0];const ev=S.log.filter(e=>T.logFilter==='All'||e.name===T.logFilter);
-  return `<div class="content tabs"><h1 class="t-l">Resurrection log</h1><p class="t-body c-plum" style="margin-top:-8px">Every burial and every comeback.</p>
+  return `<div class="content tabs"><h1 class="t-l">Resurrection log</h1><p class="t-body c-plum" style="margin-top:-8px">Every burial, comeback and switch.</p>
   ${top?`<div class="card thick" style="background:var(--blush)"><span class="t-cap">PATTERN SPOTTED</span><span class="t-strong">${esc(top[0])} keeps coming back. ${top[1].res} comeback${top[1].res>1?'s':''} so far, ${m(top[1].spent)} a month back on the bill.</span></div>`:''}
   ${S.log.length?`<div class="filters" role="group" aria-label="Filter log">${['All',...names.slice(0,4)].map(n=>`<button aria-pressed="${T.logFilter===n}" ${act('logFilter',n)}>${esc(n)}</button>`).join('')}</div>
-  <div class="timeline">${ev.map(e=>`<div class="event"><i style="background:${e.type==='buried'?'var(--dirt)':'var(--moss)'}"></i><span class="stack-s" style="gap:1px"><span class="t-cap c-plum">${fmtCaps(e.at.slice(0,10))}${e.auto?' · found in your bank':''}</span><span class="t-strong">${e.type==='buried'?'Buried':'Resurrected'} ${esc(e.name)}</span></span></div>`).join('')}</div>`
+  <div class="timeline">${ev.map(e=>`<div class="event"><i style="background:${e.type==='buried'?'var(--dirt)':e.type==='switched'?'var(--candle)':'var(--moss)'}"></i><span class="stack-s" style="gap:1px"><span class="t-cap c-plum">${fmtCaps(e.at.slice(0,10))}${e.auto?' · found in your bank':''}</span><span class="t-strong">${e.type==='buried'?'Buried '+esc(e.name):e.type==='switched'?'Switched '+esc(e.name)+' to '+esc(e.plan||'a cheaper plan'):'Resurrected '+esc(e.name)}</span></span></div>`).join('')}</div>`
   :`<div class="card dash"><span class="t-dp">Nothing logged yet. Bury something and it shows up here.</span></div>`}</div>${tabbar('log')}`;}}
 };
 
@@ -792,6 +826,14 @@ const ACT={
  rate(k){rate(k);},
  rateOne(k){const s=getSub(T.subId);if(s){s.rating=k;s.ratedAt=today();save();rerender();}},
  remindTonight(){toast('Plot will ask again tonight.');go('home','back');},
+ startSwitch(id){const t=allTips().find(x=>x.id===id);if(!t||!t.sw)return;T.sw=t;T.pendingReturn=false;T.swReturn=cur.id==='deals'?'deals':cur.id==='sub'?'sub':cur.id==='savings'?'savings':'home';go('switchto');},
+ leftForSwitch(){T.pendingReturn=true;setTimeout(()=>{if(cur.id==='switchto')rerender();},400);},
+ confirmSwitch(){const v=parseFloat(($('#swPrice',cur.el)?.value||'').replace(/[^0-9.]/g,''));if(!(v>=0)||isNaN(v)){toast('Add the new price, like 6.99.');return;}
+  const r=applySwitch(T.sw,v);if(!r)return;T.pendingReturn=false;T.swDone={...r,next:T.sw.sw.thenBury&&getSub(T.sw.sw.thenBury)?T.sw.sw.thenBury:null};T.flash=r.target.id;T.subId=r.target.id;go('switched','zoom');},
+ switchLater(){const s=getSub(T.sw?.sw.subId);if(s){s.switchRemind={at:addDays(today(),3),tip:T.sw.id};save();}T.pendingReturn=false;toast('Plot will ask again in 3 days.');ACT.switchBack();},
+ switchNever(){T.pendingReturn=false;toast('Nothing was changed.');ACT.switchBack();},
+ switchBack(){const r=T.swReturn||'home';T.sw=null;go(r==='sub'&&!getSub(T.subId)?'home':r,'back');},
+ checkSwitch(id){const s=getSub(id);if(!s||!s.switchRemind)return;const t=allTips().find(x=>x.id===s.switchRemind.tip);delete s.switchRemind;save();if(!t){toast('That deal isn’t available anymore.');rerender();return;}T.sw=t;T.swReturn='home';T.pendingReturn=true;go('switchto');},
  toggleWho(k){const w=new Set(myWho());w.has(k)?w.delete(k):w.add(k);S.profile.discounts=[...w];save();rerender();},
  openSub(id){T.subId=id;T.addonForm=false;T.addonArmed=null;go('sub');},
  toggleAddonForm(){T.addonForm=!T.addonForm;rerender();if(T.addonForm)setTimeout(()=>$('#aName',cur.el)?.focus({preventScroll:true}),50);},
