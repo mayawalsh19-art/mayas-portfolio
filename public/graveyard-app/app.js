@@ -46,7 +46,8 @@ const SI={
  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
  phone:'<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
- chev:'<path d="M9 6l6 6-6 6"/>'
+ chev:'<path d="M9 6l6 6-6 6"/>',
+ tag:'<path d="M3 12.5V4.5A1.5 1.5 0 0 1 4.5 3h8l8.5 8.5-9.5 9.5z"/><circle cx="8" cy="8" r="1.6"/>'
 };
 const sicon=(k,bg)=>`<span class="set-ic" style="background:var(--${bg})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SI[k]}</svg></span>`;
 const chev=`<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SI.chev}</svg>`;
@@ -99,6 +100,31 @@ const ADDON_OPTIONS={
 const ALIAS=[[/amazon|prime video|^prime$/i,'Amazon Prime'],[/youtube ?tv/i,'YouTube TV'],[/youtube|yt premium/i,'YouTube Premium'],[/apple ?tv/i,'Apple TV+'],[/hbo|^max$/i,'Max'],[/netflix/i,'Netflix'],[/hulu/i,'Hulu'],[/disney/i,'Disney+'],[/spotify/i,'Spotify'],[/peacock/i,'Peacock'],[/paramount/i,'Paramount+'],[/icloud/i,'iCloud+'],[/google one/i,'Google One'],[/audible/i,'Audible'],[/peloton/i,'Peloton App'],[/duolingo/i,'Duolingo'],[/calm/i,'Calm'],[/crunchyroll/i,'Crunchyroll'],[/headspace/i,'Headspace']];
 const canon=n=>{const t=String(n||'').trim();for(const [re,name] of ALIAS)if(re.test(t))return name;return t;};
 const addonOptions=n=>ADDON_OPTIONS[canon(n)];
+/* =========================================================================
+   Discounts: cheaper plans for students, educators, military and people on
+   government assistance. Typical US prices, late 2026. The service verifies
+   eligibility (UNiDAYS, SheerID, ID.me...); Plot never asks for proof.
+   price = monthly price on the discount plan, pct = share off, 0 = free.
+   ========================================================================= */
+const WHO={student:{label:'Student',sub:'College or university',short:'student'},educator:{label:'Teacher or school staff',sub:'K–12 educators and staff',short:'educator'},military:{label:'Military or veteran',sub:'Service members, veterans, families',short:'military'},assist:{label:'Government assistance',sub:'EBT, SNAP, Medicaid, SSI or WIC',short:'assistance'}};
+const DISCOUNTS={
+ 'Spotify':[{who:'student',plan:'Spotify Premium Student',price:6.99,note:'and it includes Hulu (with ads)',url:'https://www.spotify.com/us/student/'}],
+ 'YouTube Premium':[{who:'student',plan:'YouTube Premium Student',price:8.99,url:'https://www.youtube.com/premium/student'}],
+ 'Amazon Prime':[{who:'student',plan:'Prime Student',price:7.49,note:'after 6 free months',url:'https://www.amazon.com/amazonprime?planOptimizationId=WLPStudentMonthlyEligiblePlans'},{who:'assist',plan:'Prime Access',price:6.99,note:'with EBT, SNAP, Medicaid or SSI',url:'https://www.amazon.com/primeaccess'}],
+ 'Hulu':[{who:'student',plan:'Hulu Student',price:1.99,note:'on the plan with ads',url:'https://www.hulu.com/student'}],
+ 'Max':[{who:'student',plan:'HBO Max Student',price:4.99,note:'on Basic with Ads',url:SEARCH('HBO Max student discount UNiDAYS')}],
+ 'Peacock':[{who:'student',plan:'Peacock Premium for students',price:5.99,note:'for 12 months',url:SEARCH('Peacock student discount')},{who:'military',plan:'Peacock Premium military pricing',price:6.99,url:SEARCH('Peacock military discount')}],
+ 'Paramount+':[{who:'military',plan:'Paramount+ military discount',pct:.5,url:SEARCH('Paramount+ military discount SheerID')}],
+ 'Disney+':[{who:'military',plan:'Disney+ military offer',pct:null,url:'https://press.disneyplus.com/disney+-military-discount-now-available-to-veterans-service-members-and-families'}],
+ 'Apple TV+':[{who:'student',plan:'Apple Music Student',price:5.99,note:'and Apple TV+ comes free with it',url:'https://www.apple.com/apple-music/'}],
+ 'Headspace':[{who:'educator',plan:'Headspace for Educators',price:0,url:'https://www.headspace.com/educators'}]
+};
+const myWho=()=>S.profile.discounts||[];
+// Best discount for this subscription given who the user said they are.
+function cheaperFor(s,who=myWho()){const opts=(DISCOUNTS[canon(s.name)]||[]).filter(d=>who.includes(d.who));let best=null;
+ for(const d of opts){const now=monthly(s);const p=d.price!=null?d.price:(d.pct!=null?Math.round(now*(1-d.pct)*100)/100:null);if(p!=null&&p>=now)continue;const save=p==null?null:Math.round((now-p)*12*100)/100;if(!best||(save??0)>(best.save??0))best={...d,newPrice:p,save};}
+ return best;}
+const yearlySavings=(who=myWho())=>S.subs.reduce((a,s)=>a+(cheaperFor(s,who)?.save||0),0);
 const cancelUrl=n=>CATALOG[n]?.cancel||SEARCH(`how to cancel ${n} subscription`);
 const homeUrl=n=>CATALOG[n]?.home||SEARCH(`${n} subscribe`);
 const hasDirectCancel=n=>!!CATALOG[n]?.cancel;
@@ -130,7 +156,7 @@ const $=(s,r=document)=>r.querySelector(s);
    State (saved on this device)
    ========================================================================= */
 const KEY='sg-state-v1';
-const blank=()=>({v:1,profile:{name:''},prefs:{checkinNudge:false,trialAlerts:true,trialWarn:'48',sort:'least',reduceMotion:false},onboarded:false,bank:null,scan:null,removed:{},subs:[],trials:[],graves:[],log:[],bounces:{},checkins:{},lastAlert:null});
+const blank=()=>({v:1,profile:{name:'',discounts:[]},prefs:{checkinNudge:false,trialAlerts:true,trialWarn:'48',sort:'least',reduceMotion:false},onboarded:false,bank:null,scan:null,removed:{},subs:[],trials:[],graves:[],log:[],bounces:{},checkins:{},lastAlert:null});
 function load(){try{const raw=localStorage.getItem(KEY);if(!raw)return blank();const b=blank(),d=JSON.parse(raw);return {...b,...d,profile:{...b.profile,...d.profile},prefs:{...b.prefs,...d.prefs}};}catch{return blank();}}
 if(new URLSearchParams(location.search).has('fresh')){try{localStorage.removeItem(KEY);}catch{}history.replaceState(null,'',location.pathname);}
 let S=load();
@@ -343,7 +369,7 @@ meet:{render:()=>`<div class="content mid"><div style="height:8px"></div>
   <div class="card stagger" style="width:100%;gap:12px">${[['Content','A 2-minute check-in, once a month'],['Sleepy','Bury what you don’t use'],['Resurrected','Bring anything back, no judgment']].map(([md,t])=>`<div class="row">${plot(md,36)}<span class="t-strong">${t}</span></div>`).join('')}</div>
   <div class="grow"></div><button class="btn primary" ${S.onboarded?act('back','settings'):act('go','add')}>${S.onboarded?'Back to Settings':'Nice to meet you'}</button></div>`},
 add:{render:()=>{const b=T.method==='bank';return `<div class="content">
-  <span class="t-cap c-dirt">STEP 1 OF 2</span><h2 class="t-l">Add your subscriptions</h2>
+  <span class="t-cap c-dirt">STEP 1 OF 3</span><h2 class="t-l">Add your subscriptions</h2>
   <p class="t-body c-plum">Plot needs to know what you pay for before it can judge any of it.</p>
   <button class="card option" aria-pressed="${b}" ${act('method','bank')}><span class="row"><span class="t-title">Link your bank</span><span class="chip bg-moss">Recommended</span></span><span class="t-body c-plum">Plot finds recurring charges for you.</span></button>
   <button class="card option" aria-pressed="${!b}" ${act('method','hand')}><span class="t-title">Add them by hand</span><span class="t-body c-plum">Type in each one. Slower, but very private.</span></button>
@@ -385,7 +411,7 @@ found:{render:()=>{const r=S.scan;
   if(T.scanError) return `<div class="content mid"><div class="grow"></div>${plot('Alarmed',140)}<h2 class="t-m">Plot couldn’t read the bank.</h2><p class="t-body c-plum">${esc(T.scanError)}</p><div class="grow"></div><button class="btn primary" ${act('rescan')}>Try again</button><button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button></div>`;
   if(!r) return `<div class="content mid"><div class="grow"></div>${plot('Sleepy',120,'bob')}<h2 class="t-m">Plot is reading your statements.</h2><div class="loadbar"><i></i></div><p class="t-dp c-plum">${esc(T.scanMsg||'Waiting for the demo bank…')}</p><div class="grow"></div></div>`;
   const subs=r.subscriptions,stopped=r.stopped||[];
-  return `<div class="content"><span class="t-cap c-dirt">STEP 1 OF 2 · ${esc(S.bank?.name||'Demo bank')}${S.bank?.mask?' ••'+esc(S.bank.mask):''}</span>
+  return `<div class="content"><span class="t-cap c-dirt">STEP 1 OF 3 · ${esc(S.bank?.name||'Demo bank')}${S.bank?.mask?' ••'+esc(S.bank.mask):''}</span>
   <h2 class="t-l">Plot found ${subs.length}.</h2>
   <p class="t-body c-plum">Plot read ${r.scanned} transactions and kept the ones that repeat. Tap anything that isn’t a subscription to remove it.</p>
   <div class="stack stagger" style="gap:8px">${subs.map(x=>`<button class="subrow${S.removed[x.name]?' off':''}" ${act('toggleFound',x.name)} aria-pressed="${!S.removed[x.name]}"><span class="logo-tile">${esc(letter(x.name))}</span><span class="info"><span class="t-strong">${esc(x.name)}</span><span class="chip ${x.isNew?'bg-blush':'bg-stone'}">${S.removed[x.name]?'Removed':x.isNew?'Just started':`${x.charges.length} charges · ${x.cadence}`}</span>${(x.addons||[]).map(a=>`<span class="t-cap c-plum">+ ${esc(a.name)} ${m(a.price)}/mo add-on</span>`).join('')}</span><span class="price"><span class="t-strong">${m(x.price+(x.addons||[]).reduce((t,a)=>t+a.price,0))}</span><span class="t-cap c-dirt">next: ${fmtDay(x.next)}</span></span></button>`).join('')}</div>
@@ -393,11 +419,11 @@ found:{render:()=>{const r=S.scan;
   ${stopped.length?`<span class="section-label" style="margin-top:6px">Already cancelled (${stopped.length})</span><div class="card dash" style="gap:8px"><span class="t-dp">These stopped charging a while ago. Plot will give them a proper burial in your Graveyard.</span>${stopped.map(x=>`<span class="row between"><span class="t-strong">${esc(x.name)}</span><span class="t-cap c-dirt">last charge ${fmtDay(x.last)}</span></span>`).join('')}</div>`:''}
   <div class="grow"></div><button class="btn primary" ${act('acceptScan')}>Looks right</button></div>`;}},
 trials:{render:()=>`<div class="content">
-  <span class="t-cap c-dirt">STEP 2 OF 2</span><h2 class="t-l">Any free trials?</h2>
+  <span class="t-cap c-dirt">STEP 2 OF 3</span><h2 class="t-l">Any free trials?</h2>
   <p class="t-body c-plum">Plot counts down and warns you before a trial turns into a charge.</p>
   <div class="stack stagger">${S.subs.slice(0,8).map(s=>`<div class="card row" style="flex-direction:row"><div class="stack-s grow" style="gap:2px"><span class="t-strong">${esc(s.name)}</span><span class="t-cap c-plum">Not a trial</span></div><button class="toggle" role="switch" aria-checked="false" aria-label="${esc(s.name)} is a free trial" ${act('markTrial',s.id)}></button></div>`).join('')}${S.trials.map(t=>`<div class="card row" style="flex-direction:row;background:var(--pumpkin);border-width:3px">${plot('Alarmed',40)}<div class="stack-s grow" style="gap:2px"><span class="t-strong">${esc(tName(t))}</span><span class="t-dp">Ends ${fmtDay(t.ends)} · then ${m(t.price)}/mo${t.source==='bank'?' · spotted in your bank':''}</span></div><button class="toggle" role="switch" aria-checked="true" aria-label="Stop watching ${esc(t.name)}" ${act('removeTrial',t.id)}></button></div>`).join('')}${!S.trials.length&&!S.subs.length?`<div class="card"><span class="t-body c-plum">No trials yet.</span></div>`:''}</div>
   <button class="card dash" style="align-items:center" ${act('go','addtrial')}><span class="t-strong">+&nbsp; Add a trial Plot missed</span></button>
-  <div class="grow"></div><button class="btn primary" ${act('go','nudge')}>Done</button></div>`},
+  <div class="grow"></div><button class="btn primary" ${act('go','discounts')}>Done</button></div>`},
 addtrial:{render:()=>`<div class="content">
   <button class="backlink" ${act('back',S.onboarded?'home':'trials')}>←&nbsp; ${S.onboarded?'Dashboard':'Any free trials?'}</button><h2 class="t-l">Add a trial</h2>
   <p class="t-body c-plum">Plot starts counting down the moment you save.</p>
@@ -413,6 +439,13 @@ addtrial:{render:()=>`<div class="content">
     if(ends){const w=addDays(ends,warn==='week'?-7:-2);$('#pvWarn',el).textContent=parse(w)<=parse(today())?'That’s soon. Plot is already getting dramatic.':`Plot will get dramatic on ${fmtDay(w)}. That’s the deal.`;}else $('#pvWarn',el).textContent='Pick the day the trial ends.';};
    el.querySelectorAll('input').forEach(i=>i.addEventListener('input',upd));el.querySelectorAll('[data-warn]').forEach(b=>b.addEventListener('click',()=>{el.querySelectorAll('[data-warn]').forEach(x=>x.setAttribute('aria-pressed',x===b));upd();}));upd();}},
 
+discounts:{render:()=>{const edit=S.onboarded;const who=myWho();const save=yearlySavings(who);
+  return `<div class="content">${edit?`<button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button>`:`<span class="t-cap c-dirt">STEP 3 OF 3</span>`}
+  <h2 class="t-l">${edit?'Discounts':'Any of these you?'}</h2>
+  <p class="t-body c-plum">Some services charge students, teachers and the military less. Tap what fits and Plot will check your list for a cheaper plan.</p>
+  <div class="stack" style="gap:8px">${Object.entries(WHO).map(([k,w])=>`<button class="whochip${who.includes(k)?' on':''}" ${act('toggleWho',k)} aria-pressed="${who.includes(k)}"><span class="stack-s grow" style="gap:2px;text-align:left"><span class="t-strong">${w.label}</span><span class="t-cap">${w.sub}</span></span><span class="tick" aria-hidden="true"></span></button>`).join('')}</div>
+  <div class="card dash" style="gap:6px">${who.length?(save>0?`<span class="t-title">Plot found ${m(save)} a year in cheaper plans.</span><span class="t-cap c-plum">${S.subs.filter(x=>cheaperFor(x)).map(x=>esc(x.name)).join(', ')}. Each one’s page shows how to switch.</span>`:`<span class="t-dp">Nothing on your list has a cheaper plan for that yet. Plot will keep checking.</span>`):`<span class="t-dp">Plot doesn’t need proof. The services will ask for that. This stays on your phone.</span>`}</div>
+  <div class="grow"></div>${edit?`<button class="btn primary" ${act('back','settings')}>Done</button>`:`<button class="btn primary" ${act('go','nudge')}>${who.length?'Continue':'None of these'}</button>`}</div>`;}},
 nudge:{night:true,render:()=>{const d=new Date();const first=new Date(d.getFullYear(),d.getMonth()+1,1);return `<div class="content mid"><div style="height:18px"></div>
   <span class="t-strong c-stone">${DOW[first.getDay()]}, ${['January','February','March','April','May','June','July','August','September','October','November','December'][first.getMonth()]} 1</span><span class="t-xl c-bone" style="font-size:84px">9:41</span>
   <p class="t-dp c-stone">This is how Plot will nudge you on the 1st of every month.</p><div class="grow"></div>
@@ -446,6 +479,10 @@ settings:{render:()=>{const name=S.profile.name;const due=S.checkins[monthKey()]
    +srow({icon:'unlink',bg:'pumpkin',label:'Disconnect bank',a:'disconnect',danger:true})
    :srow({icon:'bank',bg:'stone',label:'Link a bank',sub:'Let Plot find your subscriptions',a:'connectBank'})}
   </div><span class="set-note">Read-only. Plot can look at charges but can’t move money.</span></div>
+
+  <div class="set-sec"><span class="set-h">Discounts</span><div class="set-group">
+   ${srow({icon:'tag',bg:'moss',label:'Who you are',sub:myWho().length?myWho().map(k=>WHO[k].label).join(', '):'Student, teacher, military…',value:yearlySavings()>0?m(yearlySavings())+'/yr':undefined,a:'go',arg:'discounts'})}
+  </div><span class="set-note">Plot uses this to find cheaper student, teacher and military plans. It never leaves your phone.</span></div>
 
   <div class="set-sec"><span class="set-h">Notifications</span><div class="set-group">
    ${srow({icon:'bell',bg:'blush',label:'Monthly check-in reminder',sub:'On the 1st of every month',a:'togglePref',arg:'checkinNudge',toggle:true,on:S.prefs.checkinNudge})}
@@ -509,6 +546,9 @@ sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();cons
   ${r?`<div class="card thick" style="padding:22px 24px;gap:8px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-dl">${m(cpu)} / use</span><span class="t-dp c-plum">${m(price)} a month${ads.length?' with add-ons':''} ÷ about ${r.uses} use${r.uses>1?'s':''} (you said “${r.said}”).</span><div class="meter"><i style="width:${meter}%"></i></div><span class="t-cap c-dirt">Worth-it meter: ${meter<35?'low':meter<70?'meh':'high'}</span></div>`
   :`<div class="card thick" style="gap:10px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-body">How much did you use ${esc(s.name)} this month? Plot will do the math.</span>${['barely','sometimes','constantly'].map(k=>`<button class="ratechip" ${act('rateOne',k)}><i class="${RATE[k].cls}"></i>${k==='barely'?'Barely touched it':k==='sometimes'?'Here and there':'Couldn’t live without it'}</button>`).join('')}</div>`}
   ${addonCard}
+  ${(()=>{const d=cheaperFor(s);if(d){const who=WHO[d.who].short;const priceTxt=d.newPrice===0?'free':d.newPrice!=null?m(d.newPrice)+'/mo':'cheaper';
+    return `<div class="card thick cheaper" style="gap:10px"><span class="t-cap c-dirt">CHEAPER WAY · ${who.toUpperCase()}</span><span class="t-dp">You pay ${m(monthly(s))}. ${esc(d.plan)} is ${d.newPrice===0?'free for you':priceTxt}${d.note?' '+esc(d.note):''}.${d.save?` That’s ${m(d.save)} a year back.`:' Check the price on their page.'}</span><a class="btn light sm" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Get the ${who} price ↗</a></div>`;}
+   const any=(DISCOUNTS[canon(s.name)]||[]).length;if(any&&!myWho().length)return `<button class="card dash hint" style="text-align:left;gap:4px" ${act('go','discounts')}><span class="t-strong">Student, teacher or military?</span><span class="t-cap c-plum">${esc(s.name)} might have a cheaper plan for you. Tell Plot in Discounts.</span></button>`;return '';})()}
   ${s.charges?.length?`<div class="card thick" style="gap:12px"><span class="t-cap c-dirt">CHARGES · LAST 6 MONTHS</span><div class="bars">${months.map(([mo,v,isNow],i)=>`<div><span class="b${isNow?' now':''}${v?'':' zero'}" style="height:${Math.max(6,v/mx*84)}px;animation-delay:${i*.07}s"></span><span class="t-cap c-plum">${mo}</span></div>`).join('')}</div></div>`:''}
   <div class="row" style="gap:8px;align-items:stretch"><div class="stat"><span class="t-cap c-plum">Paid in ${yr}</span><span class="t-title">${s.charges?.length?m(paid):'—'}</span></div><div class="stat"><span class="t-cap c-plum">Charges</span><span class="t-title">${s.charges?.length?count:'—'}</span></div><div class="stat"><span class="t-cap c-plum">Next charge</span><span class="t-title">${s.next?fmtDay(s.next):'—'}</span></div></div>
   ${r?`<div class="card dash"><span class="t-dp">“You paid ${m(price)} for ${esc(s.name)}${ads.length?' and its add-ons':''} and ${s.rating==='barely'?'barely touched it':s.rating==='sometimes'?'used it here and there':'used it constantly'}. That’s ${m(cpu)} a use.”</span></div>`:''}
@@ -704,6 +744,7 @@ const ACT={
  rate(k){rate(k);},
  rateOne(k){const s=getSub(T.subId);if(s){s.rating=k;s.ratedAt=today();save();rerender();}},
  remindTonight(){toast('Plot will ask again tonight.');go('home','back');},
+ toggleWho(k){const w=new Set(myWho());w.has(k)?w.delete(k):w.add(k);S.profile.discounts=[...w];save();rerender();},
  openSub(id){T.subId=id;T.addonForm=false;T.addonArmed=null;go('sub');},
  toggleAddonForm(){T.addonForm=!T.addonForm;rerender();if(T.addonForm)setTimeout(()=>$('#aName',cur.el)?.focus({preventScroll:true}),50);},
  saveAddon(){const s=getSub(T.subId);if(!s)return;const el=cur.el;const name=$('#aName',el).value.trim();const price=parseFloat($('#aPrice',el).value.replace(/[^0-9.]/g,''));
