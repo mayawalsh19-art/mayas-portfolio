@@ -298,6 +298,26 @@ function burstFx(host,name,{n=18,delay=0,mo}={}){if(!host||!motionOK())return 0;
   p.addEventListener('animationend',()=>p.remove());}},delay);}
 function dirtFx(host,{n=12,delay=0,spread=110}={}){if(!host||!motionOK())return 0;return setTimeout(()=>{for(let i=0;i<n;i++){const p=document.createElement('i');p.className='dust';const a=Math.PI*(i/(n-1));p.style.left=`${Math.cos(a)*30-5}px`;p.style.top='0px';p.style.setProperty('--dx',`${Math.cos(a)*spread}px`);p.style.setProperty('--dy',`${-Math.sin(a)*60-10}px`);host.appendChild(p);p.addEventListener('animationend',()=>p.remove());}},delay);}
 const HAND='<svg viewBox="0 0 30 34" aria-hidden="true"><path d="M6 33V17c0-2 1-3 2.5-3S11 15 11 17v-9c0-2 1-3 2.5-3S16 6 16 8v-4c0-2 1-3 2.5-3S21 2 21 4v6c0-2 1-3 2.5-3S26 8 26 10v13c0 6-4 10-10 10z" fill="#C9C4D6" stroke="#1E1B2E" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+// Zombie that climbs out on a comeback, wearing the service as a T-shirt.
+function zombie(name){const c=svcColor(name),ink=svcInk(name),L=esc(letter(name));
+ const hand=x=>`<path d="M${x-9} 30c-1-6 0-12 2-17 1-3 4-3 4 0l0 7 1-11c0-3 4-3 4 0l0 10 1-10c0-3 4-3 4 0l0 11 1-7c0-3 4-3 4 0 0 6-1 12-3 17z" fill="#A8C98F" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>`;
+ return `<svg class="zombie" viewBox="0 0 120 172" aria-hidden="true">
+  <g class="z-arm l"><path d="M38 98L24 34" stroke="#1E1B2E" stroke-width="15" stroke-linecap="round"/><path d="M38 98L24 34" stroke="#A8C98F" stroke-width="9" stroke-linecap="round"/><path d="M38 98L32 72" stroke="${c}" stroke-width="13" stroke-linecap="round"/>${hand(24)}</g>
+  <g class="z-arm r"><path d="M82 98L96 34" stroke="#1E1B2E" stroke-width="15" stroke-linecap="round"/><path d="M82 98L96 34" stroke="#A8C98F" stroke-width="9" stroke-linecap="round"/><path d="M82 98L88 72" stroke="${c}" stroke-width="13" stroke-linecap="round"/>${hand(96)}</g>
+  <path d="M30 172V108c0-10 8-16 18-16h24c10 0 18 6 18 16v64z" fill="${c}" stroke="#1E1B2E" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M44 172l4-8 5 6 4-9 5 8 5-7 4 10" fill="none" stroke="#1E1B2E" stroke-width="2.5" stroke-linejoin="round" opacity=".55"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Bagel Fat One, Arial Rounded MT Bold, sans-serif" font-size="30" fill="${ink}">${L}</text>
+  <g class="z-head"><path d="M34 62c0-18 10-28 26-28s26 10 26 28v14c0 10-8 18-18 18H52c-10 0-18-8-18-18z" fill="#A8C98F" stroke="#1E1B2E" stroke-width="3.5" stroke-linejoin="round"/>
+   <path d="M46 34l4-7 4 6 5-8 3 8 6-5-1 7" fill="#6B8A5E" stroke="#1E1B2E" stroke-width="2.5" stroke-linejoin="round"/>
+   <path d="M64 44l12 6M67 42l-2 5M71 44l-2 5M75 46l-2 5" stroke="#1E1B2E" stroke-width="2" stroke-linecap="round"/>
+   <g class="z-eye"><circle cx="49" cy="62" r="8" fill="#fff" stroke="#1E1B2E" stroke-width="3"/><circle cx="51" cy="64" r="3" fill="#1E1B2E"/></g>
+   <circle cx="72" cy="63" r="5" fill="#fff" stroke="#1E1B2E" stroke-width="3"/><path d="M66 58h12" stroke="#1E1B2E" stroke-width="3.5" stroke-linecap="round"/><circle cx="72" cy="64.5" r="2" fill="#1E1B2E"/>
+   <path d="M47 81q8-4 16 0t10-1" fill="none" stroke="#1E1B2E" stroke-width="3" stroke-linecap="round"/><path d="M55 80.5l2 4 2-4" fill="#fff" stroke="#1E1B2E" stroke-width="1.5" stroke-linejoin="round"/>
+   <ellipse cx="40" cy="74" rx="4" ry="2.5" fill="#FF9EC4" opacity=".55"/></g>
+ </svg>`;}
+// Bats that burst out of the grave on a burial. The lead bat wears the service color.
+function bat(name,lead){const c=svcColor(name);return `<svg viewBox="0 0 60 36" aria-hidden="true"><path class="wl" d="M30 15C22 5 10 3 2 9c6 1 8 5 7 9 4-3 8-1 9 3 3-4 8-3 12 0z" fill="#1E1B2E" stroke="#F6F1E7" stroke-width="1.2" stroke-linejoin="round"/><path class="wr" d="M30 15c8-10 20-12 28-6-6 1-8 5-7 9-4-3-8-1-9 3-3-4-8-3-12 0z" fill="#1E1B2E" stroke="#F6F1E7" stroke-width="1.2" stroke-linejoin="round"/><path d="M24.5 12L24 4l4.5 5.5zM35.5 12l.5-8-4.5 5.5z" fill="#1E1B2E"/><ellipse cx="30" cy="18" rx="7.5" ry="9.5" fill="#1E1B2E"/>${lead?`<circle cx="30" cy="22" r="4.6" fill="${c}"/><text x="30" y="24.6" text-anchor="middle" font-family="Bagel Fat One, sans-serif" font-size="7" fill="${svcInk(name)}">${esc(letter(name))}</text>`:''}<circle cx="27" cy="15.5" r="1.8" fill="#FFD166"/><circle cx="33" cy="15.5" r="1.8" fill="#FFD166"/><path d="M28.3 19.5l.8 1.8.8-1.8M30.1 19.5l.8 1.8.8-1.8" fill="#fff"/></svg>`;}
+const BATS=[{x:-120,y:-150,d:1.55,s:1.25,lead:1},{x:110,y:-170,d:1.7,s:.9},{x:-60,y:-210,d:1.85,s:.75},{x:140,y:-90,d:2.0,s:.8},{x:20,y:-230,d:2.1,s:.65}];
 const svcColor=n=>fxFor(n)===SVC_FX._?'var(--blush)':fxFor(n).c[0];
 const svcInk=n=>{const c=svcColor(n);if(!c.startsWith('#'))return 'var(--ink)';const v=parseInt(c.slice(1),16);const L=(0.299*(v>>16)+0.587*(v>>8&255)+0.114*(v&255))/255;return L>.6?'var(--ink)':'var(--bone)';};
 function tabbar(active){const tabs=[['home','Home'],['checkin','Check-in'],['graveyard','Graveyard'],['log','Log']];const from=Math.max(0,tabs.findIndex(t=>t[0]===T.tab));const to=tabs.findIndex(t=>t[0]===active);
@@ -553,7 +573,7 @@ reminder:{render:()=>{const s=target()||{name:'It'};const d=parse(addDays(today(
   <div class="grow"></div><button class="btn primary" ${act('back','home')}>Back to Dashboard</button></div>`;}},
 rip:{night:true,render:()=>{const g=T.buried;if(!g)return SCREENS.graveyard.render();const next=T.queue.length?getSub(T.queue[0]):null;const yearly=g.cadence==='yearly'?g.price:g.price*12;
   const fx=fxFor(g.name);
-  return `<div class="content mid"><div style="height:10px"></div><div class="ripstage">${tomb(g,1.1,'rising',false)}<span class="dropper" style="background:${svcColor(g.name)};color:${svcInk(g.name)}">${esc(letter(g.name))}</span><span class="spirit" aria-hidden="true"><svg viewBox="0 0 60 70"><path d="M6 64V30a24 24 0 0 1 48 0v34l-8-6-8 6-8-6-8 6-8-6z" fill="#F6F1E7" fill-opacity=".92" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/><ellipse cx="23" cy="30" rx="3.5" ry="5" fill="#1E1B2E"/><ellipse cx="37" cy="30" rx="3.5" ry="5" fill="#1E1B2E"/></svg><b>${esc(letter(g.name))}</b></span><div class="fxhost" id="fxRip"></div></div><div class="dustwrap" id="dust"></div><span class="chip bg-moss" style="font-size:16px;padding:4px 12px;margin-top:-4px;animation:pop .45s cubic-bezier(.3,1.6,.5,1) 1.75s both">+${m(yearly)} a year</span>
+  return `<div class="content mid"><div style="height:10px"></div><div class="ripstage">${tomb(g,1.1,'rising',false)}<span class="dropper" style="background:${svcColor(g.name)};color:${svcInk(g.name)}">${esc(letter(g.name))}</span><span class="bats" aria-hidden="true">${BATS.map((b,k)=>`<span class="bat" style="--bx:${b.x}px;--by:${b.y}px;--bd:${b.d}s;--bs:${b.s}">${bat(g.name,b.lead)}</span>`).join('')}</span><div class="fxhost" id="fxRip"></div></div><div class="dustwrap" id="dust"></div><span class="chip bg-moss" style="font-size:16px;padding:4px 12px;margin-top:-4px;animation:pop .45s cubic-bezier(.3,1.6,.5,1) 1.75s both">+${m(yearly)} a year</span>
   <h2 class="t-l c-bone">Rest in peace, ${esc(g.name)}.</h2><p class="t-dp c-blush quip">${esc(fx.bury)}</p><p class="t-dp c-stone">${g.nextDue?`The next charge was due ${fmtDay(g.nextDue)}. Plot will count it as saved.`:`The savings counter starts now.`}</p>
   <div class="card" style="width:100%;background:var(--ink);border:0;gap:2px"><span class="t-cap c-blush">GRAVEYARD TOTAL · ${S.graves.length} RESTING</span><span class="t-l c-moss">${m(graveTotal())}</span></div>
   <div class="grow"></div>${next?`<button class="btn bury" ${act('nextBury')}>Next: bury ${esc(next.name)}</button>`:''}<button class="btn light" ${act('tab','graveyard')}>See the Graveyard</button><button class="btn ghost" ${act('back','home')}>Back to Dashboard</button></div>`;},
@@ -578,7 +598,7 @@ back:{render:()=>{const g=T.revived;if(!g)return SCREENS.home.render();const b=b
 const fx=fxFor(g.name);
   return `<div class="content mid"><div class="grow"></div><div class="climb" aria-hidden="true">
    <div class="climb-stone"><span>R.I.P.</span></div>
-   <div class="climb-well"><div class="climber"><span class="hand l">${HAND}</span><span class="hand r">${HAND}</span><span class="ctile" style="background:${svcColor(g.name)};color:${svcInk(g.name)}"><span class="ceyes"><i></i><i></i></span><b>${esc(letter(g.name))}</b></span></div></div>
+   <div class="climb-well"><div class="climber"><div class="zsway">${zombie(g.name)}</div></div></div>
    <div class="climb-dirt"></div><div class="fxhost" id="fxBack"></div><div class="fxhost low" id="dirtBack"></div></div>
   <h2 class="t-l">${esc(g.name)} is back.</h2><p class="t-dp c-dirt quip">${esc(fx.back)}</p><p class="t-body c-plum">The savings counter stopped and the comeback is in your log. That’s ${b.res} so far.</p>
   <div class="card" style="width:100%;background:var(--candle)"><span class="t-dp">Plot is not judging. Plot is counting.</span></div>

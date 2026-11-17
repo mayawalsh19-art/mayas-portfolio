@@ -1,5 +1,5 @@
 // Keeps the app shell available offline. API calls always go to the network.
-const CACHE = 'sg-v9';
+const CACHE = 'sg-v10';
 const SHELL = ['/graveyard-app/', '/graveyard-app/index.html', '/graveyard-app/styles.css', '/graveyard-app/app.js', '/graveyard-app/manifest.webmanifest', '/graveyard-app/icons/icon-192.png', '/graveyard-app/icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
