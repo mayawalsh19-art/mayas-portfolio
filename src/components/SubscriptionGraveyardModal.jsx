@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Plot from './graveyard/Plot'
+import { Ghost, Bat, Zombie, Cobweb, Candle, MoonStars, Fence, IronFence, EventIcon, Particle } from './graveyard/Cast'
 
 // Subscription Graveyard: case study for the subscription app (Figma design + working demo app).
 // Styled in the app's own brand: Bagel Fat One / DM Sans / Space Mono on Bone, Ink and Grave Plum.
@@ -98,6 +99,11 @@ const MOODS = [
 const SWATCHES = [
   ['Midnight Ink', '#1E1B2E'], ['Grave Plum', '#3B2F5C'], ['Bone', '#F6F1E7'], ['Tombstone', '#C9C4D6'], ['Fresh Dirt', '#6B4A3A'],
   ['Money Moss', '#7FD67A'], ['Pumpkin Alarm', '#FF8A3D'], ['Ghost Blush', '#FF9EC4'], ['Candlelight', '#FFD166'], ['Paper', '#FFFFFF'],
+]
+
+const SENDOFFS = [
+  ['Spotify', 'note', '#1DB954', 'The music stopped.'], ['Disney+', 'star', '#7FD3FF', 'The fireworks are over.'], ['Amazon Prime', 'box', '#FF9900', 'Returned to sender.'],
+  ['Peacock', 'feather', '#FF9EC4', 'Feathers ruffled.'], ['Duolingo', 'flame', '#58CC02', 'Streak: lost.'], ['Netflix', 'film', '#E50914', 'No more “are you still watching?”'],
 ]
 
 const PROCESS = [
@@ -398,6 +404,71 @@ export default function SubscriptionGraveyardModal({ onClose }) {
             </div>
           </Reveal>
         </div>
+
+        {/* Plot's supporting cast: the newer brand pieces, drawn live */}
+        <Reveal className="mt-14 md:mt-16">
+          <p className="text-[13px] font-bold uppercase tracking-[0.08em] mb-3" style={{ fontFamily: MONO, color: C.dirt }}>The supporting cast</p>
+          <Body className="cs-solo">Plot isn’t alone out there. Every piece has one job, and they all move a little.</Body>
+        </Reveal>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-8">
+          {[
+            [C.plum, <div className="gy-bob"><Ghost size={70} /></div>, 'Ghost', 'A free trial. Not charging yet, but it will.', true],
+            [C.plum, <div className="flex items-end gap-1"><Bat width={84} lead color="#1DB954" letter="S" /><div className="mb-6"><Bat width={52} /></div></div>, 'Bats', 'Burst out of the grave when you bury something. The lead bat wears the service’s color.', true],
+            [C.bone, <div className="gy-lurch mt-3"><Zombie width={80} /></div>, 'Zombie', 'Claws out when you bring a subscription back, wearing it as a T-shirt.', false],
+            [C.paper, <span className="relative grid place-items-center w-[60px] h-[60px] rounded-[18px] text-[28px]" style={{ background: C.stone, border: `3px solid ${C.ink}`, fontFamily: DISPLAY, color: C.ink }}>N<span className="absolute -top-1 -right-1"><Cobweb size={30} /></span></span>, 'Cobweb', 'Grows on anything you rated “barely used.” It’s gathering dust.', false],
+            [C.paper, <Candle height={78} />, 'Candle', 'Kept lit next to the log, where Plot writes everything down.', false],
+            [C.ink, <MoonStars width={150} />, 'Moon & stars', 'The night sky over every dark total. The stars twinkle.', true],
+            [C.paper, <div className="flex gap-2"><EventIcon type="Buried" /><EventIcon type="Resurrected" /><EventIcon type="Switched" /></div>, 'Log icons', 'Buried, back from the dead, and switched to something cheaper.', false],
+            [C.paper, <div className="flex items-center gap-2 gy-dig"><Plot mood="Content" size={74} /><svg width="22" height="44" viewBox="0 0 40 80" className="gy-shovel" aria-hidden="true"><rect x="18" y="2" width="4" height="46" rx="2" fill={C.dirt} stroke={C.ink} strokeWidth="2" /><rect x="12" y="2" width="16" height="6" rx="3" fill={C.dirt} stroke={C.ink} strokeWidth="2" /><path d="M10 48h20v14c0 8-4 14-10 16-6-2-10-8-10-16z" fill={C.stone} stroke={C.ink} strokeWidth="2.5" strokeLinejoin="round" /></svg></div>, 'Plot digging', 'The loading state. Plot digs through a year of charges.', false],
+          ].map(([bg, art, name, use, dark], n) => (
+            <Reveal key={name} delay={(n % 4) * 80}>
+              <div className="gy-card gy-lift h-full rounded-[24px] overflow-hidden flex flex-col" style={{ background: C.paper, border: `2px solid ${C.ink}` }}>
+                <div className="h-[150px] grid place-items-center px-3" style={{ background: bg }}>{art}</div>
+                <div className="p-4 pt-3 flex-1" style={{ borderTop: `2px solid ${C.ink}` }}>
+                  <p className="text-base font-bold" style={{ fontFamily: BODY, color: C.ink }}>{name}</p>
+                  <p className="text-sm leading-snug mt-1" style={{ fontFamily: BODY, color: INK_TXT }}>{use}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* Fences that close a list, light and dark */}
+        <div className="grid md:grid-cols-2 gap-4 md:gap-5 mt-4 md:mt-5">
+          <Reveal>
+            <div className="h-full rounded-[24px] p-6 flex flex-col justify-end gap-2" style={{ background: C.paper, border: `2px solid ${C.ink}` }}>
+              <Fence />
+              <p className="text-xs text-center" style={{ fontFamily: BODY, color: C.plum }}>That’s everything. Plot checked twice.</p>
+            </div>
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="h-full rounded-[24px] p-6 flex flex-col justify-end gap-2" style={{ background: C.plum, border: `2px solid ${C.ink}` }}>
+              <IronFence />
+              <p className="text-xs text-center" style={{ fontFamily: BODY, color: C.stone }}>Rest in peace. Your wallet thanks them.</p>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Each service gets its own send-off */}
+        <Reveal className="mt-4 md:mt-5">
+          <div className="rounded-[24px] p-6 md:p-7" style={{ background: C.ink, border: `2px solid ${C.ink}` }}>
+            <div className="flex items-baseline justify-between flex-wrap gap-2 mb-5">
+              <p className="text-[13px] font-bold uppercase tracking-[0.08em]" style={{ fontFamily: MONO, color: C.candle }}>Every service gets its own send-off</p>
+              <p className="text-xs" style={{ fontFamily: MONO, color: C.stone }}>Hover one</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+              {SENDOFFS.map(([name, shape, color, line]) => (
+                <div key={name} className="gy-sendoff rounded-[18px] p-3 flex flex-col items-center text-center gap-2" style={{ background: C.plum }}>
+                  <div className="relative h-[46px] w-full grid place-items-center">
+                    {[0, 1, 2].map(k => <span key={k} className={`gy-pt gy-pt${k}`}><Particle shape={shape} color={color} size={k ? 18 : 26} /></span>)}
+                  </div>
+                  <p className="text-sm font-bold" style={{ fontFamily: BODY, color: C.bone }}>{name}</p>
+                  <p className="text-[11px] leading-snug" style={{ fontFamily: MONO, color: C.blush }}>{line}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* Process */}
