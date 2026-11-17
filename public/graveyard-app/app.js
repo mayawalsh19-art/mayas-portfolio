@@ -226,7 +226,7 @@ welcome:{night:true,render:()=>`<div class="content mid"><div class="grow"></div
   <div class="stagger" style="display:flex;flex-direction:column;align-items:center;gap:14px">
    <div class="bob">${plot('Content',150,'emerge')}</div>
    <div class="t-xl c-blush" style="font-size:44px;line-height:.95">subscription</div><div class="t-xl c-bone" style="margin-top:-12px">graveyard</div>
-   <p class="t-dp c-stone" style="margin-top:6px">Every subscription you forgot about,<br>in one quiet place.</p></div>
+   </div>
   <div class="grow"></div><button class="btn light" ${act('go','meet')}>Get started</button><button class="btn ghost" ${act('skipToHome')}>I already have an account</button></div>`},
 meet:{render:()=>`<div class="content mid"><div style="height:8px"></div>
   <div class="wave">${plot('Content',170)}</div><h2 class="t-l">Meet Plot.</h2>
