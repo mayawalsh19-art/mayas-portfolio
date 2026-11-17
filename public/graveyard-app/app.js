@@ -164,6 +164,7 @@ function allTips(){const tips=[];const subs=S.subs.filter(x=>!x.bundle);const by
  return tips.filter(t=>t.save==null||t.save>0);}
 // ---------- Switching to a cheaper plan ----------
 // Plot can't change a plan for you: it hands you to the service, then asks if it worked and updates the bill.
+function savedSoFar(){return r2(graveTotal()+(S.switches||[]).reduce((a,x)=>a+(x.save||0)/12*Math.floor(daysBetween(x.at.slice(0,10),today())/30.44),0));}
 function switchedTotal(){return r2((S.switches||[]).reduce((a,x)=>a+(x.save||0),0));}
 function applySwitch(t,price){const sw=t.sw;const s=getSub(sw.subId);if(!s)return null;const before=sw.merge?sw.merge.map(getSub).filter(Boolean):[s];
  const oldMonthly=before.reduce((a,x)=>a+monthly(x),0);let target=s;
@@ -244,6 +245,7 @@ function trialEnds(t){const d=parse(t.ends);d.setHours(23,59,59);return d;}
 function trialDaysLeft(t){return Math.max(0,daysBetween(today(),t.ends));}
 const getSub=id=>S.subs.find(s=>s.id===id);
 const getTrial=id=>S.trials.find(t=>t.id===id);
+const urgentTrial=()=>[...S.trials].sort((x,y)=>x.ends.localeCompare(y.ends)).find(t=>trialDaysLeft(t)<=3);
 const tName=t=>t.parent?`${t.name} (in ${t.parent})`:t.name;
 function target(){const t=T.target;if(!t)return null;return t.kind==='trial'?getTrial(t.id):getSub(t.id);}
 
@@ -401,7 +403,7 @@ function bat(name,lead){const c=svcColor(name);return `<svg viewBox="0 0 60 36" 
 const BATS=[{x:-120,y:-150,d:1.55,s:1.25,lead:1},{x:110,y:-170,d:1.7,s:.9},{x:-60,y:-210,d:1.85,s:.75},{x:140,y:-90,d:2.0,s:.8},{x:20,y:-230,d:2.1,s:.65}];
 const svcColor=n=>fxFor(n)===SVC_FX._?'var(--blush)':fxFor(n).c[0];
 const svcInk=n=>{const c=svcColor(n);if(!c.startsWith('#'))return 'var(--ink)';const v=parseInt(c.slice(1),16);const L=(0.299*(v>>16)+0.587*(v>>8&255)+0.114*(v&255))/255;return L>.6?'var(--ink)':'var(--bone)';};
-function tabbar(active){const tabs=[['home','Home'],['checkin','Check-in'],['graveyard','Graveyard'],['log','Log']];const from=Math.max(0,tabs.findIndex(t=>t[0]===T.tab));const to=tabs.findIndex(t=>t[0]===active);
+function tabbar(active){const tabs=[['home','Home'],['graveyard','Graveyard'],['log','Log']];const from=Math.max(0,tabs.findIndex(t=>t[0]===T.tab));const to=tabs.findIndex(t=>t[0]===active);
  return `<nav class="tabbar" aria-label="Tabs"><span class="pill" data-to="${to}" style="transform:translateX(calc(${from} * (100% + 4px)))"></span>${tabs.map(([k,l],i)=>`<button class="${i===to?'on':''}" ${act('tab',k)} aria-current="${i===to?'page':'false'}">${ICON[k]}<span>${l}</span></button>`).join('')}</nav>`;}
 function countUp(el,from,to,ms=900){if(!el)return;const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/ms);el.textContent=m(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
 let toastTimer;
@@ -414,22 +416,23 @@ const SCREENS={
 /* ---------- first launch ---------- */
 welcome:{night:true,render:()=>`<div class="content mid"><div class="grow"></div>
   <div class="stagger" style="display:flex;flex-direction:column;align-items:center;gap:14px">
-   <div class="bob">${plot('Content',150,'emerge')}</div>
+   <div class="bob">${plot('Content',140,'emerge')}</div>
    <div class="t-xl c-blush" style="font-size:44px;line-height:.95">subscription</div><div class="t-xl c-bone" style="margin-top:-12px">graveyard</div>
+   <p class="t-body c-stone" style="max-width:290px">This is Plot. It finds what you pay for, asks once a month what you actually use, and buries the rest.</p>
    </div>
-  <div class="grow"></div><button class="btn light" ${act('go','meet')}>Get started</button><button class="btn ghost" ${act('skipToHome')}>I already have an account</button></div>`},
+  <div class="grow"></div><button class="btn light" ${act('go','add')}>Get started</button><button class="btn ghost" ${act('skipToHome')}>I already have an account</button></div>`},
 meet:{render:()=>`<div class="content mid"><div style="height:8px"></div>
   <div class="wave">${plot('Content',170)}</div><h2 class="t-l">Meet Plot.</h2>
   <p class="t-body c-plum">Plot keeps watch over your subscriptions. It notices what you stop using and asks, politely, if it can bury it.</p>
   <div class="card stagger" style="width:100%;gap:12px">${[['Content','A 2-minute check-in, once a month'],['Sleepy','Bury what you don’t use'],['Resurrected','Bring anything back, no judgment']].map(([md,t])=>`<div class="row">${plot(md,36)}<span class="t-strong">${t}</span></div>`).join('')}</div>
   <div class="grow"></div><button class="btn primary" ${S.onboarded?act('back','settings'):act('go','add')}>${S.onboarded?'Back to Settings':'Nice to meet you'}</button></div>`},
-add:{render:()=>{const b=T.method==='bank';return `<div class="content">
-  <span class="t-cap c-dirt">STEP 1 OF 4</span><h2 class="t-l">Add your subscriptions</h2>
-  <p class="t-body c-plum">Plot needs to know what you pay for before it can judge any of it.</p>
-  <button class="card option" aria-pressed="${b}" ${act('method','bank')}><span class="row"><span class="t-title">Link your bank</span><span class="chip bg-moss">Recommended</span></span><span class="t-body c-plum">Plot finds recurring charges for you.</span></button>
-  <button class="card option" aria-pressed="${!b}" ${act('method','hand')}><span class="t-title">Add them by hand</span><span class="t-body c-plum">Type in each one. Slower, but very private.</span></button>
-  <div class="card dash"><span class="t-dp">Plot can’t move money. It can only judge.</span></div>
-  <div class="grow"></div><button class="btn primary" ${act(b?'connectBank':'go',b?'':'byhand')}>${b?'Link my bank':'Add by hand'}</button></div>`;}},
+add:{render:()=>`<div class="content">
+  <span class="t-cap c-dirt">STEP 1 OF 3</span><h2 class="t-l">Link your bank</h2>
+  <p class="t-body c-plum">Plot reads a year of charges and finds everything that repeats. It takes about 5 seconds.</p>
+  <div class="card thick" style="gap:10px;align-items:center;text-align:center">${plot('Sleepy',80,'bob')}<span class="t-strong">Plot’s demo bank</span><span class="t-cap c-plum">A pretend bank with a year of made-up charges. Plot can’t see real accounts, and it can’t move money.</span></div>
+  <div class="grow"></div><button class="btn primary" ${act('useDemoBank')}>Link the demo bank</button>
+  <button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button>
+  <button class="linkbtn" ${act('go','banksetup')}>Use Plaid’s test bank</button></div>`},
 banksetup:{render:()=>{const local=['localhost','127.0.0.1'].includes(location.hostname);const open=T.showPlaid;
   return `<div class="content">
   <button class="backlink" ${act('back',S.onboarded?'settings':'add')}>←&nbsp; ${S.onboarded?'Settings':'Back'}</button>
@@ -462,23 +465,18 @@ byhand:{render:()=>`<div class="content">
   const wrap=$('#hAddWrap',el),box=$('#hAdd',el);let shown='';
   const upd=()=>{const svc=canon($('#fName',el).value);const opts=ADDON_OPTIONS[svc];if(svc===shown)return;shown=svc;wrap.hidden=!opts?.length;box.innerHTML=(opts||[]).map(([n,p])=>`<button type="button" class="optchip" aria-pressed="false" data-name="${esc(n)}" data-price="${p}">${esc(n)} <b>${m(p)}</b></button>`).join('');};
   $('#fName',el).addEventListener('input',upd);box.addEventListener('click',e=>{const b=e.target.closest('.optchip');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');});}},
-found:{render:()=>{const r=S.scan;
+found:{mount(){if(!S.scan||T.scanError||T.autoAdv===S.scan)return;const r=S.scan;T.autoAdv=r;setTimeout(()=>{if(cur.id!=='found')return;applyScan();if(S.onboarded){toast(`Plot found ${S.subs.length} subscriptions.`);go('home','fade');}else go('trials','fade');},900);},
+  render:()=>{const r=S.scan;
   if(T.scanError) return `<div class="content mid"><div class="grow"></div>${plot('Alarmed',140)}<h2 class="t-m">Plot couldn’t read the bank.</h2><p class="t-body c-plum">${esc(T.scanError)}</p><div class="grow"></div><button class="btn primary" ${act('rescan')}>Try again</button><button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button></div>`;
   if(!r) return `<div class="content mid"><div class="grow"></div>${plot('Sleepy',120,'bob')}<h2 class="t-m">Plot is reading your statements.</h2><div class="loadbar"><i></i></div><p class="t-dp c-plum">${esc(T.scanMsg||'Waiting for the demo bank…')}</p><div class="grow"></div></div>`;
-  const subs=r.subscriptions,stopped=r.stopped||[];
-  return `<div class="content"><span class="t-cap c-dirt">STEP 1 OF 4 · ${esc(S.bank?.name||'Demo bank')}${S.bank?.mask?' ••'+esc(S.bank.mask):''}</span>
-  <h2 class="t-l">Plot found ${subs.length}.</h2>
-  <p class="t-body c-plum">Plot read ${r.scanned} transactions and kept the ones that repeat. Tap anything that isn’t a subscription to remove it.</p>
-  <div class="stack stagger" style="gap:8px">${subs.map(x=>`<button class="subrow${S.removed[x.name]?' off':''}" ${act('toggleFound',x.name)} aria-pressed="${!S.removed[x.name]}"><span class="logo-tile">${esc(letter(x.name))}</span><span class="info"><span class="t-strong">${esc(x.name)}</span><span class="chip ${x.isNew?'bg-blush':'bg-stone'}">${S.removed[x.name]?'Removed':x.isNew?'Just started':`${x.charges.length} charges · ${x.cadence}`}</span>${(x.addons||[]).map(a=>`<span class="t-cap c-plum">+ ${esc(a.name)} ${m(a.price)}/mo add-on</span>`).join('')}</span><span class="price"><span class="t-strong">${m(x.price+(x.addons||[]).reduce((t,a)=>t+a.price,0))}</span><span class="t-cap c-dirt">next: ${fmtDay(x.next)}</span></span></button>`).join('')}</div>
-  ${(r.trials||[]).length?`<span class="section-label" style="margin-top:6px">Free trials Plot spotted (${r.trials.length})</span><div class="stack" style="gap:8px">${r.trials.map(t=>{const d=Math.max(0,daysBetween(today(),t.ends));return `<div class="trialcard">${plot('Alarmed',40)}<span class="stack-s" style="gap:2px"><span class="t-strong">${esc(tName(t))}</span><span class="t-cap">Free trial · charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`}${t.price?` · then ${m(t.price)}/mo`:''}</span></span></div>`;}).join('')}</div>`:''}
-  ${stopped.length?`<span class="section-label" style="margin-top:6px">Already cancelled (${stopped.length})</span><div class="card dash" style="gap:8px"><span class="t-dp">These stopped charging a while ago. Plot will give them a proper burial in your Graveyard.</span>${stopped.map(x=>`<span class="row between"><span class="t-strong">${esc(x.name)}</span><span class="t-cap c-dirt">last charge ${fmtDay(x.last)}</span></span>`).join('')}</div>`:''}
-  <div class="grow"></div><button class="btn primary" ${act('acceptScan')}>Looks right</button></div>`;}},
+  return `<div class="content mid"><div class="grow"></div>${plot('Resurrected',130,'emerge')}<h2 class="t-l">Plot found ${r.subscriptions.length}.</h2><p class="t-dp c-plum">Out of ${r.scanned} charges.</p><div class="grow"></div></div>`;}},
 trials:{render:()=>{const spotted=S.trials.filter(t=>!t.fromSub);
   const picks=[...S.subs.map(x=>({sub:x})),...S.trials.filter(t=>t.fromSub).map(t=>({trial:t}))].sort((a,b)=>(a.sub||a.trial).name.localeCompare((b.sub||b.trial).name));
   const ghosts=S.trials.length;
   return `<div class="content">
-  <span class="t-cap c-dirt">STEP 2 OF 4</span><h2 class="t-l">Spot the ghosts.</h2>
-  <p class="t-body c-plum">A free trial is a ghost: it isn’t charging you yet, but it will. Tap anything that’s still free and Plot counts down to the first charge.</p>
+  <span class="t-cap c-dirt">STEP 2 OF 3</span><h2 class="t-l">${S.scan?`Plot found ${S.subs.length+S.trials.length}.`:'Spot the ghosts.'}</h2>
+  <p class="t-body c-plum">Tap anything that’s still a free trial. It turns into a ghost, and Plot counts down to the first charge.</p>
+  ${S.scan&&(S.scan.stopped||[]).length?`<span class="t-cap c-plum" style="margin-top:-6px">${S.scan.stopped.length} you already cancelled went to the Graveyard. Something here isn’t a subscription? Remove it from its page later.</span>`:''}
   <div class="legend" aria-hidden="true"><span><i class="lg-solid"></i>Paying</span><span><i class="lg-ghost">${ghostSvg(22)}</i>Free trial</span></div>
   ${spotted.length?`<span class="section-label">Plot spotted ${spotted.length===1?'one':spotted.length} in your bank</span><div class="stack" style="gap:8px">${spotted.map(t=>{const d=trialDaysLeft(t);return `<div class="spotted">${ghostSvg(44,'bob')}<span class="stack-s grow" style="gap:2px;min-width:0"><span class="t-strong">${esc(tName(t))}</span><span class="t-cap">Free trial · charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`} · then ${m(t.price)}/mo</span></span><button class="linkbtn sm" ${act('removeTrial',t.id)}>Not a trial</button></div>`;}).join('')}</div>`:''}
   ${picks.length?`<span class="section-label">Your list · tap the free ones</span><div class="ghostgrid">${picks.map(p=>{const on=!!p.trial;const x=p.sub||p.trial;const d=on?trialDaysLeft(x):0;
@@ -506,12 +504,14 @@ addtrial:{render:()=>`<div class="content">
    el.querySelectorAll('input').forEach(i=>i.addEventListener('input',upd));el.querySelectorAll('[data-warn]').forEach(b=>b.addEventListener('click',()=>{el.querySelectorAll('[data-warn]').forEach(x=>x.setAttribute('aria-pressed',x===b));upd();}));upd();}},
 
 discounts:{render:()=>{const edit=S.onboarded;const who=myWho();const save=yearlySavings(who);
-  return `<div class="content">${edit?`<button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button>`:`<span class="t-cap c-dirt">STEP 3 OF 4</span>`}
+  return `<div class="content">${edit?`<button class="backlink" ${act('back','settings')}>←&nbsp; Settings</button>`:`<span class="t-cap c-dirt">STEP 3 OF 3</span>`}
   <h2 class="t-l">${edit?'Discounts':'Any of these you?'}</h2>
   <p class="t-body c-plum">Some services charge students, teachers and the military less. Tap what fits and Plot will check your list for a cheaper plan.</p>
   <div class="stack" style="gap:8px">${Object.entries(WHO).map(([k,w])=>`<button class="whochip${who.includes(k)?' on':''}" ${act('toggleWho',k)} aria-pressed="${who.includes(k)}"><span class="stack-s grow" style="gap:2px;text-align:left"><span class="t-strong">${w.label}</span><span class="t-cap">${w.sub}</span></span><span class="tick" aria-hidden="true"></span></button>`).join('')}</div>
-  <div class="card dash" style="gap:6px">${who.length?(save>0?`<span class="t-title">Plot found ${m(save)} a year in cheaper plans.</span><span class="t-cap c-plum">${S.subs.filter(x=>cheaperFor(x)).map(x=>esc(x.name)).join(', ')}. Each one’s page shows how to switch.</span>`:`<span class="t-dp">Nothing on your list has a cheaper plan for that yet. Plot will keep checking.</span>`):`<span class="t-dp">Plot doesn’t need proof. The services will ask for that. This stays on your phone.</span>`}</div>
-  <div class="grow"></div>${edit?`<button class="btn primary" ${act('back','settings')}>Done</button>`:`<button class="btn primary" ${act('go',allTips().length?'deals':'nudge')}>${who.length?'Continue':'None of these'}</button>`}</div>`;}},
+  ${!edit?(()=>{const top=allTips().filter(t=>t.sw).sort((a,b)=>(b.save||0)-(a.save||0)).slice(0,3);const {total}=tipsTotal();if(!top.length)return '';
+    return `<div class="card thick" style="gap:10px"><span class="row between"><span class="t-cap c-dirt">CHEAPER PLANS PLOT FOUND</span><span class="chip bg-moss">${m(total)}/yr</span></span>${top.map(t=>`<button class="dealrow" ${act('startSwitch',t.id)}><span class="stack-s grow" style="gap:1px;text-align:left;min-width:0"><span class="t-strong">${esc(t.title)}</span><span class="t-cap c-plum">${esc(t.subs.join(' + '))} · saves ${m(t.save)}/yr</span></span><span class="chip bg-ink">Switch</span></button>`).join('')}<span class="t-cap c-plum">The rest wait on your dashboard.</span></div>`;})():''}
+  ${edit||!who.length||!allTips().some(t=>t.sw)?`<div class="card dash" style="gap:6px">${who.length?(save>0?`<span class="t-title">Plot found ${m(save)} a year in cheaper plans.</span><span class="t-cap c-plum">${S.subs.filter(x=>cheaperFor(x)).map(x=>esc(x.name)).join(', ')}. Each one’s page shows how to switch.</span>`:`<span class="t-dp">Nothing on your list has a cheaper plan for that yet. Plot will keep checking.</span>`):`<span class="t-dp">Plot doesn’t need proof. The services will ask for that. This stays on your phone.</span>`}</div>`:''}
+  <div class="grow"></div>${edit?`<button class="btn primary" ${act('back','settings')}>Done</button>`:`<button class="btn primary" ${act('go','nudge')}>${who.length?'Continue':'None of these'}</button>`}</div>`;}},
 savings:{render:()=>{const tips=allTips().sort((a,b)=>(b.save||0)-(a.save||0));const {total}=tipsTotal(tips);const groups=Object.keys(KIND).map(k=>[k,tips.filter(t=>t.kind===k)]).filter(([,l])=>l.length);
   return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; Dashboard</button>
   <h2 class="t-l">Cheaper plans</h2>
@@ -532,7 +532,7 @@ switchto:{render:()=>{const t=T.sw;if(!t)return SCREENS.home.render();const sw=t
 switched:{render:()=>{const r=T.swDone;if(!r)return SCREENS.home.render();return `<div class="content mid"><div class="grow"></div>${plot('Resurrected',150,'emerge')}
   <h2 class="t-l">Switched.</h2><p class="t-body c-plum">${esc(r.target.name)} is now ${esc(r.target.plan)} at ${m(r.target.price)}${r.target.cadence==='yearly'?' a year':' a month'}.</p>
   <div class="card" style="width:100%;background:var(--ink);border:0;color:var(--bone);gap:2px"><span class="t-cap c-blush">SAVED BY SWITCHING</span><span class="t-l c-moss">+${m(r.save)} a year</span><span class="t-dp c-stone">${m(switchedTotal())} a year so far. Same stuff, smaller bill.</span></div>
-  <div class="grow"></div>${r.next?`<button class="btn bury" ${act('buryOne',r.next)}>Now bury ${esc(getSub(r.next)?.name||'')}</button>`:''}<button class="btn ${r.next?'ghost':'primary'}" ${act('switchBack')}>${T.swReturn==='deals'?'Back to the deals':'Done'}</button></div>`;}},
+  <div class="grow"></div>${r.next?`<button class="btn bury" ${act('buryOne',r.next)}>Now bury ${esc(getSub(r.next)?.name||'')}</button>`:''}<button class="btn ${r.next?'ghost':'primary'}" ${act('switchBack')}>${T.swReturn==='deals'||T.swReturn==='discounts'?'Back':'Done'}</button></div>`;}},
 deals:{render:()=>{const tips=allTips().sort((a,b)=>(b.save||0)-(a.save||0));const {total}=tipsTotal(tips);const done=S.switches||[];
   return `<div class="content"><span class="t-cap c-dirt">STEP 4 OF 4</span><h2 class="t-l">${tips.length?'Plot found cheaper plans.':'You’re already on the cheapest plans.'}</h2>
   <p class="t-body c-plum">${tips.length?`Same subscriptions, up to ${m(total)} a year less. Tap Switch and Plot walks you through it.`:'Plot checked every plan. Nothing to switch.'}</p>
@@ -551,12 +551,16 @@ home:{tab:'home',render:()=>{const h=new Date().getHours();const hi=(h<12?'Good 
   const reminders=S.subs.filter(s=>s.remindAt&&parse(s.remindAt)<=parse(today()));const swRem=S.subs.filter(s=>s.switchRemind&&parse(s.switchRemind.at)<=parse(today()));
   return `<div class="content tabs">
   <div class="row between"><div class="stack-s" style="gap:2px"><span class="t-cap c-plum" style="font-size:13px">${hi}</span><h1 class="t-m">Your subscriptions</h1></div><button aria-label="Settings" ${act('go','settings')}>${plot('Content',56)}</button></div>
-  <div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:4px"><span class="t-cap c-blush">THIS MONTH</span><span class="t-l" id="dashTotal">${m(total())}</span><span class="t-dp c-stone">${S.subs.length} active${S.subs.length?` · ${sus} look suspicious`:''}</span></div>
-  ${swRem.map(s=>`<button class="card thick row" style="flex-direction:row;background:var(--moss)" ${act('checkSwitch',s.id)}>${plot('Content',40)}<span class="stack-s grow" style="gap:2px"><span class="t-strong">Did you switch ${esc(s.name)}?</span><span class="t-cap">Plot said it would check back today.</span></span></button>`).join('')}
-  ${reminders.map(s=>`<button class="card thick row" style="flex-direction:row;background:var(--candle)" ${act('checkReminder',s.id)}>${plot('Sleepy',40)}<span class="stack-s grow" style="gap:2px"><span class="t-strong">Did ${esc(s.name)} let you go?</span><span class="t-cap">Plot said it would check back today.</span></span></button>`).join('')}
-  ${S.subs.length?(due?`<div class="card thick row" style="flex-direction:row;padding:14px 14px 14px 18px"><div class="stack-s grow" style="gap:2px"><span class="t-strong">Monthly check-in is ready</span><span class="t-cap c-plum">${S.subs.length} subs · about 2 minutes</span></div><button class="btn primary fit sm" ${act('go','intro')}>Start</button></div>`:`<div class="card thick row" style="flex-direction:row"><div class="stack-s grow"><span class="t-strong">Check-in done</span><span class="t-cap c-plum">Plot will ask again on ${MONS[(new Date().getMonth()+1)%12]} 1.</span></div>${plot('Content',40)}</div>`):''}
+  <div class="card" style="background:var(--ink);border:0;color:var(--bone);gap:4px"><span class="t-cap c-blush">THIS MONTH</span><span class="t-l" id="dashTotal">${m(total())}</span><span class="t-dp c-stone">${S.subs.length} active${S.subs.length?` · ${sus} look suspicious`:''}</span>${savedSoFar()>0||(S.switches||[]).length?`<span class="t-cap c-moss" style="font-size:13px;margin-top:4px">You’ve saved ${m(savedSoFar())} so far${(S.switches||[]).length?` · +${m(switchedTotal())}/yr from switching`:''}</span>`:''}</div>
+  ${(()=>{ // only the single most urgent thing, so the dashboard never stacks alerts
+   const soon=urgentTrial();const slim=S.subs.length&&due?`<button class="slimrow" ${act('go','intro')}><span>Monthly check-in is ready · about 2 minutes</span>${chev}</button>`:'';
+   if(soon){const d=trialDaysLeft(soon);return `<button class="trialcard" ${act('openTrial',soon.id)}>${plot('Alarmed',40)}<span class="stack-s" style="gap:2px"><span class="t-strong">${esc(tName(soon))} trial charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`}</span><span class="t-cap">${m(soon.price)}/mo after · tap to decide</span></span></button>`+slim;}
+   if(swRem[0]){const x=swRem[0];return slim+`<button class="card thick row" style="flex-direction:row;background:var(--moss)" ${act('checkSwitch',x.id)}>${plot('Content',40)}<span class="stack-s grow" style="gap:2px"><span class="t-strong">Did you switch ${esc(x.name)}?</span><span class="t-cap">Plot said it would check back today.</span></span></button>`;}
+   if(reminders[0]){const x=reminders[0];return slim+`<button class="card thick row" style="flex-direction:row;background:var(--candle)" ${act('checkReminder',x.id)}>${plot('Sleepy',40)}<span class="stack-s grow" style="gap:2px"><span class="t-strong">Did ${esc(x.name)} let you go?</span><span class="t-cap">Plot said it would check back today.</span></span></button>`;}
+   if(S.subs.length&&due)return `<div class="card thick row" style="flex-direction:row;padding:14px 14px 14px 18px"><div class="stack-s grow" style="gap:2px"><span class="t-strong">Monthly check-in is ready</span><span class="t-cap c-plum">${S.subs.length} subs · about 2 minutes</span></div><button class="btn primary fit sm" ${act('go','intro')}>Start</button></div>`;
+   return '';})()}
   ${(()=>{const {total,n}=tipsTotal();return total>0?`<button class="card thick savecard" ${act('go','savings')}><span class="stack-s grow" style="gap:2px;text-align:left"><span class="t-strong">Plot found ${m(total)} a year in cheaper plans</span><span class="t-cap">${n} ${n===1?'swap':'swaps'} · same subscriptions, smaller bill</span></span>${chev}</button>`:'';})()}
-  ${S.trials.map(t=>{const d=trialDaysLeft(t);return `<button class="trialcard" ${act('openTrial',t.id)}>${plot('Alarmed',40)}<span class="stack-s" style="gap:2px"><span class="t-strong">${esc(tName(t))} trial charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`}</span><span class="t-cap">${m(t.price)}/mo after</span></span></button>`;}).join('')}
+  ${S.trials.filter(t=>t!==urgentTrial()).length?`<span class="t-title" style="font-size:16px">Free trials (${S.trials.length})</span><div class="stack" style="gap:8px">${[...S.trials].filter(t=>t!==urgentTrial()).sort((x,y)=>x.ends.localeCompare(y.ends)).map(t=>{const d=trialDaysLeft(t);return `<button class="ghostrow" ${act('openTrial',t.id)}>${ghostSvg(30,'bob')}<span class="stack-s grow" style="gap:1px;min-width:0;text-align:left"><span class="t-strong">${esc(tName(t))}</span><span class="t-cap c-plum">Charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`} · then ${m(t.price)}/mo</span></span>${chev}</button>`;}).join('')}</div>`:''}
   ${S.subs.length?`<div class="row between"><span class="t-title" style="font-size:16px">Active (${S.subs.length})</span><button class="t-cap c-plum" ${act('cycleSort')}>Sort: ${S.prefs.sort==='price'?'price':'least used'}</button></div>
   <div class="stack stagger" style="gap:8px">${list.map(s=>subRow(s)).join('')}</div>`:`<div class="card dash" style="align-items:center;text-align:center;gap:10px">${plot('Sleepy',90)}<span class="t-title">Nothing to watch yet</span><span class="t-body c-plum">Link the demo bank or add a subscription and Plot gets to work.</span></div>`}
   <div class="row" style="gap:8px"><button class="btn ghost sm" ${act('go','byhand')}>+ Subscription</button><button class="btn ghost sm" ${act('go','addtrial')}>+ Free trial</button></div>
@@ -640,26 +644,27 @@ sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();cons
   return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; ${esc(s.name)}</button>${s.plan||s.members?`<span class="t-cap c-plum" style="margin-top:-10px">${s.plan?esc(s.plan)+(s.was?` · was ${m(s.was.price)}`:''):''}${s.members?' · includes '+s.members.map(esc).join(', '):''}</span>`:''}
   ${r?`<div class="card thick" style="padding:22px 24px;gap:8px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-dl">${m(cpu)} / use</span><span class="t-dp c-plum">${m(price)} a month${ads.length?' with add-ons':''} ÷ about ${r.uses} use${r.uses>1?'s':''} (you said “${r.said}”).</span><div class="meter"><i style="width:${meter}%"></i></div><span class="t-cap c-dirt">Worth-it meter: ${meter<35?'low':meter<70?'meh':'high'}</span></div>`
   :`<div class="card thick" style="gap:10px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-body">How much did you use ${esc(s.name)} this month? Plot will do the math.</span>${['barely','sometimes','constantly'].map(k=>`<button class="ratechip" ${act('rateOne',k)}><i class="${RATE[k].cls}"></i>${k==='barely'?'Barely touched it':k==='sometimes'?'Here and there':'Couldn’t live without it'}</button>`).join('')}</div>`}
-  ${addonCard}
-  ${(()=>{const mine=allTips().filter(t=>t.subs.includes(s.name)).sort((x,y)=>(y.save||0)-(x.save||0)).slice(0,3);if(mine.length)return mine.map(t=>tipCard(t,t.subs.length>1)).join('');
+  ${ads.length||tAds.length||T.addonForm?addonCard:''}
+  ${(()=>{const all=allTips().filter(t=>t.subs.includes(s.name)).sort((x,y)=>(y.save||0)-(x.save||0));if(all.length)return tipCard(all[0],all[0].subs.length>1)+(all.length>1?`<button class="linkbtn" style="align-self:flex-start" ${act('go','savings')}>${all.length-1} more way${all.length>2?'s':''} to save on ${esc(s.name)} →</button>`:'');
    const any=(DISCOUNTS[canon(s.name)]||[]).length;if(any&&!myWho().length)return `<button class="card dash hint" style="text-align:left;gap:4px" ${act('go','discounts')}><span class="t-strong">Student, teacher or military?</span><span class="t-cap c-plum">${esc(s.name)} might have a cheaper plan for you. Tell Plot in Discounts.</span></button>`;return '';})()}
   ${s.charges?.length?`<div class="card thick" style="gap:12px"><span class="t-cap c-dirt">CHARGES · LAST 6 MONTHS</span><div class="bars">${months.map(([mo,v,isNow],i)=>`<div><span class="b${isNow?' now':''}${v?'':' zero'}" style="height:${Math.max(6,v/mx*84)}px;animation-delay:${i*.07}s"></span><span class="t-cap c-plum">${mo}</span></div>`).join('')}</div></div>`:''}
   <div class="row" style="gap:8px;align-items:stretch"><div class="stat"><span class="t-cap c-plum">Paid in ${yr}</span><span class="t-title">${s.charges?.length?m(paid):'—'}</span></div><div class="stat"><span class="t-cap c-plum">Charges</span><span class="t-title">${s.charges?.length?count:'—'}</span></div><div class="stat"><span class="t-cap c-plum">Next charge</span><span class="t-title">${s.next?fmtDay(s.next):'—'}</span></div></div>
-  ${r?`<div class="card dash"><span class="t-dp">“You paid ${m(price)} for ${esc(s.name)}${ads.length?' and its add-ons':''} and ${s.rating==='barely'?'barely touched it':s.rating==='sometimes'?'used it here and there':'used it constantly'}. That’s ${m(cpu)} a use.”</span></div>`:''}
-  <div class="grow"></div><div class="row" style="gap:8px"><button class="btn ghost" ${act('back','home')}>Keep it</button><button class="btn bury" ${act('buryOne',s.id)}>Bury it</button></div></div>`;},
+  ${ads.length||tAds.length||T.addonForm?'':`<button class="linkbtn" style="align-self:flex-start" ${act('toggleAddonForm')}>+ Add an add-on inside ${esc(s.name)}</button>`}
+  <div class="grow"></div><div class="row" style="gap:8px"><button class="btn ghost" ${act('back','home')}>Keep it</button><button class="btn bury" ${act('buryOne',s.id)}>Bury it</button></div>
+  <button class="linkbtn" ${act('notASub',s.id)}>This isn’t a subscription</button></div>`;},
   mount(el){el.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{$('#aName',el).value=b.dataset.pick;$('#aPrice',el).value=b.dataset.price;el.querySelectorAll('[data-pick]').forEach(x=>x.setAttribute('aria-pressed',x===b));}));}},
 
 /* ---------- check-in ---------- */
-intro:{tab:'checkin',render:()=>{const done=S.checkins[monthKey()];if(done&&S.subs.length){const n=new Date();const next=new Date(n.getFullYear(),n.getMonth()+1,1);const left=daysBetween(today(),isoOf(next));const FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  return `<div class="content mid tabs"><div class="grow"></div>${plot('Sleepy',170,'bob')}<h2 class="t-l">Check-in done for ${FULL[n.getMonth()]}.</h2>
+intro:{render:()=>{const done=S.checkins[monthKey()];if(done&&S.subs.length){const n=new Date();const next=new Date(n.getFullYear(),n.getMonth()+1,1);const left=daysBetween(today(),isoOf(next));const FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `<div class="content mid"><button class="backlink" style="align-self:flex-start" ${act('back','home')}>←&nbsp; Dashboard</button><div class="grow"></div>${plot('Sleepy',170,'bob')}<h2 class="t-l">Check-in done for ${FULL[n.getMonth()]}.</h2>
   <p class="t-body c-plum">${typeof done==='string'?`You checked in on ${fmtDay(done)}. `:''}Plot opens the next one on ${FULL[next.getMonth()]} 1. That’s ${left} day${left===1?'':'s'} away.</p>
-  <div class="grow"></div><button class="btn primary" ${act('go','verdict')}>See this month’s verdict</button></div>${tabbar('checkin')}`;}
-  return S.subs.length?`<div class="content mid"><div class="grow"></div>
+  <div class="grow"></div><button class="btn primary" ${act('go','verdict')}>See this month’s verdict</button></div>`;}
+  return S.subs.length?`<div class="content mid"><button class="backlink" style="align-self:flex-start" ${act('back','home')}>←&nbsp; Dashboard</button><div class="grow"></div>
   <div class="bob">${plot('Content',190)}</div><h2 class="t-l">It’s that time.</h2>
   <p class="t-body c-plum">Rate how much you actually used each subscription this month. Be honest. Plot already knows.</p>
   <span class="t-cap c-plum" style="font-size:13px">${S.subs.length} subscription${S.subs.length>1?'s':''} · about ${Math.max(1,Math.round(S.subs.length*12/60))} minute${S.subs.length*12/60>1.5?'s':''}</span><div class="grow"></div>
-  <button class="btn primary" ${act('startCheckin')}>Begin check-in</button><button class="btn ghost" ${act('remindTonight')}>Remind me tonight</button></div>${tabbar('checkin')}`
-  :`<div class="content mid tabs"><div class="grow"></div>${plot('Sleepy',150)}<h2 class="t-m">Nothing to check in on.</h2><p class="t-body c-plum">Add a subscription first.</p><div class="grow"></div></div>${tabbar('checkin')}`;}},
+  <button class="btn primary" ${act('startCheckin')}>Begin check-in</button><button class="btn ghost" ${act('remindTonight')}>Remind me tonight</button></div>`
+  :`<div class="content mid"><button class="backlink" style="align-self:flex-start" ${act('back','home')}>←&nbsp; Dashboard</button><div class="grow"></div>${plot('Sleepy',150)}<h2 class="t-m">Nothing to check in on.</h2><p class="t-body c-plum">Add a subscription first.</p><div class="grow"></div></div>`;}},
 swipe:{render:()=>`<div class="content" style="gap:14px">
   <div class="row"><button aria-label="Close check-in" ${act('back','home')} style="font-size:26px;font-weight:700;line-height:1;padding:4px">×</button><div class="progress"><i id="prog" style="width:${T.deckIndex/T.deck.length*100}%"></i></div><span class="t-cap" style="font-weight:700;font-size:13px" id="progTxt">${Math.min(T.deckIndex+1,T.deck.length)} of ${T.deck.length}</span></div>
   <div class="deck" id="deck"><div class="ghostcard g2"></div><div class="ghostcard g1"></div></div>
@@ -740,7 +745,7 @@ const fx=fxFor(g.name);
   <div class="grow"></div><a class="btn res" href="${esc(homeUrl(g.name))}" target="_blank" rel="noopener noreferrer">Re-subscribe on ${esc(g.name)} ↗</a><button class="btn ghost" ${act('back','home')}>Back to active list</button></div>`;},
   mount(el){const n=T.revived?.name;const a=dirtFx($('#dirtBack',el),{delay:350,n:8,spread:70}),b=dirtFx($('#dirtBack',el),{delay:1000,n:14}),c=burstFx($('#fxBack',el),n,{delay:1500});return()=>{clearTimeout(a);clearTimeout(b);clearTimeout(c);};}},
 log:{tab:'log',render:()=>{const names=[...new Set(S.log.map(e=>e.name))];const top=Object.entries(S.bounces).filter(([,b])=>b.res).sort((a,b)=>b[1].res-a[1].res)[0];const ev=S.log.filter(e=>T.logFilter==='All'||e.name===T.logFilter);
-  return `<div class="content tabs"><h1 class="t-l">Resurrection log</h1><p class="t-body c-plum" style="margin-top:-8px">Every burial, comeback and switch.</p>
+  return `<div class="content tabs"><h1 class="t-l">The log</h1><p class="t-body c-plum" style="margin-top:-8px">Every burial, comeback and switch.</p>
   ${top?`<div class="card thick" style="background:var(--blush)"><span class="t-cap">PATTERN SPOTTED</span><span class="t-strong">${esc(top[0])} keeps coming back. ${top[1].res} comeback${top[1].res>1?'s':''} so far, ${m(top[1].spent)} a month back on the bill.</span></div>`:''}
   ${S.log.length?`<div class="filters" role="group" aria-label="Filter log">${['All',...names.slice(0,4)].map(n=>`<button aria-pressed="${T.logFilter===n}" ${act('logFilter',n)}>${esc(n)}</button>`).join('')}</div>
   <div class="timeline">${ev.map(e=>`<div class="event"><i style="background:${e.type==='buried'?'var(--dirt)':e.type==='switched'?'var(--candle)':'var(--moss)'}"></i><span class="stack-s" style="gap:1px"><span class="t-cap c-plum">${fmtCaps(e.at.slice(0,10))}${e.auto?' · found in your bank':''}</span><span class="t-strong">${e.type==='buried'?'Buried '+esc(e.name):e.type==='switched'?'Switched '+esc(e.name)+' to '+esc(e.plan||'a cheaper plan'):'Resurrected '+esc(e.name)}</span></span></div>`).join('')}</div>`
@@ -840,7 +845,7 @@ const ACT={
  rate(k){rate(k);},
  rateOne(k){const s=getSub(T.subId);if(s){s.rating=k;s.ratedAt=today();save();rerender();}},
  remindTonight(){toast('Plot will ask again tonight.');go('home','back');},
- startSwitch(id){const t=allTips().find(x=>x.id===id);if(!t||!t.sw)return;T.sw=t;T.pendingReturn=false;T.swReturn=cur.id==='deals'?'deals':cur.id==='sub'?'sub':cur.id==='savings'?'savings':'home';go('switchto');},
+ startSwitch(id){const t=allTips().find(x=>x.id===id);if(!t||!t.sw)return;T.sw=t;T.pendingReturn=false;T.swReturn=cur.id==='discounts'?'discounts':cur.id==='deals'?'deals':cur.id==='sub'?'sub':cur.id==='savings'?'savings':'home';go('switchto');},
  leftForSwitch(){T.pendingReturn=true;setTimeout(()=>{if(cur.id==='switchto')rerender();},400);},
  confirmSwitch(){const v=parseFloat(($('#swPrice',cur.el)?.value||'').replace(/[^0-9.]/g,''));if(!(v>=0)||isNaN(v)){toast('Add the new price, like 6.99.');return;}
   const r=applySwitch(T.sw,v);if(!r)return;T.pendingReturn=false;T.swDone={...r,next:T.sw.sw.thenBury&&getSub(T.sw.sw.thenBury)?T.sw.sw.thenBury:null};T.flash=r.target.id;T.subId=r.target.id;go('switched','zoom');},
@@ -848,6 +853,7 @@ const ACT={
  switchNever(){T.pendingReturn=false;toast('Nothing was changed.');ACT.switchBack();},
  switchBack(){const r=T.swReturn||'home';T.sw=null;go(r==='sub'&&!getSub(T.subId)?'home':r,'back');},
  checkSwitch(id){const s=getSub(id);if(!s||!s.switchRemind)return;const t=allTips().find(x=>x.id===s.switchRemind.tip);delete s.switchRemind;save();if(!t){toast('That deal isn’t available anymore.');rerender();return;}T.sw=t;T.swReturn='home';T.pendingReturn=true;go('switchto');},
+ notASub(id){const s=getSub(id);if(!s)return;S.subs=S.subs.filter(x=>x.id!==id);S.removed[s.name]=true;save();toast(`Removed ${s.name}. Plot won’t add it again.`);go('home','back');},
  toggleWho(k){const w=new Set(myWho());w.has(k)?w.delete(k):w.add(k);S.profile.discounts=[...w];save();rerender();},
  openSub(id){T.subId=id;T.addonForm=false;T.addonArmed=null;go('sub');},
  toggleAddonForm(){T.addonForm=!T.addonForm;rerender();if(T.addonForm)setTimeout(()=>$('#aName',cur.el)?.focus({preventScroll:true}),50);},
