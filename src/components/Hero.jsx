@@ -5,7 +5,7 @@ export default function Hero() {
         src="/hero_bg.png"
         alt="Maya Walsh"
         draggable={false}
-        className="w-full h-auto block"
+        className="w-full h-auto block hero-in"
       />
     </section>
   )

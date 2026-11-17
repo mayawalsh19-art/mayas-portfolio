@@ -1,13 +1,13 @@
 export default function Contact() {
   return (
     <section id="contact" className="bg-[#f2e9da] w-full py-16 md:py-24 px-6 md:px-[74.5px] flex flex-col items-center text-center gap-8">
-      <h2 className="font-lexend font-black text-[#334e6f] text-[32px] md:text-[56px] leading-tight max-w-3xl">
+      <h2 data-reveal className="font-lexend font-black text-[#334e6f] text-[32px] md:text-[56px] leading-tight max-w-3xl">
         Let's Create Together
       </h2>
-      <p className="font-lexend text-base md:text-lg text-[rgba(51,78,111,0.75)] leading-relaxed max-w-2xl">
+      <p data-reveal style={{ '--d': '120ms' }} className="font-lexend text-base md:text-lg text-[rgba(51,78,111,0.75)] leading-relaxed max-w-2xl">
         I'm always open to new opportunities and collaborations. Whether you have a project in mind or just want to chat about design, I'd love to hear from you.
       </p>
-      <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mt-2">
+      <div data-reveal style={{ '--d': '240ms' }} className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mt-2">
         {/* Email — filled */}
         <a
           href="mailto:mayawalsh2004@icloud.com"

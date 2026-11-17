@@ -8,12 +8,12 @@ export default function AboutMe() {
   return (
     <section id="about" className="bg-white w-full py-12 md:py-16">
       <div className="px-6 md:px-16 lg:px-24">
-        <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8">
+        <h2 data-reveal className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8">
           About Me
         </h2>
         <div className="flex flex-col gap-5 md:gap-6">
           {paragraphs.map((p, i) => (
-            <p key={i} className="font-lexend text-sm md:text-[18px] leading-relaxed text-[rgba(51,78,111,0.8)]">
+            <p key={i} data-reveal style={{ '--d': `${(i + 1) * 110}ms` }} className="font-lexend text-sm md:text-[18px] leading-relaxed text-[rgba(51,78,111,0.8)]">
               {p}
             </p>
           ))}

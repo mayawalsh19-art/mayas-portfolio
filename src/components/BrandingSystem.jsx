@@ -29,15 +29,15 @@ const BARS = [
 
 export default function BrandingSystem() {
   return (
-    <section className="bg-white w-full py-12 md:py-24 px-6 md:px-[74.5px]">
-      <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
+    <section id="branding" className="bg-white w-full py-12 md:py-24 px-6 md:px-[74.5px]">
+      <h2 data-reveal className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
         Branding System
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 
         {/* Color */}
-        <div className="bg-[#f2e9da] rounded-2xl p-8 md:p-10 flex flex-col gap-10">
+        <div data-reveal className="bg-[#f2e9da] rounded-2xl p-8 md:p-10 flex flex-col gap-10">
           <div className="flex flex-col gap-4">
             <h3 className="font-lexend font-black text-[#334e6f] text-xl md:text-2xl">Color</h3>
             <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.75)] leading-relaxed">
@@ -56,7 +56,7 @@ export default function BrandingSystem() {
         </div>
 
         {/* Typography */}
-        <div className="bg-[#f2e9da] rounded-2xl p-8 md:p-10 flex flex-col gap-8">
+        <div data-reveal className="bg-[#f2e9da] rounded-2xl p-8 md:p-10 flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <h3 className="font-lexend font-black text-[#334e6f] text-xl md:text-2xl">Typography</h3>
             <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.75)] leading-relaxed">
@@ -86,7 +86,7 @@ export default function BrandingSystem() {
         </div>
 
         {/* Simplicity */}
-        <div className="bg-[#f2e9da] rounded-2xl p-8 md:p-10 flex flex-col gap-10">
+        <div data-reveal className="bg-[#f2e9da] rounded-2xl p-8 md:p-10 flex flex-col gap-10">
           <div className="flex flex-col gap-4">
             <h3 className="font-lexend font-black text-[#334e6f] text-xl md:text-2xl">Simplicity</h3>
             <p className="font-lexend text-sm md:text-base text-[rgba(51,78,111,0.75)] leading-relaxed">

@@ -34,12 +34,13 @@ function Card({ title, desc, link = true, bg = 'bg-white', full = false, onClick
   return (
     <div
       onClick={onClick}
+      data-reveal
       className={[
-      'bg-white rounded-2xl overflow-hidden flex flex-col',
+      'group bg-white rounded-2xl overflow-hidden flex flex-col',
       'shadow-[0_1px_3px_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]',
       'md:shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)]',
       'transition-transform duration-200',
-      onClick ? 'cursor-pointer hover:scale-[1.02]' : '',
+      onClick ? 'cursor-pointer hover:scale-[1.02] hover:shadow-[0_22px_45px_-12px_rgba(51,78,111,0.35)]' : '',
       full ? 'md:col-span-2' : '',
     ].join(' ')}>
       {/* Preview */}
@@ -82,6 +83,7 @@ function TheCatchCard({ onClick }) {
   return (
     <div
       ref={ref}
+      data-reveal
       onClick={onClick}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
@@ -209,17 +211,47 @@ export default function FeaturedWork() {
     <>
     {Project && <Project onClose={close} />}
     <section id="work" className="bg-[#f2e9da] w-full py-12 md:py-24 px-6 md:px-[74.5px]">
-      <h2 className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
+      <h2 data-reveal className="font-lexend font-black text-[#334e6f] text-[30px] md:text-[48px] leading-none mb-8 md:mb-12">
         Featured Work
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        {/* Subscription Graveyard */}
+        <Card title="Subscription Graveyard" bg="bg-[#F6F1E7]" link={false}
+          onClick={open('subscription-graveyard')}
+          desc="An app that finds your subscriptions, checks in once a month, and helps you cancel the ones you don’t use.">
+          {/* Plot in all four moods, side by side on the plain card */}
+          <div className="self-stretch w-full flex items-center justify-center gap-[2%] px-[4%]">
+            {['Content', 'Sleepy', 'Alarmed', 'Resurrected'].map((mood, i) => (
+              <Plot key={mood} mood={mood} size={150} style={{ width: '23%', height: 'auto', maxWidth: 150, '--d': `${i * 90}ms` }} className="plot-wiggle [&_svg]:w-full [&_svg]:h-auto" />
+            ))}
+          </div>
+        </Card>
+
+        {/* Fan Formation — full width on desktop */}
+        <Card title="Fan Formation" bg="bg-white" link={false}
+          onClick={open('fan-formation')}
+          desc="Fan Formation is a wearable system that synchronizes crowd energy into a coordinated and inclusive stadium experience.">
+          <div className="self-stretch w-full overflow-hidden">
+            <img src="/fanformation/card-two-phones.png" alt="Fan Formation: two phone mockups showing Accessibility Settings and Live Flow" className="card-art w-full h-full object-cover object-top" />
+          </div>
+        </Card>
+
+        {/* The Catch */}
+        <TheCatchCard onClick={open('the-catch')} />
+
+        {/* Ref Drop */}
+        <Card title="Ref Drop" bg="bg-[#EEF1F3]" link={false}
+          onClick={open('ref-drop')}
+          desc="A Chrome extension that saves any image with its source, then turns your collection into a moodboard and a credits list.">
+          <img src="/refdrop/lockup.svg" alt="Ref Drop" className="card-art h-auto" style={{ width: 'min(62%, 340px)' }} />
+        </Card>
 
         {/* Credify */}
         <Card title="Credify" bg="bg-[#ff6900]" link={false}
           onClick={open('credify')}
           desc="A credit app that helps young professionals build credit and reach their personal financial goals.">
-          <img src="/credify/wordmark.svg" alt="Credify" className="h-auto" style={{ width: 'min(62%, 340px)' }} />
+          <img src="/credify/wordmark.svg" alt="Credify" className="card-art h-auto" style={{ width: 'min(62%, 340px)' }} />
         </Card>
 
         {/* Cora */}
@@ -234,8 +266,8 @@ export default function FeaturedWork() {
               ['/cora/screen-community.png', 'Check On Your Community', 2, 4],
               ['/cora/screen-progress.png', 'Progress: Keep Up The Good Work calendar', 6, 14],
             ].map(([src, alt, rot, drop]) => (
-              <div key={src} className="w-[19%] max-w-[130px] flex-shrink-0 aspect-[393/852] rounded-[16px] border-[4px] border-[#2b1414] overflow-hidden shadow-[0_14px_30px_rgba(0,0,0,0.25)]"
-                style={{ transform: `translateY(${drop}%) rotate(${rot}deg)` }}>
+              <div key={src} className="fan-phone w-[19%] max-w-[130px] flex-shrink-0 aspect-[393/852] rounded-[16px] border-[4px] border-[#2b1414] overflow-hidden shadow-[0_14px_30px_rgba(0,0,0,0.25)]"
+                style={{ '--drop': `${drop}%`, '--rot': `${rot}deg` }}>
                 <img src={src} alt={`Cora app: ${alt}`} className="w-full h-full object-cover object-top" />
               </div>
             ))}
@@ -254,8 +286,8 @@ export default function FeaturedWork() {
               ['/dutchbros/iced.png', 'Iced coffee screen', 2, 4],
               ['/dutchbros/redesign_hq.png', 'Redesigned drink screen', 6, 14],
             ].map(([src, alt, rot, drop]) => (
-              <div key={src} className="w-[19%] max-w-[130px] flex-shrink-0 aspect-[9/19] rounded-[16px] border-[4px] border-[#0b1f33] bg-white overflow-hidden shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
-                style={{ transform: `translateY(${drop}%) rotate(${rot}deg)` }}>
+              <div key={src} className="fan-phone w-[19%] max-w-[130px] flex-shrink-0 aspect-[9/19] rounded-[16px] border-[4px] border-[#0b1f33] bg-white overflow-hidden shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
+                style={{ '--drop': `${drop}%`, '--rot': `${rot}deg` }}>
                 <img src={src} alt={`Dutch Bros app: ${alt}`} className="w-full h-full object-cover object-top" />
               </div>
             ))}
@@ -267,7 +299,7 @@ export default function FeaturedWork() {
           onClick={open('self-portrait')}
           desc="A self portrait icon showing vectorized skills and personality.">
           <div className="self-stretch w-full overflow-hidden">
-            <img src="/selfportrait/icon_single.png" alt="Self Portrait" className="w-full h-full object-cover" />
+            <img src="/selfportrait/icon_single.png" alt="Self Portrait" className="card-art w-full h-full object-cover" />
           </div>
         </Card>
 
@@ -276,7 +308,7 @@ export default function FeaturedWork() {
           onClick={open('wild-fire')}
           desc="Wild Fire explores editorial and publication design through the translation of a long-form NYT Magazine article.">
           {/* The WILD FIRE headline, lifted from the opening spread */}
-          <img src="/wildfire/wordmark.png" alt="Wild Fire" className="h-auto select-none" draggable={false} style={{ width: 'min(52%, 300px)' }} />
+          <img src="/wildfire/wordmark.png" alt="Wild Fire" className="card-art h-auto select-none" draggable={false} style={{ width: 'min(52%, 300px)' }} />
         </Card>
 
         {/* Hellgrim */}
@@ -285,22 +317,10 @@ export default function FeaturedWork() {
           desc="Hellgrim explores modular typography through the design of a rule-based typeface.">
           {/* The hellgrim wordmark over the fire from the case study */}
           <div className="self-stretch w-full relative overflow-hidden flex items-center justify-center">
-            <img src="/hellgrim/card-fire.jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover object-[50%_70%]" />
+            <img src="/hellgrim/card-fire.jpg" alt="" aria-hidden="true" className="card-art absolute inset-0 w-full h-full object-cover object-[50%_70%]" />
             <img src="/hellgrim/wordmark.png" alt="hellgrim" className="relative h-auto select-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.6)]" draggable={false} style={{ width: 'min(68%, 380px)' }} />
           </div>
         </Card>
-
-        {/* Fan Formation — full width on desktop */}
-        <Card title="Fan Formation" bg="bg-white" link={false}
-          onClick={open('fan-formation')}
-          desc="Fan Formation is a wearable system that synchronizes crowd energy into a coordinated and inclusive stadium experience.">
-          <div className="self-stretch w-full overflow-hidden">
-            <img src="/fanformation/card-two-phones.png" alt="Fan Formation: two phone mockups showing Accessibility Settings and Live Flow" className="w-full h-full object-cover object-top" />
-          </div>
-        </Card>
-
-        {/* The Catch */}
-        <TheCatchCard onClick={open('the-catch')} />
 
         {/* Weird Mirror */}
         <Card title="Weird Mirror" bg="bg-black" link={false}
@@ -308,27 +328,8 @@ export default function FeaturedWork() {
           desc="An interactive installation: a mirror made of sequins that turns you into the Jayhawk when you swipe your hand across it.">
           {/* Allen Fieldhouse fills the card; the whole Jayhawk always fits on top */}
           <div className="self-stretch w-full relative overflow-hidden">
-            <img src="/weirdmirror/card-fieldhouse.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated' }} />
+            <img src="/weirdmirror/card-fieldhouse.png" alt="" aria-hidden="true" className="card-art absolute inset-0 w-full h-full object-cover" style={{ imageRendering: 'pixelated' }} />
             <img src="/weirdmirror/card-jayhawk.png" alt="Weird Mirror: a pixelated Jayhawk in Allen Fieldhouse" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-auto" style={{ height: '88%', imageRendering: 'pixelated' }} />
-          </div>
-        </Card>
-
-        {/* Ref Drop */}
-        <Card title="Ref Drop" bg="bg-[#EEF1F3]" link={false}
-          onClick={open('ref-drop')}
-          desc="A Chrome extension that saves any image with its source, then turns your collection into a moodboard and a credits list.">
-          <img src="/refdrop/lockup.svg" alt="Ref Drop" className="h-auto" style={{ width: 'min(62%, 340px)' }} />
-        </Card>
-
-        {/* Subscription Graveyard */}
-        <Card title="Subscription Graveyard" bg="bg-[#F6F1E7]" link={false}
-          onClick={open('subscription-graveyard')}
-          desc="An app that finds your subscriptions, checks in once a month, and helps you cancel the ones you don’t use.">
-          {/* Plot in all four moods, side by side on the plain card */}
-          <div className="self-stretch w-full flex items-center justify-center gap-[2%] px-[4%]">
-            {['Content', 'Sleepy', 'Alarmed', 'Resurrected'].map(mood => (
-              <Plot key={mood} mood={mood} size={150} style={{ width: '23%', height: 'auto', maxWidth: 150 }} className="[&_svg]:w-full [&_svg]:h-auto" />
-            ))}
           </div>
         </Card>
 
