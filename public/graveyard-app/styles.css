@@ -199,6 +199,24 @@ h1,h2,p{margin:0}
 .graverow .ev-ic{border-color:var(--stone)}
 .logmonth{display:flex;align-items:center;gap:8px;width:100%;margin-top:14px;padding:6px 0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dirt);text-align:left}
 .logmonth .lm-sum{flex:1;text-align:right;letter-spacing:0;text-transform:none;font-weight:500}
+.tally{display:flex;gap:16px;padding:10px 16px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;align-self:flex-start;font-size:14px}
+.tally span{display:flex;align-items:center;gap:6px}.tally b{font-weight:700}
+.tally .tl-solid{width:14px;height:14px;border-radius:4px;background:var(--ink)}
+.tally .tl-ghost{display:grid;place-items:center;width:16px}.tally .tl-ghost svg{width:14px;height:auto}
+.tlist{display:flex;flex-direction:column;gap:8px}
+.trow{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px 10px 12px;background:var(--paper);border:2px solid var(--stone);border-radius:20px;text-align:left;transition:background .25s,border-color .25s,transform .12s}
+.trow:active{transform:scale(.985)}
+.trow .logo-tile{width:40px;height:40px}
+.trow .tr-ic{width:40px;height:44px;display:grid;place-items:center;flex:none}
+.trow .tr-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.trow .tr-sub{color:var(--plum)}
+.trow .tr-hint{display:flex;align-items:center;gap:4px;flex:none;padding:5px 10px;border:1.5px dashed var(--stone);border-radius:999px;font-size:12px;font-weight:500;color:var(--plum)}
+.trow .tr-hint svg{width:12px;height:auto;opacity:.7}
+.trow.on{background:var(--plum);border:2px dashed var(--candle);color:var(--bone)}
+.trow.on .tr-sub{color:var(--stone)}
+.trow .tr-tag{flex:none;padding:5px 10px;border-radius:999px;background:var(--candle);color:var(--ink);font-size:12px;font-weight:700}
+.trow.just.on .tr-ic .ghosty{animation:ghostIn .6s cubic-bezier(.3,1.5,.5,1) both,bob 2.6s ease-in-out .6s infinite}
+.trow.just:not(.on) .logo-tile{animation:thud .45s cubic-bezier(.3,1.6,.5,1) both}
 .slimrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 16px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;font-size:14px;font-weight:500;margin-top:-6px}
 .ghostrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--paper);border:2px dashed var(--plum);border-radius:20px}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
