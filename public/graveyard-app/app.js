@@ -377,6 +377,8 @@ function burstFx(host,name,{n=18,delay=0,mo}={}){if(!host||!motionOK())return 0;
   p.addEventListener('animationend',()=>p.remove());}},delay);}
 function dirtFx(host,{n=12,delay=0,spread=110}={}){if(!host||!motionOK())return 0;return setTimeout(()=>{for(let i=0;i<n;i++){const p=document.createElement('i');p.className='dust';const a=Math.PI*(i/(n-1));p.style.left=`${Math.cos(a)*30-5}px`;p.style.top='0px';p.style.setProperty('--dx',`${Math.cos(a)*spread}px`);p.style.setProperty('--dy',`${-Math.sin(a)*60-10}px`);host.appendChild(p);p.addEventListener('animationend',()=>p.remove());}},delay);}
 const HAND='<svg viewBox="0 0 30 34" aria-hidden="true"><path d="M6 33V17c0-2 1-3 2.5-3S11 15 11 17v-9c0-2 1-3 2.5-3S16 6 16 8v-4c0-2 1-3 2.5-3S21 2 21 4v6c0-2 1-3 2.5-3S26 8 26 10v13c0 6-4 10-10 10z" fill="#C9C4D6" stroke="#1E1B2E" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+// A little ghost: what a free trial looks like in Plot's world.
+function ghostSvg(size,cls='',label=''){return `<svg class="ghosty ${cls}" width="${size}" height="${Math.round(size*70/60)}" viewBox="0 0 60 70" aria-hidden="true"><path d="M6 64V30a24 24 0 0 1 48 0v34l-8-6-8 6-8-6-8 6-8-6z" fill="#F6F1E7" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/><ellipse cx="23" cy="29" rx="3.5" ry="5" fill="#1E1B2E"/><ellipse cx="37" cy="29" rx="3.5" ry="5" fill="#1E1B2E"/><ellipse cx="16" cy="38" rx="4" ry="2.4" fill="#FF9EC4" opacity=".7"/><ellipse cx="44" cy="38" rx="4" ry="2.4" fill="#FF9EC4" opacity=".7"/>${label?`<text x="30" y="52" text-anchor="middle" font-family="Bagel Fat One, sans-serif" font-size="13" fill="#3B2F5C">${esc(label)}</text>`:''}</svg>`;}
 // Zombie that climbs out on a comeback, wearing the service as a T-shirt.
 function zombie(name){const c=svcColor(name),ink=svcInk(name),L=esc(letter(name));
  const hand=x=>`<path d="M${x-9} 30c-1-6 0-12 2-17 1-3 4-3 4 0l0 7 1-11c0-3 4-3 4 0l0 10 1-10c0-3 4-3 4 0l0 11 1-7c0-3 4-3 4 0 0 6-1 12-3 17z" fill="#A8C98F" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>`;
@@ -471,12 +473,23 @@ found:{render:()=>{const r=S.scan;
   ${(r.trials||[]).length?`<span class="section-label" style="margin-top:6px">Free trials Plot spotted (${r.trials.length})</span><div class="stack" style="gap:8px">${r.trials.map(t=>{const d=Math.max(0,daysBetween(today(),t.ends));return `<div class="trialcard">${plot('Alarmed',40)}<span class="stack-s" style="gap:2px"><span class="t-strong">${esc(tName(t))}</span><span class="t-cap">Free trial · charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`}${t.price?` · then ${m(t.price)}/mo`:''}</span></span></div>`;}).join('')}</div>`:''}
   ${stopped.length?`<span class="section-label" style="margin-top:6px">Already cancelled (${stopped.length})</span><div class="card dash" style="gap:8px"><span class="t-dp">These stopped charging a while ago. Plot will give them a proper burial in your Graveyard.</span>${stopped.map(x=>`<span class="row between"><span class="t-strong">${esc(x.name)}</span><span class="t-cap c-dirt">last charge ${fmtDay(x.last)}</span></span>`).join('')}</div>`:''}
   <div class="grow"></div><button class="btn primary" ${act('acceptScan')}>Looks right</button></div>`;}},
-trials:{render:()=>`<div class="content">
-  <span class="t-cap c-dirt">STEP 2 OF 4</span><h2 class="t-l">Any free trials?</h2>
-  <p class="t-body c-plum">Plot counts down and warns you before a trial turns into a charge.</p>
-  <div class="stack stagger">${S.subs.slice(0,8).map(s=>`<div class="card row" style="flex-direction:row"><div class="stack-s grow" style="gap:2px"><span class="t-strong">${esc(s.name)}</span><span class="t-cap c-plum">Not a trial</span></div><button class="toggle" role="switch" aria-checked="false" aria-label="${esc(s.name)} is a free trial" ${act('markTrial',s.id)}></button></div>`).join('')}${S.trials.map(t=>`<div class="card row" style="flex-direction:row;background:var(--pumpkin);border-width:3px">${plot('Alarmed',40)}<div class="stack-s grow" style="gap:2px"><span class="t-strong">${esc(tName(t))}</span><span class="t-dp">Ends ${fmtDay(t.ends)} · then ${m(t.price)}/mo${t.source==='bank'?' · spotted in your bank':''}</span></div><button class="toggle" role="switch" aria-checked="true" aria-label="Stop watching ${esc(t.name)}" ${act('removeTrial',t.id)}></button></div>`).join('')}${!S.trials.length&&!S.subs.length?`<div class="card"><span class="t-body c-plum">No trials yet.</span></div>`:''}</div>
+trials:{render:()=>{const spotted=S.trials.filter(t=>!t.fromSub);
+  const picks=[...S.subs.map(x=>({sub:x})),...S.trials.filter(t=>t.fromSub).map(t=>({trial:t}))].sort((a,b)=>(a.sub||a.trial).name.localeCompare((b.sub||b.trial).name));
+  const ghosts=S.trials.length;
+  return `<div class="content">
+  <span class="t-cap c-dirt">STEP 2 OF 4</span><h2 class="t-l">Spot the ghosts.</h2>
+  <p class="t-body c-plum">A free trial is a ghost: it isn’t charging you yet, but it will. Tap anything that’s still free and Plot counts down to the first charge.</p>
+  <div class="legend" aria-hidden="true"><span><i class="lg-solid"></i>Paying</span><span><i class="lg-ghost">${ghostSvg(22)}</i>Free trial</span></div>
+  ${spotted.length?`<span class="section-label">Plot spotted ${spotted.length===1?'one':spotted.length} in your bank</span><div class="stack" style="gap:8px">${spotted.map(t=>{const d=trialDaysLeft(t);return `<div class="spotted">${ghostSvg(44,'bob')}<span class="stack-s grow" style="gap:2px;min-width:0"><span class="t-strong">${esc(tName(t))}</span><span class="t-cap">Free trial · charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`} · then ${m(t.price)}/mo</span></span><button class="linkbtn sm" ${act('removeTrial',t.id)}>Not a trial</button></div>`;}).join('')}</div>`:''}
+  ${picks.length?`<span class="section-label">Your list · tap the free ones</span><div class="ghostgrid">${picks.map(p=>{const on=!!p.trial;const x=p.sub||p.trial;const d=on?trialDaysLeft(x):0;
+   return `<button class="ghostpick${on?' on':''}${T.justGhost===x.id?' just':''}" ${act(on?'unmarkTrial':'markTrial',x.id)} aria-pressed="${on}" aria-label="${esc(x.name)}: ${on?'free trial':'paying'}">
+    ${on?ghostSvg(54,'bob',letter(x.name)):`<span class="logo-tile">${esc(letter(x.name))}</span>`}
+    <span class="t-strong gp-name">${esc(x.name)}</span>
+    <span class="chip ${on?'bg-candle':'bg-stone'}">${on?(d<=0?'Trial ends today':`Trial · ${d} day${d===1?'':'s'} left`):`Paying ${m(x.price)}`}</span></button>`;}).join('')}</div>`:''}
+  ${!picks.length&&!spotted.length?`<div class="card"><span class="t-body c-plum">Nothing here yet.</span></div>`:''}
   <button class="card dash" style="align-items:center" ${act('go','addtrial')}><span class="t-strong">+&nbsp; Add a trial Plot missed</span></button>
-  <div class="grow"></div><button class="btn primary" ${act('go','discounts')}>Done</button></div>`},
+  <div class="grow"></div><button class="btn primary" ${act('go','discounts')}>${ghosts?`Continue with ${ghosts} ghost${ghosts===1?'':'s'}`:'No free trials, continue'}</button></div>`;},
+  mount(){setTimeout(()=>{T.justGhost=null;},700);}},
 addtrial:{render:()=>`<div class="content">
   <button class="backlink" ${act('back',S.onboarded?'home':'trials')}>←&nbsp; ${S.onboarded?'Dashboard':'Any free trials?'}</button><h2 class="t-l">Add a trial</h2>
   <p class="t-body c-plum">Plot starts counting down the moment you save.</p>
@@ -807,7 +820,8 @@ const ACT={
  logout(){if(!T.logoutArmed){T.logoutArmed=true;rerender();setTimeout(()=>{T.logoutArmed=false;},4000);return;}
   T.logoutArmed=false;try{localStorage.setItem(ACCOUNT_KEY,JSON.stringify(S));localStorage.removeItem(KEY);}catch{}
   S=blank();T.lastTotal=undefined;applyPrefs();go('welcome','fade');toast('Logged out. Tap “I already have an account” to come back.');},
- markTrial(id){const s=getSub(id);if(!s)return;S.subs=S.subs.filter(x=>x.id!==id);S.trials.push({id:uid(),name:s.name,price:s.price,ends:s.next||addDays(today(),7),warn:'48',started:today(),source:s.source});save();toast(`Plot will count down to ${s.name}’s first charge.`);rerender();},
+ markTrial(id){const s=getSub(id);if(!s)return;S.subs=S.subs.filter(x=>x.id!==id);const t={id:s.id,name:s.name,price:s.price,ends:s.next||addDays(today(),7),warn:'48',started:today(),source:s.source,fromSub:s};S.trials.push(t);T.justGhost=t.id;save();toast(`${s.name} is a ghost now. Plot counts down to ${fmtDay(t.ends)}.`);rerender();},
+ unmarkTrial(id){const t=getTrial(id);if(!t||!t.fromSub)return;S.trials=S.trials.filter(x=>x.id!==id);S.subs.push(t.fromSub);T.justGhost=t.fromSub.id;save();toast(`${t.name} is back to paying.`);rerender();},
  async enableNudges(_,btn){
   if(!('Notification' in window)){toast('This browser can’t show reminders. On iPhone, add Plot to your Home Screen first.');ACT.finishOnboard();return;}
   btn.disabled=true;const p=await Notification.requestPermission().catch(()=>'denied');

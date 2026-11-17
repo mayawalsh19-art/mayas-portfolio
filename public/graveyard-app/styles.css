@@ -108,6 +108,27 @@ h1,h2,p{margin:0}
 .savecard{width:100%;flex-direction:row;align-items:center;gap:12px;background:var(--moss);text-align:left}
 .savecard .chev{width:18px;height:18px;flex:none}
 .card.hint{border-color:var(--moss)}
+.legend{display:flex;gap:18px;align-items:center;margin-top:-4px}
+.legend span{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--plum)}
+.legend .lg-solid{width:18px;height:18px;border-radius:6px;background:var(--ink)}
+.legend .lg-ghost{display:grid;place-items:center;width:22px;height:24px}.legend .lg-ghost svg{width:18px;height:auto}
+.ghostgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ghostpick{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-height:132px;padding:14px 8px 12px;background:var(--paper);border:2px solid var(--stone);border-radius:22px;transition:background .25s,border-color .25s,transform .12s}
+.ghostpick:active{transform:scale(.97)}
+.ghostpick .logo-tile{margin-bottom:6px}
+.ghostpick .gp-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ghostpick.on{background:var(--plum);border:2px dashed var(--candle);color:var(--bone)}
+.ghostpick.on .chip{color:var(--ink)}
+.ghostpick.just.on .ghosty{animation:ghostIn .6s cubic-bezier(.3,1.5,.5,1) both}
+.ghostpick.just:not(.on) .logo-tile{animation:thud .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes ghostIn{0%{transform:translateY(14px) scale(.3) rotate(-12deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes thud{0%{transform:translateY(-16px) scale(.8)}60%{transform:translateY(0) scale(1.08,.9)}100%{transform:none}}
+.ghosty{display:block;overflow:visible}
+.ghosty.bob{animation:bob 2.6s ease-in-out infinite}
+.ghostpick.just.on .ghosty.bob{animation:ghostIn .6s cubic-bezier(.3,1.5,.5,1) both,bob 2.6s ease-in-out .6s infinite}
+.spotted{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--plum);color:var(--bone);border:2px dashed var(--candle);border-radius:22px}
+.spotted .t-cap{color:var(--stone)}
+.spotted .linkbtn{color:var(--candle);font-size:13px;padding:4px;white-space:nowrap;flex:none}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
 .optchip{padding:7px 12px;border:1.5px solid var(--stone);border-radius:999px;background:var(--paper);font-size:13px;line-height:1.2;text-align:left;transition:background .15s,color .15s,border-color .15s}
 .optchip b{font-weight:500;color:var(--plum);margin-left:2px}
