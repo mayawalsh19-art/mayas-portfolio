@@ -64,18 +64,29 @@ const GAP = [
 ]
 
 const STEPS = [
-  ['/graveyard/screen-plot-found.png', 'Find them', 'Link a bank and Plot reads a year of charges, keeping only the ones that repeat. You remove anything that isn’t a subscription.'],
+  ['/graveyard/screen-spot-the-ghosts.png', 'Find them', 'Link a bank and Plot reads a year of charges, keeping only the ones that repeat. Free trials show up as ghosts, and add-ons sit under the subscription they’re billed through.'],
   ['/graveyard/screen-check-in-swipe.png', 'Check in once a month', 'On the 1st, swipe through each subscription and say how much you used it. It takes about two minutes.'],
   ['/graveyard/screen-verdict.png', 'Get the verdict', 'Plot sorts everything into worth it, on thin ice and shall we, and adds up what burying the last group would save.'],
   ['/graveyard/screen-shall-we-sheet.png', 'Bury the ones you don’t use', 'Plot opens the service’s own cancel page, then asks if it worked before it digs a grave.'],
+  ['/graveyard/screen-cheaper-plans.png', 'Pay less for the rest', 'For what you keep, Plot finds cheaper ways to pay: student and teacher discounts, things you pay for twice, yearly plans, plans with ads and bundles. Tap Switch and it walks you through it.'],
   ['/graveyard/screen-graveyard.png', 'Watch the savings', 'Every cancelled subscription gets a tombstone and counts toward what you’ve saved. Bring one back and it’s logged.'],
 ]
 
 const STRIP = [
-  ['/graveyard/screen-dashboard.png', 'Dashboard'], ['/graveyard/screen-plot-found.png', 'Plot found 9'], ['/graveyard/screen-check-in-swipe.png', 'Check-in'],
-  ['/graveyard/screen-verdict.png', 'The verdict'], ['/graveyard/screen-shall-we-sheet.png', 'Shall we?'], ['/graveyard/screen-rest-in-peace.png', 'Rest in peace'],
-  ['/graveyard/screen-graveyard.png', 'The Graveyard'], ['/graveyard/screen-resurrected.png', 'It’s back'],
+  ['/graveyard/screen-dashboard.png', 'Dashboard'], ['/graveyard/screen-spot-the-ghosts.png', 'Spot the ghosts'], ['/graveyard/screen-discounts-and-deals.png', 'Any of these you?'],
+  ['/graveyard/screen-check-in-swipe.png', 'Check-in'], ['/graveyard/screen-verdict.png', 'The verdict'], ['/graveyard/screen-cheaper-plans.png', 'Cheaper plans'],
+  ['/graveyard/screen-switched.png', 'Switched'], ['/graveyard/screen-rest-in-peace-bats.png', 'Rest in peace'], ['/graveyard/screen-graveyard.png', 'The Graveyard'],
+  ['/graveyard/screen-zombie-comeback.png', 'It’s back'], ['/graveyard/screen-the-log.png', 'The log'], ['/graveyard/screen-search-and-add.png', 'Search and add'],
 ]
+
+// Round two: what changed after using the working app every day
+const ROUND_TWO = [
+  ['/graveyard/screen-spot-the-ghosts.png', 'Free trials are ghosts', 'Toggles confused people, so trials became ghosts: tap anything that’s still free and it floats up with a countdown. Trials Plot spots in the bank, even ones inside another subscription, are already ghosts.'],
+  ['/graveyard/screen-search-and-add.png', 'Search, plans and add-ons', 'Search 34 popular services, pick your actual plan, and add what you bought inside it, like a Starz channel in Amazon Prime. Anything else can still be added by hand.'],
+  ['/graveyard/screen-cheaper-plans.png', 'Cheaper plans, switched in the app', 'Tell Plot you’re a student, teacher or in the military and it checks your list. Every deal has a Switch button: Plot hands you to the service, asks if it worked, then updates the bill and counts what you saved.'],
+  ['/graveyard/screen-zombie-comeback.png', 'The undead', 'Burying sends bats out of the grave, each service with its own effect: music notes for Spotify, falling boxes for Prime. Bring one back and a zombie in that service’s colors claws its way out.'],
+]
+const SIMPLER = ['Onboarding went from nine screens to five', 'The dashboard shows one alert at a time', 'Lists, the Graveyard and the log fold up when they get long', 'Every screen got a brand touch: moons, cobwebs, candles, fences']
 
 const MOODS = [
   ['Content', 'Default', 'Dashboard, empty states, onboarding.', '#E5F6E4'],
@@ -92,11 +103,12 @@ const SWATCHES = [
 const PROCESS = [
   ['Three ideas', 'I explored three concepts: a leftovers kitchen companion, a way to bury browser tabs, and a subscription graveyard. The graveyard had the clearest problem and the most room for a personality.'],
   ['Research', 'I compared six apps that handle subscriptions or money habits, plus Duolingo as a reference for a mascot and a small monthly ritual.'],
-  ['System flow', 'I mapped seven lanes: first launch, the monthly check-in, cost per use, trial alerts, burying, the Graveyard, and what the app does behind the scenes.'],
+  ['System flow', 'I mapped the whole app in lanes: first launch, the monthly check-in, cost per use, trial alerts, burying, the Graveyard, what happens behind the scenes, settings, and later cheaper plans and switching.'],
   ['Wireframes', 'Ten grayscale screens to test the flow before any color, from the dashboard to the resurrection log.'],
   ['Branding', 'Plot, the tombstone mascot, sets the tone: a little morbid, deadpan, never shaming. Four moods cover every state in the app.'],
-  ['Final screens and prototype', '28 screens in Figma built from a shared component set, linked into a clickable prototype.'],
+  ['Final screens and prototype', 'Screens in Figma built from a shared component set, linked into a clickable prototype.'],
   ['A working app', 'I turned the design into an app you can add to a phone’s home screen, built with Claude (an AI assistant). It connects to a demo bank through Plaid’s test mode, so no real bank data is used, and its cancel buttons open each service’s real account page.'],
+  ['Round two', 'Living with the app led to a second pass: ghosts for free trials, add-ons, search, discounts, switching to cheaper plans, burial and comeback animations, and a simpler onboarding. Every change went back into Figma, which now has 38 screens and the new components.'],
 ]
 
 const APP_URL = '/graveyard-app/'
@@ -105,7 +117,7 @@ const DETAILS = [
   ['Type', 'Mobile app'],
   ['Year', '2026'],
   ['Tools', 'Figma, HTML, CSS, JavaScript, Plaid (test mode)'],
-  ['Screens', '28'],
+  ['Screens', '38'],
 ]
 
 const TAGS = [['Mobile App', C.moss], ['Branding', C.blush], ['UX / UI', C.candle]]
@@ -135,7 +147,7 @@ function StepsCarousel() {
     >
       {/* Step tabs */}
       <div className="flex flex-wrap gap-2 mb-8 md:mb-10" role="tablist">
-        {['Find', 'Check in', 'Verdict', 'Bury', 'Save'].map((t, n) => (
+        {['Find', 'Check in', 'Verdict', 'Bury', 'Pay less', 'Save'].map((t, n) => (
           <button key={t} role="tab" aria-selected={n === i} onClick={() => setI(n)}
             className="text-sm font-medium px-4 py-2 rounded-full transition-colors"
             style={{ fontFamily: BODY, background: n === i ? C.candle : 'transparent', color: n === i ? C.ink : C.bone, border: `2px solid ${n === i ? C.candle : 'rgba(201,196,214,0.5)'}` }}>
@@ -225,7 +237,7 @@ export default function SubscriptionGraveyardModal({ onClose }) {
               <span className="block text-[44px] md:text-[64px]" style={{ color: C.blush }}>subscription</span>
               <span className="block text-[60px] md:text-[88px]" style={{ color: C.bone }}>graveyard</span>
             </h1>
-            <Body night className="max-w-md mx-auto md:mx-0 mb-7">An app that finds your subscriptions, asks once a month if they were worth it, and helps you cancel the ones that weren’t.</Body>
+            <Body night className="max-w-md mx-auto md:mx-0 mb-7">An app that finds your subscriptions, asks once a month if they were worth it, helps you cancel the ones that weren’t, and finds a cheaper way to pay for the rest.</Body>
             <div className="flex gap-2 flex-wrap justify-center md:justify-start">
               {TAGS.map(([tag, bg]) => (
                 <span key={tag} className="gy-btn text-xs font-medium px-3 py-1 rounded-full cursor-default" style={{ fontFamily: BODY, background: bg, color: C.ink, border: `2px solid ${C.ink}` }}>{tag}</span>
@@ -293,7 +305,7 @@ export default function SubscriptionGraveyardModal({ onClose }) {
         <div className="cs-container pt-16 md:pt-24 pb-12 md:pb-16">
           <Reveal>
             <Kicker night>How it works</Kicker>
-            <H2 night>Find, check in, bury.</H2>
+            <H2 night>Find, check in, bury, pay less.</H2>
           </Reveal>
           <Reveal delay={120}><StepsCarousel /></Reveal>
         </div>
@@ -308,6 +320,39 @@ export default function SubscriptionGraveyardModal({ onClose }) {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Round two: features added after living with the working app */}
+      <section className="cs-container py-16 md:py-24">
+        <Reveal>
+          <Kicker>Round two</Kicker>
+          <H2>Then I used it.</H2>
+          <Body className="cs-solo">Using the working app every day showed what was missing and what was too busy. I made a second round of changes in the app, then brought every one of them back into the Figma components and screens.</Body>
+        </Reveal>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 mt-10">
+          {ROUND_TWO.map(([src, t, d], n) => (
+            <Reveal key={t} delay={n * 90}>
+              <div className="gy-card gy-lift h-full rounded-[24px] p-5 md:p-6 grid grid-cols-[38%_1fr] gap-5 items-center" style={{ background: n % 2 ? C.paper : C.ink, border: `2px solid ${C.ink}` }}>
+                <Phone night={!(n % 2)} src={src} alt={t} className="w-full" />
+                <div>
+                  <h3 className="text-[22px] md:text-[26px] leading-tight mb-2" style={{ fontFamily: DISPLAY, color: n % 2 ? C.ink : C.bone }}>{t}</h3>
+                  <p className="text-sm md:text-base leading-relaxed" style={{ fontFamily: BODY, color: n % 2 ? INK_TXT : BONE_TXT }}>{d}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="mt-5 md:mt-6">
+          <div className="rounded-[24px] p-6 md:p-7 flex flex-col md:flex-row md:items-center gap-5" style={{ background: C.candle, border: `2px solid ${C.ink}` }}>
+            <div className="gy-wiggle shrink-0" style={{ width: 84 }}><Plot mood="Resurrected" size={84} /></div>
+            <div>
+              <p className="text-[13px] font-bold uppercase tracking-[0.08em] mb-2" style={{ fontFamily: MONO, color: C.dirt }}>And it got simpler</p>
+              <ul className="grid md:grid-cols-2 gap-x-8 gap-y-1.5">
+                {SIMPLER.map(x => <li key={x} className="text-sm md:text-base flex gap-2" style={{ fontFamily: BODY, color: C.ink }}><svg viewBox="0 0 24 24" width="16" height="16" className="shrink-0 mt-1" aria-hidden="true"><path d="M6 21V10a6 6 0 0 1 12 0v11z" fill={C.stone} stroke={C.ink} strokeWidth="2" strokeLinejoin="round" /></svg>{x}</li>)}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* Brand, built live */}
@@ -376,7 +421,7 @@ export default function SubscriptionGraveyardModal({ onClose }) {
         </div>
 
         <Reveal as="figure" className="m-0 mt-12">
-          <img src="/graveyard/system-flow.png" alt="The system flow: seven lanes from first launch to behind the scenes" className="w-full rounded-[24px] block" style={{ border: `2px solid ${C.ink}` }} />
+          <img src="/graveyard/system-flow.png" alt="The system flow: nine lanes from first launch to cheaper plans and switching" className="w-full rounded-[24px] block" style={{ border: `2px solid ${C.ink}` }} />
           <figcaption className="text-sm mt-3" style={{ fontFamily: MONO, color: C.plum }}>The system flow. Each box is tagged with the screen it belongs to.</figcaption>
         </Reveal>
 
