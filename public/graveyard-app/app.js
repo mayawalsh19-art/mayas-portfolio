@@ -490,7 +490,6 @@ welcome:{night:true,render:()=>`<div class="content mid"><div class="grow"></div
   <div class="stagger" style="display:flex;flex-direction:column;align-items:center;gap:14px">
    <div class="bob">${plot('Content',140,'emerge')}</div>
    <div class="t-xl c-blush" style="font-size:44px;line-height:.95">subscription</div><div class="t-xl c-bone" style="margin-top:-12px">graveyard</div>
-   <p class="t-body c-stone" style="max-width:290px">This is Plot. It finds what you pay for, asks once a month what you actually use, and buries the rest.</p>
    </div>
   <div class="grow"></div><button class="btn light" ${act('go','add')}>Get started</button><button class="btn ghost" ${act('skipToHome')}>I already have an account</button></div>`},
 meet:{render:()=>`<div class="content mid"><div style="height:8px"></div>
