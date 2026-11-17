@@ -179,11 +179,26 @@ h1,h2,p{margin:0}
 .candle .glow{animation:glowc 1.6s ease-in-out infinite}
 @keyframes flicker{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(.92,1.08) rotate(-4deg)}60%{transform:scale(1.05,.95) rotate(3deg)}}
 @keyframes glowc{0%,100%{opacity:.25}50%{opacity:.45}}
-.logmonth{display:block;margin-top:14px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dirt)}
-.event .ev-ic{width:34px;height:34px;flex:none;border-radius:12px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--paper)}
-.event .ev-ic svg{width:22px;height:22px}
-.event .ev-buried{background:var(--plum)}.event .ev-res{background:var(--moss)}.event .ev-switched{background:var(--candle)}
+.event .ev-ic,.graverow .ev-ic{width:34px;height:34px;flex:none;border-radius:12px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--paper)}
+.event .ev-ic svg,.graverow .ev-ic svg{width:22px;height:22px}
+.event .ev-buried,.graverow .ev-buried{background:var(--plum)}.event .ev-res{background:var(--moss)}.event .ev-switched{background:var(--candle)}
 .calm .flyby,.calm .moonsky .cloud{animation:none}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sectoggle{display:flex;align-items:center;gap:6px;padding:4px 0}
+.chevd{width:18px;height:18px;flex:none;transition:transform .25s}
+.sectoggle[aria-expanded="false"] .chevd,.logmonth[aria-expanded="false"] .chevd{transform:rotate(-90deg)}
+.morebtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;border:2px dashed var(--stone);border-radius:18px;font-size:14px;font-weight:500;color:var(--plum)}
+.night .morebtn{color:var(--bone);border-color:rgba(246,241,231,.35)}
+.graves .morebtn{grid-column:1/-1}
+.morebtn.up .chevd{transform:rotate(180deg)}
+.viewsw{display:flex;gap:4px;padding:3px;border:2px solid var(--stone);border-radius:999px;flex:none}
+.viewsw button{width:34px;height:30px;border-radius:999px;display:grid;place-items:center;color:var(--bone)}
+.viewsw button svg{width:20px;height:20px}
+.viewsw button[aria-pressed="true"]{background:var(--candle);color:var(--ink)}
+.graverow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--ink);border-radius:18px;color:var(--bone);text-align:left}
+.graverow .ev-ic{border-color:var(--stone)}
+.logmonth{display:flex;align-items:center;gap:8px;width:100%;margin-top:14px;padding:6px 0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dirt);text-align:left}
+.logmonth .lm-sum{flex:1;text-align:right;letter-spacing:0;text-transform:none;font-weight:500}
 .slimrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 16px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;font-size:14px;font-weight:500;margin-top:-6px}
 .ghostrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--paper);border:2px dashed var(--plum);border-radius:20px}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
