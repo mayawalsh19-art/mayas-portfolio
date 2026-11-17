@@ -30,9 +30,10 @@ export function buildCharges(today = new Date()) {
       out.push({ date_transacted: iso(d), date_posted: iso(d), amount: c.amount, description: c.desc, iso_currency_code: 'USD' });
     }
   }
-  // A free trial that started a few days ago.
-  const t = new Date(today); t.setUTCDate(t.getUTCDate() - 5);
-  out.push({ date_transacted: iso(t), date_posted: iso(t), amount: 0, description: 'PEACOCK TV FREE TRIAL', iso_currency_code: 'USD' });
+  // Free trials that started a few days ago: one service, one add-on inside Amazon Prime.
+  const ago = n => { const t = new Date(today); t.setUTCDate(t.getUTCDate() - n); return iso(t); };
+  out.push({ date_transacted: ago(5), date_posted: ago(5), amount: 0, description: 'PEACOCK TV FREE TRIAL', iso_currency_code: 'USD' });
+  out.push({ date_transacted: ago(2), date_posted: ago(2), amount: 0, description: 'AMAZON CHANNELS MGM+ FREE TRIAL AMZN.COM/BILL WA', iso_currency_code: 'USD' });
   return out;
 }
 
