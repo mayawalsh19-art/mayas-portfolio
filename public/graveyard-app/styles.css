@@ -95,6 +95,9 @@ h1,h2,p{margin:0}
 @keyframes flash{0%,40%{box-shadow:0 0 0 4px var(--moss)}100%{box-shadow:0 0 0 0 transparent}}
 .logo-tile{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-weight:700;font-size:20px;background:var(--ink);color:var(--bone)}
 .logo-tile.dim{background:var(--stone);color:var(--ink)}
+.logo-tile.sm{width:36px;height:36px;border-radius:11px;font-size:16px}
+.addon{display:flex;align-items:center;gap:12px}
+.addon .t-strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .subrow .info{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .subrow .info .t-strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .subrow .price{text-align:right;display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums}

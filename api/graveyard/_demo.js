@@ -10,6 +10,9 @@ export const DEMO_CHARGES = [
   { desc: 'APPLE.COM/BILL ICLOUD STORAGE', amount: 2.99, day: 28, from: 11, to: 0 },
   { desc: 'DUOLINGO INC PITTSBURGH PA', amount: 6.99, day: 4, from: 7, to: 0 },
   { desc: 'GOOGLE *Google One', amount: 1.99, day: 9, from: 11, to: 0 },
+  { desc: 'AMAZON PRIME*RT4KL82 AMZN.COM/BILL WA', amount: 14.99, day: 6, from: 11, to: 0 },
+  // An add-on bought inside Prime Video. Plot files it under Amazon Prime.
+  { desc: 'AMAZON CHANNELS STARZ AMZN.COM/BILL WA', amount: 10.99, day: 16, from: 5, to: 0 },
   // Charges that stopped: the app offers to add these to the Graveyard.
   { desc: 'PARAMOUNT+ 888-274-5343', amount: 11.99, day: 9, from: 10, to: 3 },
   { desc: 'AUDIBLE*US ADBL.CO/PYMT', amount: 14.95, day: 12, from: 11, to: 4 },

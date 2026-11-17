@@ -8,12 +8,28 @@ const KNOWN = [
   [/headspace/i, 'Headspace'], [/apple tv/i, 'Apple TV+'], [/amazon prime|prime video/i, 'Amazon Prime'],
 ];
 
+// Add-ons billed *through* another subscription, e.g. a Starz channel bought inside Amazon Prime.
+// Each entry: [pattern, parent subscription, add-on name]. Checked before KNOWN so the
+// channel name (Starz, Max, Paramount+…) doesn't get mistaken for its own subscription.
+const ADDONS = [
+  [/(amazon|amzn|prime video) channels?\b.*\bstarz/i, 'Amazon Prime', 'Starz'],
+  [/(amazon|amzn|prime video) channels?\b.*\b(hbo|max)\b/i, 'Amazon Prime', 'Max'],
+  [/(amazon|amzn|prime video) channels?\b.*\bparamount/i, 'Amazon Prime', 'Paramount+'],
+  [/(amazon|amzn|prime video) channels?\b.*\bamc/i, 'Amazon Prime', 'AMC+'],
+  [/(amazon|amzn|prime video) channels?\b.*\bmgm/i, 'Amazon Prime', 'MGM+'],
+  [/(amazon|amzn|prime video) channels?\b.*\bbritbox/i, 'Amazon Prime', 'BritBox'],
+  [/(amazon|amzn|prime video) channels?/i, 'Amazon Prime', 'Prime Video Channel'],
+  [/apple tv channels?\b.*\bstarz/i, 'Apple TV+', 'Starz'],
+  [/youtube ?tv\b.*\b(nfl|sunday ticket)/i, 'YouTube TV', 'NFL Sunday Ticket'],
+];
+
 const DAY = 864e5;
 const days = (a, b) => Math.round((new Date(b) - new Date(a)) / DAY);
 const median = xs => { const s = [...xs].sort((a, b) => a - b); return s[Math.floor(s.length / 2)]; };
 
 function nameFor(t) {
   const text = `${t.merchant_name || ''} ${t.name || ''} ${t.original_description || ''}`;
+  for (const [re, parent, addon] of ADDONS) if (re.test(text)) return `${parent}\u0000${addon}`;
   for (const [re, name] of KNOWN) if (re.test(text)) return name;
   return (t.merchant_name || t.name || '').trim();
 }
@@ -47,6 +63,20 @@ export function detect(txns) {
     const next = new Date(new Date(last.date).getTime() + gap * DAY).toISOString().slice(0, 10);
     const item = { name, price: last.amount, cadence: monthly ? 'monthly' : 'yearly', first: list[0].date, last: last.date, next, charges: list };
     (sinceLast > gap * 1.5 ? stopped : active).push(item);
+  }
+  // Fold add-ons into the subscription they're billed through.
+  const isAddon = x => x.name.includes('\u0000');
+  const parents = new Map([...active, ...stopped].filter(x => !isAddon(x)).map(x => [x.name, x]));
+  for (const list of [active, stopped]) {
+    for (let i = list.length - 1; i >= 0; i--) {
+      const x = list[i]; if (!isAddon(x)) continue;
+      const [parent, addon] = x.name.split('\u0000');
+      list.splice(i, 1);
+      const p = parents.get(parent);
+      const a = { ...x, name: addon };
+      if (p) { if (list === active) (p.addons ||= []).push(a); }
+      else if (list === active) active.push({ ...a, name: `${addon} (via ${parent})` }); // parent not found: still show it
+    }
   }
   active.sort((a, b) => b.price - a.price);
   return { ready: true, scanned: txns.length, subscriptions: active, stopped, trials };

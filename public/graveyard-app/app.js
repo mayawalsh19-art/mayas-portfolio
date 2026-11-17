@@ -76,11 +76,14 @@ const CATALOG={
  'Calm':{home:'https://www.calm.com/'},
  'Crunchyroll':{home:'https://www.crunchyroll.com/'},
  'Max':{home:'https://www.max.com/'},
- 'Headspace':{home:'https://www.headspace.com/'}
+ 'Headspace':{home:'https://www.headspace.com/'},
+ 'Amazon Prime':{cancel:'https://www.amazon.com/gp/primecentral',home:'https://www.amazon.com/amazonprime',addons:'https://www.amazon.com/gp/video/settings/channels'}
 };
 const cancelUrl=n=>CATALOG[n]?.cancel||SEARCH(`how to cancel ${n} subscription`);
 const homeUrl=n=>CATALOG[n]?.home||SEARCH(`${n} subscribe`);
 const hasDirectCancel=n=>!!CATALOG[n]?.cancel;
+// Add-ons (a channel bought inside Prime, etc.) are cancelled from the parent's add-on page.
+const addonCancelUrl=(parent,name)=>CATALOG[parent]?.addons||SEARCH(`how to cancel ${name} add-on in ${parent}`);
 
 /* =========================================================================
    Dates and money
@@ -118,7 +121,10 @@ function savedAccount(){try{const raw=localStorage.getItem(ACCOUNT_KEY);if(!raw)
 const T={tab:'home',method:'bank',graveFilter:'all',logFilter:'All',queue:[],target:null,buried:null,tombId:null,revived:null,subId:null,trialId:null,deck:null,deckIndex:0,returnTo:'home',pendingReturn:false,flash:null,scanMsg:'',scanError:null,eraseArmed:false};
 
 const monthly=s=>s.cadence==='yearly'?s.price/12:s.price;
-const total=()=>S.subs.reduce((a,s)=>a+monthly(s),0);
+const addonsOf=s=>s.addons||[];
+const addonMonthly=s=>addonsOf(s).reduce((a,x)=>a+monthly(x),0);
+const withAddons=s=>monthly(s)+addonMonthly(s);
+const total=()=>S.subs.reduce((a,s)=>a+withAddons(s),0);
 const letter=n=>(n.match(/[A-Za-z0-9]/)||['?'])[0].toUpperCase();
 const RATE={barely:{label:'Barely used',cls:'bg-pumpkin',uses:1,said:'barely touched it'},sometimes:{label:'Here and there',cls:'bg-candle',uses:4,said:'here and there'},constantly:{label:'Worth it',cls:'bg-moss',uses:20,said:'couldn’t live without it'}};
 function chipFor(s){
@@ -187,9 +193,10 @@ function applyScan(){
   for(const x of r.subscriptions){
     if(S.removed[x.name])continue;
     const existing=S.subs.find(s=>s.name===x.name);
-    if(existing){Object.assign(existing,{price:x.price,next:x.next,last:x.last,first:x.first,charges:x.charges,cadence:x.cadence});continue;}
-    if(S.graves.some(g=>g.name===x.name))continue;
-    S.subs.push({id:uid(),name:x.name,price:x.price,cadence:x.cadence,next:x.next,last:x.last,first:x.first,charges:x.charges,source:'bank',rating:null});
+    const found=(x.addons||[]).filter(a=>!S.graves.some(g=>g.via===x.name&&g.name===a.name)).map(a=>({id:uid(),name:a.name,price:a.price,cadence:a.cadence,next:a.next,last:a.last,first:a.first,charges:a.charges,source:'bank'}));
+    if(existing){const mine=addonsOf(existing).filter(a=>a.source!=='bank'&&!found.some(f=>f.name===a.name));Object.assign(existing,{price:x.price,next:x.next,last:x.last,first:x.first,charges:x.charges,cadence:x.cadence,addons:[...found,...mine]});continue;}
+    if(S.graves.some(g=>g.name===x.name&&!g.via))continue;
+    S.subs.push({id:uid(),name:x.name,price:x.price,cadence:x.cadence,next:x.next,last:x.last,first:x.first,charges:x.charges,addons:found,source:'bank',rating:null});
   }
   for(const x of r.stopped||[]){
     if(S.removed[x.name]||S.graves.some(g=>g.name===x.name)||S.subs.some(s=>s.name===x.name))continue;
@@ -209,7 +216,7 @@ function applyScan(){
    Building blocks
    ========================================================================= */
 const act=(a,arg='')=>`data-act="${a}" data-arg="${esc(arg)}"`;
-function subRow(s,opts={}){const c=chipFor(s);const dim=s.rating==='barely'||!s.rating;return `<button class="subrow${T.flash===s.id?' flash':''}" ${act(opts.act||'openSub',s.id)}><span class="logo-tile${dim?' dim':''}">${esc(letter(s.name))}</span><span class="info"><span class="t-strong">${esc(s.name)}</span><span class="chip ${c.c}">${esc(c.t)}</span></span><span class="price"><span class="t-strong">${m(s.price)}</span><span class="t-cap c-dirt">${s.next?'next: '+fmtDay(s.next):s.cadence==='yearly'?'yearly':'monthly'}</span></span></button>`;}
+function subRow(s,opts={}){const c=chipFor(s);const dim=s.rating==='barely'||!s.rating;return `<button class="subrow${T.flash===s.id?' flash':''}" ${act(opts.act||'openSub',s.id)}><span class="logo-tile${dim?' dim':''}">${esc(letter(s.name))}</span><span class="info"><span class="t-strong">${esc(s.name)}</span><span class="chip ${c.c}">${esc(c.t)}</span></span><span class="price"><span class="t-strong">${m(s.price+addonsOf(s).reduce((a,x)=>a+x.price,0))}</span><span class="t-cap c-dirt">${addonsOf(s).length?`incl. ${addonsOf(s).length} add-on${addonsOf(s).length>1?'s':''}`:s.next?'next: '+fmtDay(s.next):s.cadence==='yearly'?'yearly':'monthly'}</span></span></button>`;}
 function tomb(g,u=1,cls='',showSaved=true){const saved=savedFor(g);return `<div class="tomb ${cls}" style="--u:${u}px"><div class="well"><div class="stone"><span class="rip">R.I.P.</span><span class="nm">${esc(g.name)}</span><span class="dt">${esc(tombDates(g))}</span></div></div><div class="dirtbar"></div>${showSaved?`<span class="chip saved ${saved?'bg-moss':'bg-candle'}">${saved?'+'+m(saved)+' saved':'Just buried'}</span>`:''}</div>`;}
 function tabbar(active){const tabs=[['home','Home'],['checkin','Check-in'],['graveyard','Graveyard'],['log','Log']];const from=Math.max(0,tabs.findIndex(t=>t[0]===T.tab));const to=tabs.findIndex(t=>t[0]===active);
  return `<nav class="tabbar" aria-label="Tabs"><span class="pill" data-to="${to}" style="transform:translateX(calc(${from} * (100% + 4px)))"></span>${tabs.map(([k,l],i)=>`<button class="${i===to?'on':''}" ${act('tab',k)} aria-current="${i===to?'page':'false'}">${ICON[k]}<span>${l}</span></button>`).join('')}</nav>`;}
@@ -376,16 +383,25 @@ privacy:{render:()=>`<div class="content">
   <div class="card stack" style="gap:12px"><span class="t-title">The bank connection</span><span class="t-body">This demo only connects to pretend banks: Plot’s demo bank or Plaid’s test mode. Real bank accounts can’t be linked.</span></div>
   <div class="card stack" style="gap:12px"><span class="t-title">Cancel links</span><span class="t-body">“Open Netflix” and similar buttons go straight to that company’s website. Plot never sees your logins there.</span></div>
   </div>`},
-sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();const r=s.rating?RATE[s.rating]:null;const cpu=r?s.price/r.uses:null;
-  const now=new Date();const months=[];for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);const key=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;const amt=(s.charges||[]).filter(c=>c.date.startsWith(key)).reduce((a,c)=>a+c.amount,0);months.push([MONS[d.getMonth()].toUpperCase(),amt,i===0]);}
-  const mx=Math.max(...months.map(x=>x[1]),1);const yr=String(now.getFullYear());const paid=(s.charges||[]).filter(c=>c.date.startsWith(yr)).reduce((a,c)=>a+c.amount,0);const count=(s.charges||[]).filter(c=>c.date.startsWith(yr)).length;
+sub:{render:()=>{const s=getSub(T.subId);if(!s)return SCREENS.home.render();const r=s.rating?RATE[s.rating]:null;const ads=addonsOf(s);const price=s.price+ads.reduce((a,x)=>a+x.price,0);const cpu=r?price/r.uses:null;
+  const charges=[...(s.charges||[]),...ads.flatMap(a=>a.charges||[])];
+  const now=new Date();const months=[];for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);const key=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;const amt=charges.filter(c=>c.date.startsWith(key)).reduce((a,c)=>a+c.amount,0);months.push([MONS[d.getMonth()].toUpperCase(),amt,i===0]);}
+  const mx=Math.max(...months.map(x=>x[1]),1);const yr=String(now.getFullYear());const paid=charges.filter(c=>c.date.startsWith(yr)).reduce((a,c)=>a+c.amount,0);const count=charges.filter(c=>c.date.startsWith(yr)).length;
+  const addonCard=`<div class="card thick" style="gap:12px"><span class="t-cap c-dirt">ADD-ONS INSIDE ${esc(s.name.toUpperCase())}</span>
+  ${ads.length?ads.map(a=>`<div class="addon"><span class="logo-tile sm">${esc(letter(a.name))}</span><span class="stack-s grow" style="gap:2px;min-width:0"><span class="t-strong">${esc(a.name)}</span><span class="t-cap c-plum">${m(a.price)}/${a.cadence==='yearly'?'yr':'mo'} · billed through ${esc(s.name)}</span></span>${T.addonArmed===a.id?'':`<button class="btn ghost fit sm" ${act('armAddon',a.id)}>Bury</button>`}</div>
+   ${T.addonArmed===a.id?`<div class="card dash" style="gap:8px"><span class="t-dp">Cancel ${esc(a.name)} on ${esc(s.name)}’s add-on page. ${esc(s.name)} itself stays.</span><a class="btn light sm" href="${esc(addonCancelUrl(s.name,a.name))}" target="_blank" rel="noopener noreferrer">Open ${esc(s.name)} add-ons ↗</a><div class="row" style="gap:8px"><button class="btn ghost sm" ${act('armAddon','')}>Never mind</button><button class="btn bury sm" ${act('buryAddon',a.id)}>I cancelled it</button></div></div>`:''}`).join('')
+   :`<span class="t-body c-plum">Bought a channel or extra inside ${esc(s.name)}? Add it so Plot counts it too.</span>`}
+  ${T.addonForm?`<div class="row" style="gap:8px;align-items:flex-end"><div class="field grow"><label for="aName">Add-on</label><input id="aName" placeholder="Starz" autocomplete="off"></div><div class="field" style="width:96px"><label for="aPrice">Price</label><input id="aPrice" placeholder="10.99" inputmode="decimal" autocomplete="off"></div></div><div class="row" style="gap:8px"><button class="btn ghost sm" ${act('toggleAddonForm')}>Cancel</button><button class="btn primary sm" ${act('saveAddon')}>Add it</button></div>`
+   :`<button class="t-cap c-plum" style="align-self:flex-start" ${act('toggleAddonForm')}>+ Add an add-on</button>`}
+  ${ads.length?`<span class="t-dp" style="border-top:1.5px dashed var(--stone);padding-top:10px">Altogether ${esc(s.name)} costs ${m(price)} a ${s.cadence==='yearly'?'year':'month'}.</span>`:''}</div>`;
   const meter=r?{barely:10,sometimes:40,constantly:95}[s.rating]:0;
   return `<div class="content"><button class="backlink" ${act('back','home')}>←&nbsp; ${esc(s.name)}</button>
-  ${r?`<div class="card thick" style="padding:22px 24px;gap:8px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-dl">${m(cpu)} / use</span><span class="t-dp c-plum">${m(s.price)} a month ÷ about ${r.uses} use${r.uses>1?'s':''} (you said “${r.said}”).</span><div class="meter"><i style="width:${meter}%"></i></div><span class="t-cap c-dirt">Worth-it meter: ${meter<35?'low':meter<70?'meh':'high'}</span></div>`
+  ${r?`<div class="card thick" style="padding:22px 24px;gap:8px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-dl">${m(cpu)} / use</span><span class="t-dp c-plum">${m(price)} a month${ads.length?' with add-ons':''} ÷ about ${r.uses} use${r.uses>1?'s':''} (you said “${r.said}”).</span><div class="meter"><i style="width:${meter}%"></i></div><span class="t-cap c-dirt">Worth-it meter: ${meter<35?'low':meter<70?'meh':'high'}</span></div>`
   :`<div class="card thick" style="gap:10px"><span class="t-cap c-dirt">COST PER USE · ${esc(s.name.toUpperCase())}</span><span class="t-body">How much did you use ${esc(s.name)} this month? Plot will do the math.</span>${['barely','sometimes','constantly'].map(k=>`<button class="ratechip" ${act('rateOne',k)}><i class="${RATE[k].cls}"></i>${k==='barely'?'Barely touched it':k==='sometimes'?'Here and there':'Couldn’t live without it'}</button>`).join('')}</div>`}
+  ${addonCard}
   ${s.charges?.length?`<div class="card thick" style="gap:12px"><span class="t-cap c-dirt">CHARGES · LAST 6 MONTHS</span><div class="bars">${months.map(([mo,v,isNow],i)=>`<div><span class="b${isNow?' now':''}${v?'':' zero'}" style="height:${Math.max(6,v/mx*84)}px;animation-delay:${i*.07}s"></span><span class="t-cap c-plum">${mo}</span></div>`).join('')}</div></div>`:''}
   <div class="row" style="gap:8px;align-items:stretch"><div class="stat"><span class="t-cap c-plum">Paid in ${yr}</span><span class="t-title">${s.charges?.length?m(paid):'—'}</span></div><div class="stat"><span class="t-cap c-plum">Charges</span><span class="t-title">${s.charges?.length?count:'—'}</span></div><div class="stat"><span class="t-cap c-plum">Next charge</span><span class="t-title">${s.next?fmtDay(s.next):'—'}</span></div></div>
-  ${r?`<div class="card dash"><span class="t-dp">“You paid ${m(s.price)} for ${esc(s.name)} and ${s.rating==='barely'?'barely touched it':s.rating==='sometimes'?'used it here and there':'used it constantly'}. That’s ${m(cpu)} a use.”</span></div>`:''}
+  ${r?`<div class="card dash"><span class="t-dp">“You paid ${m(price)} for ${esc(s.name)}${ads.length?' and its add-ons':''} and ${s.rating==='barely'?'barely touched it':s.rating==='sometimes'?'used it here and there':'used it constantly'}. That’s ${m(cpu)} a use.”</span></div>`:''}
   <div class="grow"></div><div class="row" style="gap:8px"><button class="btn ghost" ${act('back','home')}>Keep it</button><button class="btn bury" ${act('buryOne',s.id)}>Bury it</button></div></div>`;}},
 
 /* ---------- check-in ---------- */
@@ -424,9 +440,9 @@ trial:{night:true,render:()=>{const t=getTrial(T.trialId);if(!t)return SCREENS.h
   mount(el){const t=getTrial(T.trialId);if(!t)return;const cd=$('#cd',el);const tick=()=>{const s=Math.max(0,Math.round((trialEnds(t)-Date.now())/1000));const h=Math.floor(s/3600),mi=Math.floor(s%3600/60),se=s%60;cd.textContent=`${h}:${pad(mi)}:${pad(se)}`;cd.style.fontSize=h>=100?'48px':'';};tick();const i=setInterval(tick,1000);return()=>clearInterval(i);}},
 
 /* ---------- bury flow ---------- */
-sheet:{night:true,render:()=>{const s=target();if(!s)return SCREENS.home.render();const yearly=s.cadence==='yearly'?s.price:s.price*12;
+sheet:{night:true,render:()=>{const s=target();if(!s)return SCREENS.home.render();const ads=addonsOf(s);const yearly=(s.cadence==='yearly'?s.price:s.price*12)+ads.reduce((a,x)=>a+(x.cadence==='yearly'?x.price:x.price*12),0);
   const line=s.rating==='barely'?`${esc(s.name)} barely got used this month. Shall we?`:s.rating==='sometimes'?`${esc(s.name)} only gets used here and there. Shall we?`:`${esc(s.name)} costs ${m(s.price)} a ${s.cadence==='yearly'?'year':'month'}. Shall we?`;
-  return `<div class="backdrop"></div><div class="content" style="padding:0;justify-content:flex-end"><div class="sheet"><div class="handle"></div>${plot('Sleepy',110)}<h2 class="t-m">${line}</h2><p class="t-dp c-plum">Burying it saves ${m(yearly)} a year.</p>
+  return `<div class="backdrop"></div><div class="content" style="padding:0;justify-content:flex-end"><div class="sheet"><div class="handle"></div>${plot('Sleepy',110)}<h2 class="t-m">${line}</h2><p class="t-dp c-plum">Burying it saves ${m(yearly)} a year.${ads.length?` Its add-on${ads.length>1?'s':''} (${ads.map(a=>esc(a.name)).join(', ')}) go${ads.length>1?'':'es'} with it.`:''}</p>
   <div class="card stack-s" style="width:100%;border-color:var(--stone);gap:8px"><span class="t-body">1&nbsp;&nbsp; We open ${esc(s.name)}’s cancel page</span><span class="t-body">2&nbsp;&nbsp; You hit cancel there</span><span class="t-body">3&nbsp;&nbsp; ${esc(s.name)} gets a tombstone and the savings counter starts</span></div>
   <button class="btn bury" ${act('go','handoff')}>Bury it</button><button class="btn ghost" ${act('keepIt')}>Keep it (for now)</button></div></div>`;}},
 handoff:{render:()=>{const s=target();if(!s)return SCREENS.home.render();const apple=CATALOG[s.name]?.apple;const direct=hasDirectCancel(s.name);
@@ -511,7 +527,9 @@ function startBury(ids){T.queue=ids.slice(1);T.target={kind:'sub',id:ids[0]};T.p
 function doBury(){const s=target();if(!s)return;const isTrial=T.target.kind==='trial';
  if(isTrial)S.trials=S.trials.filter(x=>x.id!==s.id);else S.subs=S.subs.filter(x=>x.id!==s.id);
  const g={id:uid(),name:s.name,price:s.price,cadence:s.cadence||'monthly',from:s.first||s.started||today(),lastCharge:isTrial?addDays(s.ends,-30):(s.last||today()),buriedAt:new Date().toISOString(),source:'app',nextDue:isTrial?s.ends:(s.next||null)};
+ for(const a of addonsOf(s)){S.graves.unshift(addonGrave(a,s.name));logEvent('buried',a.name);}
  S.graves.unshift(g);T.buried=g;logEvent('buried',s.name);bounce(s.name).buried++;save();}
+function addonGrave(a,parent){return {id:uid(),name:a.name,via:parent,price:a.price,cadence:a.cadence||'monthly',from:a.first||today(),lastCharge:a.last||today(),buriedAt:new Date().toISOString(),source:'app',nextDue:a.next||null};}
 const ACT={
  go(arg){go(arg);},
  back(arg){go(arg||'home','back');},
@@ -567,7 +585,13 @@ const ACT={
  rate(k){rate(k);},
  rateOne(k){const s=getSub(T.subId);if(s){s.rating=k;s.ratedAt=today();save();rerender();}},
  remindTonight(){toast('Plot will ask again tonight.');go('home','back');},
- openSub(id){T.subId=id;go('sub');},
+ openSub(id){T.subId=id;T.addonForm=false;T.addonArmed=null;go('sub');},
+ toggleAddonForm(){T.addonForm=!T.addonForm;rerender();if(T.addonForm)setTimeout(()=>$('#aName',cur.el)?.focus({preventScroll:true}),50);},
+ saveAddon(){const s=getSub(T.subId);if(!s)return;const el=cur.el;const name=$('#aName',el).value.trim();const price=parseFloat($('#aPrice',el).value.replace(/[^0-9.]/g,''));
+  if(!name){toast('Name the add-on, like Starz.');$('#aName',el).focus();return;}if(!(price>0)){toast('Add the price, like 10.99.');$('#aPrice',el).focus();return;}
+  (s.addons||=[]).push({id:uid(),name,price,cadence:s.cadence||'monthly',first:today(),charges:[],source:'manual'});T.addonForm=false;save();toast(`Plot will count ${name} inside ${s.name}.`);rerender();},
+ armAddon(id){T.addonArmed=id||null;rerender();},
+ buryAddon(id){const s=getSub(T.subId);const a=addonsOf(s||{}).find(x=>x.id===id);if(!a)return;s.addons=s.addons.filter(x=>x!==a);S.graves.unshift(addonGrave(a,s.name));logEvent('buried',a.name);bounce(a.name).buried++;T.addonArmed=null;save();toast(`${a.name} is buried. ${s.name} stays.`);rerender();},
  buryOne(id){startBury([id]);},
  buryAll(){startBury(S.subs.filter(s=>s.rating==='barely').map(s=>s.id));},
  keepIt(){T.queue=[];toast('Kept. Plot will ask again next month.');go('home','fade');},
@@ -585,7 +609,7 @@ const ACT={
  graveFilter(k){T.graveFilter=k;rerender();},
  logFilter(n){T.logFilter=n;rerender();},
  resurrect(id){const g=S.graves.find(x=>x.id===id);if(!g)return;S.graves=S.graves.filter(x=>x!==g);const b=bounce(g.name);b.res++;b.spent=g.price;
-  logEvent('res',g.name);const s={id:uid(),name:g.name,price:g.price,cadence:g.cadence||'monthly',next:addDays(today(),g.cadence==='yearly'?365:30),last:today(),first:today(),charges:[],source:'resurrected',rating:null,back:true};S.subs.push(s);save();T.revived=g;T.flash=s.id;go('back','zoom');}
+  logEvent('res',g.name);const parent=g.via&&S.subs.find(x=>x.name===g.via);if(parent){(parent.addons||=[]).push({id:uid(),name:g.name,price:g.price,cadence:g.cadence||'monthly',first:today(),last:today(),next:addDays(today(),30),charges:[],source:'resurrected'});save();T.revived=g;T.flash=parent.id;go('back','zoom');return;}const s={id:uid(),name:g.name,price:g.price,cadence:g.cadence||'monthly',next:addDays(today(),g.cadence==='yearly'?365:30),last:today(),first:today(),charges:[],source:'resurrected',rating:null,back:true};S.subs.push(s);save();T.revived=g;T.flash=s.id;go('back','zoom');}
 };
 
 /* =========================================================================
