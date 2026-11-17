@@ -155,6 +155,35 @@ h1,h2,p{margin:0}
 .fence{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px}
 .fence svg{width:100%;height:34px;display:block}
 .toast{display:flex;align-items:center;gap:10px}.toast .plot{flex:none}
+.searchbox{display:flex;align-items:center;gap:10px;padding:0 16px;height:54px;background:var(--paper);border:3px solid var(--ink);border-radius:999px}
+.searchbox svg{width:22px;height:22px;flex:none;color:var(--plum)}
+.searchbox input{flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:16px;color:var(--ink);min-width:0}
+.searchbox:focus-within{outline:3px solid var(--pumpkin);outline-offset:2px}
+.svcrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--paper);border:1.5px solid var(--stone);border-radius:18px;text-align:left}
+.svcrow:active{transform:scale(.985)}
+.svcrow[disabled]{opacity:.65}
+.svcrow .logo-tile{width:40px;height:40px;border:2px solid var(--ink)}
+.svcrow .plus{width:30px;height:30px;flex:none;border-radius:50%;background:var(--ink);color:var(--bone);display:grid;place-items:center;font-weight:700;font-size:18px;line-height:1}
+.svcrow.custom{border-style:dashed;border-color:var(--plum)}
+.moonsky{position:absolute;top:4px;right:-6px;width:190px;height:110px}
+.moonsky .cloud{animation:drift2 18s ease-in-out infinite alternate}.moonsky .c2{animation-duration:24s;animation-direction:alternate-reverse}
+@keyframes drift2{from{transform:translateX(-18px)}to{transform:translateX(18px)}}
+.flyby{position:absolute;top:14%;left:-70px;width:56px;height:34px;animation:flyby 16s linear 3s infinite}
+.flyby svg{width:100%;height:100%;display:block;overflow:visible}
+.flyby .wl{transform-origin:30px 15px;animation:flapL .18s ease-in-out infinite alternate}.flyby .wr{transform-origin:30px 15px;animation:flapR .18s ease-in-out infinite alternate}
+@keyframes flyby{0%{transform:translate(0,0) scale(.7)}20%{transform:translate(160px,-20px) scale(.75)}35%,100%{transform:translate(520px,30px) scale(.6)}}
+.ironfence{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px}
+.ironfence svg{width:100%;height:46px;display:block}
+.epitaph{margin:-4px 0 0;text-align:center;font-family:var(--mono);font-style:italic;font-size:14px;color:var(--blush)}
+.candle .flame{transform-origin:15px 14px;animation:flicker 1.6s ease-in-out infinite}
+.candle .glow{animation:glowc 1.6s ease-in-out infinite}
+@keyframes flicker{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(.92,1.08) rotate(-4deg)}60%{transform:scale(1.05,.95) rotate(3deg)}}
+@keyframes glowc{0%,100%{opacity:.25}50%{opacity:.45}}
+.logmonth{display:block;margin-top:14px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dirt)}
+.event .ev-ic{width:34px;height:34px;flex:none;border-radius:12px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--paper)}
+.event .ev-ic svg{width:22px;height:22px}
+.event .ev-buried{background:var(--plum)}.event .ev-res{background:var(--moss)}.event .ev-switched{background:var(--candle)}
+.calm .flyby,.calm .moonsky .cloud{animation:none}
 .slimrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 16px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;font-size:14px;font-weight:500;margin-top:-6px}
 .ghostrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;background:var(--paper);border:2px dashed var(--plum);border-radius:20px}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
@@ -398,3 +427,5 @@ button.set-row:active,a.set-row:active{background:var(--bone)}
 @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
 .calm .fx,.calm .bats,.calm .dropper,.calm .firefly,.calm .fog{display:none}
 @media (prefers-reduced-motion: reduce){.fx,.bats,.dropper,.firefly,.fog{display:none}}
+
+[hidden]{display:none!important}

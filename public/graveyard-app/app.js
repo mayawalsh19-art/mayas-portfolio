@@ -97,7 +97,7 @@ const ADDON_OPTIONS={
  'Peacock':[],'Paramount+':[],'iCloud+':[],'Google One':[],'Audible':[],'Peloton App':[],'Duolingo':[],'Calm':[],'Crunchyroll':[],'Headspace':[]
 };
 // Match whatever the user typed ("prime video", "hbo max", "youtube tv") to a known service.
-const ALIAS=[[/amazon|prime video|^prime$/i,'Amazon Prime'],[/youtube ?tv/i,'YouTube TV'],[/youtube|yt premium/i,'YouTube Premium'],[/apple ?tv/i,'Apple TV+'],[/hbo|^max$/i,'Max'],[/netflix/i,'Netflix'],[/hulu/i,'Hulu'],[/disney/i,'Disney+'],[/spotify/i,'Spotify'],[/peacock/i,'Peacock'],[/paramount/i,'Paramount+'],[/icloud/i,'iCloud+'],[/google one/i,'Google One'],[/audible/i,'Audible'],[/peloton/i,'Peloton App'],[/duolingo/i,'Duolingo'],[/calm/i,'Calm'],[/crunchyroll/i,'Crunchyroll'],[/headspace/i,'Headspace']];
+const ALIAS=[[/amazon prime|prime video|^amazon$|^prime$/i,'Amazon Prime'],[/youtube ?tv/i,'YouTube TV'],[/youtube|yt premium/i,'YouTube Premium'],[/apple ?tv/i,'Apple TV+'],[/hbo|^max$/i,'Max'],[/netflix/i,'Netflix'],[/hulu/i,'Hulu'],[/disney/i,'Disney+'],[/spotify/i,'Spotify'],[/peacock/i,'Peacock'],[/paramount/i,'Paramount+'],[/icloud/i,'iCloud+'],[/google one/i,'Google One'],[/audible/i,'Audible'],[/peloton/i,'Peloton App'],[/duolingo/i,'Duolingo'],[/calm/i,'Calm'],[/crunchyroll/i,'Crunchyroll'],[/headspace/i,'Headspace']];
 const canon=n=>{const t=String(n||'').trim();for(const [re,name] of ALIAS)if(re.test(t))return name;return t;};
 const addonOptions=n=>ADDON_OPTIONS[canon(n)];
 /* =========================================================================
@@ -125,6 +125,57 @@ function cheaperFor(s,who=myWho()){if(s.bundle)return null;const opts=(DISCOUNTS
  for(const d of opts){const now=monthly(s);const p=d.price!=null?d.price:(d.pct!=null?Math.round(now*(1-d.pct)*100)/100:null);if(p!=null&&p>=now)continue;const save=p==null?null:Math.round((now-p)*12*100)/100;if(!best||(save??0)>(best.save??0))best={...d,newPrice:p,save};}
  return best;}
 const yearlySavings=(who=myWho())=>S.subs.reduce((a,s)=>a+(cheaperFor(s,who)?.save||0),0);
+// ---------- Services you can search for and add ----------
+// Typical US prices (late 2026). Shown as "about": the add screen keeps the price editable.
+const SERVICES=[
+ ['Streaming',[
+  ['Netflix',[['Standard with ads',8.99],['Standard',19.99],['Premium',26.99]]],
+  ['Hulu',[['Hulu',11.99]]],
+  ['Disney+',[['Disney+ with ads',11.99]]],
+  ['Max',[['Basic with ads',10.99],['Standard',18.49]],'HBO Max'],
+  ['Peacock',[['Select',7.99],['Premium',10.99]]],
+  ['Paramount+',[['Essential',8.99]]],
+  ['Apple TV+',[['Monthly',14.99],['Yearly',119,'yearly']]],
+  ['Amazon Prime',[['Monthly',14.99],['Yearly',139,'yearly']]],
+  ['YouTube TV',[['Base plan',82.99]]],
+  ['Crunchyroll',[['Fan',7.99]]],
+  ['Disney+/Hulu bundle',[['With ads',12.99]]],
+  ['Disney+/Hulu/HBO Max bundle',[['With ads',19.99]]]]],
+ ['Music & audio',[
+  ['Spotify',[['Premium Individual',11.99]]],
+  ['YouTube Premium',[['Individual',13.99]]],
+  ['Apple Music',[['Individual',10.99]]],
+  ['Audible',[['Premium Plus',14.95],['Yearly',149.50,'yearly']]]]],
+ ['Storage & software',[
+  ['iCloud+',[['50 GB',0.99],['200 GB',2.99],['2 TB',9.99]]],
+  ['Google One',[['100 GB',1.99],['2 TB',9.99]]],
+  ['Apple One',[['Individual',21.95]]],
+  ['Microsoft 365',[['Personal',9.99]]],
+  ['ChatGPT',[['Plus',20]]],
+  ['Claude',[['Pro',20]]]]],
+ ['Fitness & wellness',[
+  ['Peloton App',[['App One',12.99]]],
+  ['Strava',[['Subscription',11.99]]],
+  ['Calm',[['Monthly',14.99],['Yearly',69.99,'yearly']]],
+  ['Headspace',[['Monthly',12.99],['Yearly',69.99,'yearly']]]]],
+ ['Learning',[
+  ['Duolingo',[['Super',12.99]]]]],
+ ['Shopping & delivery',[
+  ['Uber One',[['Monthly',9.99]]],
+  ['DashPass',[['Monthly',9.99]],'DoorDash'],
+  ['Instacart+',[['Monthly',9.99]]],
+  ['Walmart+',[['Monthly',12.95]]]]],
+ ['Gaming',[
+  ['PlayStation Plus',[['Essential',9.99]]],
+  ['Nintendo Switch Online',[['Individual',3.99]]],
+  ['Xbox Game Pass',[['Ultimate',29.99]]]]]];
+const SVC_LIST=SERVICES.flatMap(([cat,list])=>list.map(([name,plans,alt])=>({name,plans,alt,cat})));
+function svcRow(v){const have=S.subs.some(s=>canon(s.name)===canon(v.name)&&!s.bundle)||S.subs.some(s=>s.name===v.name);const from=Math.min(...v.plans.filter(p=>p[2]!=='yearly').map(p=>p[1]).concat([Infinity]));
+ return `<button class="svcrow" ${have?'disabled':act('pickSvc',v.name)}><span class="logo-tile" style="background:${svcColor(v.name)};color:${svcInk(v.name)}">${esc(letter(v.alt||v.name))}</span><span class="stack-s grow" style="gap:1px;min-width:0;text-align:left"><span class="t-strong">${esc(v.alt||v.name)}</span><span class="t-cap c-plum">${esc(v.cat)}${from<Infinity?` · about ${m(from)}/mo`:''}</span></span>${have?`<span class="chip bg-moss">On your list</span>`:`<span class="plus" aria-hidden="true">+</span>`}</button>`;}
+function svcResults(q){q=(q||'').trim().toLowerCase();
+ if(!q)return SERVICES.map(([cat,list])=>`<span class="section-label">${esc(cat)}</span><div class="stack" style="gap:8px">${list.map(([name])=>svcRow(SVC_LIST.find(v=>v.name===name))).join('')}</div>`).join('');
+ const hits=SVC_LIST.filter(v=>(v.name+' '+(v.alt||'')+' '+v.cat).toLowerCase().includes(q));
+ return `<div class="stack" style="gap:8px">${hits.map(svcRow).join('')}<button class="svcrow custom" ${act('pickCustom',q)}><span class="logo-tile dim">+</span><span class="stack-s grow" style="gap:1px;text-align:left"><span class="t-strong">Add “${esc(q)}” by hand</span><span class="t-cap c-plum">Name it, price it, done.</span></span></button></div>`;}
 // ---------- Every cheaper way Plot can find, beyond who-you-are discounts ----------
 // Typical US prices, late 2026. Shown as "about"; the service's own page has the final price.
 const AD_PLANS={'Netflix':{plan:'Standard with ads',price:8.99},'Max':{plan:'Basic with ads',price:10.99},'Disney+':{plan:'Disney+ with ads',price:11.99},'Spotify':{plan:'Spotify Free',price:0,note:'It has ads and shuffle, but costs nothing'}};
@@ -408,6 +459,14 @@ const NIGHT=`<svg class="sky" viewBox="0 0 120 70" aria-hidden="true"><path d="M
 const COBWEB=`<svg class="cobweb" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M24 0L10 14M24 0L6 4M24 0L20 18M24 0L15 9"/><path d="M14 1.5q1.5 2 3.6 1.4M19 6.4q-2 .6-2.4 2.7M21.8 11q-1.4-.4-2.6.8M8.6 2.6q1.6 1.4 1 3.8M16.5 13.3q-2-.3-3.5 1.4"/></g><path d="M18.5 15.5v4" stroke="currentColor" stroke-width="1"/><circle cx="18.5" cy="20.6" r="1.4" fill="currentColor"/></svg>`;
 const DIG=`<div class="dig" aria-hidden="true">${plot('Content',110)}<svg class="shovel" viewBox="0 0 40 80"><rect x="18" y="2" width="4" height="46" rx="2" fill="#6B4A3A" stroke="#1E1B2E" stroke-width="2"/><rect x="12" y="2" width="16" height="6" rx="3" fill="#6B4A3A" stroke="#1E1B2E" stroke-width="2"/><path d="M10 48h20v14c0 8-4 14-10 16-6-2-10-8-10-16z" fill="#C9C4D6" stroke="#1E1B2E" stroke-width="2.5" stroke-linejoin="round"/></svg><i class="clod c1"></i><i class="clod c2"></i><i class="clod c3"></i><span class="mound"></span></div>`;
 function fence(line){return `<div class="fence" aria-hidden="false"><svg viewBox="0 0 320 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34q40-6 80 0t80 0 80 0 80 0V40H0z" fill="#6B4A3A"/><path d="M6 33l3-8 3 8M60 32l2-7 3 7M150 34l3-9 2 9M232 33l2-6 3 6M300 33l3-8 2 8" stroke="#7FD67A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><g fill="#C9C4D6" stroke="#1E1B2E" stroke-width="2"><path d="M96 33V20a8 8 0 0 1 16 0v13z"/><path d="M176 34V16a10 10 0 0 1 20 0v18z"/><path d="M262 33V22a7 7 0 0 1 14 0v11z"/></g></svg><span class="t-cap c-plum">${esc(line)}</span></div>`;}
+const MOONSKY=`<svg class="moonsky" viewBox="0 0 160 90" aria-hidden="true"><circle cx="118" cy="38" r="26" fill="#FFD166" opacity=".16"/><path d="M118 16a22 22 0 1 0 20 32 18 18 0 1 1-20-32z" fill="#FFD166"/><g class="cloud c1" fill="#F6F1E7" opacity=".22"><ellipse cx="60" cy="56" rx="26" ry="8"/><ellipse cx="72" cy="50" rx="14" ry="9"/></g><g class="cloud c2" fill="#F6F1E7" opacity=".16"><ellipse cx="128" cy="70" rx="22" ry="6"/><ellipse cx="136" cy="65" rx="11" ry="7"/></g></svg>`;
+function ironFence(line){const posts=Array.from({length:13},(_,i)=>{const x=6+i*25.5;return `<path d="M${x} 44V14l4-8 4 8v30" />`;}).join('');
+ return `<div class="ironfence"><svg viewBox="0 0 330 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46q80-5 165 0t165 0V50H0z" fill="#6B4A3A"/><g fill="#1E1B2E" stroke="#1E1B2E" stroke-width="1.5" stroke-linejoin="round">${posts}<rect x="0" y="20" width="330" height="3" rx="1.5"/><rect x="0" y="36" width="330" height="3" rx="1.5"/></g></svg>${line?`<span class="t-cap c-stone">${esc(line)}</span>`:''}</div>`;}
+const CANDLE=`<svg class="candle" width="30" height="46" viewBox="0 0 30 46" aria-hidden="true"><ellipse cx="15" cy="12" rx="9" ry="11" fill="#FFD166" opacity=".25" class="glow"/><path class="flame" d="M15 3c3 4 5 6 5 9a5 5 0 0 1-10 0c0-3 2-5 5-9z" fill="#FF8A3D" stroke="#1E1B2E" stroke-width="1.5"/><path d="M15 9c1.4 2 2 3 2 4.2a2 2 0 0 1-4 0c0-1.2.6-2.2 2-4.2z" fill="#FFD166"/><rect x="8" y="19" width="14" height="24" rx="3" fill="#F6F1E7" stroke="#1E1B2E" stroke-width="2"/><path d="M8 24q3 3 5 0t4 2 5-2" fill="none" stroke="#C9C4D6" stroke-width="2"/><rect x="5" y="42" width="20" height="3.5" rx="1.75" fill="#1E1B2E"/></svg>`;
+const EV_ICON={
+ buried:'<svg viewBox="0 0 24 24"><path d="M6 20V10a6 6 0 0 1 12 0v10z" fill="#C9C4D6" stroke="#1E1B2E" stroke-width="2" stroke-linejoin="round"/><path d="M3 21h18" stroke="#6B4A3A" stroke-width="3" stroke-linecap="round"/><path d="M10 12h4M12 10v5" stroke="#1E1B2E" stroke-width="1.6" stroke-linecap="round"/></svg>',
+ res:'<svg viewBox="0 0 24 24"><path d="M8 22v-7c0-1 .6-1.6 1.4-1.6S11 14 11 15V7.5c0-1 .6-1.6 1.4-1.6s1.4.6 1.4 1.6V13l.6-4c.2-.9.8-1.3 1.6-1.1.8.2 1.1.9.9 1.8L15.6 17c-.4 2.5-1.6 5-3.6 5z" fill="#A8C98F" stroke="#1E1B2E" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 22h16" stroke="#6B4A3A" stroke-width="3" stroke-linecap="round"/></svg>',
+ switched:'<svg viewBox="0 0 24 24"><path d="M5 8h12l-3-3M19 16H7l3 3" fill="none" stroke="#1E1B2E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
 function tabbar(active){const tabs=[['home','Home'],['graveyard','Graveyard'],['log','Log']];const from=Math.max(0,tabs.findIndex(t=>t[0]===T.tab));const to=tabs.findIndex(t=>t[0]===active);
  return `<nav class="tabbar" aria-label="Tabs"><span class="pill" data-to="${to}" style="transform:translateX(calc(${from} * (100% + 4px)))"></span>${tabs.map(([k,l],i)=>`<button class="${i===to?'on':''}" ${act('tab',k)} aria-current="${i===to?'page':'false'}">${ICON[k]}<span>${l}</span></button>`).join('')}</nav>`;}
 function countUp(el,from,to,ms=900){if(!el)return;const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/ms);el.textContent=m(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -436,7 +495,7 @@ add:{render:()=>`<div class="content">
   <p class="t-body c-plum">Plot reads a year of charges and finds everything that repeats. It takes about 5 seconds.</p>
   <div class="card thick" style="gap:10px;align-items:center;text-align:center">${plot('Sleepy',80,'bob')}<span class="t-strong">Plot’s demo bank</span><span class="t-cap c-plum">A pretend bank with a year of made-up charges. Plot can’t see real accounts, and it can’t move money.</span></div>
   <div class="grow"></div><button class="btn primary" ${act('useDemoBank')}>Link the demo bank</button>
-  <button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button>
+  <button class="btn ghost" ${act('openSearch')}>Search and add them instead</button>
   <button class="linkbtn" ${act('go','banksetup')}>Use Plaid’s test bank</button></div>`},
 banksetup:{render:()=>{const local=['localhost','127.0.0.1'].includes(location.hostname);const open=T.showPlaid;
   return `<div class="content">
@@ -456,20 +515,29 @@ banksetup:{render:()=>{const local=['localhost','127.0.0.1'].includes(location.h
   </div><span class="set-note">Get both from a free account at <a href="https://dashboard.plaid.com/signup" target="_blank" rel="noopener">dashboard.plaid.com</a> → <a href="https://dashboard.plaid.com/developers/keys" target="_blank" rel="noopener">Developers → Keys</a>. Use the Sandbox secret. Plot checks them with Plaid and saves them on this computer only.</span></div>`
    :`<div class="set-sec"><span class="set-h">Plaid keys</span><div class="set-group">${srow({icon:'info',bg:'stone',label:'Add keys in Vercel',sub:'Project → Settings → Environment Variables'})}</div></div>`):''}
   </div>`;}},
+search:{render:()=>`<div class="content">
+  <button class="backlink" ${act('back',S.onboarded?'home':'add')}>←&nbsp; ${S.onboarded?'Dashboard':'Back'}</button>
+  <h2 class="t-l">Add a subscription</h2>
+  <label class="searchbox">${'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'}<input id="q" type="search" placeholder="Search Netflix, Spotify, iCloud…" autocomplete="off" value="${esc(T.q||'')}" aria-label="Search subscriptions"></label>
+  <div id="svcRes" class="stack" style="gap:12px">${svcResults(T.q)}</div>
+  ${fence('Not here? Search it and add it by hand.')}</div>`,
+  mount(el){const q=$('#q',el),res=$('#svcRes',el);q.addEventListener('input',()=>{T.q=q.value;res.innerHTML=svcResults(T.q);});}},
 byhand:{render:()=>`<div class="content">
-  <button class="backlink" ${act('back',S.onboarded?'home':'add')}>←&nbsp; ${S.onboarded?'Dashboard':'Add subscriptions'}</button><h2 class="t-l">Add one</h2>
+  <button class="backlink" ${act('back','search')}>←&nbsp; Search</button><h2 class="t-l">${T.prefill?esc(T.prefill.alt||T.prefill.name):'Add one'}</h2>
   <form class="stack" id="manualForm" style="gap:16px" novalidate>
-  <div class="field"><label for="fName">Name</label><input id="fName" placeholder="Netflix" autocomplete="off" required></div>
-  <div class="row" style="gap:12px;align-items:flex-start"><div class="field grow"><label for="fPrice">Price</label><input id="fPrice" placeholder="15.99" inputmode="decimal" autocomplete="off" required></div><div class="field grow"><label for="fNext">Next charge</label><input id="fNext" type="date" value="${addDays(today(),9)}"></div></div>
+  <div class="field"${T.prefill?' hidden':''}><label for="fName">Name</label><input id="fName" placeholder="Netflix" autocomplete="off" required value="${esc(T.prefill?.name||T.customName||'')}"></div>
+  ${T.prefill?`<div class="field"><label id="planLbl">Which plan?</label><div class="addon-opts" role="group" aria-labelledby="planLbl">${T.prefill.plans.map(([p,pr,cad],i)=>`<button type="button" class="optchip" data-plan="${esc(p)}" data-price="${pr}" data-cad="${cad||'monthly'}" aria-pressed="${i===0}">${esc(p)} <b>${m(pr)}${cad==='yearly'?'/yr':''}</b></button>`).join('')}</div><span class="t-cap c-plum">Typical prices. Change it below if your bill says otherwise.</span></div>`:''}
+  <div class="row" style="gap:12px;align-items:flex-start"><div class="field grow"><label for="fPrice">Price</label><input id="fPrice" placeholder="15.99" inputmode="decimal" autocomplete="off" required value="${T.prefill?T.prefill.plans[0][1].toFixed(2):''}"></div><div class="field grow"><label for="fNext">Next charge</label><input id="fNext" type="date" value="${addDays(today(),9)}"></div></div>
   <div class="field" id="hAddWrap" hidden><label id="hAddLbl">Any add-ons inside it?</label><div class="addon-opts" id="hAdd" role="group" aria-labelledby="hAddLbl"></div></div>
-  <div class="field"><label id="cycLbl">Billing</label><div class="seg" role="group" aria-labelledby="cycLbl"><button type="button" aria-pressed="true" data-cycle="monthly">Monthly</button><button type="button" aria-pressed="false" data-cycle="yearly">Yearly</button></div></div>
+  <div class="field"><label id="cycLbl">Billing</label><div class="seg" role="group" aria-labelledby="cycLbl"><button type="button" aria-pressed="${T.prefill?.plans[0][2]!=='yearly'}" data-cycle="monthly">Monthly</button><button type="button" aria-pressed="${T.prefill?.plans[0][2]==='yearly'}" data-cycle="yearly">Yearly</button></div></div>
   <div class="card row" style="flex-direction:row"><div class="stack-s grow" style="gap:2px"><span class="t-strong">This is a free trial</span><span class="t-cap c-plum">Plot will count down to the first charge.</span></div><button type="button" class="toggle" role="switch" aria-checked="false" aria-label="This is a free trial" id="fTrial"></button></div>
   </form>
   <div class="grow"></div><button class="btn primary" ${act('saveManual')}>Save</button><button class="btn ghost" ${act('saveManual','again')}>Save and add another</button></div>`,
-  mount(el){const tg=$('#fTrial',el);tg.addEventListener('click',()=>tg.setAttribute('aria-checked',tg.getAttribute('aria-checked')!=='true'));el.querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x===b))));$('#fName',el).focus({preventScroll:true});
+  mount(el){const tg=$('#fTrial',el);tg.addEventListener('click',()=>tg.setAttribute('aria-checked',tg.getAttribute('aria-checked')!=='true'));el.querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x===b))));if(!T.prefill)$('#fName',el).focus({preventScroll:true});
+  el.querySelectorAll('[data-plan]').forEach(b=>b.addEventListener('click',()=>{el.querySelectorAll('[data-plan]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#fPrice',el).value=(+b.dataset.price).toFixed(2);el.querySelectorAll('[data-cycle]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.cycle===b.dataset.cad));}));
   const wrap=$('#hAddWrap',el),box=$('#hAdd',el);let shown='';
   const upd=()=>{const svc=canon($('#fName',el).value);const opts=ADDON_OPTIONS[svc];if(svc===shown)return;shown=svc;wrap.hidden=!opts?.length;box.innerHTML=(opts||[]).map(([n,p])=>`<button type="button" class="optchip" aria-pressed="false" data-name="${esc(n)}" data-price="${p}">${esc(n)} <b>${m(p)}</b></button>`).join('');};
-  $('#fName',el).addEventListener('input',upd);box.addEventListener('click',e=>{const b=e.target.closest('.optchip');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');});}},
+  $('#fName',el).addEventListener('input',upd);upd();box.addEventListener('click',e=>{const b=e.target.closest('.optchip');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');});}},
 found:{mount(){if(!S.scan||T.scanError||T.autoAdv===S.scan)return;const r=S.scan;T.autoAdv=r;setTimeout(()=>{if(cur.id!=='found')return;applyScan();if(S.onboarded){toast(`Plot found ${S.subs.length} subscriptions.`);go('home','fade');}else go('trials','fade');},900);},
   render:()=>{const r=S.scan;
   if(T.scanError) return `<div class="content mid"><div class="grow"></div>${plot('Alarmed',140)}<h2 class="t-m">Plot couldn’t read the bank.</h2><p class="t-body c-plum">${esc(T.scanError)}</p><div class="grow"></div><button class="btn primary" ${act('rescan')}>Try again</button><button class="btn ghost" ${act('go','byhand')}>Add them by hand instead</button></div>`;
@@ -568,7 +636,7 @@ home:{tab:'home',render:()=>{const h=new Date().getHours();const hi=(h<12?'Good 
   ${S.trials.filter(t=>t!==urgentTrial()).length?`<span class="t-title" style="font-size:16px">Free trials (${S.trials.length})</span><div class="stack" style="gap:8px">${[...S.trials].filter(t=>t!==urgentTrial()).sort((x,y)=>x.ends.localeCompare(y.ends)).map(t=>{const d=trialDaysLeft(t);return `<button class="ghostrow" ${act('openTrial',t.id)}>${ghostSvg(30,'bob')}<span class="stack-s grow" style="gap:1px;min-width:0;text-align:left"><span class="t-strong">${esc(tName(t))}</span><span class="t-cap c-plum">Charges ${d<=0?'today':d===1?'tomorrow':`in ${d} days`} · then ${m(t.price)}/mo</span></span>${chev}</button>`;}).join('')}</div>`:''}
   ${S.subs.length?`<div class="row between"><span class="t-title" style="font-size:16px">Active (${S.subs.length})</span><button class="t-cap c-plum" ${act('cycleSort')}>Sort: ${S.prefs.sort==='price'?'price':'least used'}</button></div>
   <div class="stack stagger" style="gap:8px">${list.map(s=>subRow(s)).join('')}</div>${fence('That’s everything. Plot checked twice.')}`:`<div class="card dash" style="align-items:center;text-align:center;gap:10px">${plot('Sleepy',90)}<span class="t-title">Nothing to watch yet</span><span class="t-body c-plum">Link the demo bank or add a subscription and Plot gets to work.</span></div>`}
-  <div class="row" style="gap:8px"><button class="btn ghost sm" ${act('go','byhand')}>+ Subscription</button><button class="btn ghost sm" ${act('go','addtrial')}>+ Free trial</button></div>
+  <div class="row" style="gap:8px"><button class="btn ghost sm" ${act('openSearch')}>+ Subscription</button><button class="btn ghost sm" ${act('go','addtrial')}>+ Free trial</button></div>
   </div>${tabbar('home')}`;},
   mount(el){const t=$('#dashTotal',el);const now=total();if(T.lastTotal===undefined)countUp(t,0,now,800);else if(T.lastTotal!==now)countUp(t,T.lastTotal,now);T.lastTotal=now;setTimeout(()=>{T.flash=null;},1700);}},
 settings:{render:()=>{const name=S.profile.name;const due=S.checkins[monthKey()];const n=new Date();const next=new Date(n.getFullYear(),n.getMonth()+1,1);
@@ -727,15 +795,16 @@ rip:{night:true,render:()=>{const g=T.buried;if(!g)return SCREENS.graveyard.rend
 
 /* ---------- graveyard ---------- */
 graveyard:{night:true,tab:'graveyard',render:()=>{let g=[...S.graves];if(T.graveFilter==='recent')g.sort((a,b)=>b.buriedAt.localeCompare(a.buriedAt));if(T.graveFilter==='saved')g.sort((a,b)=>savedFor(b)-savedFor(a));
-  return `<div class="content tabs"><div class="night-fx" aria-hidden="true">${Array.from({length:7},(_,i)=>`<i class="firefly" style="left:${8+i*13}%;top:${12+((i*37)%60)}%;animation-delay:${-i*1.3}s,${-i*.7}s"></i>`).join('')}<i class="fog a"></i><i class="fog b"></i></div><h1 class="t-l c-bone">The Graveyard</h1>
+  return `<div class="content tabs"><div class="night-fx" aria-hidden="true">${Array.from({length:7},(_,i)=>`<i class="firefly" style="left:${8+i*13}%;top:${12+((i*37)%60)}%;animation-delay:${-i*1.3}s,${-i*.7}s"></i>`).join('')}<i class="fog a"></i><i class="fog b"></i>${MOONSKY}<span class="flyby">${bat('',false)}</span></div><h1 class="t-l c-bone">The Graveyard</h1>
   <div class="card" style="background:var(--ink);border:0;padding:24px 28px;gap:4px"><span class="t-cap c-blush">SAVED SINCE THE BURIALS BEGAN</span><span class="t-xl c-moss" id="gTotal">${m(graveTotal())}</span><span class="t-dp c-stone">${S.graves.length} subscription${S.graves.length===1?'':'s'} resting peacefully.</span></div>
   ${g.length?`<div class="filters" role="group" aria-label="Sort tombstones">${[['all','All'],['recent','Recently buried'],['saved','Most saved']].map(([k,l])=>`<button aria-pressed="${T.graveFilter===k}" ${act('graveFilter',k)}>${l}</button>`).join('')}</div>
-  <div class="graves stagger">${g.map(x=>`<button ${act('openTomb',x.id)} aria-label="Open ${esc(x.name)}">${tomb(x,.8)}</button>`).join('')}</div>`
-  :`<div class="stack" style="align-items:center;text-align:center;padding-top:20px">${plot('Sleepy',120)}<span class="t-m c-bone">Nothing buried yet.</span><span class="t-body c-stone">When you cancel something, its tombstone shows up here.</span></div>`}</div>${tabbar('graveyard')}`;},
+  <div class="graves stagger">${g.map(x=>`<button ${act('openTomb',x.id)} aria-label="Open ${esc(x.name)}">${tomb(x,.8)}</button>`).join('')}</div>${ironFence('Rest in peace. Your wallet thanks them.')}`
+  :`<div class="stack" style="align-items:center;text-align:center;padding-top:20px">${plot('Sleepy',120,'bob')}<span class="t-m c-bone">Nothing buried yet.</span><span class="t-body c-stone">The plots are open. When you cancel something, its tombstone shows up here.</span></div>${ironFence('')}`}</div>${tabbar('graveyard')}`;},
   mount(el){countUp($('#gTotal',el),0,graveTotal(),900);}},
 tomb:{night:true,render:()=>{const g=S.graves.find(x=>x.id===T.tombId);if(!g)return SCREENS.graveyard.render();const b=S.bounces[g.name];
   return `<div class="content"><button class="backlink c-bone" ${act('tab','graveyard')}>←&nbsp; Graveyard</button>
   <div style="display:flex;justify-content:center"><div class="peekstage">${tomb(g,1.2,'',false)}<span class="peekwell" aria-hidden="true"><span class="peekhand">${HAND}</span></span></div></div>
+  <p class="epitaph">Here lies ${esc(g.name)}${g.via?`, once of ${esc(g.via)}`:''}. ${esc(fxFor(g.name).bury)}</p>
   <div class="row" style="gap:8px;align-items:stretch"><div class="stat"><span class="t-cap c-stone">Saved so far</span><span class="t-m c-moss">${m(savedFor(g))}</span></div><div class="stat"><span class="t-cap c-stone">Resting for</span><span class="t-m c-bone">${Math.max(0,daysBetween(g.buriedAt.slice(0,10),today()))} days</span></div></div>
   <div class="card dash" style="border-color:var(--stone);background:transparent"><span class="t-title c-bone">Bounce history</span><span class="t-cap c-stone" style="font-size:13px">${b&&b.res?`Buried ${b.buried}× · Resurrected ${b.res}×`:'Buried once. Never came back.'}</span>${b&&b.res?`<span class="t-dp c-blush">Plot has started a tally.</span>`:''}</div>
   <div class="grow"></div><button class="btn res" ${act('resurrect',g.id)}>Resurrect</button><span class="t-cap c-stone center">Resurrecting logs a bounce and stops the savings counter.</span><button class="btn ghost" ${act('tab','graveyard')}>Leave it in peace</button></div>`;}},
@@ -750,11 +819,11 @@ const fx=fxFor(g.name);
   <div class="grow"></div><a class="btn res" href="${esc(homeUrl(g.name))}" target="_blank" rel="noopener noreferrer">Re-subscribe on ${esc(g.name)} ↗</a><button class="btn ghost" ${act('back','home')}>Back to active list</button></div>`;},
   mount(el){const n=T.revived?.name;const a=dirtFx($('#dirtBack',el),{delay:350,n:8,spread:70}),b=dirtFx($('#dirtBack',el),{delay:1000,n:14}),c=burstFx($('#fxBack',el),n,{delay:1500});return()=>{clearTimeout(a);clearTimeout(b);clearTimeout(c);};}},
 log:{tab:'log',render:()=>{const names=[...new Set(S.log.map(e=>e.name))];const top=Object.entries(S.bounces).filter(([,b])=>b.res).sort((a,b)=>b[1].res-a[1].res)[0];const ev=S.log.filter(e=>T.logFilter==='All'||e.name===T.logFilter);
-  return `<div class="content tabs"><h1 class="t-l">The log</h1><p class="t-body c-plum" style="margin-top:-8px">Every burial, comeback and switch.</p>
+  return `<div class="content tabs"><div class="row" style="gap:10px;align-items:flex-end">${CANDLE}<h1 class="t-l">The log</h1></div><p class="t-body c-plum" style="margin-top:-8px">Every burial, comeback and switch. Plot writes it all down.</p>
   ${top?`<div class="card thick" style="background:var(--blush)"><span class="t-cap">PATTERN SPOTTED</span><span class="t-strong">${esc(top[0])} keeps coming back. ${top[1].res} comeback${top[1].res>1?'s':''} so far, ${m(top[1].spent)} a month back on the bill.</span></div>`:''}
   ${S.log.length?`<div class="filters" role="group" aria-label="Filter log">${['All',...names.slice(0,4)].map(n=>`<button aria-pressed="${T.logFilter===n}" ${act('logFilter',n)}>${esc(n)}</button>`).join('')}</div>
-  <div class="timeline">${ev.map(e=>`<div class="event"><i style="background:${e.type==='buried'?'var(--dirt)':e.type==='switched'?'var(--candle)':'var(--moss)'}"></i><span class="stack-s" style="gap:1px"><span class="t-cap c-plum">${fmtCaps(e.at.slice(0,10))}${e.auto?' · found in your bank':''}</span><span class="t-strong">${e.type==='buried'?'Buried '+esc(e.name):e.type==='switched'?'Switched '+esc(e.name)+' to '+esc(e.plan||'a cheaper plan'):'Resurrected '+esc(e.name)}</span></span></div>`).join('')}</div>`
-  :`<div class="card dash"><span class="t-dp">Nothing logged yet. Bury something and it shows up here.</span></div>`}</div>${tabbar('log')}`;}}
+  <div class="timeline">${ev.map((e,i)=>{const mk=e.at.slice(0,7);const head=i===0||ev[i-1].at.slice(0,7)!==mk;const d=new Date(e.at);return (head?`<span class="logmonth">${['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()]} ${d.getFullYear()}</span>`:'')+`<div class="event"><span class="ev-ic ev-${e.type}">${EV_ICON[e.type]||EV_ICON.buried}</span><span class="stack-s" style="gap:1px"><span class="t-cap c-plum">${fmtCaps(e.at.slice(0,10))}${e.auto?' · found in your bank':''}</span><span class="t-strong">${e.type==='buried'?'Buried '+esc(e.name):e.type==='switched'?'Switched '+esc(e.name)+' to '+esc(e.plan||'a cheaper plan'):'Resurrected '+esc(e.name)}</span></span></div>`;}).join('')}</div>${fence('That’s the whole story so far.')}`
+  :`<div class="stack" style="align-items:center;text-align:center;gap:10px;padding-top:16px"><div class="row" style="gap:6px;align-items:flex-end">${plot('Content',90)}${CANDLE}</div><span class="t-title">Nothing logged yet.</span><span class="t-body c-plum">Plot keeps a candle lit for the first entry. Bury, resurrect or switch something and it’s written here.</span></div>`}</div>${tabbar('log')}`;}}
 };
 
 /* =========================================================================
@@ -817,8 +886,10 @@ const ACT={
   const cadence=$('[data-cycle][aria-pressed="true"]',el).dataset.cycle;
   if($('#fTrial',el).getAttribute('aria-checked')==='true'){S.trials.push({id:uid(),name,price,ends:$('#fNext',el).value||addDays(today(),7),warn:'48',started:today(),source:'manual'});save();toast(`Plot is watching the ${name} trial.`);if(again==='again')rerender();else go(S.onboarded?'home':'trials');return;}
   const addons=[...el.querySelectorAll('#hAdd .optchip[aria-pressed="true"]')].map(b=>({id:uid(),name:b.dataset.name,price:+b.dataset.price,cadence:'monthly',first:today(),charges:[],source:'manual'}));
-  S.subs.push({id:uid(),name:canon(name),price,cadence,next:$('#fNext',el).value||null,last:null,first:today(),charges:[],addons,source:'manual',rating:null});save();
-  if(again==='again'){toast(`Saved ${name}. Add another.`);rerender();}else{toast(`Saved ${name}.`);go(S.onboarded?'home':'trials');}},
+  const plan=$('[data-plan][aria-pressed="true"]',el)?.dataset.plan;const shown=T.prefill?.alt||name;
+  S.subs.push({id:uid(),name:canon(name),...(plan&&T.prefill.plans.length>1?{plan}:{}),price,cadence,next:$('#fNext',el).value||null,last:null,first:today(),charges:[],addons,source:'manual',rating:null});save();
+  T.prefill=null;T.customName='';
+  if(again==='again'){toast(`Saved ${shown}. Add another.`);T.q='';go('search','back');}else{toast(`Saved ${shown}.`);go(S.onboarded?'home':'trials');}},
  removeTrial(id){S.trials=S.trials.filter(t=>t.id!==id);save();rerender();},
  saveTrial(){const el=cur.el;const name=$('#tName',el).value.trim();const ends=$('#tEnds',el).value;const price=parseFloat($('#tPrice',el).value.replace(/[^0-9.]/g,''));
   if(!name){toast('Which service is the trial for?');$('#tName',el).focus();return;}if(!ends){toast('Pick the day the trial ends.');return;}
@@ -859,6 +930,9 @@ const ACT={
  switchBack(){const r=T.swReturn||'home';T.sw=null;go(r==='sub'&&!getSub(T.subId)?'home':r,'back');},
  checkSwitch(id){const s=getSub(id);if(!s||!s.switchRemind)return;const t=allTips().find(x=>x.id===s.switchRemind.tip);delete s.switchRemind;save();if(!t){toast('That deal isn’t available anymore.');rerender();return;}T.sw=t;T.swReturn='home';T.pendingReturn=true;go('switchto');},
  notASub(id){const s=getSub(id);if(!s)return;S.subs=S.subs.filter(x=>x.id!==id);S.removed[s.name]=true;save();toast(`Removed ${s.name}. Plot won’t add it again.`);go('home','back');},
+ openSearch(){T.q='';T.prefill=null;T.customName='';go('search');},
+ pickSvc(name){const v=SVC_LIST.find(x=>x.name===name);if(!v)return;T.prefill=v;T.customName='';go('byhand');},
+ pickCustom(q){T.prefill=null;T.customName=q.replace(/\b\w/g,c=>c.toUpperCase());go('byhand');},
  toggleWho(k){const w=new Set(myWho());w.has(k)?w.delete(k):w.add(k);S.profile.discounts=[...w];save();rerender();},
  openSub(id){T.subId=id;T.addonForm=false;T.addonArmed=null;go('sub');},
  toggleAddonForm(){T.addonForm=!T.addonForm;rerender();if(T.addonForm)setTimeout(()=>$('#aName',cur.el)?.focus({preventScroll:true}),50);},
