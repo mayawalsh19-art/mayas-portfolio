@@ -242,6 +242,64 @@ function applyScan(){
 const act=(a,arg='')=>`data-act="${a}" data-arg="${esc(arg)}"`;
 function subRow(s,opts={}){const c=chipFor(s);const dim=s.rating==='barely'||!s.rating;return `<button class="subrow${T.flash===s.id?' flash':''}" ${act(opts.act||'openSub',s.id)}><span class="logo-tile${dim?' dim':''}">${esc(letter(s.name))}</span><span class="info"><span class="t-strong">${esc(s.name)}</span><span class="chip ${c.c}">${esc(c.t)}</span></span><span class="price"><span class="t-strong">${m(s.price+addonsOf(s).reduce((a,x)=>a+x.price,0))}</span><span class="t-cap c-dirt">${addonsOf(s).length?`incl. ${addonsOf(s).length} add-on${addonsOf(s).length>1?'s':''}`:s.next?'next: '+fmtDay(s.next):s.cadence==='yearly'?'yearly':'monthly'}</span></span></button>`;}
 function tomb(g,u=1,cls='',showSaved=true){const saved=savedFor(g);return `<div class="tomb ${cls}" style="--u:${u}px"><div class="well"><div class="stone"><span class="rip">R.I.P.</span><span class="nm">${esc(g.name)}</span><span class="dt">${esc(tombDates(g))}</span></div></div><div class="dirtbar"></div>${showSaved?`<span class="chip saved ${saved?'bg-moss':'bg-candle'}">${saved?'+'+m(saved)+' saved':'Just buried'}</span>`:''}</div>`;}
+/* =========================================================================
+   Graveyard effects: every service gets its own particles and one-liners
+   ========================================================================= */
+const FXS={
+ note:'<path d="M9 17V5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3"/><circle cx="16.5" cy="15.5" r="3"/>',
+ star:'<path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/>',
+ spark:'<path d="M12 1c.9 6 3 9.1 9 11-6 1.9-8.1 5-9 11-.9-6-3-9.1-9-11 6-1.9 8.1-5 9-11z"/>',
+ cloud:'<path d="M7 19a5 5 0 0 1-.6-10A6 6 0 0 1 18 8.5 4.5 4.5 0 0 1 17.5 19z"/>',
+ play:'<path d="M7 4.5v15l12.5-7.5z"/>',
+ dot:'<circle cx="12" cy="12" r="8"/>',
+ feather:'<path d="M12 1.5c5.5 5.5 5.5 14.5 0 21-5.5-6.5-5.5-15.5 0-21z"/><circle cx="12" cy="9" r="2.6" fill="#1E1B2E"/>',
+ flame:'<path d="M12 1.5c1.2 4.2 6.5 6.4 6.5 12.5a6.5 6.5 0 0 1-13 0c0-3.2 2-5.4 3.2-6.4 0 2.2 1 3.4 2.2 3.4 0-4.2-1-6.5 1.1-9.5z"/>',
+ box:'<rect x="3" y="6" width="18" height="14" rx="1.5"/><path d="M3 10.5h18M12 6v4.5" stroke="#1E1B2E" stroke-width="1.6"/>',
+ film:'<rect x="3" y="3.5" width="18" height="17" rx="2"/><path d="M6.5 6.5v1M6.5 11.5v1M6.5 16.5v1M17.5 6.5v1M17.5 11.5v1M17.5 16.5v1" stroke="#1E1B2E" stroke-width="2" stroke-linecap="round"/>',
+ tv:'<rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M9 2.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+ ring:'<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/>',
+ wheel:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" stroke="currentColor" stroke-width="1.4"/>',
+ wave:'<path d="M3.5 11v2M7.5 8v8M11.5 4.5v15M15.5 8v8M19.5 10v4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+ heart:'<path d="M12 21s-8.5-5.3-8.5-11.2A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 8.5 3.2C20.5 15.7 12 21 12 21z"/>'
+};
+// c: colors · s: shapes · mo: burst (explodes out), rise (floats up), rain (falls from above)
+const SVC_FX={
+ 'Netflix':{c:['#E50914','#F6F1E7','#B20710'],s:['film','spark'],mo:'burst',bury:'No more “are you still watching?”',back:'Okay. One more episode.'},
+ 'Hulu':{c:['#1CE783','#F6F1E7'],s:['tv','spark'],mo:'burst',bury:'Channel changed.',back:'Back on the couch.'},
+ 'Spotify':{c:['#1DB954','#F6F1E7'],s:['note','wave'],mo:'rise',bury:'The music stopped.',back:'Drop the beat. Again.'},
+ 'Disney+':{c:['#7FD3FF','#FFD166','#F6F1E7','#113CCF'],s:['star','spark'],mo:'burst',bury:'The fireworks are over.',back:'Wishes were made.'},
+ 'YouTube Premium':{c:['#FF0000','#F6F1E7'],s:['play'],mo:'rise',bury:'Ads are back. Worth it.',back:'Skip ad? Skip nothing.'},
+ 'YouTube TV':{c:['#FF0000','#F6F1E7'],s:['play','tv'],mo:'rise',bury:'Cable, cut twice.',back:'Live from the grave.'},
+ 'iCloud+':{c:['#8FD3FF','#F6F1E7'],s:['cloud'],mo:'rise',bury:'Floated away.',back:'Back in the cloud.'},
+ 'Apple TV+':{c:['#F6F1E7','#C9C4D6'],s:['tv','spark'],mo:'burst',bury:'Screen goes dark.',back:'Now playing.'},
+ 'Google One':{c:['#4285F4','#EA4335','#FBBC05','#34A853'],s:['dot'],mo:'burst',bury:'Storage, unstored.',back:'Backed up.'},
+ 'Paramount+':{c:['#0064FF','#F6F1E7','#8FD3FF'],s:['star'],mo:'burst',bury:'The stars dimmed.',back:'The stars came out.'},
+ 'Peacock':{c:['#FFD166','#FF8A3D','#FF9EC4','#7FD67A','#8FD3FF','#B48CFF'],s:['feather'],mo:'burst',bury:'Feathers ruffled.',back:'Strutting back in.'},
+ 'Audible':{c:['#FF9900','#F6F1E7'],s:['wave','note'],mo:'rise',bury:'The end. Literally.',back:'Chapter two.'},
+ 'Peloton App':{c:['#E30613','#F6F1E7'],s:['wheel'],mo:'burst',bury:'Off the bike.',back:'Back in the saddle.'},
+ 'Duolingo':{c:['#58CC02','#FF9600','#FFD166'],s:['flame'],mo:'rise',bury:'Streak: lost.',back:'Streak: revived.'},
+ 'Calm':{c:['#8FD3FF','#F6F1E7','#4A90E2'],s:['ring'],mo:'rise',bury:'Breathe out.',back:'Breathe in.'},
+ 'Crunchyroll':{c:['#F47521','#F6F1E7'],s:['spark','star'],mo:'burst',bury:'Season finale.',back:'Sequel unlocked.'},
+ 'Max':{c:['#002BE7','#B48CFF','#F6F1E7'],s:['spark','film'],mo:'burst',bury:'Credits rolled.',back:'Previously on…'},
+ 'Headspace':{c:['#FF8A3D','#FFD166'],s:['dot','ring'],mo:'rise',bury:'Mind: cleared.',back:'Back to center.'},
+ 'Amazon Prime':{c:['#FF9900','#C68B59','#E8C39E'],s:['box'],mo:'rain',bury:'Returned to sender.',back:'Arriving today.'},
+ _:{c:['#FF9EC4','#FFD166','#7FD67A','#8FD3FF'],s:['spark','heart','dot'],mo:'burst',bury:'Gone but not forgotten.',back:'It’s alive!'}
+};
+const fxFor=n=>SVC_FX[canon(n)]||SVC_FX._;
+const motionOK=()=>!S.prefs.reduceMotion&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function burstFx(host,name,{n=18,delay=0,mo}={}){if(!host||!motionOK())return 0;const f=fxFor(name);mo=mo||f.mo;
+ return setTimeout(()=>{for(let i=0;i<n;i++){const p=document.createElement('span');p.className='fx fx-'+mo;const st=p.style;
+  st.setProperty('--c',f.c[i%f.c.length]);st.setProperty('--s',`${Math.round(rnd(14,26))}px`);st.setProperty('--r',`${Math.round(rnd(-300,300))}deg`);
+  if(mo==='burst'){const a=Math.PI*2*i/n+rnd(-.2,.2),R=rnd(70,135);st.setProperty('--dx',`${Math.cos(a)*R}px`);st.setProperty('--dy',`${Math.sin(a)*R-40}px`);st.setProperty('--t',`${rnd(1,1.5)}s`);st.setProperty('--d',`${i*12}ms`);}
+  else if(mo==='rise'){st.setProperty('--x0',`${rnd(-100,100)}px`);st.setProperty('--dx',`${rnd(-30,30)}px`);st.setProperty('--dy',`${-rnd(150,240)}px`);st.setProperty('--t',`${rnd(1.8,2.6)}s`);st.setProperty('--d',`${i*80}ms`);}
+  else{st.setProperty('--x0',`${rnd(-120,120)}px`);st.setProperty('--dy',`${rnd(40,90)}px`);st.setProperty('--t',`${rnd(1.2,1.7)}s`);st.setProperty('--d',`${i*70}ms`);}
+  p.innerHTML=`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${FXS[f.s[i%f.s.length]]}</svg>`;host.appendChild(p);
+  p.addEventListener('animationend',()=>p.remove());}},delay);}
+function dirtFx(host,{n=12,delay=0,spread=110}={}){if(!host||!motionOK())return 0;return setTimeout(()=>{for(let i=0;i<n;i++){const p=document.createElement('i');p.className='dust';const a=Math.PI*(i/(n-1));p.style.left=`${Math.cos(a)*30-5}px`;p.style.top='0px';p.style.setProperty('--dx',`${Math.cos(a)*spread}px`);p.style.setProperty('--dy',`${-Math.sin(a)*60-10}px`);host.appendChild(p);p.addEventListener('animationend',()=>p.remove());}},delay);}
+const HAND='<svg viewBox="0 0 30 34" aria-hidden="true"><path d="M6 33V17c0-2 1-3 2.5-3S11 15 11 17v-9c0-2 1-3 2.5-3S16 6 16 8v-4c0-2 1-3 2.5-3S21 2 21 4v6c0-2 1-3 2.5-3S26 8 26 10v13c0 6-4 10-10 10z" fill="#C9C4D6" stroke="#1E1B2E" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+const svcColor=n=>fxFor(n)===SVC_FX._?'var(--blush)':fxFor(n).c[0];
+const svcInk=n=>{const c=svcColor(n);if(!c.startsWith('#'))return 'var(--ink)';const v=parseInt(c.slice(1),16);const L=(0.299*(v>>16)+0.587*(v>>8&255)+0.114*(v&255))/255;return L>.6?'var(--ink)':'var(--bone)';};
 function tabbar(active){const tabs=[['home','Home'],['checkin','Check-in'],['graveyard','Graveyard'],['log','Log']];const from=Math.max(0,tabs.findIndex(t=>t[0]===T.tab));const to=tabs.findIndex(t=>t[0]===active);
  return `<nav class="tabbar" aria-label="Tabs"><span class="pill" data-to="${to}" style="transform:translateX(calc(${from} * (100% + 4px)))"></span>${tabs.map(([k,l],i)=>`<button class="${i===to?'on':''}" ${act('tab',k)} aria-current="${i===to?'page':'false'}">${ICON[k]}<span>${l}</span></button>`).join('')}</nav>`;}
 function countUp(el,from,to,ms=900){if(!el)return;const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/ms);el.textContent=m(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -494,15 +552,17 @@ reminder:{render:()=>{const s=target()||{name:'It'};const d=parse(addDays(today(
   <div class="card dash" style="width:100%"><span class="t-dp">${esc(s.name)} still costs ${m(s.price||0)} a month. Plot is patient.</span></div>
   <div class="grow"></div><button class="btn primary" ${act('back','home')}>Back to Dashboard</button></div>`;}},
 rip:{night:true,render:()=>{const g=T.buried;if(!g)return SCREENS.graveyard.render();const next=T.queue.length?getSub(T.queue[0]):null;const yearly=g.cadence==='yearly'?g.price:g.price*12;
-  return `<div class="content mid"><div style="height:10px"></div>${tomb(g,1.1,'rising',false)}<div class="dustwrap" id="dust"></div><span class="chip bg-moss" style="font-size:16px;padding:4px 12px;margin-top:-4px;animation:pop .45s cubic-bezier(.3,1.6,.5,1) 1.35s both">+${m(yearly)} a year</span>
-  <h2 class="t-l c-bone">Rest in peace, ${esc(g.name)}.</h2><p class="t-dp c-stone">${g.nextDue?`The next charge was due ${fmtDay(g.nextDue)}. Plot will count it as saved.`:`The savings counter starts now.`}</p>
+  const fx=fxFor(g.name);
+  return `<div class="content mid"><div style="height:10px"></div><div class="ripstage">${tomb(g,1.1,'rising',false)}<span class="dropper" style="background:${svcColor(g.name)};color:${svcInk(g.name)}">${esc(letter(g.name))}</span><span class="spirit" aria-hidden="true"><svg viewBox="0 0 60 70"><path d="M6 64V30a24 24 0 0 1 48 0v34l-8-6-8 6-8-6-8 6-8-6z" fill="#F6F1E7" fill-opacity=".92" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/><ellipse cx="23" cy="30" rx="3.5" ry="5" fill="#1E1B2E"/><ellipse cx="37" cy="30" rx="3.5" ry="5" fill="#1E1B2E"/></svg><b>${esc(letter(g.name))}</b></span><div class="fxhost" id="fxRip"></div></div><div class="dustwrap" id="dust"></div><span class="chip bg-moss" style="font-size:16px;padding:4px 12px;margin-top:-4px;animation:pop .45s cubic-bezier(.3,1.6,.5,1) 1.75s both">+${m(yearly)} a year</span>
+  <h2 class="t-l c-bone">Rest in peace, ${esc(g.name)}.</h2><p class="t-dp c-blush quip">${esc(fx.bury)}</p><p class="t-dp c-stone">${g.nextDue?`The next charge was due ${fmtDay(g.nextDue)}. Plot will count it as saved.`:`The savings counter starts now.`}</p>
   <div class="card" style="width:100%;background:var(--ink);border:0;gap:2px"><span class="t-cap c-blush">GRAVEYARD TOTAL · ${S.graves.length} RESTING</span><span class="t-l c-moss">${m(graveTotal())}</span></div>
   <div class="grow"></div>${next?`<button class="btn bury" ${act('nextBury')}>Next: bury ${esc(next.name)}</button>`:''}<button class="btn light" ${act('tab','graveyard')}>See the Graveyard</button><button class="btn ghost" ${act('back','home')}>Back to Dashboard</button></div>`;},
-  mount(el){const d=$('#dust',el);const t=setTimeout(()=>{for(let i=0;i<10;i++){const p=document.createElement('i');p.className='dust';const a=Math.PI*(i/9);p.style.left=`calc(50% + ${Math.cos(a)*30-5}px)`;p.style.top='-30px';p.style.setProperty('--dx',`${Math.cos(a)*90}px`);p.style.setProperty('--dy',`${-Math.sin(a)*40-10}px`);d.appendChild(p);}},350);return()=>clearTimeout(t);}},
+  mount(el){const d=$('#dust',el);const t=setTimeout(()=>{for(let i=0;i<10;i++){const p=document.createElement('i');p.className='dust';const a=Math.PI*(i/9);p.style.left=`calc(50% + ${Math.cos(a)*30-5}px)`;p.style.top='-30px';p.style.setProperty('--dx',`${Math.cos(a)*90}px`);p.style.setProperty('--dy',`${-Math.sin(a)*40-10}px`);d.appendChild(p);}},motionOK()?750:0);
+   const t2=burstFx($('#fxRip',el),T.buried?.name,{delay:1350});return()=>{clearTimeout(t);clearTimeout(t2);};}},
 
 /* ---------- graveyard ---------- */
 graveyard:{night:true,tab:'graveyard',render:()=>{let g=[...S.graves];if(T.graveFilter==='recent')g.sort((a,b)=>b.buriedAt.localeCompare(a.buriedAt));if(T.graveFilter==='saved')g.sort((a,b)=>savedFor(b)-savedFor(a));
-  return `<div class="content tabs"><h1 class="t-l c-bone">The Graveyard</h1>
+  return `<div class="content tabs"><div class="night-fx" aria-hidden="true">${Array.from({length:7},(_,i)=>`<i class="firefly" style="left:${8+i*13}%;top:${12+((i*37)%60)}%;animation-delay:${-i*1.3}s,${-i*.7}s"></i>`).join('')}<i class="fog a"></i><i class="fog b"></i></div><h1 class="t-l c-bone">The Graveyard</h1>
   <div class="card" style="background:var(--ink);border:0;padding:24px 28px;gap:4px"><span class="t-cap c-blush">SAVED SINCE THE BURIALS BEGAN</span><span class="t-xl c-moss" id="gTotal">${m(graveTotal())}</span><span class="t-dp c-stone">${S.graves.length} subscription${S.graves.length===1?'':'s'} resting peacefully.</span></div>
   ${g.length?`<div class="filters" role="group" aria-label="Sort tombstones">${[['all','All'],['recent','Recently buried'],['saved','Most saved']].map(([k,l])=>`<button aria-pressed="${T.graveFilter===k}" ${act('graveFilter',k)}>${l}</button>`).join('')}</div>
   <div class="graves stagger">${g.map(x=>`<button ${act('openTomb',x.id)} aria-label="Open ${esc(x.name)}">${tomb(x,.8)}</button>`).join('')}</div>`
@@ -510,15 +570,20 @@ graveyard:{night:true,tab:'graveyard',render:()=>{let g=[...S.graves];if(T.grave
   mount(el){countUp($('#gTotal',el),0,graveTotal(),900);}},
 tomb:{night:true,render:()=>{const g=S.graves.find(x=>x.id===T.tombId);if(!g)return SCREENS.graveyard.render();const b=S.bounces[g.name];
   return `<div class="content"><button class="backlink c-bone" ${act('tab','graveyard')}>←&nbsp; Graveyard</button>
-  <div style="display:flex;justify-content:center">${tomb(g,1.2,'',false)}</div>
+  <div style="display:flex;justify-content:center"><div class="peekstage">${tomb(g,1.2,'',false)}<span class="peekwell" aria-hidden="true"><span class="peekhand">${HAND}</span></span></div></div>
   <div class="row" style="gap:8px;align-items:stretch"><div class="stat"><span class="t-cap c-stone">Saved so far</span><span class="t-m c-moss">${m(savedFor(g))}</span></div><div class="stat"><span class="t-cap c-stone">Resting for</span><span class="t-m c-bone">${Math.max(0,daysBetween(g.buriedAt.slice(0,10),today()))} days</span></div></div>
   <div class="card dash" style="border-color:var(--stone);background:transparent"><span class="t-title c-bone">Bounce history</span><span class="t-cap c-stone" style="font-size:13px">${b&&b.res?`Buried ${b.buried}× · Resurrected ${b.res}×`:'Buried once. Never came back.'}</span>${b&&b.res?`<span class="t-dp c-blush">Plot has started a tally.</span>`:''}</div>
   <div class="grow"></div><button class="btn res" ${act('resurrect',g.id)}>Resurrect</button><span class="t-cap c-stone center">Resurrecting logs a bounce and stops the savings counter.</span><button class="btn ghost" ${act('tab','graveyard')}>Leave it in peace</button></div>`;}},
 back:{render:()=>{const g=T.revived;if(!g)return SCREENS.home.render();const b=bounce(g.name);
-  return `<div class="content mid"><div class="grow"></div>${plot('Resurrected',180,'emerge')}
-  <h2 class="t-l">${esc(g.name)} is back.</h2><p class="t-body c-plum">The savings counter stopped and the comeback is in your log. That’s ${b.res} so far.</p>
+const fx=fxFor(g.name);
+  return `<div class="content mid"><div class="grow"></div><div class="climb" aria-hidden="true">
+   <div class="climb-stone"><span>R.I.P.</span></div>
+   <div class="climb-well"><div class="climber"><span class="hand l">${HAND}</span><span class="hand r">${HAND}</span><span class="ctile" style="background:${svcColor(g.name)};color:${svcInk(g.name)}"><span class="ceyes"><i></i><i></i></span><b>${esc(letter(g.name))}</b></span></div></div>
+   <div class="climb-dirt"></div><div class="fxhost" id="fxBack"></div><div class="fxhost low" id="dirtBack"></div></div>
+  <h2 class="t-l">${esc(g.name)} is back.</h2><p class="t-dp c-dirt quip">${esc(fx.back)}</p><p class="t-body c-plum">The savings counter stopped and the comeback is in your log. That’s ${b.res} so far.</p>
   <div class="card" style="width:100%;background:var(--candle)"><span class="t-dp">Plot is not judging. Plot is counting.</span></div>
-  <div class="grow"></div><a class="btn res" href="${esc(homeUrl(g.name))}" target="_blank" rel="noopener noreferrer">Re-subscribe on ${esc(g.name)} ↗</a><button class="btn ghost" ${act('back','home')}>Back to active list</button></div>`;}},
+  <div class="grow"></div><a class="btn res" href="${esc(homeUrl(g.name))}" target="_blank" rel="noopener noreferrer">Re-subscribe on ${esc(g.name)} ↗</a><button class="btn ghost" ${act('back','home')}>Back to active list</button></div>`;},
+  mount(el){const n=T.revived?.name;const a=dirtFx($('#dirtBack',el),{delay:350,n:8,spread:70}),b=dirtFx($('#dirtBack',el),{delay:1000,n:14}),c=burstFx($('#fxBack',el),n,{delay:1500});return()=>{clearTimeout(a);clearTimeout(b);clearTimeout(c);};}},
 log:{tab:'log',render:()=>{const names=[...new Set(S.log.map(e=>e.name))];const top=Object.entries(S.bounces).filter(([,b])=>b.res).sort((a,b)=>b[1].res-a[1].res)[0];const ev=S.log.filter(e=>T.logFilter==='All'||e.name===T.logFilter);
   return `<div class="content tabs"><h1 class="t-l">Resurrection log</h1><p class="t-body c-plum" style="margin-top:-8px">Every burial and every comeback.</p>
   ${top?`<div class="card thick" style="background:var(--blush)"><span class="t-cap">PATTERN SPOTTED</span><span class="t-strong">${esc(top[0])} keeps coming back. ${top[1].res} comeback${top[1].res>1?'s':''} so far, ${m(top[1].spent)} a month back on the bill.</span></div>`:''}

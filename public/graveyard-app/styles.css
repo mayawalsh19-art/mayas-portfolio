@@ -259,3 +259,73 @@ button.set-row:active,a.set-row:active{background:var(--bone)}
 .set-input input::placeholder{color:var(--stone)}
 .set-input:focus-within{background:var(--bone)}
 .set-note a{color:var(--ink);font-weight:500}
+
+/* ---------- graveyard effects ---------- */
+.fxhost{position:absolute;left:50%;top:42%;width:0;height:0;pointer-events:none;z-index:4}
+.fxhost.low{top:auto;bottom:34px}
+.fx{position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);color:var(--c);will-change:transform,opacity}
+.fx svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 1.5px 0 rgba(30,27,46,.55))}
+.fx-burst{animation:fxBurst var(--t) cubic-bezier(.15,.75,.35,1) var(--d) both}
+.fx-rise{animation:fxRise var(--t) ease-out var(--d) both}
+.fx-rain{animation:fxRain var(--t) cubic-bezier(.5,0,.8,.6) var(--d) both}
+@keyframes fxBurst{0%{transform:translate(0,0) scale(.2) rotate(0);opacity:0}12%{opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 40px)) scale(1) rotate(var(--r));opacity:0}}
+@keyframes fxRise{0%{transform:translate(var(--x0),20px) scale(.3);opacity:0}15%{opacity:1}50%{transform:translate(calc(var(--x0) + var(--dx)),calc(var(--dy) * .5)) scale(1) rotate(calc(var(--r) * .15))}100%{transform:translate(calc(var(--x0) - var(--dx)),var(--dy)) scale(.9) rotate(calc(var(--r) * .3));opacity:0}}
+@keyframes fxRain{0%{transform:translate(var(--x0),-230px) rotate(0);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translate(var(--x0),var(--dy)) rotate(var(--r));opacity:0}}
+.quip{margin-top:-6px;font-style:italic;animation:fadeIn .5s ease 1.6s both}
+
+/* burial: the service drops in, the stone rises, its ghost floats off */
+.ripstage{position:relative;display:flex;justify-content:center}
+.tomb.rising .stone{animation-delay:.7s}
+.dropper{position:absolute;left:50%;bottom:30px;width:56px;height:56px;margin-left:-28px;border-radius:16px;border:3px solid var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:28px;transform-origin:50% 100%;animation:dropIn .75s cubic-bezier(.5,0,.75,0) both;z-index:2}
+@keyframes dropIn{0%{transform:translateY(-190px) rotate(-14deg);opacity:0}15%{opacity:1}62%{transform:translateY(0) rotate(6deg) scale(1.08,.86)}78%{transform:translateY(-10px) rotate(0) scale(.95,1.05)}100%{transform:translateY(8px) scale(1.15,0);opacity:0}}
+.spirit{position:absolute;left:50%;top:10px;width:64px;margin-left:-32px;pointer-events:none;z-index:3;animation:ghostUp 2.8s ease-in-out 1.6s both}
+.spirit svg{width:64px;height:auto;display:block}
+.spirit b{position:absolute;left:0;right:0;top:46px;text-align:center;font-family:var(--display);font-size:13px;color:var(--plum)}
+@keyframes ghostUp{0%{transform:translate(0,60px) scale(.5);opacity:0}20%{opacity:1;transform:translate(-14px,10px) scale(1)}45%{transform:translate(16px,-30px) rotate(6deg)}70%{transform:translate(-10px,-70px) rotate(-6deg);opacity:.85}100%{transform:translate(8px,-120px);opacity:0}}
+
+/* resurrection: the service claws its way out */
+.climb{position:relative;width:240px;height:220px;flex:none}
+.climb-stone{position:absolute;left:150px;bottom:30px;width:64px;height:78px;background:var(--stone);border:3px solid var(--ink);border-bottom:0;border-radius:32px 32px 0 0;display:grid;place-items:center;transform-origin:100% 100%;animation:stoneTip .6s cubic-bezier(.5,0,.6,1.4) 1s both}
+.climb-stone span{font-size:11px;font-weight:700;color:var(--plum)}
+@keyframes stoneTip{0%{transform:none}30%{transform:rotate(-6deg)}100%{transform:rotate(78deg) translate(4px,8px)}}
+.climb-well{position:absolute;left:30px;right:30px;bottom:24px;height:200px;overflow:hidden}
+.climber{position:absolute;left:50%;bottom:0;width:100px;margin-left:-50px;animation:climbOut 1.9s cubic-bezier(.3,.8,.3,1) .2s both}
+@keyframes climbOut{0%{transform:translateY(150px)}18%{transform:translateY(96px)}26%{transform:translateY(102px) rotate(-3deg)}34%{transform:translateY(96px) rotate(3deg)}42%{transform:translateY(98px) rotate(0)}66%{transform:translateY(-14px)}78%{transform:translateY(4px) scale(1.06,.94)}88%{transform:translateY(-6px)}100%{transform:none}}
+.ctile{position:relative;display:grid;place-items:center;width:100px;height:100px;border-radius:28px;border:4px solid var(--ink);font-family:var(--display);font-size:44px;line-height:1;padding-top:16px;box-sizing:border-box;animation:bob 2.6s ease-in-out 2.4s infinite}
+.ceyes{position:absolute;top:14px;left:0;right:0;display:flex;justify-content:center;gap:16px}
+.ceyes i{width:12px;height:14px;border-radius:50%;background:#fff;border:2.5px solid var(--ink);box-shadow:inset 3px -2px 0 -0px var(--ink);animation:blinkEye 3.6s steps(1) 2.4s infinite}
+@keyframes blinkEye{0%,92%{transform:none}93%,97%{transform:scaleY(.15)}}
+.hand{position:absolute;top:-30px;width:30px;height:34px;z-index:1}
+.hand svg{width:100%;height:100%;display:block}
+.hand.l{left:-6px;transform:rotate(-18deg);animation:clawL .5s ease-in-out .3s 3 alternate}
+.hand.r{right:-6px;transform:scaleX(-1) rotate(-18deg);animation:clawR .5s ease-in-out .45s 3 alternate}
+@keyframes clawL{to{transform:rotate(-30deg) translateY(4px)}}
+@keyframes clawR{to{transform:scaleX(-1) rotate(-30deg) translateY(4px)}}
+.climb-dirt{position:absolute;left:0;right:0;bottom:0;height:40px;background:var(--dirt);border:3px solid var(--ink);border-radius:50% 50% 14px 14px / 70% 70% 14px 14px;z-index:2}
+.climb .fxhost{top:46%}
+
+/* tomb page: something wants out */
+.peekstage{position:relative}
+.peekwell{position:absolute;left:18%;bottom:calc(1.2px * 18);width:36px;height:40px;overflow:hidden;z-index:2;pointer-events:none}
+.peekhand{position:absolute;left:3px;bottom:0;width:30px;height:34px;animation:peek 6s ease-in-out 1.5s infinite;transform:translateY(100%)}
+.peekhand svg{width:100%;height:100%;display:block}
+@keyframes peek{0%,55%{transform:translateY(100%)}63%{transform:translateY(8%)}68%{transform:translateY(8%) rotate(-14deg)}73%{transform:translateY(8%) rotate(12deg)}78%{transform:translateY(8%) rotate(-10deg)}83%{transform:translateY(8%) rotate(0)}92%,100%{transform:translateY(100%)}}
+
+/* graveyard tab: fireflies, fog, swaying stones */
+.night-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.night-fx ~ *{position:relative;z-index:1}
+.content:has(> .night-fx){position:relative}
+.firefly{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--candle);box-shadow:0 0 10px 3px rgba(255,209,102,.55);animation:drift 9s ease-in-out infinite alternate,glow 2.4s ease-in-out infinite}
+@keyframes drift{0%{transform:translate(0,0)}33%{transform:translate(24px,-30px)}66%{transform:translate(-18px,-12px)}100%{transform:translate(12px,26px)}}
+@keyframes glow{0%,100%{opacity:.15}50%{opacity:1}}
+.fog{position:absolute;bottom:4%;width:140%;height:120px;left:-20%;border-radius:50%;background:radial-gradient(closest-side,rgba(246,241,231,.10),transparent);animation:fog 16s ease-in-out infinite alternate}
+.fog.b{bottom:28%;animation-duration:22s;animation-direction:alternate-reverse;opacity:.7}
+@keyframes fog{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+.graves .tomb .stone{transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}
+.graves button:nth-child(2n) .tomb .stone{animation-delay:-2.5s}
+.graves button:nth-child(3n) .tomb .stone{animation-duration:6.2s}
+.graves button:active .tomb .stone{animation:wiggle .35s ease-in-out}
+@keyframes sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.calm .fx,.calm .spirit,.calm .dropper,.calm .firefly,.calm .fog{display:none}
+@media (prefers-reduced-motion: reduce){.fx,.spirit,.dropper,.firefly,.fog{display:none}}
