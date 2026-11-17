@@ -103,6 +103,10 @@ h1,h2,p{margin:0}
 .whochip.on{background:var(--ink);border-color:var(--ink);color:var(--bone)}.whochip.on .t-cap{color:var(--stone)}
 .whochip.on .tick{background:var(--moss);border-color:var(--moss)}.whochip.on .tick::after{content:'';width:10px;height:5px;border:3px solid var(--ink);border-top:0;border-right:0;transform:translateY(-2px) rotate(-45deg)}
 .card.cheaper{background:var(--moss)}
+.tip.k-discount{background:var(--moss)}.tip.k-overlap{background:var(--blush)}.tip.k-yearly{background:var(--candle)}.tip.k-bundle{background:#8FD3FF}.tip.k-ads{background:var(--paper)}
+.bg-paper{background:var(--paper)}
+.savecard{width:100%;flex-direction:row;align-items:center;gap:12px;background:var(--moss);text-align:left}
+.savecard .chev{width:18px;height:18px;flex:none}
 .card.hint{border-color:var(--moss)}
 .addon-opts{display:flex;flex-wrap:wrap;gap:6px}
 .optchip{padding:7px 12px;border:1.5px solid var(--stone);border-radius:999px;background:var(--paper);font-size:13px;line-height:1.2;text-align:left;transition:background .15s,color .15s,border-color .15s}
