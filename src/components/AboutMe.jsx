@@ -1,7 +1,7 @@
 const paragraphs = [
   `Hi, I'm Maya Walsh – a UI/UX designer who believes that great digital experiences are born from the perfect blend of aesthetics and functionality.`,
   `With a keen eye for detail and a love for minimalist design, I specialize in creating user-centered interfaces that are both beautiful and intuitive. My work spans across web design, brand identity, and interactive experiences.`,
-  `I thrive in collaborative, team-driven environments where ideas are built through shared feedback and iteration. I actively integrate AI tools like Figma's AI features, Gemini, and ChatGPT into my workflow to enhance ideation, streamline design processes, and explore solutions more efficiently. By combining human-centered thinking with emerging technologies, I'm able to move quickly while still prioritizing thoughtful, intuitive design.`,
+  `I thrive in collaborative, team-driven environments where ideas are built through shared feedback and iteration. I actively integrate AI tools like Claude, Figma's AI features, Gemini, and ChatGPT into my workflow to enhance ideation, streamline design processes, and explore solutions more efficiently. By combining human-centered thinking with emerging technologies, I'm able to move quickly while still prioritizing thoughtful, intuitive design.`,
 ]
 
 export default function AboutMe() {
