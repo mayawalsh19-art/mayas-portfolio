@@ -919,3 +919,9 @@ else{go('home','fade');
   if(due&&S.lastAlert!==today()){S.lastAlert=today();save();setTimeout(()=>{T.trialId=due.id;go('trial','zoom');},900);}
 }
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('/graveyard-app/sw.js',{scope:'/graveyard-app/'}).catch(()=>{});}
+// Pick up new versions in tabs that stay open: check when you come back to the tab, and once a
+// new version has taken over, reload the next time the tab is hidden (so nothing jumps mid-tap).
+if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,pending=false;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had){had=true;return;}pending=true;if(document.visibilityState==='hidden')location.reload();});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{});else if(pending)location.reload();});
+ setInterval(()=>navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{}),30*60*1000);}
