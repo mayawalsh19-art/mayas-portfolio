@@ -92,30 +92,30 @@ const SIMPLER = ['Onboarding went from nine screens to five', 'The dashboard sho
 // User test 01: a first-time walk-through of the live app (Nov 18, 2026). Full board is in Figma, page "user tetsing".
 const T_IMG = n => `/graveyard/testing/test-${n}.jpg`
 const TEST_TASKS = ['Set up with the demo bank', 'Mark free trials and discounts', 'Deal with a trial about to charge', 'Do the monthly check-in', 'Explore the Graveyard and the log']
-const TEST_STATS = [['5 / 5', 'tasks finished'], ['~1 min', 'from Get started to the dashboard'], ['17', 'things to fix'], ['3', 'to fix first']]
+const TEST_STATS = [['5 / 5', 'tasks finished'], ['~1 min', 'from Get started to the dashboard'], ['17', 'things found'], ['17 / 17', 'fixed (Nov 19)']]
 const TEST_GROUPS = [
   { key: 'fix', label: 'Fix first', color: C.pumpkin, items: [
-    ['reminder-too-late', 'The reminder comes after the trial charges', 'Peacock’s trial charged in 2 days, but the only “not yet” option was “remind me in 3 days.”', 'Remind the day before a trial ends, and name the day.'],
-    ['savings-numbers-disagree', 'The savings numbers disagree', 'Cheaper plans went from $268 to $269 to $389 between screens, and “Bury all 3” left out the Starz add-on inside Prime.', 'One savings number everywhere, with add-ons counted.'],
-    ['saved-on-day-one', '“You’ve saved $125.75” on day one', 'That money came from subscriptions cancelled before the app was opened. Burying Peacock then didn’t move the total.', 'Start savings at $0 and show each new burial right away.'],
+    ['reminder-too-late', 'The reminder comes after the trial charges', 'Peacock’s trial charged in 2 days, but the only “not yet” option was “remind me in 3 days.”', '“Not yet” now reminds you the day before a trial ends and names the day: “Plot will check back Saturday.”'],
+    ['savings-numbers-disagree', 'The savings numbers disagree', 'Cheaper plans went from $268 to $269 to $389 between screens, and “Bury all 3” left out the Starz add-on inside Prime.', 'One savings number on every screen, with add-ons counted and a breakdown: “Discount $150 · Paying twice $119.76.”'],
+    ['saved-on-day-one', '“You’ve saved $125.75” on day one', 'That money came from subscriptions cancelled before the app was opened. Burying Peacock then didn’t move the total.', 'Savings start at $0. Older cancellations say “Already gone,” and each burial shows right away: “Saving $7.99/mo.”'],
   ] },
   { key: 'worth', label: 'Worth fixing', color: C.candle, items: [
-    ['trial-no-back-button', 'No way back from the trial screen', 'Tapping the trial alert just to look forced a choice: cancel, let it charge, or remind me.', 'Add “← Dashboard.”'],
-    ['trial-date-guessed', 'Marking a trial guesses the end date', 'Netflix became a ghost that “charges in 3 days” without asking when the trial actually ends.', 'Show “Ends Nov 21? Change” in the row.'],
-    ['swipe-hints-mismatch', 'Swipes don’t match the buttons', 'The swipe hints and the buttons use a different order and different words, and there’s no undo.', 'Left for barely, right for love it, plus a small Undo.'],
-    ['cost-per-use-guessed', '“$25.98 / use” is a guess', 'A “barely touched it” rating turned into “used about 1 time.” Nobody entered a number.', 'Ask “About how many times?” or call it a guess.'],
-    [null, '“Keep it” loses the verdict', 'Keeping one subscription from the verdict jumped to Home, and the other two picks were gone.', 'Go back to the verdict.', 'Sleepy'],
-    ['free-trials-count', '“Free trials (3)” lists 2', 'The third sits in the alert card above, so the count looked wrong.', 'Count only what’s in the list.'],
-    [null, '“5 look suspicious”', '“Suspicious” sounded like fraud, not “you don’t use this much.”', 'Use the app’s own words: “3 barely used.”', 'Alarmed'],
+    ['trial-no-back-button', 'No way back from the trial screen', 'Tapping the trial alert just to look forced a choice: cancel, let it charge, or remind me.', 'Added “← Dashboard” to the trial screen.'],
+    ['trial-date-guessed', 'Marking a trial guesses the end date', 'Netflix became a ghost that “charges in 3 days” without asking when the trial actually ends.', 'Each ghost now asks “When does the trial end?” with a date right in the row.'],
+    ['swipe-hints-mismatch', 'Swipes don’t match the buttons', 'The swipe hints and the buttons use a different order and different words, and there’s no undo.', 'Left is “barely touched it,” right is “couldn’t live without it,” the middle is a tap, and there’s an Undo.'],
+    ['cost-per-use-guessed', '“$25.98 / use” is a guess', 'A “barely touched it” rating turned into “used about 1 time.” Nobody entered a number.', 'It says “about” and that it’s a guess, and you can type how many times you used it.'],
+    [null, '“Keep it” loses the verdict', 'Keeping one subscription from the verdict jumped to Home, and the other two picks were gone.', '“Keep it” goes back to the verdict and greys that one out, with an Undo.', 'Sleepy'],
+    ['free-trials-count', '“Free trials (3)” lists 2', 'The third sits in the alert card above, so the count looked wrong.', 'The list is now “More free trials (2)” and counts only what’s in it.'],
+    [null, '“5 look suspicious”', '“Suspicious” sounded like fraud, not “you don’t use this much.”', 'Now “3 barely used · 2 on thin ice.”', 'Alarmed'],
   ] },
   { key: 'polish', label: 'Polish', color: C.stone, items: [
-    ['bank-card-not-tappable', 'The bank card isn’t a button', 'The big outlined card was tapped first. Only the button below it works.', 'Make the whole card tappable.'],
-    ['notification-count', 'Preview says 9, setup said 12', 'The lock-screen preview count didn’t match what Plot just found.', 'Use the real count, or keep it generic.'],
-    ['overlapping-hulu-tips', 'Two tips for the same thing', '“Hulu comes with Spotify Student” and “Hulu Student” showed up side by side.', 'Hide a tip another one already covers.'],
-    ['trial-called-buried', 'A cancelled trial gets “buried”', 'Peacock was free, but the Graveyard and log treat it like a paid subscription.', '“Trial cancelled before it charged.”'],
-    ['log-skips-check-in', 'The log skips the check-in', 'Rating 9 subscriptions was the most work, but the log only shows the burial.', 'Add a line for each check-in.'],
-    ['charges-chart-flat', 'The charge chart is flat', 'Six equal bars with no amounts say nothing the price doesn’t.', 'Label the bars, or show it only when a price changes.'],
-    [null, 'Small copy bits', '“Paramount +” breaks onto two lines, and “Plot already knows” can sound like Plot is watching.', 'Keep names on one line. Try “Plot won’t tell.”', 'Content'],
+    ['bank-card-not-tappable', 'The bank card isn’t a button', 'The big outlined card was tapped first. Only the button below it works.', 'The whole card is tappable now.'],
+    ['notification-count', 'Preview says 9, setup said 12', 'The lock-screen preview count didn’t match what Plot just found.', 'The preview now just says “About 2 minutes.”'],
+    ['overlapping-hulu-tips', 'Two tips for the same thing', '“Hulu comes with Spotify Student” and “Hulu Student” showed up side by side.', 'Each subscription shows up in one tip, and discounts say “Only you can see this.”'],
+    ['trial-called-buried', 'A cancelled trial gets “buried”', 'Peacock was free, but the Graveyard and log treat it like a paid subscription.', 'Its stone says “Trial · never charged” and the log says “Cancelled the Peacock trial before it charged.”'],
+    ['log-skips-check-in', 'The log skips the check-in', 'Rating 9 subscriptions was the most work, but the log only shows the burial.', 'Each check-in gets a line: “Checked in · 9 rated · 3 barely used.”'],
+    ['charges-chart-flat', 'The charge chart is flat', 'Six equal bars with no amounts say nothing the price doesn’t.', 'It says “The same $6.99 every month for 6 months,” and the bars get amounts when a price changes.'],
+    [null, 'Small copy bits', '“Paramount +” breaks onto two lines, and “Plot already knows” can sound like Plot is watching.', 'Names shrink to fit on one line, the copy is “Plot won’t tell,” and “Never mind” stays after opening the cancel page.', 'Content'],
   ] },
 ]
 const TEST_WORKED = [
@@ -157,7 +157,7 @@ function TestBoard() {
             <div className="p-4 md:p-5 flex-1 flex flex-col gap-2" style={{ borderTop: `2px solid ${C.ink}` }}>
               <h3 className="text-base md:text-lg font-bold leading-snug" style={{ fontFamily: BODY, color: C.ink }}>{t}</h3>
               <p className="text-sm leading-relaxed" style={{ fontFamily: BODY, color: INK_TXT }}>{what}</p>
-              <p className="text-[13px] leading-snug mt-auto pt-2" style={{ fontFamily: MONO, color: C.plum }}><span style={{ color: C.dirt, fontWeight: 700 }}>Try:</span> {fix}</p>
+              <p className="text-[13px] leading-snug mt-auto pt-2" style={{ fontFamily: MONO, color: C.plum }}><span style={{ color: C.dirt, fontWeight: 700 }}>Fixed:</span> {fix}</p>
             </div>
           </div>
         ))}
@@ -507,7 +507,7 @@ export default function SubscriptionGraveyardModal({ onClose }) {
               </div>
             </div>
           </Reveal>
-          <p className="text-xs mt-4" style={{ fontFamily: MONO, color: C.stone }}>Up next: fix the three “fix first” problems, then run the same five tasks with real people.</p>
+          <p className="text-xs mt-4" style={{ fontFamily: MONO, color: C.stone }}>All 17 fixed on Nov 19 and live in the app. Up next: run the same five tasks with real people.</p>
         </div>
       </section>
 
